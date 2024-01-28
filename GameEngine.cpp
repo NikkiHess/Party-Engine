@@ -45,11 +45,11 @@ void Engine::render() {
 	glm::ivec2 renderSize(13, 9);
 
 	// render bounds
-	glm::ivec2 topLeft(player.position.x - (renderSize.x / 2), player.position.y - (renderSize.y / 2));
-	glm::ivec2 bottomRight(player.position.x + (renderSize.x / 2), player.position.y + (renderSize.y / 2));
+	glm::ivec2 top_left(player.position.x - (renderSize.x / 2), player.position.y - (renderSize.y / 2));
+	glm::ivec2 bottom_right(player.position.x + (renderSize.x / 2), player.position.y + (renderSize.y / 2));
 
-	for (int y = topLeft.y; y <= bottomRight.y; ++y) {
-		for (int x = topLeft.x; x <= bottomRight.x; ++x) {
+	for (int y = top_left.y; y <= bottom_right.y; ++y) {
+		for (int x = top_left.x; x <= bottom_right.x; ++x) {
 			// if within bounds, print
 			if (y >= 0 && y < HARDCODED_MAP_HEIGHT &&
 				x >= 0 && x < HARDCODED_MAP_WIDTH + 1)
@@ -78,7 +78,7 @@ void Engine::prompt_player() {
 
 	Actor& player = hardcoded_actors.back();
 	// a temporary variable to check updates to the player's position
-	glm::ivec2 playerPos = player.position;
+	glm::ivec2 player_pos = player.position;
 
 	if (selection == "quit") {
 		std::cout << game_over_bad_message;
@@ -86,32 +86,39 @@ void Engine::prompt_player() {
 	}
 	// movement
 	else if (selection == "n") {
-		--playerPos.y;
+		--player_pos.y;
 	}
 	else if (selection == "e") {
-		++playerPos.x;
+		++player_pos.x;
 	}
 	else if (selection == "s") {
-		++playerPos.y;
+		++player_pos.y;
 	}
 	else if (selection == "w") {
-		--playerPos.x;
+		--player_pos.x;
 	}
 
 	// if the movement isn't blocked, allow the player to move
-	bool actorBlocked = false;
+	bool is_blocked_by_actor = false;
 	// this might be awful for performance?
 	for (Actor& actor : hardcoded_actors) {
 		if (actor.blocking) {
-			if (playerPos == actor.position) {
-				actorBlocked = true;
+			if (player_pos == actor.position) {
+				is_blocked_by_actor = true;
 				break;
 			}
 		}
 	}
 
-	if (hardcoded_map[playerPos.y][playerPos.x] != 'b' && !actorBlocked) {
-		player.position = playerPos;
+	player_blocked = hardcoded_map[player_pos.y][player_pos.x] != 'b' && !is_blocked_by_actor;
+}
+
+void Engine::update_positions() {
+	for (Actor& actor : hardcoded_actors) {
+		// if this is our player actor, perform our movement
+		if (actor.actor_name == "player") {
+
+		}
 	}
 }
 
@@ -125,6 +132,9 @@ void Engine::start() {
 
 		// prompt the player to take an action
 		prompt_player();
+		
+		// update npc positions
+		update_positions();
 	}
 }
 
