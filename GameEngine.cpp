@@ -1,6 +1,7 @@
 // std libraries
 #include <iostream>
 #include <sstream>
+#include <cmath>
 
 // include my code
 #include "GameEngine.h"
@@ -10,6 +11,10 @@
 #include "glm/glm.hpp"
 
 void Engine::render() {
+	Actor& player = hardcoded_actors.back();
+	std::stringstream render;
+	std::stringstream dialogue;
+
 	// copy hardcoded map into render map
 	for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
 		for (int x = 0; x < HARDCODED_MAP_WIDTH + 1; ++x) {
@@ -18,15 +23,27 @@ void Engine::render() {
 	}
 
 	// add the actors to the map
+	// also handle any necessary dialogue to be printed later
 	for (const Actor& actor : hardcoded_actors) {
 		render_map[actor.position.y][actor.position.x] = actor.view;
+
+		glm::ivec2 dist(abs(actor.position.x - player.position.x), abs(actor.position.y - player.position.y));
+		// actor within 1 x and y of the player? print nearby dialogue
+		if (dist.y == 1 && dist.x == 1 ||
+			dist.y == 0 && dist.x == 1 ||
+			dist.y == 1 && dist.x == 0) {
+			if(actor.nearby_dialogue != "") 
+				dialogue << actor.nearby_dialogue << "\n";
+		}
+		// within 0? print contact dialogue
+		else if (dist.y == 0 && dist.x == 0) {
+			if (actor.contact_dialogue != "")
+				dialogue << actor.contact_dialogue << "\n";
+		}
 	}
 
 	// perform the render of the current view
-	std::stringstream render;
-
 	glm::ivec2 renderSize(13, 9);
-	Actor& player = hardcoded_actors.back();
 
 	// render bounds
 	// this is awful
@@ -40,7 +57,9 @@ void Engine::render() {
 		render << "\n";
 	}
 
+	// render, then display dialogue
 	std::cout << render.str();
+	std::cout << dialogue.str();
 }
 
 void Engine::show_stats() {
@@ -83,31 +102,10 @@ void Engine::prompt_player() {
 	}
 }
 
-void Engine::print_dialogue() {
-	Actor& player = hardcoded_actors.back();
-
-	// check around the player for NPCs
-	for (int y = -1; y <= 1; ++y) {
-		for (int x = -1; x <= 1; ++x) {
-			// collision dialogue
-			if (x == 0 && y == 0) {
-
-			}
-			// nearby dialogue
-			else {
-
-			}
-		}
-	}
-}
-
 void Engine::start() {
 	while (game_running) {
 		// print the initial render of the world
 		render();
-
-		// print any dialogue we may have run into
-		print_dialogue();
 
 		// print stats
 		show_stats();

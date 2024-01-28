@@ -13,7 +13,6 @@ public:
 	void render(); // render the current view
 	void show_stats(); // show the player's statistics
 	void prompt_player(); // prompt the player for input
-	void print_dialogue(); // show npc dialogue when player is nearby
 private:
 	glm::ivec2 renderSize;
 };
