@@ -29,8 +29,8 @@ static void print_render() {
 	std::stringstream render;
 
 	// initial playerPos is (19, 15) and renderSize is (13, 9)
-	for (unsigned int y = 11; y < 19; ++y) {
-		for (unsigned int x = 13; x < 25; ++x) {
+	for (unsigned int y = 11; y <= 19; ++y) {
+		for (unsigned int x = 13; x <= 25; ++x) {
 			render << render_map[y][x];
 		}
 		render << "\n";
