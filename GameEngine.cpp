@@ -79,7 +79,7 @@ void Engine::prompt_player() {
 		--playerPos.x;
 	}
 
-	
+	// if the movement isn't blocked, allow the player to move
 	if (hardcoded_map[playerPos.y][playerPos.x] != 'b') {
 		hardcoded_actors.back().position = playerPos;
 	}
