@@ -29,9 +29,8 @@ void Engine::render() {
 
 		glm::ivec2 dist(abs(actor.position.x - player.position.x), abs(actor.position.y - player.position.y));
 		// actor within 1 x and y of the player? print nearby dialogue
-		if (dist.y == 1 && dist.x == 1 ||
-			dist.y == 0 && dist.x == 1 ||
-			dist.y == 1 && dist.x == 0) {
+		if ((dist.y == 1 && dist.x <= 1) ||
+			(dist.y <= 1 && dist.x == 1)) {
 			if(actor.nearby_dialogue != "") 
 				dialogue << actor.nearby_dialogue << "\n";
 		}
@@ -46,7 +45,6 @@ void Engine::render() {
 	glm::ivec2 renderSize(13, 9);
 
 	// render bounds
-	// this is awful
 	glm::ivec2 topLeft(player.position.x - (renderSize.x / 2), player.position.y - (renderSize.y / 2));
 	glm::ivec2 bottomRight(player.position.x + (renderSize.x / 2), player.position.y + (renderSize.y / 2));
 
@@ -97,7 +95,18 @@ void Engine::prompt_player() {
 	}
 
 	// if the movement isn't blocked, allow the player to move
-	if (hardcoded_map[playerPos.y][playerPos.x] != 'b') {
+	bool actorBlocked = false;
+	// this might be awful for performance
+	for (Actor& actor : hardcoded_actors) {
+		if (actor.blocking) {
+			if (playerPos == actor.position) {
+				actorBlocked = true;
+				break;
+			}
+		}
+	}
+
+	if (hardcoded_map[playerPos.y][playerPos.x] != 'b' && !actorBlocked) {
 		player.position = playerPos;
 	}
 }
