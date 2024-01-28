@@ -10,9 +10,6 @@
 #include "glm/glm.hpp"
 
 void Engine::render() {
-	// create a temp map for rendering
-	char render_map[HARDCODED_MAP_HEIGHT][HARDCODED_MAP_WIDTH + 1];
-
 	// copy hardcoded map into render map
 	for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
 		for (int x = 0; x < HARDCODED_MAP_WIDTH + 1; ++x) {
@@ -58,12 +55,13 @@ void Engine::prompt_player() {
 	std::string selection;
 	std::cin >> selection;
 
+	Actor& player = hardcoded_actors.back();
 	// a temporary variable to check updates to the player's position
-	glm::ivec2 playerPos = hardcoded_actors.back().position;
+	glm::ivec2 playerPos = player.position;
 
 	if (selection == "quit") {
 		std::cout << game_over_bad_message;
-		game_running = false;
+		stop();
 	}
 	// movement
 	else if (selection == "n") {
@@ -81,7 +79,25 @@ void Engine::prompt_player() {
 
 	// if the movement isn't blocked, allow the player to move
 	if (hardcoded_map[playerPos.y][playerPos.x] != 'b') {
-		hardcoded_actors.back().position = playerPos;
+		player.position = playerPos;
+	}
+}
+
+void Engine::print_dialogue() {
+	Actor& player = hardcoded_actors.back();
+
+	// check around the player for NPCs
+	for (int y = -1; y <= 1; ++y) {
+		for (int x = -1; x <= 1; ++x) {
+			// collision dialogue
+			if (x == 0 && y == 0) {
+
+			}
+			// nearby dialogue
+			else {
+
+			}
+		}
 	}
 }
 
@@ -90,12 +106,19 @@ void Engine::start() {
 		// print the initial render of the world
 		render();
 
+		// print any dialogue we may have run into
+		print_dialogue();
+
 		// print stats
 		show_stats();
 
 		// prompt the player to take an action
 		prompt_player();
 	}
+}
+
+void Engine::stop() {
+	game_running = false;
 }
 
 int main() {
