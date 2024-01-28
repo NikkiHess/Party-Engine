@@ -50,7 +50,11 @@ void Engine::render() {
 
 	for (int y = topLeft.y; y <= bottomRight.y; ++y) {
 		for (int x = topLeft.x; x <= bottomRight.x; ++x) {
-			render << render_map[y][x];
+			// if within bounds, print
+			if (y >= 0 && y < HARDCODED_MAP_HEIGHT &&
+				x >= 0 && x < HARDCODED_MAP_WIDTH + 1)
+				render << render_map[y][x];
+			else render << " ";
 		}
 		render << "\n";
 	}
