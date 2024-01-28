@@ -58,22 +58,30 @@ void Engine::prompt_player() {
 	std::string selection;
 	std::cin >> selection;
 
+	// a temporary variable to check updates to the player's position
+	glm::ivec2 playerPos = hardcoded_actors.back().position;
+
 	if (selection == "quit") {
 		std::cout << game_over_bad_message;
 		game_running = false;
 	}
 	// movement
 	else if (selection == "n") {
-		--hardcoded_actors.back().position.y;
+		--playerPos.y;
 	}
 	else if (selection == "e") {
-		++hardcoded_actors.back().position.x;
+		++playerPos.x;
 	}
 	else if (selection == "s") {
-		++hardcoded_actors.back().position.y;
+		++playerPos.y;
 	}
 	else if (selection == "w") {
-		--hardcoded_actors.back().position.x;
+		--playerPos.x;
+	}
+
+	
+	if (hardcoded_map[playerPos.y][playerPos.x] != 'b') {
+		hardcoded_actors.back().position = playerPos;
 	}
 }
 
