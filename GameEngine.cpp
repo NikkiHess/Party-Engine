@@ -9,22 +9,22 @@
 #include "dependencies/MapHelper.h"
 #include "glm/glm.hpp"
 
-static void print_render() {
+void Engine::render() {
 	// create a temp map for rendering
 	char render_map[HARDCODED_MAP_HEIGHT][HARDCODED_MAP_WIDTH + 1];
 
 	// copy hardcoded map into render map
-	for (unsigned int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
-		for (unsigned int x = 0; x < HARDCODED_MAP_WIDTH + 1; ++x) {
+	for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
+		for (int x = 0; x < HARDCODED_MAP_WIDTH + 1; ++x) {
 			render_map[y][x] = hardcoded_map[y][x];
 		}
 	}
 
 	// add the actors to the map
-	for (const Actor &actor : hardcoded_actors) {
+	for (const Actor& actor : hardcoded_actors) {
 		render_map[actor.position.y][actor.position.x] = actor.view;
 	}
-	
+
 	// perform the render of the current view
 	std::stringstream render;
 
@@ -36,8 +36,8 @@ static void print_render() {
 	glm::ivec2 topLeft(player.position.x - (renderSize.x / 2), player.position.y - (renderSize.y / 2));
 	glm::ivec2 bottomRight(player.position.x + (renderSize.x / 2), player.position.y + (renderSize.y / 2));
 
-	for (unsigned int y = topLeft.y; y <= bottomRight.y; ++y) {
-		for (unsigned int x = topLeft.x; x <= bottomRight.x; ++x) {
+	for (int y = topLeft.y; y <= bottomRight.y; ++y) {
+		for (int x = topLeft.x; x <= bottomRight.x; ++x) {
 			render << render_map[y][x];
 		}
 		render << "\n";
@@ -46,11 +46,11 @@ static void print_render() {
 	std::cout << render.str();
 }
 
-static void print_stats() {
+void Engine::show_stats() {
 	std::cout << "health : 3, score : 0" << "\n";
 }
 
-void prompt_player(bool &game_running) {
+void Engine::prompt_player() {
 	std::cout << "Please make a decision..." << "\n";
 	std::cout << "Your options are \"n\", \"e\", \"s\", \"w\", \"quit\"" << "\n";
 
@@ -77,21 +77,25 @@ void prompt_player(bool &game_running) {
 	}
 }
 
+void Engine::start() {
+	while (game_running) {
+		// print the initial render of the world
+		render();
+
+		// print stats
+		show_stats();
+
+		// prompt the player to take an action
+		prompt_player();
+	}
+}
+
 int main() {
 	// print the starting message
 	std::cout << game_start_message << "\n";
 
-	bool game_running = true;
+	Engine engine;
+	engine.start();
 
-	while (game_running) {
-		// print the initial render of the world
-		print_render();
-
-		// print stats
-		print_stats();
-
-		// prompt the player to move
-		prompt_player(game_running);
-	}
 	return 0;
 }
