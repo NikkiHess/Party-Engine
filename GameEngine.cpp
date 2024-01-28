@@ -96,7 +96,7 @@ void Engine::prompt_player() {
 
 	// if the movement isn't blocked, allow the player to move
 	bool actorBlocked = false;
-	// this might be awful for performance
+	// this might be awful for performance?
 	for (Actor& actor : hardcoded_actors) {
 		if (actor.blocking) {
 			if (playerPos == actor.position) {
