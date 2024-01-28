@@ -28,9 +28,16 @@ static void print_render() {
 	// perform the render of the current view
 	std::stringstream render;
 
-	// initial playerPos is (19, 15) and renderSize is (13, 9)
-	for (unsigned int y = 11; y <= 19; ++y) {
-		for (unsigned int x = 13; x <= 25; ++x) {
+	glm::ivec2 renderSize(13, 9);
+	Actor& player = hardcoded_actors.back();
+
+	// render bounds
+	// this is awful
+	glm::ivec2 topLeft(player.position.x - (renderSize.x / 2), player.position.y - (renderSize.y / 2));
+	glm::ivec2 bottomRight(player.position.x + (renderSize.x / 2), player.position.y + (renderSize.y / 2));
+
+	for (unsigned int y = topLeft.y; y <= bottomRight.y; ++y) {
+		for (unsigned int x = topLeft.x; x <= bottomRight.x; ++x) {
 			render << render_map[y][x];
 		}
 		render << "\n";
@@ -55,6 +62,19 @@ void prompt_player(bool &game_running) {
 		std::cout << game_over_bad_message;
 		game_running = false;
 	}
+	// movement
+	else if (selection == "n") {
+		--hardcoded_actors.back().position.y;
+	}
+	else if (selection == "e") {
+		++hardcoded_actors.back().position.x;
+	}
+	else if (selection == "s") {
+		++hardcoded_actors.back().position.y;
+	}
+	else if (selection == "w") {
+		--hardcoded_actors.back().position.x;
+	}
 }
 
 int main() {
@@ -73,6 +93,5 @@ int main() {
 		// prompt the player to move
 		prompt_player(game_running);
 	}
-	// e
 	return 0;
 }
