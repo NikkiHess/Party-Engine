@@ -419,12 +419,12 @@
     <ClInclude Include="dependencies\glm\vec3.hpp" />
     <ClInclude Include="dependencies\glm\vec4.hpp" />
     <ClInclude Include="dependencies\glm\vector_relational.hpp" />
-    <ClInclude Include="GameEngine.h" />
     <ClInclude Include="dependencies\MapHelper.h" />
+    <ClInclude Include="src\GameEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp" />
-    <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="src\GameEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\glm\detail\func_common.inl" />

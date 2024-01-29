@@ -1,7 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "dependencies/MapHelper.h"
+#include "../dependencies/MapHelper.h"
 
 #include <string>
 #include <map>
