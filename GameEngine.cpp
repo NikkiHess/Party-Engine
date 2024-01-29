@@ -25,7 +25,7 @@ void Engine::render() {
 
 	// add the actors to the map
 	// also handle any necessary dialogue to be printed later
-	for (const Actor& actor : hardcoded_actors) {
+	for (Actor& actor : hardcoded_actors) {
 		render_map[actor.position.y][actor.position.x] = actor.view;
 
 		glm::ivec2 dist(abs(actor.position.x - player.position.x), abs(actor.position.y - player.position.y));
@@ -34,12 +34,18 @@ void Engine::render() {
 			(dist.y <= 1 && dist.x == 1)) {
 			if (actor.nearby_dialogue != "") {
 				dialogue << actor.nearby_dialogue << "\n";
+
+				std::string str = dialogue.str();
+				execute_commands(actor, str);
 			}
 		}
 		// within 0? print contact dialogue
 		else if (dist.y == 0 && dist.x == 0) {
 			if (actor.contact_dialogue != "") {
 				dialogue << actor.contact_dialogue << "\n";
+
+				std::string str = dialogue.str();
+				execute_commands(actor, str);
 			}
 		}
 	}
@@ -139,19 +145,22 @@ bool Engine::would_collide(Actor& actor, glm::ivec2& position) {
 }
 
 // we've been told we can assume there will not be multiple commands at once
-void Engine::execute_commands(Actor& triggered, std::string& dialogue) {
+void Engine::execute_commands(Actor& trigger, std::string& dialogue) {
 	if (dialogue.find("health down") != std::string::npos) {
 		--player_health;
 	}
 	else if (dialogue.find("score up") != std::string::npos) {
-		if()
-		++player_score;
+		// an NPC Actor may only trigger a score increase once
+		if (!triggered_score_up[&trigger]) {
+			++player_score;
+			triggered_score_up[&trigger] = true;
+		}
 	}
-	else if (dialogue.find("health down") != std::string::npos) {
-		--player_health;
+	else if (dialogue.find("you win") != std::string::npos) {
+
 	}
-	else if (dialogue.find("health down") != std::string::npos) {
-		--player_health;
+	else if (dialogue.find("game over") != std::string::npos) {
+
 	}
 }
 

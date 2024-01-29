@@ -32,5 +32,5 @@ public:
 private:
 	glm::ivec2 renderSize;
 
-	void execute_commands(Actor& triggered, std::string& dialogue);
+	void execute_commands(Actor& trigger, std::string& dialogue);
 };
