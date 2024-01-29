@@ -166,7 +166,6 @@ Engine::GameState Engine::execute_commands(Actor& trigger, std::string& dialogue
 	if (dialogue.find("health down") != std::string::npos) {
 		// if decreasing the player's health makes it 0, stop the engine
 		if (--player_health <= 0) {
-			player_health = 0; // bound at 0
 			return LOSE;
 		}
 	}
