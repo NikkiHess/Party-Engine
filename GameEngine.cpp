@@ -12,8 +12,9 @@
 
 void Engine::render() {
 	Actor& player = hardcoded_actors.back();
-	std::stringstream render;
-	std::stringstream dialogue;
+	std::stringstream render; // the rendered view
+	std::stringstream dialogue; // the dialogue to be shown
+	std::stringstream actions; // the action text to be shown
 
 	// copy hardcoded map into render map
 	for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
@@ -31,13 +32,15 @@ void Engine::render() {
 		// actor within 1 x and y of the player? print nearby dialogue
 		if ((dist.y == 1 && dist.x <= 1) ||
 			(dist.y <= 1 && dist.x == 1)) {
-			if(actor.nearby_dialogue != "") 
+			if (actor.nearby_dialogue != "") {
 				dialogue << actor.nearby_dialogue << "\n";
+			}
 		}
 		// within 0? print contact dialogue
 		else if (dist.y == 0 && dist.x == 0) {
-			if (actor.contact_dialogue != "")
+			if (actor.contact_dialogue != "") {
 				dialogue << actor.contact_dialogue << "\n";
+			}
 		}
 	}
 
@@ -51,8 +54,8 @@ void Engine::render() {
 	for (int y = top_left.y; y <= bottom_right.y; ++y) {
 		for (int x = top_left.x; x <= bottom_right.x; ++x) {
 			// if within bounds, print
-			if (y >= 0 && y < HARDCODED_MAP_HEIGHT &&
-				x >= 0 && x < HARDCODED_MAP_WIDTH + 1)
+			if (y >= 0 && y < HARDCODED_MAP_HEIGHT - 1 &&
+				x >= 0 && x < HARDCODED_MAP_WIDTH)
 				render << render_map[y][x];
 			else render << " ";
 		}
@@ -65,7 +68,7 @@ void Engine::render() {
 }
 
 void Engine::show_stats() {
-	std::cout << "health : 3, score : 0" << "\n";
+	std::cout << "health : " << player_health << ", score : " << player_score << "\n";
 }
 
 void Engine::prompt_player() {
@@ -135,7 +138,29 @@ bool Engine::would_collide(Actor& actor, glm::ivec2& position) {
 	return hardcoded_map[position.y][position.x] == 'b' || is_blocked_by_actor;
 }
 
+// we've been told we can assume there will not be multiple commands at once
+void Engine::execute_commands(Actor& triggered, std::string& dialogue) {
+	if (dialogue.find("health down") != std::string::npos) {
+		--player_health;
+	}
+	else if (dialogue.find("score up") != std::string::npos) {
+		if()
+		++player_score;
+	}
+	else if (dialogue.find("health down") != std::string::npos) {
+		--player_health;
+	}
+	else if (dialogue.find("health down") != std::string::npos) {
+		--player_health;
+	}
+}
+
 void Engine::start() {
+	// store all actors in triggered_score_up (false)
+	for (Actor& actor : hardcoded_actors) {
+		triggered_score_up[&actor] = false;
+	}
+
 	game_running = true;
 
 	while (game_running) {
