@@ -6,7 +6,6 @@
 class Engine {
 public:
 	bool game_running = false; // is the game running? drives the start loop
-	bool player_blocked = false; // is the player blocked?
 	char render_map[HARDCODED_MAP_HEIGHT][HARDCODED_MAP_WIDTH + 1]; // the map to be rendered - updated each frame
 	glm::ivec2 updated_player_pos;
 
@@ -16,6 +15,8 @@ public:
 	void show_stats(); // show the player's statistics
 	void prompt_player(); // prompt the player for input
 	void update_positions(); // update all actor positions
+
+	bool would_collide(Actor& actor, glm::ivec2& position); // returns whether an actor would collide at an updated position
 private:
 	glm::ivec2 renderSize;
 };

@@ -97,31 +97,36 @@ void Engine::prompt_player() {
 	else if (selection == "w") {
 		--updated_player_pos.x;
 	}
-
-	// if the movement isn't blocked, allow the player to move
-	bool is_blocked_by_actor = false;
-	// this might be awful for performance?
-	for (Actor& actor : hardcoded_actors) {
-		if (actor.blocking) {
-			if (updated_player_pos == actor.position) {
-				is_blocked_by_actor = true;
-				break;
-			}
-		}
-	}
-
-	player_blocked = hardcoded_map[updated_player_pos.y][updated_player_pos.x] == 'b' || is_blocked_by_actor;
 }
 
 void Engine::update_positions() {
 	for (Actor& actor : hardcoded_actors) {
 		// if this is our player Actor, perform our player actor movement
 		if (actor.actor_name == "player") {
-			if (!player_blocked) {
+			if(!would_collide(actor, updated_player_pos))
 				actor.position = updated_player_pos;
+		}
+		// move NPC Actors
+		else {
+
+		}
+	}
+}
+
+bool Engine::would_collide(Actor& actor, glm::ivec2& position) {
+	// if the movement isn't blocked, allow the Actor to move
+	bool is_blocked_by_actor = false;
+	// this might be awful for performance?
+	for (Actor& other_actor : hardcoded_actors) {
+		if (other_actor.blocking) {
+			if (position == other_actor.position) {
+				is_blocked_by_actor = true;
+				break;
 			}
 		}
 	}
+
+	return hardcoded_map[position.y][position.x] == 'b' || is_blocked_by_actor;
 }
 
 void Engine::start() {
