@@ -78,7 +78,7 @@ void Engine::prompt_player() {
 
 	Actor& player = hardcoded_actors.back();
 	// a temporary variable to check updates to the player's position
-	glm::ivec2 player_pos = player.position;
+	updated_player_pos = player.position;
 
 	if (selection == "quit") {
 		std::cout << game_over_bad_message;
@@ -86,16 +86,16 @@ void Engine::prompt_player() {
 	}
 	// movement
 	else if (selection == "n") {
-		--player_pos.y;
+		--updated_player_pos.y;
 	}
 	else if (selection == "e") {
-		++player_pos.x;
+		++updated_player_pos.x;
 	}
 	else if (selection == "s") {
-		++player_pos.y;
+		++updated_player_pos.y;
 	}
 	else if (selection == "w") {
-		--player_pos.x;
+		--updated_player_pos.x;
 	}
 
 	// if the movement isn't blocked, allow the player to move
@@ -103,26 +103,30 @@ void Engine::prompt_player() {
 	// this might be awful for performance?
 	for (Actor& actor : hardcoded_actors) {
 		if (actor.blocking) {
-			if (player_pos == actor.position) {
+			if (updated_player_pos == actor.position) {
 				is_blocked_by_actor = true;
 				break;
 			}
 		}
 	}
 
-	player_blocked = hardcoded_map[player_pos.y][player_pos.x] != 'b' && !is_blocked_by_actor;
+	player_blocked = hardcoded_map[updated_player_pos.y][updated_player_pos.x] == 'b' || is_blocked_by_actor;
 }
 
 void Engine::update_positions() {
 	for (Actor& actor : hardcoded_actors) {
-		// if this is our player actor, perform our movement
+		// if this is our player Actor, perform our player actor movement
 		if (actor.actor_name == "player") {
-
+			if (!player_blocked) {
+				actor.position = updated_player_pos;
+			}
 		}
 	}
 }
 
 void Engine::start() {
+	game_running = true;
+
 	while (game_running) {
 		// print the initial render of the world
 		render();
@@ -133,7 +137,7 @@ void Engine::start() {
 		// prompt the player to take an action
 		prompt_player();
 		
-		// update npc positions
+		// update Actor positions
 		update_positions();
 	}
 }
