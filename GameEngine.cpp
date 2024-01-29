@@ -107,8 +107,14 @@ void Engine::update_positions() {
 				actor.position = updated_player_pos;
 		}
 		// move NPC Actors
+		// if no collision, keep moving
+		// if collision, reverse velocity (move next turn)
 		else {
-
+			glm::ivec2 updated_actor_pos(actor.position.x + actor.velocity.x, actor.position.y + actor.velocity.y);
+			if (!would_collide(actor, updated_actor_pos))
+				actor.position = updated_actor_pos;
+			else
+				actor.velocity = -actor.velocity;
 		}
 	}
 }
