@@ -74,10 +74,10 @@ Engine::GameState Engine::render() {
 	for (int y = top_left.y; y <= bottom_right.y; ++y) {
 		for (int x = top_left.x; x <= bottom_right.x; ++x) {
 			// if within bounds, print
-			if (y >= 0 && y < HARDCODED_MAP_HEIGHT - 1 &&
+			if (y >= 0 && y < HARDCODED_MAP_HEIGHT &&
 				x >= 0 && x < HARDCODED_MAP_WIDTH)
 				render << render_map[y][x];
-			else render << " ";
+			else render << ' ';
 		}
 		render << "\n";
 	}
@@ -164,7 +164,7 @@ bool Engine::would_collide(Actor& actor, glm::ivec2& position) {
 // we've been told we can assume there will not be multiple commands at once
 Engine::GameState Engine::execute_commands(Actor& trigger, std::string& dialogue) {
 	if (dialogue.find("health down") != std::string::npos) {
-		// if decreasing the player's health makes it 0, stop the engine
+		// if decreasing the player's health makes it <= 0, return a lose state
 		if (--player_health <= 0) {
 			return LOSE;
 		}
