@@ -7,7 +7,7 @@
 #include "GameEngine.h"
 
 // dependencies
-#include "dependencies/MapHelper.h"
+#include "../dependencies/MapHelper.h"
 #include "glm/glm.hpp"
 
 Engine::GameState Engine::render() {
