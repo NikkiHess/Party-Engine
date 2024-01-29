@@ -82,7 +82,7 @@ Engine::GameState Engine::render() {
 		render << "\n";
 	}
 
-	// render, then display dialogue
+	// render, then display dialogue and command output
 	std::cout << render.str();
 	std::cout << dialogue.str();
 	show_stats();
