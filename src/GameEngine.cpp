@@ -72,14 +72,18 @@ void Engine::start() {
 		// print the initial render of the world
 		renderer.render(player);
 
-		GameState state = renderer.print_dialogue(player, player_health, player_score, triggered_score_up);
-		if (state != NORMAL) {
+		GameState dialogue_state = renderer.print_dialogue(player, player_health, player_score, triggered_score_up);
+		if (dialogue_state != NORMAL) {
 			stop();
 			break;
 		}
 
 		// prompt the player to take an action
-		renderer.prompt_player(player);
+		GameState prompt_state = renderer.prompt_player(player);
+		if (prompt_state != NORMAL) {
+			stop();
+			break;
+		}
 		
 		// update Actor positions
 		update_positions();
