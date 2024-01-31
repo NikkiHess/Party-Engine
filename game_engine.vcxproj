@@ -108,7 +108,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>
@@ -125,7 +125,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -420,6 +420,41 @@
     <ClInclude Include="dependencies\glm\vec4.hpp" />
     <ClInclude Include="dependencies\glm\vector_relational.hpp" />
     <ClInclude Include="dependencies\MapHelper.h" />
+    <ClInclude Include="dependencies\rapidjson\allocators.h" />
+    <ClInclude Include="dependencies\rapidjson\document.h" />
+    <ClInclude Include="dependencies\rapidjson\encodedstream.h" />
+    <ClInclude Include="dependencies\rapidjson\encodings.h" />
+    <ClInclude Include="dependencies\rapidjson\error\en.h" />
+    <ClInclude Include="dependencies\rapidjson\error\error.h" />
+    <ClInclude Include="dependencies\rapidjson\filereadstream.h" />
+    <ClInclude Include="dependencies\rapidjson\filewritestream.h" />
+    <ClInclude Include="dependencies\rapidjson\fwd.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\itoa.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\meta.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\pow10.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\regex.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\stack.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\strtod.h" />
+    <ClInclude Include="dependencies\rapidjson\internal\swap.h" />
+    <ClInclude Include="dependencies\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="dependencies\rapidjson\memorybuffer.h" />
+    <ClInclude Include="dependencies\rapidjson\memorystream.h" />
+    <ClInclude Include="dependencies\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="dependencies\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="dependencies\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="dependencies\rapidjson\pointer.h" />
+    <ClInclude Include="dependencies\rapidjson\prettywriter.h" />
+    <ClInclude Include="dependencies\rapidjson\rapidjson.h" />
+    <ClInclude Include="dependencies\rapidjson\reader.h" />
+    <ClInclude Include="dependencies\rapidjson\schema.h" />
+    <ClInclude Include="dependencies\rapidjson\stream.h" />
+    <ClInclude Include="dependencies\rapidjson\stringbuffer.h" />
+    <ClInclude Include="dependencies\rapidjson\writer.h" />
     <ClInclude Include="src\GameEngine.h" />
   </ItemGroup>
   <ItemGroup>

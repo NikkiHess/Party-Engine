@@ -8,15 +8,13 @@
 
 // dependencies
 #include "../dependencies/MapHelper.h"
+#include "../dependencies/rapidjson/document.h"
 #include "glm/glm.hpp"
 
-Engine::GameState Engine::render() {
-	Actor& player = hardcoded_actors.back();
-	std::stringstream render; // the rendered view
-	std::stringstream dialogue; // the dialogue to be shown
-	std::string command_output; // the output from commands
+// ---------- BEGIN OUTPUT FUNCTIONS ----------
 
-	GameState state = NORMAL;
+void Engine::render() {
+	std::stringstream render; // the rendered view
 
 	// copy hardcoded map into render map
 	for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
@@ -26,10 +24,40 @@ Engine::GameState Engine::render() {
 	}
 
 	// add the actors to the map
-	// also handle any necessary dialogue to be printed later
 	for (Actor& actor : hardcoded_actors) {
 		render_map[actor.position.y][actor.position.x] = actor.view;
+	}
 
+	// perform the render of the current view
+	glm::ivec2 renderSize(13, 9);
+
+	// render bounds
+	glm::ivec2 top_left(player.position.x - (renderSize.x / 2), player.position.y - (renderSize.y / 2));
+	glm::ivec2 bottom_right(player.position.x + (renderSize.x / 2), player.position.y + (renderSize.y / 2));
+
+	for (int y = top_left.y; y <= bottom_right.y; ++y) {
+		for (int x = top_left.x; x <= bottom_right.x; ++x) {
+			// if within bounds, print
+			if (y >= 0 && y < HARDCODED_MAP_HEIGHT &&
+				x >= 0 && x < HARDCODED_MAP_WIDTH)
+				render << render_map[y][x];
+			else render << ' ';
+		}
+		render << "\n";
+	}
+
+	// render, then display dialogue and command output
+	std::cout << render.str();
+}
+
+Engine::GameState Engine::print_dialogue() {
+	std::stringstream dialogue; // the dialogue to be printed
+	std::string command_output; // the output from commands
+
+	// the current state of the game, determined by execute_commands
+	GameState state = NORMAL;
+
+	for (Actor& actor : hardcoded_actors) {
 		glm::ivec2 dist(abs(actor.position.x - player.position.x), abs(actor.position.y - player.position.y));
 		// actor within 1 x and y of the player? print nearby dialogue
 		if ((dist.y == 1 && dist.x <= 1) ||
@@ -64,33 +92,14 @@ Engine::GameState Engine::render() {
 		}
 	}
 
-	// perform the render of the current view
-	glm::ivec2 renderSize(13, 9);
-
-	// render bounds
-	glm::ivec2 top_left(player.position.x - (renderSize.x / 2), player.position.y - (renderSize.y / 2));
-	glm::ivec2 bottom_right(player.position.x + (renderSize.x / 2), player.position.y + (renderSize.y / 2));
-
-	for (int y = top_left.y; y <= bottom_right.y; ++y) {
-		for (int x = top_left.x; x <= bottom_right.x; ++x) {
-			// if within bounds, print
-			if (y >= 0 && y < HARDCODED_MAP_HEIGHT &&
-				x >= 0 && x < HARDCODED_MAP_WIDTH)
-				render << render_map[y][x];
-			else render << ' ';
-		}
-		render << "\n";
-	}
-
-	// render, then display dialogue and command output
-	std::cout << render.str();
 	std::cout << dialogue.str();
-	show_stats();
+	print_stats();
 	std::cout << command_output;
+
 	return state;
 }
 
-void Engine::show_stats() {
+void Engine::print_stats() {
 	std::cout << "health : " << player_health << ", score : " << player_score << "\n";
 }
 
@@ -125,43 +134,8 @@ void Engine::prompt_player() {
 	}
 }
 
-void Engine::update_positions() {
-	for (Actor& actor : hardcoded_actors) {
-		// if this is our player Actor, perform our player actor movement
-		if (actor.actor_name == "player") {
-			if(!would_collide(actor, updated_player_pos))
-				actor.position = updated_player_pos;
-		}
-		// move NPC Actors
-		// if no collision, keep moving
-		// if collision, reverse velocity (move next turn)
-		else {
-			glm::ivec2 updated_actor_pos(actor.position.x + actor.velocity.x, actor.position.y + actor.velocity.y);
-			if (!would_collide(actor, updated_actor_pos))
-				actor.position = updated_actor_pos;
-			else
-				actor.velocity = -actor.velocity;
-		}
-	}
-}
-
-bool Engine::would_collide(Actor& actor, glm::ivec2& position) {
-	// if the movement isn't blocked, allow the Actor to move
-	bool is_blocked_by_actor = false;
-	// this might be awful for performance?
-	for (Actor& other_actor : hardcoded_actors) {
-		if (other_actor.blocking) {
-			if (position == other_actor.position) {
-				is_blocked_by_actor = true;
-				break;
-			}
-		}
-	}
-
-	return hardcoded_map[position.y][position.x] == 'b' || is_blocked_by_actor;
-}
-
 // we've been told we can assume there will not be multiple commands at once
+// execute all game commands from the given dialogue given the trigger Actor
 Engine::GameState Engine::execute_commands(Actor& trigger, std::string& dialogue) {
 	if (dialogue.find("health down") != std::string::npos) {
 		// if decreasing the player's health makes it <= 0, return a lose state
@@ -185,6 +159,52 @@ Engine::GameState Engine::execute_commands(Actor& trigger, std::string& dialogue
 	return NORMAL;
 }
 
+// ----------- END OUTPUT FUNCTIONS -----------
+
+// ---------- BEGIN MOTION FUNCTIONS ----------
+
+void Engine::update_positions() {
+	for (Actor& actor : hardcoded_actors) {
+		// if this is our player Actor, perform our player actor movement
+		if (actor.actor_name == "player") {
+			if(!would_collide(actor, updated_player_pos))
+				actor.position = updated_player_pos;
+		}
+		// move NPC Actors
+		// if no collision, keep moving
+		// if collision, reverse velocity (move next turn)
+		else {
+			glm::ivec2 updated_actor_pos(actor.position.x + actor.velocity.x, actor.position.y + actor.velocity.y);
+			if (!would_collide(actor, updated_actor_pos))
+				actor.position = updated_actor_pos;
+			else
+				actor.velocity = -actor.velocity;
+		}
+	}
+}
+
+// check if an Actor would collide at an updated position
+bool Engine::would_collide(Actor& actor, glm::ivec2& updated_position) {
+	// if the movement isn't blocked, allow the Actor to move
+	bool is_blocked_by_actor = false;
+	// this might be awful for performance?
+	for (Actor& other_actor : hardcoded_actors) {
+		if (other_actor.blocking) {
+			if (updated_position == other_actor.position) {
+				is_blocked_by_actor = true;
+				break;
+			}
+		}
+	}
+
+	return hardcoded_map[updated_position.y][updated_position.x] == 'b' || 
+		is_blocked_by_actor;
+}
+
+// ----------- END MOTION FUNCTIONS -----------
+
+// ----------- BEGIN CORE FUNCTIONS -----------
+
 void Engine::start() {
 	// store all actors in triggered_score_up (false)
 	for (Actor& actor : hardcoded_actors) {
@@ -195,7 +215,9 @@ void Engine::start() {
 
 	while (game_running) {
 		// print the initial render of the world
-		GameState state = render();
+		render();
+
+		GameState state = print_dialogue();
 		if (state != NORMAL) {
 			stop();
 			break;
@@ -213,6 +235,8 @@ void Engine::stop() {
 	game_running = false;
 }
 
+// ----------- END CORE FUNCTIONS ------------
+
 int main() {
 	// print the starting message
 	std::cout << game_start_message << "\n";
@@ -220,6 +244,5 @@ int main() {
 	Engine engine;
 	engine.start();
 
-	// e
 	return 0;
 }
