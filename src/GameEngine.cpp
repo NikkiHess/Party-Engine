@@ -111,26 +111,22 @@ void Engine::prompt_player() {
 	std::string selection;
 	std::cin >> selection;
 
-	Actor& player = hardcoded_actors.back();
-	// a temporary variable to check updates to the player's position
-	updated_player_pos = player.position;
-
 	if (selection == "quit") {
 		std::cout << game_over_bad_message;
 		stop();
 	}
-	// movement
+	// do movement (update player velocity)
 	else if (selection == "n") {
-		--updated_player_pos.y;
+		--player.velocity.y;
 	}
 	else if (selection == "e") {
-		++updated_player_pos.x;
+		++player.velocity.x;
 	}
 	else if (selection == "s") {
-		++updated_player_pos.y;
+		++player.velocity.y;
 	}
 	else if (selection == "w") {
-		--updated_player_pos.x;
+		--player.velocity.x;
 	}
 }
 
@@ -167,15 +163,18 @@ void Engine::update_positions() {
 	for (Actor& actor : hardcoded_actors) {
 		// if this is our player Actor, perform our player actor movement
 		if (actor.actor_name == "player") {
-			if(!would_collide(actor, updated_player_pos))
-				actor.position = updated_player_pos;
+			if (!would_collide(actor)) {
+				actor.position += actor.velocity;
+			}
+			// stop the player's movement so they only move by 1
+			actor.velocity = glm::ivec2(0, 0);
 		}
 		// move NPC Actors
 		// if no collision, keep moving
 		// if collision, reverse velocity (move next turn)
 		else {
 			glm::ivec2 updated_actor_pos(actor.position.x + actor.velocity.x, actor.position.y + actor.velocity.y);
-			if (!would_collide(actor, updated_actor_pos))
+			if (!would_collide(actor))
 				actor.position = updated_actor_pos;
 			else
 				actor.velocity = -actor.velocity;
@@ -183,21 +182,22 @@ void Engine::update_positions() {
 	}
 }
 
-// check if an Actor would collide at an updated position
-bool Engine::would_collide(Actor& actor, glm::ivec2& updated_position) {
+// check if an Actor would collide given its velocity
+bool Engine::would_collide(Actor& actor) {
+	glm::ivec2 future_position = actor.position + actor.velocity;
 	// if the movement isn't blocked, allow the Actor to move
 	bool is_blocked_by_actor = false;
 	// this might be awful for performance?
 	for (Actor& other_actor : hardcoded_actors) {
 		if (other_actor.blocking) {
-			if (updated_position == other_actor.position) {
+			if (future_position == other_actor.position) {
 				is_blocked_by_actor = true;
 				break;
 			}
 		}
 	}
 
-	return hardcoded_map[updated_position.y][updated_position.x] == 'b' || 
+	return hardcoded_map[future_position.y][future_position.x] == 'b' ||
 		is_blocked_by_actor;
 }
 

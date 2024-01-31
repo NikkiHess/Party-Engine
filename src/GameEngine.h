@@ -23,7 +23,6 @@ public:
 	Actor& player = hardcoded_actors.back(); // the player
 
 	// player stuff
-	glm::ivec2 updated_player_pos; // the "future" player position
 	int player_health = 3; // the player's current health
 	int player_score = 0; // the player's current score
 
@@ -53,8 +52,8 @@ public:
 	// update all Actor positions according to their velocity
 	void update_positions();
 
-	// returns whether an actor would collide at an updated position
-	bool would_collide(Actor& actor, glm::ivec2& updated_position);
+	// returns whether an actor would collide given its velocity
+	bool would_collide(Actor& actor);
 private:
 	glm::ivec2 renderSize;
 
