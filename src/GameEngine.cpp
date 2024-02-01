@@ -68,18 +68,20 @@ void Engine::start() {
 
 	game_running = true;
 
+	GameInfo game_info{player, player_health, player_score, triggered_score_up};
+
 	while (game_running) {
 		// print the initial render of the world
-		renderer.render(player);
+		renderer.render(game_info);
 
-		GameState dialogue_state = renderer.print_dialogue(player, player_health, player_score, triggered_score_up);
+		GameState dialogue_state = renderer.print_dialogue(game_info);
 		if (dialogue_state != NORMAL) {
 			stop();
 			break;
 		}
 
 		// prompt the player to take an action
-		GameState prompt_state = renderer.prompt_player(player);
+		GameState prompt_state = renderer.prompt_player(game_info);
 		if (prompt_state != NORMAL) {
 			stop();
 			break;
