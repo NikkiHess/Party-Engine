@@ -64,7 +64,6 @@ void Engine::handle_state() {
 	case WIN:
 	case LOSE:
 		stop();
-		exit(0);
 	default:
 		break;
 	}
@@ -99,6 +98,7 @@ void Engine::start() {
 
 void Engine::stop() {
 	game_running = false;
+	exit(0);
 }
 
 // ----------- END CORE FUNCTIONS ------------

@@ -80,7 +80,14 @@ void Renderer::print_dialogue(GameInfo& game_info) {
 
 	std::cout << dialogue.str();
 	print_stats(game_info);
-	std::cout << command_output;
+	switch (game_info.state) {
+	case WIN:
+		std::cout << game_over_good_message;
+		break;
+	case LOSE:
+		std::cout << game_over_bad_message;
+		break;
+	}
 }
 
 void Renderer::print_stats(GameInfo &game_info) {
@@ -96,6 +103,7 @@ void Renderer::prompt_player(GameInfo& game_info) {
 	std::cin >> selection;
 
 	if (selection == "quit") {
+		std::cout << game_over_bad_message;
 		game_info.state = LOSE;
 	}
 	// do movement (update player velocity)

@@ -43,7 +43,6 @@ public:
 
 	// handles the current state
 	// NORMAL = do nothing
-	// WIN = print win message, exit
-	// LOSE = print lose message, exit
+	// WIN or LOSE = exit 
 	void handle_state();
 };
