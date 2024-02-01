@@ -7,7 +7,6 @@
 // include my code
 #include "Renderer.h"
 #include "GameEngine.h"
-#include "GameState.h"
 #include "GameInfo.h"
 
 // dependencies
@@ -52,12 +51,9 @@ void Renderer::render(GameInfo& game_info) {
 	std::cout << render.str();
 }
 
-GameState Renderer::print_dialogue(GameInfo& game_info) {
+void Renderer::print_dialogue(GameInfo& game_info) {
 	std::stringstream dialogue; // the dialogue to be printed
 	std::string command_output; // the output from commands
-
-	// the current state of the game, determined by execute_commands
-	GameState state = NORMAL;
 
 	for (Actor& actor : hardcoded_actors) {
 		glm::ivec2 dist(abs(actor.position.x - game_info.player.position.x), abs(actor.position.y - game_info.player.position.y));
@@ -68,13 +64,7 @@ GameState Renderer::print_dialogue(GameInfo& game_info) {
 				dialogue << actor.nearby_dialogue << "\n";
 
 				std::string str = dialogue.str();
-				state = execute_commands(actor, str, game_info);
-				if (state == LOSE) {
-					command_output = game_over_bad_message;
-				}
-				if (state == WIN) {
-					command_output = game_over_good_message;
-				}
+				game_info.state = execute_commands(actor, str, game_info);
 			}
 		}
 		// within 0? print contact dialogue
@@ -83,13 +73,7 @@ GameState Renderer::print_dialogue(GameInfo& game_info) {
 				dialogue << actor.contact_dialogue << "\n";
 
 				std::string str = dialogue.str();
-				state = execute_commands(actor, str, game_info);
-				if (state == LOSE) {
-					command_output = game_over_bad_message;
-				}
-				if (state == WIN) {
-					command_output = game_over_good_message;
-				}
+				game_info.state = execute_commands(actor, str, game_info);
 			}
 		}
 	}
@@ -97,15 +81,13 @@ GameState Renderer::print_dialogue(GameInfo& game_info) {
 	std::cout << dialogue.str();
 	print_stats(game_info);
 	std::cout << command_output;
-
-	return state;
 }
 
 void Renderer::print_stats(GameInfo &game_info) {
 	std::cout << "health : " << game_info.player_health << ", score : " << game_info.player_score << "\n";
 }
 
-GameState Renderer::prompt_player(GameInfo& game_info) {
+void Renderer::prompt_player(GameInfo& game_info) {
 	std::cout << "Please make a decision..." << "\n";
 	std::cout << "Your options are \"n\", \"e\", \"s\", \"w\", \"quit\"" << "\n";
 
@@ -114,8 +96,7 @@ GameState Renderer::prompt_player(GameInfo& game_info) {
 	std::cin >> selection;
 
 	if (selection == "quit") {
-		std::cout << game_over_bad_message;
-		return LOSE;
+		game_info.state = LOSE;
 	}
 	// do movement (update player velocity)
 	else if (selection == "n") {
@@ -130,7 +111,6 @@ GameState Renderer::prompt_player(GameInfo& game_info) {
 	else if (selection == "w") {
 		--game_info.player.velocity.x;
 	}
-	return NORMAL;
 }
 
 // TODO: Can I get a different class to handle this?
@@ -138,6 +118,7 @@ GameState Renderer::prompt_player(GameInfo& game_info) {
 
 // we've been told we can assume there will not be multiple commands at once
 // execute all game commands from the given dialogue given the trigger Actor
+// returns the game state generated from executing the command
 GameState Renderer::execute_commands(Actor& trigger, const std::string& dialogue, GameInfo& game_info) {
 	if (dialogue.find("health down") != std::string::npos) {
 		// if decreasing the player's health makes it <= 0, return a lose state

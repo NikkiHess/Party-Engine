@@ -972,13 +972,10 @@
     <ClInclude Include="dependencies\rapidjson\writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gameinfo.h">
+    <ClInclude Include="src\GameInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

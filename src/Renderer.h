@@ -1,7 +1,6 @@
 #pragma once
 
 // my code
-#include "GameState.h"
 #include "GameInfo.h"
 
 // dependencies
@@ -26,7 +25,7 @@ public:
 
 	// print any dialogue from nearby Actors, returns the current GameState
 	// as a result of any dialogue commands executed via execute_commands
-	GameState print_dialogue(GameInfo& game_info);
+	void print_dialogue(GameInfo& game_info);
 
 	// print the player's current statistics
 	void print_stats(GameInfo& game_info);
@@ -35,7 +34,7 @@ public:
 	// does nothing and proceeds upon invalid input
 	// returns NORMAL if player doesn't quit
 	// returns LOSE if player quits
-	GameState prompt_player(GameInfo& game_info);
+	void prompt_player(GameInfo& game_info);
 private:
 	glm::ivec2 renderSize; // the size of the rendered view
 

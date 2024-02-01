@@ -2,12 +2,21 @@
 
 #include "MapHelper.h"
 
-// TODO: Can this be used in GameEngine.h to keep things simpler?
-// TODO: GameState vs GameInfo, can we make things less confusing?
+// the state the engine is in
+// normal = nothing of note happened
+// win = stop the engine with a win message
+// lose = stop the engine with a lose message
+enum GameState {
+	NORMAL, WIN, LOSE
+};
 
-struct GameInfo {
-	Actor& player;
-	int& player_health;
-	int& player_score;
-	std::map<Actor*, bool>& triggered_score_up;
+// information about the game, which can be shared between classes
+// player, player_health, player_score, triggered_score_up map
+class GameInfo {
+public:
+	Actor& player; // the player
+	int& player_health; // the player's health
+	int& player_score; // the player's score
+	GameState& state; // the current state of the game
+	std::map<Actor*, bool>& triggered_score_up; // the Actors who have triggered score up commands
 };

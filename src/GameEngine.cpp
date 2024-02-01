@@ -5,7 +5,6 @@
 
 // include my code
 #include "GameEngine.h"
-#include "GameState.h"
 
 // dependencies
 #include "../dependencies/MapHelper.h"
@@ -60,6 +59,17 @@ bool Engine::would_collide(Actor& actor) {
 
 // ----------- BEGIN CORE FUNCTIONS -----------
 
+void Engine::handle_state() {
+	switch (state) {
+	case WIN:
+	case LOSE:
+		stop();
+		exit(0);
+	default:
+		break;
+	}
+}
+
 void Engine::start() {
 	// store all actors in triggered_score_up (false)
 	for (Actor& actor : hardcoded_actors) {
@@ -68,25 +78,19 @@ void Engine::start() {
 
 	game_running = true;
 
-	GameInfo game_info{player, player_health, player_score, triggered_score_up};
+	// to pass into renderer functions
+	GameInfo game_info{ player, player_health, player_score, state, triggered_score_up };
 
 	while (game_running) {
 		// print the initial render of the world
 		renderer.render(game_info);
 
-		// TODO: handle_state function to stop repeating code?
-		GameState dialogue_state = renderer.print_dialogue(game_info);
-		if (dialogue_state != NORMAL) {
-			stop();
-			break;
-		}
+		renderer.print_dialogue(game_info);
+		handle_state();
 
 		// prompt the player to take an action
-		GameState prompt_state = renderer.prompt_player(game_info);
-		if (prompt_state != NORMAL) {
-			stop();
-			break;
-		}
+		renderer.prompt_player(game_info);
+		handle_state();
 		
 		// update Actor positions
 		update_positions();

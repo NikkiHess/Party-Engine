@@ -5,7 +5,6 @@
 #include <map>
 
 // my code
-#include "GameState.h"
 #include "Renderer.h"
 
 // dependencies
@@ -16,6 +15,7 @@ class Engine {
 public:
 	Renderer renderer;
 	bool game_running = false; // is the game running? drives the start loop
+	GameState state = NORMAL;
 
 	// player stuff
 	Actor& player = hardcoded_actors.back(); // the player
@@ -40,4 +40,10 @@ public:
 
 	// returns whether an actor would collide given its velocity
 	bool would_collide(Actor& actor);
+
+	// handles the current state
+	// NORMAL = do nothing
+	// WIN = print win message, exit
+	// LOSE = print lose message, exit
+	void handle_state();
 };
