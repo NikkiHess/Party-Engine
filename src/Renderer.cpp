@@ -133,6 +133,9 @@ GameState Renderer::prompt_player(GameInfo& game_info) {
 	return NORMAL;
 }
 
+// TODO: Can I get a different class to handle this?
+// This doesn't really feel right for Renderer
+
 // we've been told we can assume there will not be multiple commands at once
 // execute all game commands from the given dialogue given the trigger Actor
 GameState Renderer::execute_commands(Actor& trigger, const std::string& dialogue, GameInfo& game_info) {

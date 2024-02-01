@@ -74,6 +74,7 @@ void Engine::start() {
 		// print the initial render of the world
 		renderer.render(game_info);
 
+		// TODO: handle_state function to stop repeating code?
 		GameState dialogue_state = renderer.print_dialogue(game_info);
 		if (dialogue_state != NORMAL) {
 			stop();
