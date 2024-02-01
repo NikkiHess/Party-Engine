@@ -62,9 +62,8 @@ void Renderer::print_dialogue(GameInfo& game_info) {
 			(dist.y <= 1 && dist.x == 1)) {
 			if (actor.nearby_dialogue != "") {
 				dialogue << actor.nearby_dialogue << "\n";
-
-				std::string str = dialogue.str();
-				game_info.state = execute_commands(actor, str, game_info);
+				
+				game_info.state = execute_commands(actor, actor.nearby_dialogue, game_info);
 			}
 		}
 		// within 0? print contact dialogue
@@ -73,7 +72,7 @@ void Renderer::print_dialogue(GameInfo& game_info) {
 				dialogue << actor.contact_dialogue << "\n";
 
 				std::string str = dialogue.str();
-				game_info.state = execute_commands(actor, str, game_info);
+				game_info.state = execute_commands(actor, actor.nearby_dialogue, game_info);
 			}
 		}
 	}
@@ -127,7 +126,8 @@ void Renderer::prompt_player(GameInfo& game_info) {
 GameState Renderer::execute_commands(Actor& trigger, const std::string& dialogue, GameInfo& game_info) {
 	if (dialogue.find("health down") != std::string::npos) {
 		// if decreasing the player's health makes it <= 0, return a lose state
-		if (--game_info.player_health <= 0) {
+		--game_info.player_health;
+		if (game_info.player_health <= 0) {
 			return LOSE;
 		}
 	}
@@ -144,5 +144,5 @@ GameState Renderer::execute_commands(Actor& trigger, const std::string& dialogue
 	else if (dialogue.find("game over") != std::string::npos) {
 		return LOSE;
 	}
-	return NORMAL;
+	return game_info.state;
 }
