@@ -5,6 +5,7 @@
 
 // include my code
 #include "GameEngine.h"
+#include "JsonHelper.h"
 
 // dependencies
 #include "../dependencies/MapHelper.h"
@@ -64,6 +65,7 @@ void Engine::handle_state() {
 	case WIN:
 	case LOSE:
 		stop();
+		break;
 	default:
 		break;
 	}
@@ -104,13 +106,14 @@ void Engine::stop() {
 // ----------- END CORE FUNCTIONS ------------
 
 int main() {
+	JsonHelper jsonHelper;
 	// print the starting message
-	std::cout << game_start_message << "\n";
+	std::cout << jsonHelper.game_start_message << "\n";
 
 	glm::ivec2 renderSize((13, 9));
 
 	Renderer renderer(renderSize);
-	Engine engine(renderer);
+	Engine engine(renderer, jsonHelper);
 	engine.start();
 
 	return 0;

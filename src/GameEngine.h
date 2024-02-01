@@ -6,6 +6,7 @@
 
 // my code
 #include "Renderer.h"
+#include "JsonHelper.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -13,7 +14,8 @@
 
 class Engine {
 public:
-	Renderer renderer;
+	JsonHelper& jsonHelper;
+	Renderer& renderer;
 	bool game_running = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 
@@ -25,9 +27,7 @@ public:
 	// actor stuff
 	std::map<Actor*, bool> triggered_score_up; // keep track of which actors triggered a player score up
 
-	Engine(Renderer& renderer) : renderer(renderer) {
-
-	}
+	Engine(Renderer& renderer, JsonHelper& jsonHelper) : renderer(renderer), jsonHelper(jsonHelper) {}
 
 	// execute the main game loop
 	void start();

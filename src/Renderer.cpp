@@ -121,9 +121,6 @@ void Renderer::prompt_player(GameInfo& game_info) {
 	}
 }
 
-// TODO: Can I get a different class to handle this?
-// This doesn't really feel right for Renderer
-
 // we've been told we can assume there will not be multiple commands at once
 // execute all game commands from the given dialogue given the trigger Actor
 // returns the game state generated from executing the command
