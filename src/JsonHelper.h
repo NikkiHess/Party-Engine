@@ -15,7 +15,7 @@ public:
 	std::string game_start_message;
 	std::string game_over_bad_message, game_over_good_message;
 
-	JsonHelper() {
+/*	JsonHelper() {
 		std::string resources = "resources/";
 		std::string game_config = resources + "game.config";
 
@@ -26,7 +26,7 @@ public:
 		game_start_message = document["game_start_message"].GetString();
 		game_over_bad_message = document["game_over_bad_message"].GetString();
 		game_over_good_message = document["game_over_good_message"].GetString();
-	}
+	}*/
 private:
 	bool check_file(const std::string& path);
 
