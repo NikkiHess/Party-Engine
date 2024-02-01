@@ -23,20 +23,20 @@ public:
 		check_file(game_config);
 		readJsonFile(resources + "game.config", document);
 
-		if (document != nullptr) {
-			game_start_message = document["game_start_message"].GetString();
-			game_over_bad_message = document["game_over_bad_message"].GetString();
-			game_over_good_message = document["game_over_good_message"].GetString();
-		}
+		game_start_message = document["game_start_message"].GetString();
+		game_over_bad_message = document["game_over_bad_message"].GetString();
+		game_over_good_message = document["game_over_good_message"].GetString();
 	}
 private:
+	bool check_file(const std::string& path);
+
 	static void readJsonFile(const std::string& path, rapidjson::Document& out_document) {
 		FILE* file_pointer = nullptr;
-		#ifdef _WIN32
-			fopen_s(&file_pointer, path.c_str(), "rb");
-		#else
-			file_pointer = fopen(path.c_str(), "rb");
-		#endif
+#ifdef _WIN32
+		fopen_s(&file_pointer, path.c_str(), "rb");
+#else
+		file_pointer = fopen(path.c_str(), "rb");
+#endif
 		char buffer[65536];
 		rapidjson::FileReadStream stream(file_pointer, buffer, sizeof(buffer));
 		out_document.ParseStream(stream);
@@ -45,13 +45,6 @@ private:
 		if (out_document.HasParseError()) {
 			rapidjson::ParseErrorCode errorCode = out_document.GetParseError();
 			std::cout << "error parsing json at [" << path << "]" << std::endl;
-			exit(0);
-		}
-	}
-
-	bool check_file(const std::string& path) {
-		if (!std::filesystem::exists(path)) {
-			std::cout << "error: " + path + " missing";
 			exit(0);
 		}
 	}

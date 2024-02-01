@@ -108,7 +108,7 @@ void Engine::stop() {
 int main() {
 	JsonHelper jsonHelper;
 	// print the starting message
-	std::cout << jsonHelper.game_start_message << "\n";
+	std::cout << game_start_message << "\n";
 
 	glm::ivec2 renderSize((13, 9));
 
