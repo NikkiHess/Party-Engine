@@ -31,10 +31,10 @@ public:
 		read_json_file(resources + "game.config", game_document);
 		initialize_messages(game_document);
 
-		if (std::filesystem::exists(resources)) {
-			read_json_file(resources + "rendering.config", rendering_document);
-			initialize_rendering(rendering_document);
-		}
+		//if (std::filesystem::exists(rendering_config)) {
+		//	read_json_file(resources + "rendering.config", rendering_document);
+		//	initialize_rendering(rendering_document);
+		//}
 	}
 private:
 	// checks that a file exists, and if not prints an error message and exits with code 1
@@ -60,7 +60,6 @@ private:
 		rapidjson::FileReadStream stream(file_pointer, buffer, sizeof(buffer));
 		out_document.ParseStream(stream);
 		std::fclose(file_pointer);
-		delete[] buffer; // prevent buffer overrun
 
 		if (out_document.HasParseError()) {
 			rapidjson::ParseErrorCode errorCode = out_document.GetParseError();
