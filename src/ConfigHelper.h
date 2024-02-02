@@ -12,7 +12,8 @@
 
 class ConfigHelper {
 public:
-	rapidjson::Document document = nullptr;
+	rapidjson::Document game_document = nullptr;
+	rapidjson::Document rendering_document = nullptr;
 	std::string game_start_message = "";
 	std::string game_over_bad_message, game_over_good_message = "";
 	glm::ivec2 render_size;
@@ -27,12 +28,12 @@ public:
 		check_file(resources);
 
 		check_file(game_config);
-		read_json_file(resources + "game.config", document);
-		initialize_messages(document);
+		read_json_file(resources + "game.config", game_document);
+		initialize_messages(game_document);
 
 		if (std::filesystem::exists(resources)) {
-			read_json_file(resources + "rendering.config", document);
-			initialize_rendering(document);
+			read_json_file(resources + "rendering.config", rendering_document);
+			initialize_rendering(rendering_document);
 		}
 	}
 private:
@@ -59,6 +60,7 @@ private:
 		rapidjson::FileReadStream stream(file_pointer, buffer, sizeof(buffer));
 		out_document.ParseStream(stream);
 		std::fclose(file_pointer);
+		delete[] buffer; // prevent buffer overrun
 
 		if (out_document.HasParseError()) {
 			rapidjson::ParseErrorCode errorCode = out_document.GetParseError();
