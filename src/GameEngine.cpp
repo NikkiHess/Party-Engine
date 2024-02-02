@@ -5,7 +5,7 @@
 
 // include my code
 #include "GameEngine.h"
-#include "JsonHelper.h"
+#include "ConfigHelper.h"
 
 // dependencies
 #include "../dependencies/MapHelper.h"
@@ -61,26 +61,28 @@ bool Engine::would_collide(Actor& actor) {
 // ----------- BEGIN CORE FUNCTIONS -----------
 
 void Engine::handle_state() {
-	switch (state) {
+	switch (game_info.state) {
 	case WIN:
-	case LOSE:
+		std::cout << game_info.game_over_good_message;
 		stop();
 		break;
-	default:
+	case LOSE:
+		std::cout << game_info.game_over_bad_message;
+		stop();
 		break;
 	}
 }
 
 void Engine::start() {
+	// print the starting message
+	std::cout << game_info.game_start_message << "\n";
+
 	// store all actors in triggered_score_up (false)
 	for (Actor& actor : hardcoded_actors) {
 		triggered_score_up[&actor] = false;
 	}
 
 	game_running = true;
-
-	// to pass into renderer functions
-	GameInfo game_info{ player, player_health, player_score, state, triggered_score_up };
 
 	while (game_running) {
 		// print the initial render of the world
@@ -106,14 +108,11 @@ void Engine::stop() {
 // ----------- END CORE FUNCTIONS ------------
 
 int main() {
-	JsonHelper jsonHelper;
-	// print the starting message
-	std::cout << game_start_message << "\n";
-
 	glm::ivec2 renderSize((13, 9));
-
 	Renderer renderer(renderSize);
-	Engine engine(renderer, jsonHelper);
+	ConfigHelper configHelper;
+
+	Engine engine(renderer, configHelper);
 	engine.start();
 
 	return 0;

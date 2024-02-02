@@ -455,14 +455,14 @@
     <ClInclude Include="dependencies\rapidjson\stream.h" />
     <ClInclude Include="dependencies\rapidjson\stringbuffer.h" />
     <ClInclude Include="dependencies\rapidjson\writer.h" />
-    <ClInclude Include="src\JsonHelper.h" />
+    <ClInclude Include="src\ConfigHelper.h" />
     <ClInclude Include="src\GameInfo.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\GameEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp" />
-    <ClCompile Include="src\JsonHelper.cpp" />
+    <ClCompile Include="src\ConfigHelper.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
   </ItemGroup>

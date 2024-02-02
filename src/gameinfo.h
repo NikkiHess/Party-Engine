@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "MapHelper.h"
 
 // the state the engine is in
@@ -19,4 +21,9 @@ public:
 	int& player_score; // the player's score
 	GameState& state; // the current state of the game
 	std::map<Actor*, bool>& triggered_score_up; // the Actors who have triggered score up commands
+
+	// the message to be shown upon game start
+	const std::string& game_start_message;
+	// the message to be shown upon game end
+	const std::string& game_over_bad_message, game_over_good_message;
 };

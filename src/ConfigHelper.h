@@ -9,13 +9,15 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 
-class JsonHelper {
+class ConfigHelper {
 public:
 	rapidjson::Document document = nullptr;
 	std::string game_start_message;
 	std::string game_over_bad_message, game_over_good_message;
 
-/*	JsonHelper() {
+	// initializes the config helper by verifying the resources directory as well as the game.config
+	// reads the json from the given file and then loads the information into member variables
+	ConfigHelper() {
 		std::string resources = "resources/";
 		std::string game_config = resources + "game.config";
 
@@ -26,10 +28,12 @@ public:
 		game_start_message = document["game_start_message"].GetString();
 		game_over_bad_message = document["game_over_bad_message"].GetString();
 		game_over_good_message = document["game_over_good_message"].GetString();
-	}*/
+	}
 private:
+	// checks that a file exists, and if not prints an error message and exits with code 1
 	bool check_file(const std::string& path);
 
+	// reads a json file from path and puts it in the out_document
 	static void readJsonFile(const std::string& path, rapidjson::Document& out_document) {
 		FILE* file_pointer = nullptr;
 #ifdef _WIN32
