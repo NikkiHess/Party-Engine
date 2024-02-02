@@ -26,13 +26,15 @@ public:
 		std::string rendering_config = resources + "rendering.config";
 
 		check_file(resources);
-		check_file(game_config);
-		check_file(rendering_config);
-		read_json_file(resources + "game.config", game_document);
-		read_json_file(resources + "rendering.config", rendering_document);
 
+		check_file(game_config);
+		read_json_file(resources + "game.config", game_document);
 		initialize_messages(game_document);
-		initialize_rendering(rendering_document);
+
+		if (!std::filesystem::exists(resources)) {
+			read_json_file(resources + "rendering.config", rendering_document);
+			initialize_rendering(rendering_document);
+		}
 	}
 private:
 	// checks that a file exists, and if not prints an error message and exits with code 1
