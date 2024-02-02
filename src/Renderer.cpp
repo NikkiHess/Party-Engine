@@ -72,7 +72,7 @@ void Renderer::print_dialogue(GameInfo& game_info) {
 				dialogue << actor.contact_dialogue << "\n";
 
 				std::string str = dialogue.str();
-				game_info.state = execute_commands(actor, actor.nearby_dialogue, game_info);
+				game_info.state = execute_commands(actor, actor.contact_dialogue, game_info);
 			}
 		}
 	}
