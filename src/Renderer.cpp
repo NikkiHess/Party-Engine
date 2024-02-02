@@ -29,13 +29,11 @@ void Renderer::render(GameInfo& game_info) {
 		render_map[actor.position.y][actor.position.x] = actor.view;
 	}
 
-	// perform the render of the current view
-	glm::ivec2 renderSize(13, 9);
-
 	// render bounds
-	glm::ivec2 top_left(game_info.player.position.x - (renderSize.x / 2), game_info.player.position.y - (renderSize.y / 2));
-	glm::ivec2 bottom_right(game_info.player.position.x + (renderSize.x / 2), game_info.player.position.y + (renderSize.y / 2));
+	glm::ivec2 top_left(game_info.player.position.x - (render_size.x / 2), game_info.player.position.y - (render_size.y / 2));
+	glm::ivec2 bottom_right(game_info.player.position.x + (render_size.x / 2), game_info.player.position.y + (render_size.y / 2));
 
+	// perform the render of the current view given the bounds
 	for (int y = top_left.y; y <= bottom_right.y; ++y) {
 		for (int x = top_left.x; x <= bottom_right.x; ++x) {
 			// if within bounds, print

@@ -11,7 +11,7 @@ class Renderer {
 public:
 	char render_map[HARDCODED_MAP_HEIGHT][HARDCODED_MAP_WIDTH + 1]; // the map to be rendered - updated each frame
 
-	Renderer(glm::ivec2& renderSize) : renderSize(renderSize) {
+	Renderer(glm::ivec2& render_size) : render_size(render_size) {
 		// copy hardcoded map into render map
 		for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
 			for (int x = 0; x < HARDCODED_MAP_WIDTH + 1; ++x) {
@@ -36,7 +36,7 @@ public:
 	// returns LOSE if player quits
 	void prompt_player(GameInfo& game_info);
 private:
-	glm::ivec2 renderSize; // the size of the rendered view
+	glm::ivec2 render_size; // the size of the rendered view
 
 	// execute the commands contained in the dialogue string with the given
 	// Actor as a trigger

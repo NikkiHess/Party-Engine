@@ -112,9 +112,8 @@ void Engine::stop() {
 // ----------- END CORE FUNCTIONS ------------
 
 int main() {
-	glm::ivec2 renderSize((13, 9));
-	Renderer renderer(renderSize);
 	ConfigHelper configHelper;
+	Renderer renderer(configHelper.render_size);
 
 	Engine engine(renderer, configHelper);
 	engine.start();
