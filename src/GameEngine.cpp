@@ -61,13 +61,16 @@ bool Engine::would_collide(Actor& actor) {
 // ----------- BEGIN CORE FUNCTIONS -----------
 
 void Engine::handle_state() {
+	// Should the Engine class handle printing these messages, or should the Renderer?
 	switch (game_info.state) {
 	case WIN:
-		std::cout << game_info.game_over_good_message;
+		if(game_info.game_over_good_message != "")
+			std::cout << game_info.game_over_good_message;
 		stop();
 		break;
 	case LOSE:
-		std::cout << game_info.game_over_bad_message;
+		if (game_info.game_over_bad_message != "")
+			std::cout << game_info.game_over_bad_message;
 		stop();
 		break;
 	}
@@ -75,7 +78,8 @@ void Engine::handle_state() {
 
 void Engine::start() {
 	// print the starting message
-	std::cout << game_info.game_start_message << "\n";
+	if (game_info.game_start_message != "")
+		std::cout << game_info.game_start_message << "\n";
 
 	// store all actors in triggered_score_up (false)
 	for (Actor& actor : hardcoded_actors) {

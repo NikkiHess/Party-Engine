@@ -23,18 +23,19 @@ public:
 
 		check_file(resources);
 		check_file(game_config);
-		readJsonFile(resources + "game.config", document);
+		read_json_file(resources + "game.config", document);
 
-		game_start_message = document["game_start_message"].GetString();
-		game_over_bad_message = document["game_over_bad_message"].GetString();
-		game_over_good_message = document["game_over_good_message"].GetString();
+		initialize_messages();
 	}
 private:
 	// checks that a file exists, and if not prints an error message and exits with code 1
 	bool check_file(const std::string& path);
 
+	// initializes the messages loaded in from the resources/game.config file
+	void initialize_messages();
+
 	// reads a json file from path and puts it in the out_document
-	static void readJsonFile(const std::string& path, rapidjson::Document& out_document) {
+	static void read_json_file(const std::string& path, rapidjson::Document& out_document) {
 		FILE* file_pointer = nullptr;
 #ifdef _WIN32
 		fopen_s(&file_pointer, path.c_str(), "rb");

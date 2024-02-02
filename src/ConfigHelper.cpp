@@ -15,3 +15,13 @@ bool ConfigHelper::check_file(const std::string& path) {
 		exit(0);
 	}
 }
+
+void ConfigHelper::initialize_messages() {
+	game_start_message, game_over_bad_message, game_over_good_message = "";
+	if (document.HasMember("game_start_message"))
+		game_start_message = document["game_start_message"].GetString();
+	if (document.HasMember("game_over_bad_message"))
+		game_over_bad_message = document["game_over_bad_message"].GetString();
+	if (document.HasMember("game_over_good_message"))
+		game_over_good_message = document["game_over_good_message"].GetString();
+}
