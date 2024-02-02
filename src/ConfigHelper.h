@@ -31,7 +31,7 @@ public:
 		read_json_file(resources + "game.config", game_document);
 		initialize_messages(game_document);
 
-		if (!std::filesystem::exists(resources)) {
+		if (std::filesystem::exists(resources)) {
 			read_json_file(resources + "rendering.config", rendering_document);
 			initialize_rendering(rendering_document);
 		}
