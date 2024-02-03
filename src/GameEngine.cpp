@@ -46,7 +46,9 @@ void Engine::update_actor_position(Actor& actor) {
 	if (old_it != loc_to_actors.end()) {
 		auto& at_pos = old_it->second;
 		at_pos.erase(std::remove_if(at_pos.begin(), at_pos.end(),
-			[&actor](const Actor* a) { std::cout << a->id << " : " << actor.id << "\n"; return a->id == actor.id; }), at_pos.end());
+			[&actor](const Actor* a) { 
+				return a->id == actor.id; 
+			}), at_pos.end());
 		if (at_pos.empty()) {
 			loc_to_actors.erase(actor.position);
 		}
