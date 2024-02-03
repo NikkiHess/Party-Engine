@@ -4,9 +4,11 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
+#include <vector>
 
 // my code
 #include "../gamedata/Scene.h"
+#include "../gamedata/Actor.h"
 
 // dependencies
 #include "rapidjson/document.h"
@@ -19,7 +21,9 @@ public:
 
 	std::string gameStartMessage = "";
 	std::string gameOverBadMessage, gameOverGoodMessage = "";
+
 	Scene initialScene;
+	std::vector<Actor*> templates;
 
 	glm::ivec2 renderSize;
 
@@ -55,6 +59,9 @@ private:
 	// initializes the initial_scene loaded in from the resources/game.config
 	// utilizes Scene class
 	void initializeScene(std::string& resources, rapidjson::Document& document);
+
+	// set Actor props from a document
+	void setActorProps(ActorProps& props, rapidjson::Value& document);;
 
 	// reads a json file from path and puts it in the out_document
 	static void readJsonFile(const std::string& path, rapidjson::Document& outDocument) {

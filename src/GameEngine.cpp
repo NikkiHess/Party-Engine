@@ -17,7 +17,7 @@
 void Engine::updatePositions() {
 	for (Actor& actor : gameInfo.currentScene.actors) {
 		// if this is our player Actor, perform our player actor movement
-		if (actor.actorName == "player") {
+		if (actor.name == "player") {
 			if (!wouldCollide(actor)) {
 				updateActorPosition(actor);
 			}

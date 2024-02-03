@@ -29,10 +29,8 @@ public:
 	std::unordered_map<glm::ivec2, std::vector<Actor*>, KeyFuncs, KeyFuncs> locToActors;
 	std::string name;
 
-	void createActor(const std::string& name, const char& view,
-		const int& x, const int& y, const int& velX, const int& velY,
-		const bool& blocking, const std::string& nearbyDialogue,
-		const std::string& contactDialogue);
+	// instantiate an actor in the scene, returns the actor
+	Actor& instantiateActor(ActorProps& props);
 
 	void deleteActors();
 

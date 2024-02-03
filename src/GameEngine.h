@@ -34,7 +34,7 @@ public:
 	Engine(Renderer& renderer, ConfigHelper& configHelper) : renderer(renderer), configHelper(configHelper) {
 		std::vector<Actor>& actors = configHelper.initialScene.actors;
 		// this finds the player in the actors map
-		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.actorName == "player"; });
+		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });
 
 		if (playerIt == actors.end()) {
 			std::cout << "error: player not defined";

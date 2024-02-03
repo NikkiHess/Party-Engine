@@ -62,36 +62,46 @@ void ConfigHelper::initializeScene(std::string& resources, rapidjson::Document& 
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
-			std::string name = "";
-			char view = '?';
-			int x = 0, y = 0, velX = 0, velY = 0;
-			bool blocking = false;
-			std::string nearbyDialogue = "", contactDialogue = "";
+			ActorProps props;
 
-			if (docActors[i].HasMember("name"))
-				name = docActors[i]["name"].GetString();
-			if (docActors[i].HasMember("view"))
-				view = docActors[i]["view"].GetString()[0];
-			if (docActors[i].HasMember("x"))
-				x = docActors[i]["x"].GetInt();
-			if (docActors[i].HasMember("y"))
-				y = docActors[i]["y"].GetInt();
-			if (docActors[i].HasMember("vel_x"))
-				velX = docActors[i]["vel_x"].GetInt();
-			if (docActors[i].HasMember("vel_y"))
-				velY = docActors[i]["vel_y"].GetInt();
-			if (docActors[i].HasMember("blocking"))
-				blocking = docActors[i]["blocking"].GetBool();
-			if (docActors[i].HasMember("nearby_dialogue"))
-				nearbyDialogue = docActors[i]["nearby_dialogue"].GetString();
-			if (docActors[i].HasMember("contact_dialogue"))
-				contactDialogue = docActors[i]["contact_dialogue"].GetString();
+			// initialize the ActorProps based on a template, if there is one
+			if (docActors[i].HasMember("template")) {
+				std::string templatePath = resources + "actor_templates/" + docActors[i]["template"].GetString() + ".template";
+				// HOPEFULLY this leaves docActors intact
+				readJsonFile(templatePath, document);
+				setActorProps(props, document);
+			}
 
-			initialScene.createActor(name, view, x, y, velX, velY, blocking, nearbyDialogue, contactDialogue);
+			// override any template properties redefined by the scene document
+			setActorProps(props, docActors[i]);
+
+			// instantiate a new actor based on these props
+			initialScene.instantiateActor(props);
 		}
 	}
 	else {
 		std::cout << "error: \"actors\" is missing from " + initialScene.name;
 		exit(0);
 	}
+}
+
+void ConfigHelper::setActorProps(ActorProps& props, rapidjson::Value& document) {
+	if (document.HasMember("name"))
+		props.name = document["name"].GetString();
+	if (document.HasMember("view"))
+		props.view = document["view"].GetString()[0];
+	if (document.HasMember("x"))
+		props.x = document["x"].GetInt();
+	if (document.HasMember("y"))
+		props.y = document["y"].GetInt();
+	if (document.HasMember("vel_x"))
+		props.velX = document["vel_x"].GetInt();
+	if (document.HasMember("vel_y"))
+		props.velY = document["vel_y"].GetInt();
+	if (document.HasMember("blocking"))
+		props.blocking = document["blocking"].GetBool();
+	if (document.HasMember("nearby_dialogue"))
+		props.nearbyDialogue = document["nearby_dialogue"].GetString();
+	if (document.HasMember("contact_dialogue"))
+		props.contactDialogue = document["contact_dialogue"].GetString();
 }

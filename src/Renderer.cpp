@@ -58,7 +58,7 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 	std::sort(actors.begin(), actors.end(), ActorComparator());
 	for (Actor* actor : actors) {
 		// let's not let the player do dialogue at all
-		if (actor->actorName != "player") {
+		if (actor->name != "player") {
 			if (actor->position == gameInfo.player->position) {
 				actor->printContactDialogue();
 				gameInfo.state = executeCommands(*actor, actor->contactDialogue, gameInfo);
