@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 // include my code
 #include "GameEngine.h"
@@ -20,7 +21,7 @@ void Engine::update_positions() {
 		// if this is our player Actor, perform our player actor movement
 		if (actor.actor_name == "player") {
 			if (!would_collide(actor)) {
-				actor.position += actor.velocity;
+				update_actor_position(actor);
 			}
 			// stop the player's movement so they only move by 1
 			actor.velocity = glm::ivec2(0, 0);
@@ -29,13 +30,37 @@ void Engine::update_positions() {
 		// if no collision, keep moving
 		// if collision, reverse velocity (move next turn)
 		else {
-			glm::ivec2 updated_actor_pos(actor.position.x + actor.velocity.x, actor.position.y + actor.velocity.y);
+			//glm::ivec2 updated_actor_pos(actor.position.x + actor.velocity.x, actor.position.y + actor.velocity.y);
 			if (!would_collide(actor))
-				actor.position = updated_actor_pos;
+				update_actor_position(actor);
 			else
 				actor.velocity = -actor.velocity;
 		}
 	}
+}
+
+void Engine::update_actor_position(Actor& actor) {
+	// remove the old position of the actor from the unordered_map
+	auto& loc_to_actors = game_info.current_scene.loc_to_actors;
+	auto old_it = loc_to_actors.find(actor.position);
+	if (old_it != loc_to_actors.end()) {
+		auto& at_pos = old_it->second;
+		at_pos.erase(std::remove_if(at_pos.begin(), at_pos.end(), 
+			[&actor](const Actor* a) { std::cout << a->id << " : " << actor.id << "\n"; return a->id == actor.id; }), at_pos.end());
+		if (at_pos.empty()) {
+			loc_to_actors.erase(actor.position);
+		}
+	}
+
+	// update the instanced actor's positon
+	actor.position += actor.velocity;
+
+	// add the new position of the actor to the unordered_map
+	auto new_it = loc_to_actors.find(actor.position);
+	if (new_it != loc_to_actors.end())
+		new_it->second.push_back(&actor);
+	else
+		loc_to_actors.insert({ actor.position, {&actor} });
 }
 
 // TODO: MOVE THIS TO THE ACTOR CLASS

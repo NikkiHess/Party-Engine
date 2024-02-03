@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "GameEngine.h"
 #include "GameInfo.h"
+#include "Actor.h"
 
 // dependencies
 #include "MapHelper.h"
@@ -24,9 +25,12 @@ void Renderer::render(GameInfo& game_info) {
 		}
 	}
 
-	// add the actors to the map
-	for (Actor& actor : game_info.current_scene.actors) {
-		render_map[actor.position.y][actor.position.x] = actor.view;
+	// render the actors in order based on their positions
+	for (auto& pair : game_info.current_scene.loc_to_actors) {
+		std::sort(pair.second.begin(), pair.second.end(), ActorComparator());
+		for (Actor* actor : pair.second) {
+			render_map[pair.first.y][pair.first.x] = actor->view;
+		}
 	}
 
 	// render bounds

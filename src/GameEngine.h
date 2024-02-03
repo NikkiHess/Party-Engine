@@ -64,4 +64,7 @@ public:
 	// NORMAL = do nothing
 	// WIN or LOSE = exit 
 	void handle_state();
+private:
+	// update the position of a specific actor (used in update_positions)
+	void update_actor_position(Actor& actor);
 };
