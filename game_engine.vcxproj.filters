@@ -972,16 +972,16 @@
     <ClInclude Include="src\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameInfo.h">
+    <ClInclude Include="src\gamedata\GameInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ConfigHelper.h">
+    <ClInclude Include="src\utils\ConfigHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene.h">
+    <ClInclude Include="src\gamedata\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Actor.h">
+    <ClInclude Include="src\gamedata\Actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -995,10 +995,10 @@
     <ClCompile Include="src\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ConfigHelper.cpp">
+    <ClCompile Include="src\utils\ConfigHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
+    <ClCompile Include="src\gamedata\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

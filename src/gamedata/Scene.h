@@ -26,18 +26,18 @@ private:
 // this is after private this time because I want to keep KeyFuncs private (but do I need to?)
 public:
 	std::vector<Actor> actors;
-	std::unordered_map<glm::ivec2, std::vector<Actor*>, KeyFuncs, KeyFuncs> loc_to_actors;
+	std::unordered_map<glm::ivec2, std::vector<Actor*>, KeyFuncs, KeyFuncs> locToActors;
 	std::string name;
 
-	void create_actor(const std::string& name, const char& view,
-		const int& x, const int& y, const int& vel_x, const int& vel_y,
-		const bool& blocking, const std::string& nearby_dialogue,
-		const std::string& contact_dialogue);
+	void createActor(const std::string& name, const char& view,
+		const int& x, const int& y, const int& velX, const int& velY,
+		const bool& blocking, const std::string& nearbyDialogue,
+		const std::string& contactDialogue);
 
-	void delete_actors();
+	void deleteActors();
 
 	~Scene() {
-		delete_actors();
+		deleteActors();
 	}
 };
 

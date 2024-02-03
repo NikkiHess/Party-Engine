@@ -7,25 +7,25 @@
 // include my code
 #include "Renderer.h"
 #include "GameEngine.h"
-#include "GameInfo.h"
-#include "Actor.h"
+#include "gamedata/GameInfo.h"
+#include "gamedata/Actor.h"
 
 // dependencies
 #include "rapidjson/document.h"
 #include "glm/glm.hpp"
 
-void Renderer::render(GameInfo& game_info) {
+void Renderer::render(GameInfo& gameInfo) {
 	std::stringstream render; // the rendered view
 
 	// render bounds
-	glm::ivec2 top_left(game_info.player->position.x - (render_size.x / 2), game_info.player->position.y - (render_size.y / 2));
-	glm::ivec2 bottom_right(game_info.player->position.x + (render_size.x / 2), game_info.player->position.y + (render_size.y / 2));
+	glm::ivec2 topLeft(gameInfo.player->position.x - (renderSize.x / 2), gameInfo.player->position.y - (renderSize.y / 2));
+	glm::ivec2 bottomRight(gameInfo.player->position.x + (renderSize.x / 2), gameInfo.player->position.y + (renderSize.y / 2));
 
 	// perform the render of the current view given the bounds
-	for (int y = top_left.y; y <= bottom_right.y; ++y) {
-		for (int x = top_left.x; x <= bottom_right.x; ++x) {
-			auto it = game_info.current_scene.loc_to_actors.find(glm::ivec2(x, y));
-			if (it != game_info.current_scene.loc_to_actors.end()) {
+	for (int y = topLeft.y; y <= bottomRight.y; ++y) {
+		for (int x = topLeft.x; x <= bottomRight.x; ++x) {
+			auto it = gameInfo.currentScene.locToActors.find(glm::ivec2(x, y));
+			if (it != gameInfo.currentScene.locToActors.end()) {
 				render << it->second.back()->view;
 			}
 			else {
@@ -39,41 +39,41 @@ void Renderer::render(GameInfo& game_info) {
 	std::cout << render.str();
 }
 
-void Renderer::print_dialogue(GameInfo& game_info) {
+void Renderer::printDialogue(GameInfo& gameInfo) {
 	std::stringstream dialogue; // the dialogue to be printed
-	std::string command_output; // the output from commands
+	std::string commandOutput; // the output from commands
 
-	for (Actor& actor : game_info.current_scene.actors) {
-		glm::ivec2 dist(abs(actor.position.x - game_info.player->position.x), abs(actor.position.y - game_info.player->position.y));
+	for (Actor& actor : gameInfo.currentScene.actors) {
+		glm::ivec2 dist(abs(actor.position.x - gameInfo.player->position.x), abs(actor.position.y - gameInfo.player->position.y));
 		// actor within 1 x and y of the player? print nearby dialogue
 		if ((dist.y == 1 && dist.x <= 1) ||
 			(dist.y <= 1 && dist.x == 1)) {
-			if (actor.nearby_dialogue != "") {
-				dialogue << actor.nearby_dialogue << "\n";
+			if (actor.nearbyDialogue != "") {
+				dialogue << actor.nearbyDialogue << "\n";
 				
-				game_info.state = execute_commands(actor, actor.nearby_dialogue, game_info);
+				gameInfo.state = executeCommands(actor, actor.nearbyDialogue, gameInfo);
 			}
 		}
 		// within 0? print contact dialogue
 		else if (dist.y == 0 && dist.x == 0) {
-			if (actor.contact_dialogue != "") {
-				dialogue << actor.contact_dialogue << "\n";
+			if (actor.contactDialogue != "") {
+				dialogue << actor.contactDialogue << "\n";
 
 				std::string str = dialogue.str();
-				game_info.state = execute_commands(actor, actor.contact_dialogue, game_info);
+				gameInfo.state = executeCommands(actor, actor.contactDialogue, gameInfo);
 			}
 		}
 	}
 
 	std::cout << dialogue.str();
-	print_stats(game_info);
+	printStats(gameInfo);
 }
 
-void Renderer::print_stats(GameInfo &game_info) {
-	std::cout << "health : " << game_info.player_health << ", score : " << game_info.player_score << "\n";
+void Renderer::printStats(GameInfo &gameInfo) {
+	std::cout << "health : " << gameInfo.playerHealth << ", score : " << gameInfo.playerScore << "\n";
 }
 
-void Renderer::prompt_player(GameInfo& game_info) {
+void Renderer::promptPlayer(GameInfo& gameInfo) {
 	std::cout << "Please make a decision..." << "\n";
 	std::cout << "Your options are \"n\", \"e\", \"s\", \"w\", \"quit\"" << "\n";
 
@@ -82,39 +82,39 @@ void Renderer::prompt_player(GameInfo& game_info) {
 	std::cin >> selection;
 
 	if (selection == "quit") {
-		game_info.state = LOSE;
+		gameInfo.state = LOSE;
 	}
 	// do movement (update player velocity)
 	else if (selection == "n") {
-		--game_info.player->velocity.y;
+		--gameInfo.player->velocity.y;
 	}
 	else if (selection == "e") {
-		++game_info.player->velocity.x;
+		++gameInfo.player->velocity.x;
 	}
 	else if (selection == "s") {
-		++game_info.player->velocity.y;
+		++gameInfo.player->velocity.y;
 	}
 	else if (selection == "w") {
-		--game_info.player->velocity.x;
+		--gameInfo.player->velocity.x;
 	}
 }
 
 // we've been told we can assume there will not be multiple commands at once
 // execute all game commands from the given dialogue given the trigger Actor
 // returns the game state generated from executing the command
-GameState Renderer::execute_commands(Actor& trigger, const std::string& dialogue, GameInfo& game_info) {
+GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue, GameInfo& gameInfo) {
 	if (dialogue.find("health down") != std::string::npos) {
 		// if decreasing the player's health makes it <= 0, return a lose state
-		--game_info.player_health;
-		if (game_info.player_health <= 0) {
+		--gameInfo.playerHealth;
+		if (gameInfo.playerHealth <= 0) {
 			return LOSE;
 		}
 	}
 	else if (dialogue.find("score up") != std::string::npos) {
 		// an NPC Actor may only trigger a score increase once
-		if (!game_info.triggered_score_up[&trigger]) {
-			++game_info.player_score;
-			game_info.triggered_score_up[&trigger] = true;
+		if (!gameInfo.triggeredScoreUp[&trigger]) {
+			++gameInfo.playerScore;
+			gameInfo.triggeredScoreUp[&trigger] = true;
 		}
 	}
 	else if (dialogue.find("you win") != std::string::npos) {
@@ -123,5 +123,5 @@ GameState Renderer::execute_commands(Actor& trigger, const std::string& dialogue
 	else if (dialogue.find("game over") != std::string::npos) {
 		return LOSE;
 	}
-	return game_info.state;
+	return gameInfo.state;
 }

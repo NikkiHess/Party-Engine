@@ -15,19 +15,18 @@ enum GameState {
 };
 
 // information about the game, which can be shared between classes
-// player, player_health, player_score, triggered_score_up map
 class GameInfo {
 public:
 	Actor* player; // the player
-	int& player_health; // the player's health
-	int& player_score; // the player's score
+	int& playerHealth; // the player's health
+	int& playerScore; // the player's score
 	GameState& state; // the current state of the game
-	std::unordered_map<Actor*, bool>& triggered_score_up; // the Actors who have triggered score up commands
+	std::unordered_map<Actor*, bool>& triggeredScoreUp; // the Actors who have triggered score up commands
 
 	// the message to be shown upon game start
-	const std::string& game_start_message;
+	const std::string& gameStartMessage;
 	// the message to be shown upon game end
-	const std::string& game_over_bad_message, game_over_good_message;
+	const std::string& gameOverBadMessage, gameOverGoodMessage;
 
-	Scene& current_scene;
+	Scene& currentScene;
 };

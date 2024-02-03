@@ -6,8 +6,9 @@
 
 // my code
 #include "Renderer.h"
-#include "ConfigHelper.h"
-#include "Actor.h"
+#include "utils/ConfigHelper.h"
+#include "gamedata/Actor.h"
+#include "gamedata/GameInfo.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -15,36 +16,36 @@
 class Engine {
 public:
 	Renderer& renderer;
-	ConfigHelper& config_helper;
-	bool game_running = false; // is the game running? drives the start loop
+	ConfigHelper& configHelper;
+	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 
 	// player stuff
 	Actor* player = nullptr; // the player
 
-	int player_health = 3; // the player's current health
-	int player_score = 0; // the player's current score
+	int playerHealth = 3; // the player's current health
+	int playerScore = 0; // the player's current score
 
 	// actor stuff
-	std::unordered_map<Actor*, bool> triggered_score_up; // keep track of which actors triggered a player score up
+	std::unordered_map<Actor*, bool> triggeredScoreUp; // keep track of which actors triggered a player score up
 
 	// load the game info after everything else has been loaded
-	GameInfo game_info{ player, player_health, player_score,
-						state, triggered_score_up, config_helper.game_start_message,
-						config_helper.game_over_bad_message, config_helper.game_over_good_message, config_helper.initial_scene };
+	GameInfo gameInfo{ player, playerHealth, playerScore,
+						state, triggeredScoreUp, configHelper.gameStartMessage,
+						configHelper.gameOverBadMessage, configHelper.gameOverGoodMessage, configHelper.initialScene };
 
-	Engine(Renderer& renderer, ConfigHelper& config_helper) : renderer(renderer), config_helper(config_helper) {
-		std::vector<Actor>& actors = config_helper.initial_scene.actors;
+	Engine(Renderer& renderer, ConfigHelper& configHelper) : renderer(renderer), configHelper(configHelper) {
+		std::vector<Actor>& actors = configHelper.initialScene.actors;
 		// this finds the player in the actors map
-		auto player_it = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.actor_name == "player"; });
+		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.actorName == "player"; });
 
-		if (player_it == actors.end()) {
+		if (playerIt == actors.end()) {
 			std::cout << "error: player not defined";
 			exit(0);
 		}
 		// sets the player from the actors vector
-		player = &*player_it;
-		game_info.player = player;
+		player = &*playerIt;
+		gameInfo.player = player;
 	}
 
 	// execute the main game loop
@@ -54,16 +55,16 @@ public:
 	void stop();
 
 	// update all Actor positions according to their velocity
-	void update_positions();
+	void updatePositions();
 
 	// returns whether an actor would collide given its velocity
-	bool would_collide(Actor& actor);
+	bool wouldCollide(Actor& actor);
 
 	// handles the current state
 	// NORMAL = do nothing
 	// WIN or LOSE = exit 
-	void handle_state();
+	void handleState();
 private:
 	// update the position of a specific actor (used in update_positions)
-	void update_actor_position(Actor& actor);
+	void updateActorPosition(Actor& actor);
 };
