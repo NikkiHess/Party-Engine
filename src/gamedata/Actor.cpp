@@ -5,9 +5,11 @@
 #include "Actor.h"
 
 void Actor::printContactDialogue() const {
-	std::cout << contactDialogue << "\n";
+	if(contactDialogue != "")
+		std::cout << contactDialogue << "\n";
 }
 
 void Actor::printNearbyDialogue() const {
-	std::cout << nearbyDialogue << "\n";
+	if(nearbyDialogue != "")
+		std::cout << nearbyDialogue << "\n";
 }

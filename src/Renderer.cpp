@@ -44,19 +44,19 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 	auto& locToActors = gameInfo.currentScene.locToActors;
 
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
-	for (int y = -1; y < 1; ++y) {
-		for (int x = -1; x < 1; ++x) {
-			auto actorIt = locToActors.find(glm::ivec2(x, y));
+	for (int y = -1; y <= 1; ++y) {
+		for (int x = -1; x <= 1; ++x) {
+			auto actorIt = locToActors.find(glm::ivec2(x, y) + gameInfo.player->position);
 			if (actorIt != locToActors.end()) {
 				if (x == 0 && y == 0) {
-					for (Actor* collided : locToActors[glm::ivec2(x, y)]) {
+					for (Actor* collided : locToActors[glm::ivec2(x, y) + gameInfo.player->position]) {
 						collided->printContactDialogue();
 
 						gameInfo.state = executeCommands(*collided, collided->contactDialogue, gameInfo);
 					}
 				}
 				else {
-					for (Actor* nearby : locToActors[glm::ivec2(x, y)]) {
+					for (Actor* nearby : locToActors[glm::ivec2(x, y) + gameInfo.player->position]) {
 						nearby->printNearbyDialogue();
 
 						gameInfo.state = executeCommands(*nearby, nearby->nearbyDialogue, gameInfo);
