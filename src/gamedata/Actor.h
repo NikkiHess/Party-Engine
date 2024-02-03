@@ -20,6 +20,12 @@ public:
 		: actorName(actorName), view(view), position(position), velocity(initialVelocity), blocking(blocking), nearbyDialogue(nearbyDialogue), contactDialogue(contactDialogue) {}
 
 	Actor() {}
+
+	// prints the actor's contact dialogue
+	void printContactDialogue() const;
+
+	// prints the actor's nearby dialogue
+	void printNearbyDialogue() const;
 };
 
 class ActorComparator {

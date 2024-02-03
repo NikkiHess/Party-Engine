@@ -41,26 +41,27 @@ void Renderer::render(GameInfo& gameInfo) {
 
 void Renderer::printDialogue(GameInfo& gameInfo) {
 	std::stringstream dialogue; // the dialogue to be printed
-	std::string commandOutput; // the output from commands
+	auto& locToActors = gameInfo.currentScene.locToActors;
 
-	for (Actor& actor : gameInfo.currentScene.actors) {
-		glm::ivec2 dist(abs(actor.position.x - gameInfo.player->position.x), abs(actor.position.y - gameInfo.player->position.y));
-		// actor within 1 x and y of the player? print nearby dialogue
-		if ((dist.y == 1 && dist.x <= 1) ||
-			(dist.y <= 1 && dist.x == 1)) {
-			if (actor.nearbyDialogue != "") {
-				dialogue << actor.nearbyDialogue << "\n";
-				
-				gameInfo.state = executeCommands(actor, actor.nearbyDialogue, gameInfo);
-			}
-		}
-		// within 0? print contact dialogue
-		else if (dist.y == 0 && dist.x == 0) {
-			if (actor.contactDialogue != "") {
-				dialogue << actor.contactDialogue << "\n";
+	// loop over nearby locations and see if there are actors there, if so, play their dialogue
+	for (int y = -1; y < 1; ++y) {
+		for (int x = -1; x < 1; ++x) {
+			auto actorIt = locToActors.find(glm::ivec2(x, y));
+			if (actorIt != locToActors.end()) {
+				if (x == 0 && y == 0) {
+					for (Actor* collided : locToActors[glm::ivec2(x, y)]) {
+						collided->printContactDialogue();
 
-				std::string str = dialogue.str();
-				gameInfo.state = executeCommands(actor, actor.contactDialogue, gameInfo);
+						gameInfo.state = executeCommands(*collided, collided->contactDialogue, gameInfo);
+					}
+				}
+				else {
+					for (Actor* nearby : locToActors[glm::ivec2(x, y)]) {
+						nearby->printNearbyDialogue();
+
+						gameInfo.state = executeCommands(*nearby, nearby->nearbyDialogue, gameInfo);
+					}
+				}
 			}
 		}
 	}

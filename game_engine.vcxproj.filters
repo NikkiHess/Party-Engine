@@ -1001,6 +1001,9 @@
     <ClCompile Include="src\gamedata\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gamedata\Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\glm\detail\func_common.inl">

@@ -463,6 +463,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp" />
+    <ClCompile Include="src\gamedata\Actor.cpp" />
     <ClCompile Include="src\gamedata\Scene.cpp" />
     <ClCompile Include="src\utils\ConfigHelper.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
