@@ -10,7 +10,7 @@ void Scene::create_actor(const std::string& name, const char& view,
 						 const std::string& contact_dialogue) {
 	glm::ivec2 actor_pos(x, y);
 	Actor* actor_ptr = new Actor(name, view, actor_pos, glm::ivec2(vel_x, vel_y), blocking, nearby_dialogue, contact_dialogue);
-	Actor actor = *actor_ptr;
+	Actor &actor = *actor_ptr;
 	actor.id = actors.size();
 	
 	// insert the actor into the list of actors
