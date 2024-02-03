@@ -44,7 +44,7 @@ void ConfigHelper::initialize_rendering(rapidjson::Document& document) {
 void ConfigHelper::initialize_scene(std::string& resources, rapidjson::Document& document) {
 	// get the name of the initial scene
 	if (!document.HasMember("initial_scene")) {
-		std::cout << "error: initial scene unspecified";
+		std::cout << "error: initial_scene unspecified";
 		exit(0);
 	}
 	initial_scene.name = document["initial_scene"].GetString();
