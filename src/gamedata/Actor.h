@@ -13,7 +13,9 @@ public:
 	bool blocking;
 	std::string nearbyDialogue;
 	std::string contactDialogue;
+
 	int id = 0;
+	bool triggeredScoreUp = false;
 
 	Actor(std::string actorName, char view, glm::ivec2 position, glm::ivec2 initialVelocity,
 		bool blocking, std::string nearbyDialogue, std::string contactDialogue)

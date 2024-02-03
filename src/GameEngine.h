@@ -26,12 +26,9 @@ public:
 	int playerHealth = 3; // the player's current health
 	int playerScore = 0; // the player's current score
 
-	// actor stuff
-	std::unordered_map<Actor*, bool> triggeredScoreUp; // keep track of which actors triggered a player score up
-
 	// load the game info after everything else has been loaded
 	GameInfo gameInfo{ player, playerHealth, playerScore,
-						state, triggeredScoreUp, configHelper.gameStartMessage,
+						state, configHelper.gameStartMessage,
 						configHelper.gameOverBadMessage, configHelper.gameOverGoodMessage, configHelper.initialScene };
 
 	Engine(Renderer& renderer, ConfigHelper& configHelper) : renderer(renderer), configHelper(configHelper) {

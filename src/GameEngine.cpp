@@ -103,11 +103,6 @@ void Engine::start() {
 	if (gameInfo.gameStartMessage != "")
 		std::cout << gameInfo.gameStartMessage << "\n";
 
-	// default initialize all actors to false in triggeredScoreUp
-	for (Actor& actor : gameInfo.currentScene.actors) {
-		triggeredScoreUp[&actor] = false;
-	}
-
 	isGameRunning = true;
 
 	while (isGameRunning) {

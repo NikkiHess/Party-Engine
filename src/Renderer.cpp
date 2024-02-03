@@ -113,9 +113,9 @@ GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue,
 	}
 	else if (dialogue.find("score up") != std::string::npos) {
 		// an NPC Actor may only trigger a score increase once
-		if (!gameInfo.triggeredScoreUp[&trigger]) {
+		if (!trigger.triggeredScoreUp) {
 			++gameInfo.playerScore;
-			gameInfo.triggeredScoreUp[&trigger] = true;
+			trigger.triggeredScoreUp = true;
 		}
 	}
 	else if (dialogue.find("you win") != std::string::npos) {

@@ -21,7 +21,6 @@ public:
 	int& playerHealth; // the player's health
 	int& playerScore; // the player's score
 	GameState& state; // the current state of the game
-	std::unordered_map<Actor*, bool>& triggeredScoreUp; // the Actors who have triggered score up commands
 
 	// the message to be shown upon game start
 	const std::string& gameStartMessage;
