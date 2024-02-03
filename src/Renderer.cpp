@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
-#include <map>
+#include <unordered_map>
 
 // include my code
 #include "Renderer.h"
@@ -42,26 +42,30 @@ void Renderer::render(GameInfo& gameInfo) {
 void Renderer::printDialogue(GameInfo& gameInfo) {
 	std::stringstream dialogue; // the dialogue to be printed
 	auto& locToActors = gameInfo.currentScene.locToActors;
+	std::vector<Actor*> actors;
 
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
 			auto actorIt = locToActors.find(glm::ivec2(x, y) + gameInfo.player->position);
 			if (actorIt != locToActors.end()) {
-				if (x == 0 && y == 0) {
-					for (Actor* collided : locToActors[glm::ivec2(x, y) + gameInfo.player->position]) {
-						collided->printContactDialogue();
+				actors.insert(actors.end(), actorIt->second.begin(), actorIt->second.end());
+			}
+		}
+	}
 
-						gameInfo.state = executeCommands(*collided, collided->contactDialogue, gameInfo);
-					}
-				}
-				else {
-					for (Actor* nearby : locToActors[glm::ivec2(x, y) + gameInfo.player->position]) {
-						nearby->printNearbyDialogue();
-
-						gameInfo.state = executeCommands(*nearby, nearby->nearbyDialogue, gameInfo);
-					}
-				}
+	// sort the actors we are near
+	std::sort(actors.begin(), actors.end(), ActorComparator());
+	for (Actor* actor : actors) {
+		// let's not let the player do dialogue at all
+		if (actor->actorName != "player") {
+			if (actor->position == gameInfo.player->position) {
+				actor->printContactDialogue();
+				gameInfo.state = executeCommands(*actor, actor->contactDialogue, gameInfo);
+			}
+			else {
+				actor->printNearbyDialogue();
+				gameInfo.state = executeCommands(*actor, actor->nearbyDialogue, gameInfo);
 			}
 		}
 	}
