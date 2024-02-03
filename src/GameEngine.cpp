@@ -14,8 +14,9 @@
 
 // ---------- BEGIN MOTION FUNCTIONS ----------
 
+// TODO: MOVE THIS TO THE ACTOR CLASS
 void Engine::update_positions() {
-	for (Actor& actor : hardcoded_actors) {
+	for (Actor& actor : game_info.current_scene.actors) {
 		// if this is our player Actor, perform our player actor movement
 		if (actor.actor_name == "player") {
 			if (!would_collide(actor)) {
@@ -37,13 +38,14 @@ void Engine::update_positions() {
 	}
 }
 
+// TODO: MOVE THIS TO THE ACTOR CLASS
 // check if an Actor would collide given its velocity
 bool Engine::would_collide(Actor& actor) {
 	glm::ivec2 future_position = actor.position + actor.velocity;
 	// if the movement isn't blocked, allow the Actor to move
 	bool is_blocked_by_actor = false;
 	// this might be awful for performance?
-	for (Actor& other_actor : hardcoded_actors) {
+	for (Actor& other_actor : game_info.current_scene.actors) {
 		if (other_actor.blocking) {
 			if (future_position == other_actor.position) {
 				is_blocked_by_actor = true;
@@ -52,8 +54,7 @@ bool Engine::would_collide(Actor& actor) {
 		}
 	}
 
-	return hardcoded_map[future_position.y][future_position.x] == 'b' ||
-		is_blocked_by_actor;
+	return hardcoded_map[future_position.y][future_position.x] == 'b' || is_blocked_by_actor;
 }
 
 // ----------- END MOTION FUNCTIONS -----------
@@ -82,7 +83,7 @@ void Engine::start() {
 		std::cout << game_info.game_start_message << "\n";
 
 	// store all actors in triggered_score_up (false)
-	for (Actor& actor : hardcoded_actors) {
+	for (Actor& actor : game_info.current_scene.actors) {
 		triggered_score_up[&actor] = false;
 	}
 

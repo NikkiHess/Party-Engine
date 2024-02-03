@@ -25,13 +25,13 @@ void Renderer::render(GameInfo& game_info) {
 	}
 
 	// add the actors to the map
-	for (Actor& actor : hardcoded_actors) {
+	for (Actor& actor : game_info.current_scene.actors) {
 		render_map[actor.position.y][actor.position.x] = actor.view;
 	}
 
 	// render bounds
-	glm::ivec2 top_left(game_info.player.position.x - (render_size.x / 2), game_info.player.position.y - (render_size.y / 2));
-	glm::ivec2 bottom_right(game_info.player.position.x + (render_size.x / 2), game_info.player.position.y + (render_size.y / 2));
+	glm::ivec2 top_left(game_info.player->position.x - (render_size.x / 2), game_info.player->position.y - (render_size.y / 2));
+	glm::ivec2 bottom_right(game_info.player->position.x + (render_size.x / 2), game_info.player->position.y + (render_size.y / 2));
 
 	// perform the render of the current view given the bounds
 	for (int y = top_left.y; y <= bottom_right.y; ++y) {
@@ -53,8 +53,8 @@ void Renderer::print_dialogue(GameInfo& game_info) {
 	std::stringstream dialogue; // the dialogue to be printed
 	std::string command_output; // the output from commands
 
-	for (Actor& actor : hardcoded_actors) {
-		glm::ivec2 dist(abs(actor.position.x - game_info.player.position.x), abs(actor.position.y - game_info.player.position.y));
+	for (Actor& actor : game_info.current_scene.actors) {
+		glm::ivec2 dist(abs(actor.position.x - game_info.player->position.x), abs(actor.position.y - game_info.player->position.y));
 		// actor within 1 x and y of the player? print nearby dialogue
 		if ((dist.y == 1 && dist.x <= 1) ||
 			(dist.y <= 1 && dist.x == 1)) {
@@ -96,16 +96,16 @@ void Renderer::prompt_player(GameInfo& game_info) {
 	}
 	// do movement (update player velocity)
 	else if (selection == "n") {
-		--game_info.player.velocity.y;
+		--game_info.player->velocity.y;
 	}
 	else if (selection == "e") {
-		++game_info.player.velocity.x;
+		++game_info.player->velocity.x;
 	}
 	else if (selection == "s") {
-		++game_info.player.velocity.y;
+		++game_info.player->velocity.y;
 	}
 	else if (selection == "w") {
-		--game_info.player.velocity.x;
+		--game_info.player->velocity.x;
 	}
 }
 

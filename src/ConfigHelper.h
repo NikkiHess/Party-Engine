@@ -5,6 +5,9 @@
 #include <iostream>
 #include <filesystem>
 
+// my code
+#include "Scene.h"
+
 // dependencies
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
@@ -13,8 +16,11 @@
 class ConfigHelper {
 public:
 	rapidjson::Document document = nullptr;
+
 	std::string game_start_message = "";
 	std::string game_over_bad_message, game_over_good_message = "";
+	Scene initial_scene;
+
 	glm::ivec2 render_size;
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
@@ -29,6 +35,7 @@ public:
 		check_file(game_config);
 		read_json_file(resources + "game.config", document);
 		initialize_messages(document);
+		initialize_scene(resources, document);
 
 		if (std::filesystem::exists(rendering_config)) {
 			read_json_file(resources + "rendering.config", document);
@@ -45,7 +52,9 @@ private:
 	// initializes the render_size loaded in from the resources/rendering.config file
 	void initialize_rendering(rapidjson::Document& document);
 
-	// initializes render settings
+	// initializes the initial_scene loaded in from the resources/game.config
+	// utilizes Scene class
+	void initialize_scene(std::string& resources, rapidjson::Document& document);
 
 	// reads a json file from path and puts it in the out_document
 	static void read_json_file(const std::string& path, rapidjson::Document& out_document) {
