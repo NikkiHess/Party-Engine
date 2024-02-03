@@ -11,7 +11,6 @@
 
 // dependencies
 #include "glm/glm.hpp"
-#include "../dependencies/MapHelper.h"
 
 class Engine {
 public:

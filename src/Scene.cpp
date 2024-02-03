@@ -3,6 +3,7 @@
 // std stuff
 #include <string>
 #include <unordered_map>
+#include <iostream>
 
 void Scene::create_actor(const std::string& name, const char& view,
 						 const int& x, const int& y, const int& vel_x, const int& vel_y,

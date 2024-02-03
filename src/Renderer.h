@@ -1,24 +1,19 @@
 #pragma once
 
+// std stuff
+#include <vector>
+
 // my code
 #include "GameInfo.h"
 
 // dependencies
-#include "../dependencies/MapHelper.h"
 #include "glm/glm.hpp"
 
 class Renderer {
 public:
-	char render_map[HARDCODED_MAP_HEIGHT][HARDCODED_MAP_WIDTH + 1]; // the map to be rendered - updated each frame
+	glm::ivec2 render_size; // the size of the rendered view
 
-	Renderer(glm::ivec2& render_size) : render_size(render_size) {
-		// copy hardcoded map into render map
-		for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
-			for (int x = 0; x < HARDCODED_MAP_WIDTH + 1; ++x) {
-				render_map[y][x] = hardcoded_map[y][x];
-			}
-		}
-	}
+	Renderer(glm::ivec2& render_size) : render_size(render_size) {}
 
 	// render the current view, returns the current GameState
 	void render(GameInfo& game_info);
@@ -36,7 +31,6 @@ public:
 	// returns LOSE if player quits
 	void prompt_player(GameInfo& game_info);
 private:
-	glm::ivec2 render_size; // the size of the rendered view
 
 	// execute the commands contained in the dialogue string with the given
 	// Actor as a trigger

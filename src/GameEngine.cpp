@@ -9,7 +9,6 @@
 #include "ConfigHelper.h"
 
 // dependencies
-#include "../dependencies/MapHelper.h"
 #include "../dependencies/rapidjson/document.h"
 #include "glm/glm.hpp"
 
@@ -30,7 +29,6 @@ void Engine::update_positions() {
 		// if no collision, keep moving
 		// if collision, reverse velocity (move next turn)
 		else {
-			//glm::ivec2 updated_actor_pos(actor.position.x + actor.velocity.x, actor.position.y + actor.velocity.y);
 			if (!would_collide(actor))
 				update_actor_position(actor);
 			else
@@ -69,19 +67,16 @@ void Engine::update_actor_position(Actor& actor) {
 // check if an Actor would collide given its velocity
 bool Engine::would_collide(Actor& actor) {
 	glm::ivec2 future_position = actor.position + actor.velocity;
-	// if the movement isn't blocked, allow the Actor to move
-	bool is_blocked_by_actor = false;
-	// this might be awful for performance?
-	for (Actor& other_actor : game_info.current_scene.actors) {
-		if (other_actor.blocking) {
-			if (future_position == other_actor.position) {
-				is_blocked_by_actor = true;
-				break;
-			}
+
+	auto it = game_info.current_scene.loc_to_actors.find(future_position);
+	if (it != game_info.current_scene.loc_to_actors.end()) {
+		for (Actor* other : it->second) {
+			if (other->blocking)
+				return true;
 		}
 	}
 
-	return hardcoded_map[future_position.y][future_position.x] == 'b' || is_blocked_by_actor;
+	return false;
 }
 
 // ----------- END MOTION FUNCTIONS -----------
@@ -140,10 +135,10 @@ void Engine::stop() {
 // ----------- END CORE FUNCTIONS ------------
 
 int main() {
-	ConfigHelper configHelper;
-	Renderer renderer(configHelper.render_size);
+	ConfigHelper config_helper;
+	Renderer renderer(config_helper.render_size);
 
-	Engine engine(renderer, configHelper);
+	Engine engine(renderer, config_helper);
 	engine.start();
 
 	return 0;

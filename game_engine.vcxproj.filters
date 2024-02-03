@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dependencies\MapHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dependencies\glm\common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

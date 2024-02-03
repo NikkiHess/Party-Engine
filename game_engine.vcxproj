@@ -420,7 +420,6 @@
     <ClInclude Include="dependencies\glm\vec3.hpp" />
     <ClInclude Include="dependencies\glm\vec4.hpp" />
     <ClInclude Include="dependencies\glm\vector_relational.hpp" />
-    <ClInclude Include="dependencies\MapHelper.h" />
     <ClInclude Include="dependencies\rapidjson\allocators.h" />
     <ClInclude Include="dependencies\rapidjson\document.h" />
     <ClInclude Include="dependencies\rapidjson\encodedstream.h" />

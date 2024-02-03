@@ -11,27 +11,11 @@
 #include "Actor.h"
 
 // dependencies
-#include "MapHelper.h"
 #include "rapidjson/document.h"
 #include "glm/glm.hpp"
 
 void Renderer::render(GameInfo& game_info) {
 	std::stringstream render; // the rendered view
-
-	// copy hardcoded map into render map
-	for (int y = 0; y < HARDCODED_MAP_HEIGHT; ++y) {
-		for (int x = 0; x < HARDCODED_MAP_WIDTH + 1; ++x) {
-			render_map[y][x] = hardcoded_map[y][x];
-		}
-	}
-
-	// render the actors in order based on their positions
-	for (auto& pair : game_info.current_scene.loc_to_actors) {
-		std::sort(pair.second.begin(), pair.second.end(), ActorComparator());
-		for (Actor* actor : pair.second) {
-			render_map[pair.first.y][pair.first.x] = actor->view;
-		}
-	}
 
 	// render bounds
 	glm::ivec2 top_left(game_info.player->position.x - (render_size.x / 2), game_info.player->position.y - (render_size.y / 2));
@@ -40,11 +24,13 @@ void Renderer::render(GameInfo& game_info) {
 	// perform the render of the current view given the bounds
 	for (int y = top_left.y; y <= bottom_right.y; ++y) {
 		for (int x = top_left.x; x <= bottom_right.x; ++x) {
-			// if within bounds, print
-			if (y >= 0 && y < HARDCODED_MAP_HEIGHT &&
-				x >= 0 && x < HARDCODED_MAP_WIDTH)
-				render << render_map[y][x];
-			else render << ' ';
+			auto it = game_info.current_scene.loc_to_actors.find(glm::ivec2(x, y));
+			if (it != game_info.current_scene.loc_to_actors.end()) {
+				render << it->second.back()->view;
+			}
+			else {
+				render << " ";
+			}
 		}
 		render << "\n";
 	}
