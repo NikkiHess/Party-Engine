@@ -13,12 +13,12 @@ Actor& Scene::instantiateActor(ActorProps& props) {
 	actor.id = actors.size();
 	
 	// insert the actor into the list of actors
-	actors.push_back(actor);
+	actors.emplace_back(actor);
 
 	// insert the (location, actors) pair into the unordered map
 	auto it = locToActors.find(actorPos);
 	if (it != locToActors.end())
-		it->second.push_back(actorPtr);
+		it->second.emplace_back(actorPtr);
 	else
 		locToActors.insert({actorPos, {actorPtr}});
 

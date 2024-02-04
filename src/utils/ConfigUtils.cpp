@@ -13,8 +13,18 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 
+bool ConfigUtils::fileExists(const std::string& path) {
+	// checks whether the cache contains an entry
+	if (fileExistsCache.count(path))
+		return fileExistsCache[path];
+	// if the cache doesn't contain an entry, create it and return it
+	bool exists = std::filesystem::exists(path);
+	fileExistsCache[path] = exists;
+	return exists;
+}
+
 void ConfigUtils::checkFile(const std::string& path, std::optional<std::string> print) {
-	if (!std::filesystem::exists(path)) {
+	if (!fileExists(path)) {
 		if (print.has_value())
 			std::cout << "error: " + print.value() + " missing";
 		else

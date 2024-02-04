@@ -57,9 +57,9 @@ void Engine::updateActorPosition(Actor& actor) {
 	// add the new position of the actor to the unordered_map
 	auto newLocIt = locToActors.find(actor.position);
 	if (newLocIt != locToActors.end())
-		newLocIt->second.push_back(&actor);
+		newLocIt->second.emplace_back(&actor);
 	else
-		locToActors.insert({ actor.position, {&actor} });
+		locToActors.emplace( actor.position, std::vector<Actor*>{&actor} );
 }
 
 // TODO: MOVE THIS TO THE ACTOR CLASS

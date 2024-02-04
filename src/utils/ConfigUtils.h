@@ -28,6 +28,8 @@ public:
 
 	glm::ivec2 renderSize;
 
+	std::unordered_map<std::string, bool> fileExistsCache;
+
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
 	ConfigUtils() : renderSize(13, 9) {
@@ -42,11 +44,13 @@ public:
 		initializeMessages(document);
 		initializeScene(initialScene, document, true);
 
-		if (std::filesystem::exists(renderingConfig)) {
+		if (fileExists(renderingConfig)) {
 			readJsonFile(resources + "rendering.config", document);
 			initializeRendering(document);
 		}
 	}
+
+	bool fileExists(const std::string& path);
 
 	// checks that a file exists, and if not prints an error message and exits with code 1
 	void checkFile(const std::string& path, std::optional<std::string> print = std::nullopt);
