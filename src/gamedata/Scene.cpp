@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <iostream>
+#include <vector>
 
 Actor& Scene::instantiateActor(ActorProps& props) {
 	glm::ivec2 actorPos(props.x, props.y);
@@ -16,11 +17,7 @@ Actor& Scene::instantiateActor(ActorProps& props) {
 	actors.emplace_back(actor);
 
 	// insert the (location, actors) pair into the unordered map
-	auto it = locToActors.find(actorPos);
-	if (it != locToActors.end())
-		it->second.emplace_back(actorPtr);
-	else
-		locToActors.insert({actorPos, {actorPtr}});
+	locToActors[actorPos].emplace_back(actorPtr);
 
 	return actor;
 }

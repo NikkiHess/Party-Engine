@@ -23,7 +23,6 @@ private:
 			return a.x == b.x && a.y == b.y;
 		}
 	};
-// this is after private this time because I want to keep KeyFuncs private (but do I need to?)
 public:
 	std::vector<Actor> actors;
 	std::unordered_map<glm::ivec2, std::vector<Actor*>, KeyFuncs, KeyFuncs> locToActors;

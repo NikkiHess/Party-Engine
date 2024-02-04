@@ -65,7 +65,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 		scene.name = document["initial_scene"].GetString();
 
 		std::string scenePath = "resources/scenes/" + initialScene.name + ".scene";
-		if (!std::filesystem::exists(scenePath)) {
+		if (!fileExists(scenePath)) {
 			std::cout << "error: scene " + initialScene.name + " is missing";
 			exit(0);
 		}
@@ -74,7 +74,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 
 	// get the path of the initial scene and read its file
 	std::string scenePath = "resources/scenes/" + scene.name + ".scene";
-	if (!std::filesystem::exists(scenePath)) {
+	if (!fileExists(scenePath)) {
 		std::cout << "error: scene " + scene.name + " is missing";
 		exit(0);
 	}
@@ -84,6 +84,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 	if (document.HasMember("actors")) {
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
+		scene.actors.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
 			ActorProps props;
 
@@ -112,7 +113,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 
 void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {
 	if (document.HasMember("name"))
-		props.name = document["name"].GetString();
+		props.name = document["name"].GetStringOrDefault();
 	if (document.HasMember("view"))
 		props.view = document["view"].GetString()[0];
 	if (document.HasMember("x"))

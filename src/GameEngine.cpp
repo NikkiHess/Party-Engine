@@ -61,8 +61,12 @@ void Engine::updateActorPosition(Actor& actor) {
 	auto newLocIt = locToActors.find(actor.position);
 	if (newLocIt != locToActors.end())
 		newLocIt->second.emplace_back(&actor);
-	else
-		locToActors.emplace(actor.position, std::vector<Actor*>{&actor});
+	else {
+		std::vector<Actor*> atPos;
+		atPos.reserve(gameInfo.currentScene.actors.size());
+		atPos.emplace_back(&actor);
+		locToActors.emplace(actor.position, atPos);
+	}
 }
 
 // check if an Actor would collide given its velocity
