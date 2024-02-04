@@ -56,7 +56,8 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 	}
 
 	// sort the actors we are near
-	std::sort(actors.begin(), actors.end(), ActorComparator());
+	if(actors.size() > 1)
+		std::sort(actors.begin(), actors.end(), ActorComparator());
 	for (Actor* actor : actors) {
 		// let's not let the player do dialogue at all
 		if (actor->name != "player") {

@@ -58,15 +58,17 @@ void Engine::updateActorPosition(Actor& actor) {
 	actor.position += actor.velocity;
 
 	// add the new position of the actor to the unordered_map
-	auto newLocIt = locToActors.find(actor.position);
-	if (newLocIt != locToActors.end())
-		newLocIt->second.emplace_back(&actor);
-	else {
-		std::vector<Actor*> atPos;
-		atPos.reserve(gameInfo.currentScene.actors.size());
-		atPos.emplace_back(&actor);
-		locToActors.emplace(actor.position, atPos);
-	}
+	auto& actorsAtPos = locToActors[actor.position];
+	actorsAtPos.emplace_back(&actor);
+	//auto newLocIt = locToActors.find(actor.position);
+	//if (newLocIt != locToActors.end())
+	//	newLocIt->second.emplace_back(&actor);
+	//else {
+	//	std::vector<Actor*> atPos;
+	//	atPos.reserve(gameInfo.currentScene.actors.size());
+	//	atPos.emplace_back(&actor);
+	//	locToActors.emplace(actor.position, atPos);
+	//}
 }
 
 // check if an Actor would collide given its velocity
