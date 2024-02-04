@@ -16,20 +16,20 @@
 
 void Engine::updatePositions() {
 	for (Actor& actor : gameInfo.currentScene.actors) {
-		// if this is our player Actor, perform our player actor movement
-		if (actor.name == "player") {
-			if (!wouldCollide(actor)) {
-				updateActorPosition(actor);
+		if (abs(actor.velocity.x) > 0 || abs(actor.velocity.y) > 0) {
+			// if this is our player Actor, perform our player actor movement
+			if (actor.name == "player") {
+				if (!wouldCollide(actor)) {
+					updateActorPosition(actor);
+				}
+				// stop the player's movement so they only move by 1
+				actor.velocity = glm::ivec2(0, 0);
 			}
-			// stop the player's movement so they only move by 1
-			actor.velocity = glm::ivec2(0, 0);
-		}
-		// move NPC Actors
-		// if no collision, keep moving
-		// if collision, reverse velocity (move next turn)
-		else {
-			// make sure they're moving so we don't do unnecessary calculations
-			if (actor.velocity.x > 0 || actor.velocity.y > 0) {
+			// move NPC Actors
+			// if no collision, keep moving
+			// if collision, reverse velocity (move next turn)
+			else {
+				// make sure they're moving so we don't do unnecessary calculations
 				if (!wouldCollide(actor))
 					updateActorPosition(actor);
 				else
@@ -65,7 +65,6 @@ void Engine::updateActorPosition(Actor& actor) {
 		locToActors.emplace(actor.position, std::vector<Actor*>{&actor});
 }
 
-// TODO: MOVE THIS TO THE ACTOR CLASS
 // check if an Actor would collide given its velocity
 bool Engine::wouldCollide(Actor& actor) {
 	glm::ivec2 futurePosition = actor.position + actor.velocity;
