@@ -5,15 +5,17 @@
 
 // my code
 #include "gamedata/GameInfo.h"
+#include "utils/ConfigUtils.h"
 
 // dependencies
 #include "glm/glm.hpp"
 
 class Renderer {
 public:
+	ConfigUtils& configUtils; // the ConfigUtils the game uses
 	glm::ivec2 renderSize; // the size of the rendered view
 
-	Renderer(glm::ivec2& renderSize) : renderSize(renderSize) {}
+	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize) {}
 
 	// render the current view, returns the current GameState
 	void render(GameInfo& gameInfo);

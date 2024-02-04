@@ -16,7 +16,7 @@
 #include "rapidjson/filereadstream.h"
 #include "glm/glm.hpp"
 
-class ConfigHelper {
+class ConfigUtils {
 public:
 	rapidjson::Document document = nullptr;
 
@@ -30,7 +30,7 @@ public:
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
-	ConfigHelper() : renderSize(13, 9) {
+	ConfigUtils() : renderSize(13, 9) {
 		std::string resources = "resources/";
 		std::string gameConfig = resources + "game.config";
 		std::string renderingConfig = resources + "rendering.config";
@@ -40,26 +40,26 @@ public:
 		checkFile(gameConfig);
 		readJsonFile(resources + "game.config", document);
 		initializeMessages(document);
-		initializeScene(resources, document);
+		initializeScene(initialScene, document, true);
 
 		if (std::filesystem::exists(renderingConfig)) {
 			readJsonFile(resources + "rendering.config", document);
 			initializeRendering(document);
 		}
 	}
-private:
-	// checks that a file exists, and if not prints an error message and exits with code 1
-	bool checkFile(const std::string& path, std::optional<std::string> print = std::nullopt);
 
+	// checks that a file exists, and if not prints an error message and exits with code 1
+	void checkFile(const std::string& path, std::optional<std::string> print = std::nullopt);
+
+	// initializes the scene from its scene file
+	// utilizes Scene class
+	void initializeScene(Scene& scene, rapidjson::Document& document, bool isInitialScene);
+private:
 	// initializes the messages loaded in from the resources/game.config file
 	void initializeMessages(rapidjson::Document& document);
 
 	// initializes the render_size loaded in from the resources/rendering.config file
 	void initializeRendering(rapidjson::Document& document);
-
-	// initializes the initial_scene loaded in from the resources/game.config
-	// utilizes Scene class
-	void initializeScene(std::string& resources, rapidjson::Document& document);
 
 	// set Actor props from a document
 	void setActorProps(ActorProps& props, rapidjson::Value& document);;

@@ -6,7 +6,7 @@
 
 // include my code
 #include "GameEngine.h"
-#include "utils/ConfigHelper.h"
+#include "utils/ConfigUtils.h"
 
 // dependencies
 #include "../dependencies/rapidjson/document.h"
@@ -129,10 +129,10 @@ void Engine::stop() {
 // ----------- END CORE FUNCTIONS ------------
 
 int main() {
-	ConfigHelper configHelper;
-	Renderer renderer(configHelper.renderSize);
+	ConfigUtils configUtils;
+	Renderer renderer(configUtils);
 
-	Engine engine(renderer, configHelper);
+	Engine engine(renderer, configUtils);
 	engine.start();
 
 	return 0;

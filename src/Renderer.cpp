@@ -9,6 +9,7 @@
 #include "GameEngine.h"
 #include "gamedata/GameInfo.h"
 #include "gamedata/Actor.h"
+#include "utils/StringUtils.h"
 
 // dependencies
 #include "rapidjson/document.h"
@@ -127,6 +128,19 @@ GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue,
 	}
 	else if (dialogue.find("game over") != std::string::npos) {
 		return LOSE;
+	}
+	else if (dialogue.find("proceed to") != std::string::npos) {
+		std::string sceneName = StringUtils::getWordAfterPhrase(dialogue, "proceed to");
+		if (sceneName != "") {
+			std::string scenePath = "resources/scenes/" + sceneName + ".scene";
+			configUtils.checkFile(scenePath, "scene " + sceneName + " is");
+
+			printStats(gameInfo);
+			gameInfo.currentScene = Scene();
+			gameInfo.currentScene.name = sceneName;
+			configUtils.initializeScene(gameInfo.currentScene, configUtils.document, false);
+			render(gameInfo);
+		}
 	}
 	return gameInfo.state;
 }

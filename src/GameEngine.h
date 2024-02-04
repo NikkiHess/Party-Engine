@@ -6,7 +6,7 @@
 
 // my code
 #include "Renderer.h"
-#include "utils/ConfigHelper.h"
+#include "utils/ConfigUtils.h"
 #include "gamedata/Actor.h"
 #include "gamedata/GameInfo.h"
 
@@ -16,7 +16,7 @@
 class Engine {
 public:
 	Renderer& renderer;
-	ConfigHelper& configHelper;
+	ConfigUtils& configUtils;
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 
@@ -28,11 +28,11 @@ public:
 
 	// load the game info after everything else has been loaded
 	GameInfo gameInfo{ player, playerHealth, playerScore,
-						state, configHelper.gameStartMessage,
-						configHelper.gameOverBadMessage, configHelper.gameOverGoodMessage, configHelper.initialScene };
+						state, configUtils.gameStartMessage,
+						configUtils.gameOverBadMessage, configUtils.gameOverGoodMessage, configUtils.initialScene };
 
-	Engine(Renderer& renderer, ConfigHelper& configHelper) : renderer(renderer), configHelper(configHelper) {
-		std::vector<Actor>& actors = configHelper.initialScene.actors;
+	Engine(Renderer& renderer, ConfigUtils& configUtils) : renderer(renderer), configUtils(configUtils) {
+		std::vector<Actor>& actors = configUtils.initialScene.actors;
 		// this finds the player in the actors map
 		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });
 

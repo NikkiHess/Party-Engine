@@ -1,4 +1,4 @@
-#include "ConfigHelper.h"
+#include "ConfigUtils.h"
 
 // std stuff
 #include <string>
@@ -13,7 +13,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 
-bool ConfigHelper::checkFile(const std::string& path, std::optional<std::string> print) {
+void ConfigUtils::checkFile(const std::string& path, std::optional<std::string> print) {
 	if (!std::filesystem::exists(path)) {
 		if (print.has_value())
 			std::cout << "error: " + print.value() + " missing";
@@ -23,7 +23,7 @@ bool ConfigHelper::checkFile(const std::string& path, std::optional<std::string>
 	}
 }
 
-void ConfigHelper::initializeMessages(rapidjson::Document& document) {
+void ConfigUtils::initializeMessages(rapidjson::Document& document) {
 	if (document.HasMember("game_start_message"))
 		gameStartMessage = document["game_start_message"].GetString();
 	if (document.HasMember("game_over_bad_message"))
@@ -32,7 +32,7 @@ void ConfigHelper::initializeMessages(rapidjson::Document& document) {
 		gameOverGoodMessage = document["game_over_good_message"].GetString();
 }
 
-void ConfigHelper::initializeRendering(rapidjson::Document& document) {
+void ConfigUtils::initializeRendering(rapidjson::Document& document) {
 	if (document.HasMember("x_resolution"))
 		renderSize.x = document["x_resolution"].GetInt();
 	if (document.HasMember("y_resolution"))
@@ -45,21 +45,30 @@ void ConfigHelper::initializeRendering(rapidjson::Document& document) {
 	}
 }
 
-void ConfigHelper::initializeScene(std::string& resources, rapidjson::Document& document) {
+void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, bool isInitialScene = false) {
 	// get the name of the initial scene
-	if (!document.HasMember("initial_scene")) {
-		std::cout << "error: initial_scene unspecified";
-		exit(0);
+	if (isInitialScene) {
+		if (!document.HasMember("initial_scene")) {
+			std::cout << "error: initial_scene unspecified";
+			exit(0);
+		}
+		scene.name = document["initial_scene"].GetString();
+
+		std::string scenePath = "resources/scenes/" + initialScene.name + ".scene";
+		if (!std::filesystem::exists(scenePath)) {
+			std::cout << "error: scene " + initialScene.name + " is missing";
+			exit(0);
+		}
+		readJsonFile(scenePath, document);
 	}
-	initialScene.name = document["initial_scene"].GetString();
 
 	// get the path of the initial scene and read its file
-	std::string initialScenePath = resources + "scenes/" + initialScene.name + ".scene";
-	if (!std::filesystem::exists(initialScenePath)) {
-		std::cout << "error: scene " + initialScene.name + " is missing";
+	std::string scenePath = "resources/scenes/" + scene.name + ".scene";
+	if (!std::filesystem::exists(scenePath)) {
+		std::cout << "error: scene " + scene.name + " is missing";
 		exit(0);
 	}
-	readJsonFile(initialScenePath, document);
+	readJsonFile(scenePath, document);
 
 	// TODO: Make this not do if else, do like above
 	if (document.HasMember("actors")) {
@@ -71,7 +80,7 @@ void ConfigHelper::initializeScene(std::string& resources, rapidjson::Document& 
 			// initialize the ActorProps based on a template, if there is one
 			if (docActors[i].HasMember("template")) {
 				std::string templateName = docActors[i]["template"].GetString();
-				std::string templatePath = resources + "actor_templates/" + templateName + ".template";
+				std::string templatePath = "resources/actor_templates/" + templateName + ".template";
 				checkFile(templatePath, "template " + templateName + " is");
 				// HOPEFULLY this leaves docActors intact
 				readJsonFile(templatePath, document);
@@ -82,16 +91,16 @@ void ConfigHelper::initializeScene(std::string& resources, rapidjson::Document& 
 			setActorProps(props, docActors[i]);
 
 			// instantiate a new actor based on these props
-			initialScene.instantiateActor(props);
+			scene.instantiateActor(props);
 		}
 	}
 	else {
-		std::cout << "error: \"actors\" is missing from " + initialScene.name;
+		std::cout << "error: \"actors\" is missing from " + scene.name;
 		exit(0);
 	}
 }
 
-void ConfigHelper::setActorProps(ActorProps& props, rapidjson::Value& document) {
+void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {
 	if (document.HasMember("name"))
 		props.name = document["name"].GetString();
 	if (document.HasMember("view"))
