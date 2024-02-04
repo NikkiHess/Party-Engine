@@ -130,15 +130,21 @@ GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue,
 		return LOSE;
 	}
 	else if (dialogue.find("proceed to") != std::string::npos) {
+		printStats(gameInfo);
 		std::string sceneName = StringUtils::getWordAfterPhrase(dialogue, "proceed to");
 		if (sceneName != "") {
 			std::string scenePath = "resources/scenes/" + sceneName + ".scene";
 			configUtils.checkFile(scenePath, "scene " + sceneName + " is");
 
-			printStats(gameInfo);
 			gameInfo.currentScene = Scene();
 			gameInfo.currentScene.name = sceneName;
 			configUtils.initializeScene(gameInfo.currentScene, configUtils.document, false);
+			
+			auto playerIt = std::find_if(gameInfo.currentScene.actors.begin(), gameInfo.currentScene.actors.end(), [](Actor actor) { return actor.name == "player"; });
+
+			if (playerIt != gameInfo.currentScene.actors.end()) {
+				gameInfo.player = &*playerIt;
+			}
 			render(gameInfo);
 		}
 	}
