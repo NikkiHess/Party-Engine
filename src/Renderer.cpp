@@ -36,7 +36,7 @@ void Renderer::render(GameInfo& gameInfo) {
 		render << "\n";
 	}
 
-	// render, then display dialogue and command output
+	// display the render
 	std::cout << render.str();
 }
 
@@ -63,15 +63,35 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 			if (actor->position == gameInfo.player->position) {
 				actor->printContactDialogue();
 				gameInfo.state = executeCommands(*actor, actor->contactDialogue, gameInfo);
+				dialogue << actor->contactDialogue << "\n";
 			}
 			else {
 				actor->printNearbyDialogue();
 				gameInfo.state = executeCommands(*actor, actor->nearbyDialogue, gameInfo);
+				dialogue << actor->nearbyDialogue << "\n";
 			}
 		}
 	}
+	
+	if (gameInfo.state == PROCEED) {
+		std::string sceneName = StringUtils::getWordAfterPhrase(dialogue.str(), "proceed to");
+		if (sceneName != "") {
+			printStats(gameInfo);
+			std::string scenePath = "resources/scenes/" + sceneName + ".scene";
+			configUtils.checkFile(scenePath, "scene " + sceneName + " is");
 
-	std::cout << dialogue.str();
+			gameInfo.currentScene = Scene();
+			gameInfo.currentScene.name = sceneName;
+			configUtils.initializeScene(gameInfo.currentScene, configUtils.document, false);
+
+			auto playerIt = std::find_if(gameInfo.currentScene.actors.begin(), gameInfo.currentScene.actors.end(), [](Actor actor) { return actor.name == "player"; });
+
+			if (playerIt != gameInfo.currentScene.actors.end()) {
+				gameInfo.player = &*playerIt;
+			}
+			render(gameInfo);
+		}
+	}
 	printStats(gameInfo);
 }
 
@@ -116,37 +136,21 @@ GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue,
 			return LOSE;
 		}
 	}
-	else if (dialogue.find("score up") != std::string::npos) {
+	if (dialogue.find("score up") != std::string::npos) {
 		// an NPC Actor may only trigger a score increase once
 		if (!trigger.triggeredScoreUp) {
 			++gameInfo.playerScore;
 			trigger.triggeredScoreUp = true;
 		}
 	}
-	else if (dialogue.find("you win") != std::string::npos) {
+	if (dialogue.find("you win") != std::string::npos) {
 		return WIN;
 	}
-	else if (dialogue.find("game over") != std::string::npos) {
+	if (dialogue.find("game over") != std::string::npos) {
 		return LOSE;
 	}
-	else if (dialogue.find("proceed to") != std::string::npos) {
-		printStats(gameInfo);
-		std::string sceneName = StringUtils::getWordAfterPhrase(dialogue, "proceed to");
-		if (sceneName != "") {
-			std::string scenePath = "resources/scenes/" + sceneName + ".scene";
-			configUtils.checkFile(scenePath, "scene " + sceneName + " is");
-
-			gameInfo.currentScene = Scene();
-			gameInfo.currentScene.name = sceneName;
-			configUtils.initializeScene(gameInfo.currentScene, configUtils.document, false);
-			
-			auto playerIt = std::find_if(gameInfo.currentScene.actors.begin(), gameInfo.currentScene.actors.end(), [](Actor actor) { return actor.name == "player"; });
-
-			if (playerIt != gameInfo.currentScene.actors.end()) {
-				gameInfo.player = &*playerIt;
-			}
-			render(gameInfo);
-		}
+	if (dialogue.find("proceed to") != std::string::npos) {
+		return PROCEED;
 	}
 	return gameInfo.state;
 }

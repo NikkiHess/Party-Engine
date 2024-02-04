@@ -11,7 +11,7 @@
 // win = stop the engine with a win message
 // lose = stop the engine with a lose message
 enum GameState {
-	NORMAL, WIN, LOSE
+	NORMAL, WIN, LOSE, PROCEED
 };
 
 // information about the game, which can be shared between classes
