@@ -72,7 +72,7 @@ void ConfigHelper::initializeScene(std::string& resources, rapidjson::Document& 
 			if (docActors[i].HasMember("template")) {
 				std::string templateName = docActors[i]["template"].GetString();
 				std::string templatePath = resources + "actor_templates/" + templateName + ".template";
-				checkFile(templatePath, "template " + templateName + " is ");
+				checkFile(templatePath, "template " + templateName + " is");
 				// HOPEFULLY this leaves docActors intact
 				readJsonFile(templatePath, document);
 				setActorProps(props, document);
