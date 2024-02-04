@@ -5,6 +5,7 @@
 #include <iostream>
 #include <filesystem>
 #include <vector>
+#include <optional>
 
 // my code
 #include "../gamedata/Scene.h"
@@ -48,7 +49,7 @@ public:
 	}
 private:
 	// checks that a file exists, and if not prints an error message and exits with code 1
-	bool checkFile(const std::string& path);
+	bool checkFile(const std::string& path, std::optional<std::string> print = std::nullopt);
 
 	// initializes the messages loaded in from the resources/game.config file
 	void initializeMessages(rapidjson::Document& document);

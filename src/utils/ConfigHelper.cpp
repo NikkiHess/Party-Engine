@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
+#include <optional>
 
 // my code
 #include "../gamedata/Scene.h"
@@ -12,9 +13,12 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 
-bool ConfigHelper::checkFile(const std::string& path) {
+bool ConfigHelper::checkFile(const std::string& path, std::optional<std::string> print) {
 	if (!std::filesystem::exists(path)) {
-		std::cout << "error: " + path + " missing";
+		if (print.has_value())
+			std::cout << "error: " + print.value() + " missing";
+		else
+			std::cout << "error: " + path + " missing";
 		exit(0);
 	}
 }
@@ -66,7 +70,9 @@ void ConfigHelper::initializeScene(std::string& resources, rapidjson::Document& 
 
 			// initialize the ActorProps based on a template, if there is one
 			if (docActors[i].HasMember("template")) {
-				std::string templatePath = resources + "actor_templates/" + docActors[i]["template"].GetString() + ".template";
+				std::string templateName = docActors[i]["template"].GetString();
+				std::string templatePath = resources + "actor_templates/" + templateName + ".template";
+				checkFile(templatePath, "template " + templateName);
 				// HOPEFULLY this leaves docActors intact
 				readJsonFile(templatePath, document);
 				setActorProps(props, document);
