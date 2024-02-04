@@ -28,10 +28,13 @@ void Engine::updatePositions() {
 		// if no collision, keep moving
 		// if collision, reverse velocity (move next turn)
 		else {
-			if (!wouldCollide(actor))
-				updateActorPosition(actor);
-			else
-				actor.velocity = -actor.velocity;
+			// make sure they're moving so we don't do unnecessary calculations
+			if (actor.velocity.x > 0 || actor.velocity.y > 0) {
+				if (!wouldCollide(actor))
+					updateActorPosition(actor);
+				else
+					actor.velocity = -actor.velocity;
+			}
 		}
 	}
 }
@@ -43,8 +46,8 @@ void Engine::updateActorPosition(Actor& actor) {
 	if (oldLocIt != locToActors.end()) {
 		auto& actorsAtPos = oldLocIt->second;
 		actorsAtPos.erase(std::remove_if(actorsAtPos.begin(), actorsAtPos.end(),
-			[&actor](const Actor* a) { 
-				return a->id == actor.id; 
+			[&actor](const Actor* a) {
+				return a->id == actor.id;
 			}), actorsAtPos.end());
 		if (actorsAtPos.empty()) {
 			locToActors.erase(actor.position);
@@ -59,7 +62,7 @@ void Engine::updateActorPosition(Actor& actor) {
 	if (newLocIt != locToActors.end())
 		newLocIt->second.emplace_back(&actor);
 	else
-		locToActors.emplace( actor.position, std::vector<Actor*>{&actor} );
+		locToActors.emplace(actor.position, std::vector<Actor*>{&actor});
 }
 
 // TODO: MOVE THIS TO THE ACTOR CLASS
