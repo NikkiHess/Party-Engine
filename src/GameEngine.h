@@ -3,6 +3,7 @@
 // std library
 #include <string>
 #include <map>
+#include <algorithm>
 
 // my code
 #include "Renderer.h"

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cmath>
 #include <unordered_map>
+#include <algorithm>
 
 // include my code
 #include "Renderer.h"
