@@ -23,7 +23,7 @@ public:
 	std::string nearbyDialogue;
 	std::string contactDialogue;
 
-	uint64_t id = 0;
+	int id = 0;
 	bool triggeredScoreUp = false;
 
 	Actor(ActorProps& props)
