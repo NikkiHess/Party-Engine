@@ -1,4 +1,4 @@
-// std libraries
+// std library
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -43,22 +43,22 @@ void Renderer::render(GameInfo& gameInfo) {
 void Renderer::printDialogue(GameInfo& gameInfo) {
 	std::stringstream dialogue; // the dialogue to be printed
 	auto& locToActors = gameInfo.currentScene.locToActors;
-	std::vector<Actor*> actors;
+	std::vector<Actor*> nearby;
 
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
 			auto actorIt = locToActors.find(glm::ivec2(x, y) + gameInfo.player->position);
 			if (actorIt != locToActors.end()) {
-				actors.insert(actors.end(), actorIt->second.begin(), actorIt->second.end());
+				nearby.insert(nearby.end(), actorIt->second.begin(), actorIt->second.end());
 			}
 		}
 	}
 
 	// sort the actors we are near
-	if(actors.size() > 1)
-		std::sort(actors.begin(), actors.end(), ActorComparator());
-	for (Actor* actor : actors) {
+	if(nearby.size() > 1)
+		std::sort(nearby.begin(), nearby.end(), ActorComparator());
+	for (Actor* actor : nearby) {
 		// let's not let the player do dialogue at all
 		if (actor->name != "player") {
 			if (actor->position == gameInfo.player->position) {

@@ -1,6 +1,6 @@
 #pragma once
 
-// std stuff
+// std library
 #include <string>
 #include <map>
 

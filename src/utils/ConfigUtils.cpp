@@ -80,7 +80,6 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 	}
 	readJsonFile(scenePath, document);
 
-	// TODO: Make this not do if else, do like above
 	if (document.HasMember("actors")) {
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
@@ -103,6 +102,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 
 			// instantiate a new actor based on these props
 			scene.instantiateActor(props);
+			//std::cout << &scene.actors.back() << "\n"; // print actor address
 		}
 	}
 	else {

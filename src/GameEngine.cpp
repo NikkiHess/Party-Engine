@@ -66,10 +66,15 @@ void Engine::updateActorPosition(Actor& actor) {
 bool Engine::wouldCollide(Actor& actor) {
 	glm::ivec2 futurePosition = actor.position + actor.velocity;
 
-	auto it = gameInfo.currentScene.locToActors.find(futurePosition);
-	if (it != gameInfo.currentScene.locToActors.end()) {
-		for (Actor* other : it->second) {
-			if (other->blocking)
+	auto current = gameInfo.currentScene.locToActors.find(actor.position);
+	auto future = gameInfo.currentScene.locToActors.find(futurePosition);
+	for (Actor* currentActor : current->second) {
+		if (currentActor->id != actor.id && currentActor->blocking)
+			return true;
+	}
+	if (future != gameInfo.currentScene.locToActors.end()) {
+		for (Actor* futureActor : future->second) {
+			if (futureActor->blocking)
 				return true;
 		}
 	}

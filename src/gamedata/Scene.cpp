@@ -1,7 +1,7 @@
 #include "Scene.h"
 #include "Actor.h"
 
-// std stuff
+// std library
 #include <string>
 #include <unordered_map>
 #include <iostream>
