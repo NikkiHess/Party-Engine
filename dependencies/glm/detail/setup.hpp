@@ -652,6 +652,7 @@ namespace detail
 ///////////////////////////////////////////////////////////////////////////////////
 // 64-bit int
 
+#undef GLM_HAS_EXTENDED_INTEGER_TYPE
 #if GLM_HAS_EXTENDED_INTEGER_TYPE
 #	include <cstdint>
 #endif
