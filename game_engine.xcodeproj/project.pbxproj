@@ -23,9 +23,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1A0D2CBC2B7185A3005AD214 /* rapidjson */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rapidjson; path = dependencies/rapidjson; sourceTree = "<group>"; };
+		1A0D2CBD2B7185B5005AD214 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
 		1ABC8D892B6763020090CCA3 /* game_engine */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = game_engine; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ABC8D952B67656E0090CCA3 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; name = glm; path = dependencies/glm; sourceTree = "<group>"; };
-		1ABC8D962B67656E0090CCA3 /* MapHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapHelper.h; path = dependencies/MapHelper.h; sourceTree = "<group>"; };
 		1ABC8D972B67657A0090CCA3 /* GameEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameEngine.cpp; path = src/GameEngine.cpp; sourceTree = "<group>"; };
 		1ABC8D982B67657A0090CCA3 /* GameEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameEngine.h; path = src/GameEngine.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -44,10 +45,11 @@
 		1ABC8D802B6763020090CCA3 = {
 			isa = PBXGroup;
 			children = (
+				1A0D2CBD2B7185B5005AD214 /* src */,
+				1A0D2CBC2B7185A3005AD214 /* rapidjson */,
 				1ABC8D972B67657A0090CCA3 /* GameEngine.cpp */,
 				1ABC8D982B67657A0090CCA3 /* GameEngine.h */,
 				1ABC8D952B67656E0090CCA3 /* glm */,
-				1ABC8D962B67656E0090CCA3 /* MapHelper.h */,
 				1ABC8D8A2B6763020090CCA3 /* Products */,
 			);
 			sourceTree = "<group>";
