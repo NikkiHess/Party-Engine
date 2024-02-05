@@ -21,7 +21,3 @@ Actor& Scene::instantiateActor(ActorProps& props) {
 
 	return actor;
 }
-
-void Scene::deleteActors() {
-	locToActors.clear();
-}

@@ -31,10 +31,8 @@ public:
 	// instantiate an actor in the scene, returns the actor
 	Actor& instantiateActor(ActorProps& props);
 
-	void deleteActors();
-
 	~Scene() {
-		deleteActors();
+		locToActors.clear();
 	}
 };
 
