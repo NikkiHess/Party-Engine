@@ -28,6 +28,7 @@ void Renderer::render(GameInfo& gameInfo) {
 		for (int x = topLeft.x; x <= bottomRight.x; ++x) {
 			auto it = gameInfo.currentScene.locToActors.find(glm::ivec2(x, y));
 			if (it != gameInfo.currentScene.locToActors.end()) {
+				std::sort(it->second.begin(), it->second.end(), ActorComparator());
 				render << it->second.back()->view;
 			}
 			else {
