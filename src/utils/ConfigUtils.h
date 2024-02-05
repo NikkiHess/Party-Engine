@@ -74,7 +74,7 @@ private:
 #ifdef _WIN32
 		fopen_s(&filePointer, path.c_str(), "rb");
 #else
-		file_pointer = fopen(path.c_str(), "rb");
+		filePointer = fopen(path.c_str(), "rb");
 #endif
 		char buffer[65536];
 		rapidjson::FileReadStream stream(filePointer, buffer, sizeof(buffer));

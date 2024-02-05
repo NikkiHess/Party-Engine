@@ -94,6 +94,8 @@ void Engine::handleState() {
 			std::cout << gameInfo.gameOverBadMessage;
 		stop();
 		break;
+	default:
+		break;
 	}
 }
 
