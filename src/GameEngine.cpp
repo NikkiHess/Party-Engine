@@ -16,7 +16,7 @@
 
 void Engine::updatePositions() {
 	for (Actor& actor : gameInfo.currentScene.actors) {
-		if (abs(actor.velocity.x) > 0 || abs(actor.velocity.y) > 0) {
+		if (actor.velocity != glm::ivec2(0)) {
 			// if this is our player Actor, perform our player actor movement
 			if (actor.name == "player") {
 				if (!wouldCollide(actor)) {
@@ -66,15 +66,10 @@ void Engine::updateActorPosition(Actor& actor) {
 bool Engine::wouldCollide(Actor& actor) {
 	glm::ivec2 futurePosition = actor.position + actor.velocity;
 
-	auto current = gameInfo.currentScene.locToActors.find(actor.position);
-	auto future = gameInfo.currentScene.locToActors.find(futurePosition);
-	for (Actor* currentActor : current->second) {
-		if (currentActor->id != actor.id && currentActor->blocking)
-			return true;
-	}
-	if (future != gameInfo.currentScene.locToActors.end()) {
-		for (Actor* futureActor : future->second) {
-			if (futureActor->blocking)
+	auto it = gameInfo.currentScene.locToActors.find(futurePosition);
+	if (it != gameInfo.currentScene.locToActors.end()) {
+		for (Actor* other : it->second) {
+			if (other->blocking)
 				return true;
 		}
 	}
