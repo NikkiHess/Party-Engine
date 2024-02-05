@@ -28,8 +28,13 @@ void Renderer::render(GameInfo& gameInfo) {
 		for (int x = topLeft.x; x <= bottomRight.x; ++x) {
 			auto it = gameInfo.currentScene.locToActors.find(glm::ivec2(x, y));
 			if (it != gameInfo.currentScene.locToActors.end()) {
-				std::sort(it->second.begin(), it->second.end(), ActorComparator());
-				render << it->second.back()->view;
+				Actor* highest_id = it->second.back();
+				for (Actor* actor : it->second) {
+					if (actor->id > highest_id->id)
+						highest_id = actor;
+				}
+
+				render << highest_id->view;
 			}
 			else {
 				render << " ";
