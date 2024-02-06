@@ -56,12 +56,6 @@ void ConfigUtils::initializeRendering(rapidjson::Document& document) {
 		clearColor.g = document["clear_color_g"].GetInt();
 	if (document.HasMember("clear_color_b"))
 		clearColor.b = document["clear_color_b"].GetInt();
-
-	// we've been told in the spec we can assume it will always be odd, but...
-	if (renderSize.x % 2 == 0 || renderSize.y % 2 == 0) {
-		std::cout << "error: render size must be odd.";
-		exit(0); // should this be a different exit code?
-	}
 }
 
 void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, bool isInitialScene = false) {

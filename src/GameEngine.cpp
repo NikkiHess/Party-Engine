@@ -109,8 +109,14 @@ void Engine::start() {
 	SDL_Init(SDL_INIT_VIDEO);
 
 	// a window with proprties as defined by configUtils
-	SDL_Window* window = SDL_CreateWindow(configUtils.gameTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		configUtils.renderSize.x, configUtils.renderSize.y, SDL_WINDOW_SHOWN);
+	SDL_Window* window = SDL_CreateWindow(
+		configUtils.gameTitle.c_str(),	// window title
+		SDL_WINDOWPOS_CENTERED,			// initial x
+		SDL_WINDOWPOS_CENTERED,			// iniital y
+		configUtils.renderSize.x,		// width, in pixels
+		configUtils.renderSize.y,		// height, in pixels
+		SDL_WINDOW_SHOWN				// flags
+	);
 	// Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
 	SDL_Renderer* renderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
@@ -127,7 +133,6 @@ void Engine::start() {
 	isGameRunning = true;
 
 	while (isGameRunning) {
-
 		//// print the initial render of the world
 		//renderer.render(gameInfo);
 
