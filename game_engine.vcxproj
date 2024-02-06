@@ -120,6 +120,9 @@
       <AdditionalDependencies>%(ProjectDir)dependencies/SDL2/lib/SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(ProjectDir)dependencies/SDL2/lib</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>copy /Y "dependencies\SDL2\lib\SDL2.dll" "$(OutDIr)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -139,6 +142,9 @@
       <AdditionalLibraryDirectories>%(ProjectDir)dependencies/SDL2/lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(ProjectDir)dependencies/SDL2/lib/SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy /Y "dependencies\SDL2\lib\SDL2.dll" "$(OutDIr)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\AudioHelper.h" />
