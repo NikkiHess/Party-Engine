@@ -142,7 +142,7 @@ void Engine::start() {
 		SDL_Event nextEvent;
 		while (Helper::SDL_PollEvent498(&nextEvent)) {
 			if (nextEvent.type == SDL_QUIT) {
-				isGameRunning = false;
+				stop();
 			}
 		}
 

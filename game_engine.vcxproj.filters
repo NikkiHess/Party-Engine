@@ -1668,7 +1668,6 @@
     </None>
     <None Include="dependencies\SDL2\lib\SDL2.dll" />
     <None Include="dependencies\SDL2\SDL2.dll" />
-    <None Include="SDL2.dll" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\SDL2\lib\SDL2test.lib" />

@@ -37,13 +37,13 @@ public:
 		// this finds the player in the actors map
 		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });
 
-		if (playerIt == actors.end()) {
-			std::cout << "error: player not defined";
-			exit(0);
-		}
-		// sets the player from the actors vector
-		player = &*playerIt;
-		gameInfo.player = player;
+		//if (playerIt == actors.end()) {
+		//	std::cout << "error: player not defined";
+		//	exit(0);
+		//}
+		//// sets the player from the actors vector
+		//player = &*playerIt;
+		//gameInfo.player = player;
 	}
 
 	// execute the main game loop
