@@ -111,11 +111,18 @@ void Engine::start() {
 	// a window with proprties as defined by configUtils
 	SDL_Window* window = SDL_CreateWindow(configUtils.gameTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		configUtils.renderSize.x, configUtils.renderSize.y, SDL_WINDOW_SHOWN);
-	Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC);
+	// Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
+	SDL_Renderer* renderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
-	// print the starting message
-	if (gameInfo.gameStartMessage != "")
-		std::cout << gameInfo.gameStartMessage << "\n";
+	// Set the clear color
+	SDL_SetRenderDrawColor(renderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
+
+	// Clear the renderer using our clear color
+	SDL_RenderClear(renderer);
+
+	//// print the starting message
+	//if (gameInfo.gameStartMessage != "")
+	//	std::cout << gameInfo.gameStartMessage << "\n";
 
 	isGameRunning = true;
 
