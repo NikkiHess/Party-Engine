@@ -135,10 +135,6 @@ void Engine::start() {
 	//if (gameInfo.gameStartMessage != "")
 	//	std::cout << gameInfo.gameStartMessage << "\n";
 
-	// Clear the frame buffer at the beginning of a frame
-	SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
-	SDL_RenderClear(sdlRenderer);
-
 	isGameRunning = true;
 
 	while (isGameRunning) {
@@ -146,15 +142,15 @@ void Engine::start() {
 		SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
 		SDL_RenderClear(sdlRenderer);
 
-		Helper::SDL_RenderPresent498(sdlRenderer);
-
 		// Process events
 		SDL_Event nextEvent;
 		while (Helper::SDL_PollEvent498(&nextEvent)) {
 			if (nextEvent.type == SDL_QUIT) {
-				exit(0);
+				isGameRunning = false;
 			}
 		}
+
+		Helper::SDL_RenderPresent498(sdlRenderer);
 
 		SDL_Delay(1);
 
