@@ -33,7 +33,9 @@ void ConfigUtils::checkFile(const std::string& path, std::optional<std::string> 
 	}
 }
 
-void ConfigUtils::initializeMessages(rapidjson::Document& document) {
+void ConfigUtils::initializeGame(rapidjson::Document& document) {
+	if (document.HasMember("game_title"))
+		gameTitle = document["game_title"].GetString();
 	if (document.HasMember("game_start_message"))
 		gameStartMessage = document["game_start_message"].GetString();
 	if (document.HasMember("game_over_bad_message"))
@@ -47,6 +49,13 @@ void ConfigUtils::initializeRendering(rapidjson::Document& document) {
 		renderSize.x = document["x_resolution"].GetInt();
 	if (document.HasMember("y_resolution"))
 		renderSize.y = document["y_resolution"].GetInt();
+
+	if (document.HasMember("clear_color_r"))
+		clearColor.r = document["clear_color_r"].GetInt();
+	if (document.HasMember("clear_color_g"))
+		clearColor.g = document["clear_color_g"].GetInt();
+	if (document.HasMember("clear_color_b"))
+		clearColor.b = document["clear_color_b"].GetInt();
 
 	// we've been told in the spec we can assume it will always be odd, but...
 	if (renderSize.x % 2 == 0 || renderSize.y % 2 == 0) {

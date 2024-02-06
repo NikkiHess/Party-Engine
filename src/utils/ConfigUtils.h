@@ -18,21 +18,28 @@
 
 class ConfigUtils {
 public:
+	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
 
+	// relevant strings from game.config
+	std::string gameTitle = "";
 	std::string gameStartMessage = "";
 	std::string gameOverBadMessage, gameOverGoodMessage = "";
 
+	// The initial scene from game.config
 	Scene initialScene;
+	// Actors templates from the scene
 	std::vector<Actor*> templates;
 
+	// The render size, as defined by rendering.config
 	glm::ivec2 renderSize;
+	glm::ivec3 clearColor;
 
 	std::unordered_map<std::string, bool> fileExistsCache;
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
-	ConfigUtils() : renderSize(13, 9) {
+	ConfigUtils() : renderSize(640, 360), clearColor(255, 255, 255) {
 		std::string resources = "resources/";
 		std::string gameConfig = resources + "game.config";
 		std::string renderingConfig = resources + "rendering.config";
@@ -41,7 +48,7 @@ public:
 
 		checkFile(gameConfig);
 		readJsonFile(resources + "game.config", document);
-		initializeMessages(document);
+		initializeGame(document);
 		initializeScene(initialScene, document, true);
 
 		if (fileExists(renderingConfig)) {
@@ -59,8 +66,8 @@ public:
 	// utilizes Scene class
 	void initializeScene(Scene& scene, rapidjson::Document& document, bool isInitialScene);
 private:
-	// initializes the messages loaded in from the resources/game.config file
-	void initializeMessages(rapidjson::Document& document);
+	// initializes data from the resources/game.config file
+	void initializeGame(rapidjson::Document& document);
 
 	// initializes the render_size loaded in from the resources/rendering.config file
 	void initializeRendering(rapidjson::Document& document);

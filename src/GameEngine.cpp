@@ -9,8 +9,13 @@
 #include "utils/ConfigUtils.h"
 
 // dependencies
-#include "../dependencies/rapidjson/document.h"
+#include "rapidjson/document.h"
 #include "glm/glm.hpp"
+
+// SDL2
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_render.h"
+#include "Helper.h"
 
 // ---------- BEGIN MOTION FUNCTIONS ----------
 
@@ -100,6 +105,14 @@ void Engine::handleState() {
 }
 
 void Engine::start() {
+	// SDL code
+	SDL_Init(SDL_INIT_VIDEO);
+
+	// a window with proprties as defined by configUtils
+	SDL_Window* window = SDL_CreateWindow(configUtils.gameTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		configUtils.renderSize.x, configUtils.renderSize.y, SDL_WINDOW_SHOWN);
+	Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC);
+
 	// print the starting message
 	if (gameInfo.gameStartMessage != "")
 		std::cout << gameInfo.gameStartMessage << "\n";
@@ -107,18 +120,19 @@ void Engine::start() {
 	isGameRunning = true;
 
 	while (isGameRunning) {
-		// print the initial render of the world
-		renderer.render(gameInfo);
 
-		renderer.printDialogue(gameInfo);
-		handleState();
+		//// print the initial render of the world
+		//renderer.render(gameInfo);
 
-		// prompt the player to take an action
-		renderer.promptPlayer(gameInfo);
-		handleState();
-		
-		// update Actor positions
-		updatePositions();
+		//renderer.printDialogue(gameInfo);
+		//handleState();
+
+		//// prompt the player to take an action
+		//renderer.promptPlayer(gameInfo);
+		//handleState();
+		//
+		//// update Actor positions
+		//updatePositions();
 	}
 }
 
