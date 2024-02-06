@@ -129,7 +129,7 @@ void Engine::stop() {
 
 // ----------- END CORE FUNCTIONS ------------
 
-int main() {
+int main(int argc, char* argv[]) {
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);
 

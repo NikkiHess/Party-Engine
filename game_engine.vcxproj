@@ -469,7 +469,6 @@
     <ClCompile Include="src\utils\ConfigUtils.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
-    <ClCompile Include="src\utils\StringUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\glm\detail\func_common.inl" />
