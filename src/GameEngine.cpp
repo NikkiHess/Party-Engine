@@ -135,9 +135,19 @@ void Engine::start() {
 	//if (gameInfo.gameStartMessage != "")
 	//	std::cout << gameInfo.gameStartMessage << "\n";
 
+	// Clear the frame buffer at the beginning of a frame
+	SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
+	SDL_RenderClear(sdlRenderer);
+
 	isGameRunning = true;
 
 	while (isGameRunning) {
+		// Clear the frame buffer at the beginning of a frame
+		SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
+		SDL_RenderClear(sdlRenderer);
+
+		Helper::SDL_RenderPresent498(sdlRenderer);
+
 		// Process events
 		SDL_Event nextEvent;
 		while (Helper::SDL_PollEvent498(&nextEvent)) {
@@ -146,11 +156,7 @@ void Engine::start() {
 			}
 		}
 
-		// Clear the frame buffer at the beginning of a frame
-		SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
-		SDL_RenderClear(sdlRenderer);
-
-		Helper::SDL_RenderPresent498(sdlRenderer);
+		SDL_Delay(1);
 
 		//// print the initial render of the world
 		//renderer.render(gameInfo);
