@@ -28,7 +28,6 @@ private:
 public:
 	std::vector<Actor> actors;
 	std::unordered_map<glm::ivec2, std::vector<Actor*>, KeyFuncs, KeyFuncs> locToActors;
-	std::unordered_map<glm::ivec2, std::vector<Actor*>> locToActors;
 	std::string name;
 
 	// instantiate an actor in the scene, returns the actor
