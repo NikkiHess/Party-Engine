@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "SDL_mixer/SDL_mixer.h"
+#include "SDL2/SDL_mixer.h"
 #include "Helper.h"
 
 class AudioHelper {

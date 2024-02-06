@@ -138,10 +138,6 @@ void Engine::start() {
 	isGameRunning = true;
 
 	while (isGameRunning) {
-		// Clear the frame buffer at the beginning of a frame
-		SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
-		SDL_RenderClear(sdlRenderer);
-
 		// Process events
 		SDL_Event nextEvent;
 		while (Helper::SDL_PollEvent498(&nextEvent)) {
@@ -149,6 +145,10 @@ void Engine::start() {
 				isGameRunning = false;
 			}
 		}
+
+		// Clear the frame buffer at the beginning of a frame
+		SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
+		SDL_RenderClear(sdlRenderer);
 
 		Helper::SDL_RenderPresent498(sdlRenderer);
 
