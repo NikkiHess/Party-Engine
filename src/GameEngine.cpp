@@ -106,7 +106,10 @@ void Engine::handleState() {
 
 void Engine::start() {
 	// SDL code
-	SDL_Init(SDL_INIT_VIDEO);
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
+		return;
+	}
 
 	// a window with proprties as defined by configUtils
 	SDL_Window* window = SDL_CreateWindow(
@@ -117,14 +120,16 @@ void Engine::start() {
 		configUtils.renderSize.y,		// height, in pixels
 		SDL_WINDOW_SHOWN				// flags
 	);
+
+	// if our window couldn't be created, we have a problem
+	if (window == nullptr) {
+		std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
+		SDL_Quit();
+		return;
+	}
+
 	// Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
-	SDL_Renderer* renderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-
-	// Set the clear color
-	SDL_SetRenderDrawColor(renderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
-
-	// Clear the renderer using our clear color
-	SDL_RenderClear(renderer);
+	SDL_Renderer* sdlRenderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 
 	//// print the starting message
 	//if (gameInfo.gameStartMessage != "")
@@ -133,6 +138,20 @@ void Engine::start() {
 	isGameRunning = true;
 
 	while (isGameRunning) {
+		// Process events
+		SDL_Event nextEvent;
+		while (Helper::SDL_PollEvent498(&nextEvent)) {
+			if (nextEvent.type == SDL_QUIT) {
+				exit(0);
+			}
+		}
+
+		// Clear the frame buffer at the beginning of a frame
+		SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
+		SDL_RenderClear(sdlRenderer);
+
+		Helper::SDL_RenderPresent498(sdlRenderer);
+
 		//// print the initial render of the world
 		//renderer.render(gameInfo);
 
