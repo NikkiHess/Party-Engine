@@ -26,6 +26,8 @@ public:
 	std::string gameStartMessage = "";
 	std::string gameOverBadMessage, gameOverGoodMessage = "";
 	std::vector<std::string> introImages;
+	std::vector<std::string> introText;
+	std::string font;
 
 	// The initial scene from game.config
 	Scene initialScene;

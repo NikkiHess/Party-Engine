@@ -17,28 +17,76 @@
 #include "glm/glm.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_ttf.h"
 #include "Helper.h"
 
-SDL_Texture* Renderer::renderIntro(int& index) {
-	std::string imagePath = "resources/images/" + configUtils.introImages[index] + ".png";
-	SDL_Texture* texture = IMG_LoadTexture(sdlRenderer, 
-		imagePath.c_str());
+void Renderer::renderIntro(int& index) {
+	// Clear the frame buffer at the beginning of a frame
+	SDL_SetRenderDrawColor(
+		sdlRenderer,
+		configUtils.clearColor.r,
+		configUtils.clearColor.g,
+		configUtils.clearColor.b,
+		1
+	);
+	SDL_RenderClear(sdlRenderer);
 
-	if (texture == nullptr) {
+	drawStaticImage(
+		// exhausted introImages? continue to render last one
+		(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
+		0,
+		0,
+		configUtils.renderSize.x,
+		configUtils.renderSize.y
+	);
+	drawText(
+		// exhausted introText? continue to render last one
+		(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
+		16,
+		{ 255, 255, 255, 255 },
+		25,
+		configUtils.renderSize.y - 50
+	);
+
+	// Present the render
+	Helper::SDL_RenderPresent498(sdlRenderer);
+}
+
+void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
+	std::string imagePath = "resources/images/" + imageName + ".png";
+	SDL_Texture* imageTexture = IMG_LoadTexture(sdlRenderer, imagePath.c_str());
+
+	if (imageTexture == nullptr) {
 		std::cout << "Failed to load image: " << IMG_GetError() << "\n";
 		exit(0);
 	}
 
 	// Set the rendering position and size (center, full size)
-	SDL_Rect imageRect = { 0, 0, configUtils.renderSize.x, configUtils.renderSize.y };
+	SDL_Rect imageRect = { x, y, width, height };
 
 	// Copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, texture, nullptr, &imageRect);
+	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
+}
 
-	// Present the render
-	Helper::SDL_RenderPresent498(sdlRenderer);
+void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y) {
+	std::string fontPath = "resources/fonts/" + configUtils.font + ".ttf";
 
-	return texture;
+	// open the font specified in config
+	TTF_Font* font = TTF_OpenFont(fontPath.c_str(), fontSize);
+
+	// create a surface to render our text
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), fontColor);
+
+	// create a texture from that surface
+	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
+
+	// create a rect to render the text in
+	SDL_Rect textRect = { x, y, textSurface->w, textSurface->h };
+
+	// copy the texture to the renderer
+	SDL_RenderCopy(sdlRenderer, textTexture, nullptr, &textRect);
+
+	SDL_FreeSurface(textSurface);
 }
 
 void Renderer::render(GameInfo& gameInfo) {

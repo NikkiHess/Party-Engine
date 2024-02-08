@@ -16,6 +16,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_ttf.h"
 #include "Helper.h"
 
 // ---------- BEGIN MOTION FUNCTIONS ----------
@@ -106,7 +107,7 @@ void Engine::handleState() {
 }
 
 void Engine::start() {
-	// SDL code
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
 		return;
@@ -114,6 +115,9 @@ void Engine::start() {
 
 	// Initialize SDL_image to handle PNGs
 	IMG_Init(IMG_INIT_PNG);
+
+	// Initialize SDL_ttf
+	TTF_Init();
 
 	// a window with proprties as defined by configUtils
 	SDL_Window* window = SDL_CreateWindow(
@@ -140,10 +144,13 @@ void Engine::start() {
 	//if (gameInfo.gameStartMessage != "")
 	//	std::cout << gameInfo.gameStartMessage << "\n";
 
+	// run the game loop
 	doGameLoop();
+
 	// quit at the very end
 	SDL_Quit();
 	IMG_Quit();
+	TTF_Quit();
 }
 
 void Engine::doGameLoop() {
@@ -157,8 +164,8 @@ void Engine::doGameLoop() {
 			if (nextEvent.type == SDL_QUIT) {
 				stop();
 			}
-			// Intro image handling
-			if (currentIntroIndex < configUtils.introImages.size()) {
+			// Intro handling
+			if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
 				// if a key is pressed
 				if (nextEvent.type == SDL_KEYDOWN) {
 					SDL_Scancode scancode = nextEvent.key.keysym.scancode;
@@ -178,7 +185,7 @@ void Engine::doGameLoop() {
 			}
 		}
 
-		if (currentIntroIndex < configUtils.introImages.size()) {
+		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
 			renderer.renderIntro(currentIntroIndex);
 		}
 		else {

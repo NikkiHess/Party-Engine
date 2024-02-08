@@ -20,7 +20,13 @@ public:
 	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize) {}
 
 	// render the intro images one by one, proceed when enter has been pressed
-	SDL_Texture* renderIntro(int& index);
+	void renderIntro(int& index);
+
+	// draw an unchanging image on the screen
+	void drawStaticImage(std::string& imageName, int x, int y, int width, int height);
+
+	// draw text on the screen
+	void drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y);
 
 	// render the current view, returns the current GameState
 	void render(GameInfo& gameInfo);

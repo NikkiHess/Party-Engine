@@ -35,18 +35,29 @@ void ConfigUtils::checkFile(const std::string& path, std::optional<std::string> 
 }
 
 void ConfigUtils::initializeGame(rapidjson::Document& document) {
+	// handle game title
 	if (document.HasMember("game_title"))
 		gameTitle = document["game_title"].GetString();
+
+	// handle messages
 	if (document.HasMember("game_start_message"))
 		gameStartMessage = document["game_start_message"].GetString();
 	if (document.HasMember("game_over_bad_message"))
 		gameOverBadMessage = document["game_over_bad_message"].GetString();
 	if (document.HasMember("game_over_good_message"))
 		gameOverGoodMessage = document["game_over_good_message"].GetString();
+	if (document.HasMember("font")) {
+		font = document["font"].GetString();
+
+		checkFile("resources/fonts/" + font + ".ttf", "font " + font);
+	}
+
+	// handle the intro
 	if (document.HasMember("intro_image")) {
 		rapidjson::GenericArray images = document["intro_image"].GetArray();
 		introImages.reserve(images.Size());
-		//std::copy(images.Begin(), images.End(), std::back_inserter(introImages));
+
+		// Copy the images over one by one, checking each along the way
 		for (rapidjson::Value& image : images) {
 			std::string imgString = image.GetString();
 			if (!fileExists("resources/images/" + imgString + ".png")) {
@@ -55,6 +66,18 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 			}
 			
 			introImages.emplace_back(image.GetString());
+		}
+	}
+	if (document.HasMember("intro_text")) {
+		if (font == "") {
+			std::cout << "error: text render failed. No font configured";
+			exit(0);
+		}
+		rapidjson::GenericArray texts = document["intro_text"].GetArray();
+		introText.reserve(texts.Size());
+		
+		for (rapidjson::Value& text : texts) {
+			introText.emplace_back(text.GetString());
 		}
 	}
 }
