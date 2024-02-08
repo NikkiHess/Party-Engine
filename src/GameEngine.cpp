@@ -167,11 +167,12 @@ void Engine::start() {
 		//// update Actor positions
 		//updatePositions();
 	}
+	// quit at the very end
+	SDL_Quit();
 }
 
 void Engine::stop() {
 	isGameRunning = false;
-	exit(0);
 }
 
 // ----------- END CORE FUNCTIONS ------------
