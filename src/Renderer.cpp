@@ -31,22 +31,26 @@ void Renderer::renderIntro(int& index) {
 	);
 	SDL_RenderClear(sdlRenderer);
 
-	drawStaticImage(
-		// exhausted introImages? continue to render last one
-		(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
-		0,
-		0,
-		configUtils.renderSize.x,
-		configUtils.renderSize.y
-	);
-	drawText(
-		// exhausted introText? continue to render last one
-		(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
-		16,
-		{ 255, 255, 255, 255 },
-		25,
-		configUtils.renderSize.y - 50
-	);
+	if (!configUtils.introImages.empty()) {
+		drawStaticImage(
+			// exhausted introImages? continue to render last one
+			(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
+			0,
+			0,
+			configUtils.renderSize.x,
+			configUtils.renderSize.y
+		);
+	}
+	if (!configUtils.introText.empty()) {
+		drawText(
+			// exhausted introText? continue to render last one
+			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
+			16,
+			{ 255, 255, 255, 255 },
+			25,
+			configUtils.renderSize.y - 50
+		);
+	}
 
 	// Present the render
 	Helper::SDL_RenderPresent498(sdlRenderer);

@@ -28,9 +28,15 @@ public:
 	int playerScore = 0; // the player's current score
 
 	// load the game info after everything else has been loaded
-	GameInfo gameInfo{ player, playerHealth, playerScore,
-						state, configUtils.gameStartMessage,
-						configUtils.gameOverBadMessage, configUtils.gameOverGoodMessage, configUtils.initialScene };
+	GameInfo gameInfo{ 
+		player, 
+		playerHealth, 
+		playerScore,	
+		state, 
+		configUtils.gameOverBadMessage, 
+		configUtils.gameOverGoodMessage, 
+		configUtils.initialScene 
+	};
 
 	Engine(Renderer& renderer, ConfigUtils& configUtils) : renderer(renderer), configUtils(configUtils) {
 		std::vector<Actor>& actors = configUtils.initialScene.actors;
