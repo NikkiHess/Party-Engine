@@ -121,7 +121,7 @@
       <AdditionalLibraryDirectories>%(ProjectDir)dependencies/SDL2/lib</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y "dependencies\SDL2\lib\SDL2.dll" "$(OutDIr)"</Command>
+      <Command>copy /Y "dependencies\SDL2\lib\SDL2.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,7 +143,7 @@
       <AdditionalDependencies>%(ProjectDir)dependencies/SDL2/lib/SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy /Y "dependencies\SDL2\lib\SDL2.dll" "$(OutDIr)"</Command>
+      <Command>copy /Y "dependencies\SDL2\lib\SDL2.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
