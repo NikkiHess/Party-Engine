@@ -40,8 +40,6 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 		gameTitle = document["game_title"].GetString();
 
 	// handle messages
-	if (document.HasMember("game_start_message"))
-		gameStartMessage = document["game_start_message"].GetString();
 	if (document.HasMember("game_over_bad_message"))
 		gameOverBadMessage = document["game_over_bad_message"].GetString();
 	if (document.HasMember("game_over_good_message"))

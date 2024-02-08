@@ -23,7 +23,6 @@ public:
 
 	// relevant strings from game.config
 	std::string gameTitle = "";
-	std::string gameStartMessage = "";
 	std::string gameOverBadMessage, gameOverGoodMessage = "";
 	std::vector<std::string> introImages;
 	std::vector<std::string> introText;
