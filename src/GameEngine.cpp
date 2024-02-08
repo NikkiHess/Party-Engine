@@ -15,6 +15,7 @@
 // SDL2
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_render.h"
+#include "SDL2/SDL_image.h"
 #include "Helper.h"
 
 // ---------- BEGIN MOTION FUNCTIONS ----------
@@ -111,6 +112,9 @@ void Engine::start() {
 		return;
 	}
 
+	// Initialize SDL_image to handle PNGs
+	IMG_Init(IMG_INIT_PNG);
+
 	// a window with proprties as defined by configUtils
 	SDL_Window* window = SDL_CreateWindow(
 		configUtils.gameTitle.c_str(),	// window title
@@ -130,11 +134,20 @@ void Engine::start() {
 
 	// Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
 	SDL_Renderer* sdlRenderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+	renderer.sdlRenderer = sdlRenderer;
 
 	//// print the starting message
 	//if (gameInfo.gameStartMessage != "")
 	//	std::cout << gameInfo.gameStartMessage << "\n";
 
+	doGameLoop();
+	// quit at the very end
+	SDL_Quit();
+	IMG_Quit();
+}
+
+void Engine::doGameLoop() {
+	int currentIntroIndex = 0;
 	isGameRunning = true;
 
 	while (isGameRunning) {
@@ -144,18 +157,35 @@ void Engine::start() {
 			if (nextEvent.type == SDL_QUIT) {
 				stop();
 			}
+			// Intro image handling
+			if (currentIntroIndex < configUtils.introImages.size()) {
+				// if a key is pressed
+				if (nextEvent.type == SDL_KEYDOWN) {
+					SDL_Scancode scancode = nextEvent.key.keysym.scancode;
+
+					// Go to the next intro image if we press space or enter
+					switch (scancode) {
+					case SDL_SCANCODE_SPACE:
+					case SDL_SCANCODE_RETURN:
+						++currentIntroIndex;
+						break;
+					}
+				}
+				// Go to the next intro image if we click
+				if (nextEvent.type == SDL_MOUSEBUTTONDOWN) {
+					++currentIntroIndex;
+				}
+			}
 		}
 
-		// Clear the frame buffer at the beginning of a frame
-		SDL_SetRenderDrawColor(sdlRenderer, configUtils.clearColor.r, configUtils.clearColor.g, configUtils.clearColor.b, 1);
-		SDL_RenderClear(sdlRenderer);
-
-		Helper::SDL_RenderPresent498(sdlRenderer);
+		if (currentIntroIndex < configUtils.introImages.size()) {
+			renderer.renderIntro(currentIntroIndex);
+		}
+		else {
+			renderer.render(gameInfo);
+		}
 
 		SDL_Delay(1);
-
-		//// print the initial render of the world
-		//renderer.render(gameInfo);
 
 		//renderer.printDialogue(gameInfo);
 		//handleState();
@@ -167,8 +197,6 @@ void Engine::start() {
 		//// update Actor positions
 		//updatePositions();
 	}
-	// quit at the very end
-	SDL_Quit();
 }
 
 void Engine::stop() {

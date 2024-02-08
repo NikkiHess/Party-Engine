@@ -1053,9 +1053,6 @@
     <ClInclude Include="dependencies\SDL2\SDL_hints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dependencies\SDL2\SDL_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dependencies\SDL2\SDL_joystick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1234,6 +1231,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\SDL2\SDL_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1668,10 +1668,16 @@
     </None>
     <None Include="dependencies\SDL2\lib\SDL2.dll" />
     <None Include="dependencies\SDL2\SDL2.dll" />
+    <None Include="dependencies\SDL2\lib\SDL2_image.dll" />
+    <None Include="dependencies\SDL2\lib\SDL2_mixer.dll" />
+    <None Include="dependencies\SDL2\lib\SDL2_ttf.dll" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\SDL2\lib\SDL2test.lib" />
     <Library Include="dependencies\SDL2\lib\SDL2.lib" />
     <Library Include="dependencies\SDL2\lib\SDL2main.lib" />
+    <Library Include="dependencies\SDL2\lib\SDL2_image.lib" />
+    <Library Include="dependencies\SDL2\lib\SDL2_mixer.lib" />
+    <Library Include="dependencies\SDL2\lib\SDL2_ttf.lib" />
   </ItemGroup>
 </Project>

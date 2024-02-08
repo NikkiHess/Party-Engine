@@ -15,36 +15,74 @@
 // dependencies
 #include "rapidjson/document.h"
 #include "glm/glm.hpp"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+#include "Helper.h"
 
-void Renderer::render(GameInfo& gameInfo) {
-	std::stringstream render; // the rendered view
+SDL_Texture* Renderer::renderIntro(int& index) {
+	std::string imagePath = "resources/images/" + configUtils.introImages[index] + ".png";
+	SDL_Texture* texture = IMG_LoadTexture(sdlRenderer, 
+		imagePath.c_str());
 
-	// render bounds
-	glm::ivec2 topLeft(gameInfo.player->position.x - (renderSize.x / 2), gameInfo.player->position.y - (renderSize.y / 2));
-	glm::ivec2 bottomRight(gameInfo.player->position.x + (renderSize.x / 2), gameInfo.player->position.y + (renderSize.y / 2));
-
-	// perform the render of the current view given the bounds
-	for (int y = topLeft.y; y <= bottomRight.y; ++y) {
-		for (int x = topLeft.x; x <= bottomRight.x; ++x) {
-			auto it = gameInfo.currentScene.locToActors.find(glm::ivec2(x, y));
-			if (it != gameInfo.currentScene.locToActors.end()) {
-				Actor* highest_id = it->second.back();
-				for (Actor* actor : it->second) {
-					if (actor->id > highest_id->id)
-						highest_id = actor;
-				}
-
-				render << highest_id->view;
-			}
-			else {
-				render << " ";
-			}
-		}
-		render << "\n";
+	if (texture == nullptr) {
+		std::cout << "Failed to load image: " << IMG_GetError() << "\n";
+		exit(0);
 	}
 
-	// display the render
-	std::cout << render.str();
+	// Set the rendering position and size (center, full size)
+	SDL_Rect imageRect = { 0, 0, configUtils.renderSize.x, configUtils.renderSize.y };
+
+	// Copy the texture to the renderer
+	SDL_RenderCopy(sdlRenderer, texture, nullptr, &imageRect);
+
+	// Present the render
+	Helper::SDL_RenderPresent498(sdlRenderer);
+
+	return texture;
+}
+
+void Renderer::render(GameInfo& gameInfo) {
+	// Clear the frame buffer at the beginning of a frame
+	SDL_SetRenderDrawColor(
+		sdlRenderer, 
+		configUtils.clearColor.r, 
+		configUtils.clearColor.g, 
+		configUtils.clearColor.b, 
+		1
+	);
+	SDL_RenderClear(sdlRenderer);
+
+	// Present the render
+	Helper::SDL_RenderPresent498(sdlRenderer);
+
+	//std::stringstream render; // the rendered view
+
+	//// render bounds
+	//glm::ivec2 topLeft(gameInfo.player->position.x - (renderSize.x / 2), gameInfo.player->position.y - (renderSize.y / 2));
+	//glm::ivec2 bottomRight(gameInfo.player->position.x + (renderSize.x / 2), gameInfo.player->position.y + (renderSize.y / 2));
+
+	//// perform the render of the current view given the bounds
+	//for (int y = topLeft.y; y <= bottomRight.y; ++y) {
+	//	for (int x = topLeft.x; x <= bottomRight.x; ++x) {
+	//		auto it = gameInfo.currentScene.locToActors.find(glm::ivec2(x, y));
+	//		if (it != gameInfo.currentScene.locToActors.end()) {
+	//			Actor* highest_id = it->second.back();
+	//			for (Actor* actor : it->second) {
+	//				if (actor->id > highest_id->id)
+	//					highest_id = actor;
+	//			}
+
+	//			render << highest_id->view;
+	//		}
+	//		else {
+	//			render << " ";
+	//		}
+	//	}
+	//	render << "\n";
+	//}
+
+	//// display the render
+	//std::cout << render.str();
 }
 
 void Renderer::printDialogue(GameInfo& gameInfo) {

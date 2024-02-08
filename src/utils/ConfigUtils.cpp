@@ -12,6 +12,7 @@
 // dependencies
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
+#include "SDL2/SDL_image.h"
 
 bool ConfigUtils::fileExists(const std::string& path) {
 	// checks whether the cache contains an entry
@@ -42,6 +43,20 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 		gameOverBadMessage = document["game_over_bad_message"].GetString();
 	if (document.HasMember("game_over_good_message"))
 		gameOverGoodMessage = document["game_over_good_message"].GetString();
+	if (document.HasMember("intro_image")) {
+		rapidjson::GenericArray images = document["intro_image"].GetArray();
+		introImages.reserve(images.Size());
+		//std::copy(images.Begin(), images.End(), std::back_inserter(introImages));
+		for (rapidjson::Value& image : images) {
+			std::string imgString = image.GetString();
+			if (!fileExists("resources/images/" + imgString + ".png")) {
+				std::cout << "error: missing image " + imgString;
+				exit(0);
+			}
+			
+			introImages.emplace_back(image.GetString());
+		}
+	}
 }
 
 void ConfigUtils::initializeRendering(rapidjson::Document& document) {

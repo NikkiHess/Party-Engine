@@ -9,13 +9,18 @@
 
 // dependencies
 #include "glm/glm.hpp"
+#include "SDL2/SDL.h"
 
 class Renderer {
 public:
+	SDL_Renderer* sdlRenderer; // the sdl renderer we're using
 	ConfigUtils& configUtils; // the ConfigUtils the game uses
 	glm::ivec2 renderSize; // the size of the rendered view
 
 	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize) {}
+
+	// render the intro images one by one, proceed when enter has been pressed
+	SDL_Texture* renderIntro(int& index);
 
 	// render the current view, returns the current GameState
 	void render(GameInfo& gameInfo);
