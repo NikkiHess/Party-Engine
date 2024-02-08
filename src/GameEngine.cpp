@@ -185,12 +185,16 @@ void Engine::doGameLoop() {
 			}
 		}
 
+		// render the game first
+		renderer.render(gameInfo);
+		
+		// if there's an intro, render it on top of the game
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
 			renderer.renderIntro(currentIntroIndex);
 		}
-		else {
-			renderer.render(gameInfo);
-		}
+
+		// Present the render
+		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
 
 		SDL_Delay(1);
 

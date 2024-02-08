@@ -51,9 +51,6 @@ void Renderer::renderIntro(int& index) {
 			configUtils.renderSize.y - 50
 		);
 	}
-
-	// Present the render
-	Helper::SDL_RenderPresent498(sdlRenderer);
 }
 
 void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
@@ -103,9 +100,6 @@ void Renderer::render(GameInfo& gameInfo) {
 		1
 	);
 	SDL_RenderClear(sdlRenderer);
-
-	// Present the render
-	Helper::SDL_RenderPresent498(sdlRenderer);
 
 	//std::stringstream render; // the rendered view
 
