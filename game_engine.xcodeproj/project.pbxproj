@@ -12,6 +12,10 @@
 		1A97D26A2B71B35D007E39F4 /* Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A97D2662B71B35D007E39F4 /* Actor.cpp */; };
 		1A97D26B2B71B35D007E39F4 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A97D2692B71B35D007E39F4 /* Scene.cpp */; };
 		1A97D26F2B71B368007E39F4 /* ConfigUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A97D26C2B71B368007E39F4 /* ConfigUtils.cpp */; };
+		1AFE9C5C2B7603720052907A /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFE9C582B7603720052907A /* SDL2_ttf.framework */; };
+		1AFE9C5D2B7603720052907A /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFE9C592B7603720052907A /* SDL2_image.framework */; };
+		1AFE9C5E2B7603720052907A /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFE9C5A2B7603720052907A /* SDL2_mixer.framework */; };
+		1AFE9C5F2B7603720052907A /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFE9C5B2B7603720052907A /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +44,10 @@
 		1A97D26C2B71B368007E39F4 /* ConfigUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConfigUtils.cpp; path = src/utils/ConfigUtils.cpp; sourceTree = "<group>"; };
 		1A97D26D2B71B368007E39F4 /* ConfigUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConfigUtils.h; path = src/utils/ConfigUtils.h; sourceTree = "<group>"; };
 		1A97D26E2B71B368007E39F4 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringUtils.h; path = src/utils/StringUtils.h; sourceTree = "<group>"; };
+		1AFE9C582B7603720052907A /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = dependencies/SDL2/lib/osx/SDL2_ttf.framework; sourceTree = "<group>"; };
+		1AFE9C592B7603720052907A /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = dependencies/SDL2/lib/osx/SDL2_image.framework; sourceTree = "<group>"; };
+		1AFE9C5A2B7603720052907A /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = dependencies/SDL2/lib/osx/SDL2_mixer.framework; sourceTree = "<group>"; };
+		1AFE9C5B2B7603720052907A /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = dependencies/SDL2/lib/osx/SDL2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +55,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AFE9C5C2B7603720052907A /* SDL2_ttf.framework in Frameworks */,
+				1AFE9C5D2B7603720052907A /* SDL2_image.framework in Frameworks */,
+				1AFE9C5E2B7603720052907A /* SDL2_mixer.framework in Frameworks */,
+				1AFE9C5F2B7603720052907A /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,6 +81,7 @@
 				1A97D25D2B71B0F5007E39F4 /* Renderer.cpp */,
 				1A97D25E2B71B0F5007E39F4 /* Renderer.h */,
 				1A97D2502B71B040007E39F4 /* Products */,
+				1AFE9C572B7603720052907A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,6 +91,17 @@
 				1A97D24F2B71B040007E39F4 /* game_engine */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1AFE9C572B7603720052907A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1AFE9C592B7603720052907A /* SDL2_image.framework */,
+				1AFE9C5A2B7603720052907A /* SDL2_mixer.framework */,
+				1AFE9C582B7603720052907A /* SDL2_ttf.framework */,
+				1AFE9C5B2B7603720052907A /* SDL2.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,7 +291,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/dependencies/SDL2/lib/osx",
+				);
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/SDL2/lib/OSX";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -276,7 +305,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/dependencies/SDL2/lib/osx",
+				);
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies";
+				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/SDL2/lib/OSX";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
