@@ -157,8 +157,6 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {
 	if (document.HasMember("name"))
 		props.name = document["name"].GetString();
-	if (document.HasMember("view"))
-		props.view = document["view"].GetString()[0];
 	if (document.HasMember("x"))
 		props.x = document["x"].GetInt();
 	if (document.HasMember("y"))
