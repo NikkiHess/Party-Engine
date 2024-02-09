@@ -140,12 +140,10 @@ void Engine::doGameLoop() {
 	isGameRunning = true;
 	bool introMusicPlaying = false;
 
-#ifndef __linux__
 	if (configUtils.introMusic != "") {
 		renderer.playSound(configUtils.introMusic, -1);
 		introMusicPlaying = true;
 	}
-#endif
 
 	while (isGameRunning) {
 		// Process events
@@ -185,14 +183,12 @@ void Engine::doGameLoop() {
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
 			renderer.renderIntro(currentIntroIndex);
 		}
-#ifndef __linux__
 		// this ensures that the intro music is only halted once
 		else if(introMusicPlaying){
 			// Halt music playback on channel 0 (intro music)
 			AudioHelper::Mix_HaltChannel498(0);
 			introMusicPlaying = false;
 		}
-#endif
 
 		// Present the render
 		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
@@ -227,13 +223,11 @@ int main(int argc, char* argv[]) {
 	// Initialize SDL_ttf
 	TTF_Init();
 
-#ifndef __linux__
 	// Initialize SDL_mixer
 	Mix_Init(MIX_INIT_OGG);
 	// Open the default audio device for playback and allocate 16 channels for mixing
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 	AudioHelper::Mix_AllocateChannels498(16);
-#endif
 
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);
@@ -245,9 +239,7 @@ int main(int argc, char* argv[]) {
 	SDL_Quit();
 	IMG_Quit();
 	TTF_Quit();
-#ifndef __linux__
 	Mix_Quit();
-#endif
 
 	return 0;
 }
