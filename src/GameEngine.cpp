@@ -7,6 +7,7 @@
 // include my code
 #include "GameEngine.h"
 #include "utils/ConfigUtils.h"
+#include "Renderer.h"
 
 // dependencies
 #include "rapidjson/document.h"
@@ -162,6 +163,8 @@ void Engine::doGameLoop() {
 					case SDL_SCANCODE_SPACE:
 					case SDL_SCANCODE_RETURN:
 						++currentIntroIndex;
+						break;
+					default:
 						break;
 					}
 				}

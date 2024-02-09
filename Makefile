@@ -1,5 +1,5 @@
 # List all source files
-SOURCES := src/GameEngine.cpp src/Renderer.cpp src/gamedata/Actor.cpp src/gamedata/Scene.cpp src/utils/ConfigUtils.cpp src/utils/StringUtils.cpp
+SOURCES := src/GameEngine.cpp src/Renderer.cpp src/gamedata/Actor.cpp src/gamedata/Scene.cpp src/utils/ConfigUtils.cpp
 
 # Derive object file names from source file names
 OBJECTS := $(SOURCES:.cpp=.o)
@@ -7,12 +7,15 @@ OBJECTS := $(SOURCES:.cpp=.o)
 # Compiler flags
 CXXFLAGS := -std=c++17 -I./dependencies -O2
 
+# Linker flags
+LDFLAGS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+
 # Target executable
 TARGET := game_engine_linux
 
 # Main rule to build the executable
 $(TARGET): $(OBJECTS)
-	clang++ $(CXXFLAGS) -o $@ $^
+	clang++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Rule to compile each source file into an object file
 %.o: %.cpp
