@@ -40,14 +40,14 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 		gameTitle = document["game_title"].GetString();
 
 	// handle messages
-	if (document.HasMember("game_over_bad_message"))
-		gameOverBadMessage = document["game_over_bad_message"].GetString();
-	if (document.HasMember("game_over_good_message"))
-		gameOverGoodMessage = document["game_over_good_message"].GetString();
 	if (document.HasMember("font")) {
-		font = document["font"].GetString();
+		std::string fontName = document["font"].GetString();
+		std::string fontPath = "resources/fonts/" + fontName + ".ttf";
 
-		checkFile("resources/fonts/" + font + ".ttf", "font " + font);
+		checkFile(fontPath, "font " + fontName);
+
+		// open the font specified
+		font = TTF_OpenFont(fontPath.c_str(), 16);
 	}
 
 	// handle the intro
@@ -67,7 +67,7 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 		}
 	}
 	if (document.HasMember("intro_text")) {
-		if (font == "") {
+		if (font == nullptr) {
 			std::cout << "error: text render failed. No font configured";
 			exit(0);
 		}

@@ -54,8 +54,16 @@ void Renderer::renderIntro(int& index) {
 }
 
 void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
-	std::string imagePath = "resources/images/" + imageName + ".png";
-	SDL_Texture* imageTexture = IMG_LoadTexture(sdlRenderer, imagePath.c_str());
+	SDL_Texture* imageTexture = nullptr;
+	// If cached, load the imageTexture
+	if(configUtils.imageTextures[imageName]) {
+		imageTexture = configUtils.imageTextures[imageName];
+	}
+	else {
+		std::string imagePath = "resources/images/" + imageName + ".png";
+		imageTexture = IMG_LoadTexture(sdlRenderer, imagePath.c_str());
+		configUtils.imageTextures[imageName] = imageTexture;
+	}
 
 	if (imageTexture == nullptr) {
 		std::cout << "Failed to load image: " << IMG_GetError() << "\n";
@@ -70,13 +78,8 @@ void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, 
 }
 
 void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y) {
-	std::string fontPath = "resources/fonts/" + configUtils.font + ".ttf";
-
-	// open the font specified in config
-	TTF_Font* font = TTF_OpenFont(fontPath.c_str(), fontSize);
-
 	// create a surface to render our text
-	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), fontColor);
+	SDL_Surface* textSurface = TTF_RenderText_Solid(configUtils.font, text.c_str(), fontColor);
 
 	// create a texture from that surface
 	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);

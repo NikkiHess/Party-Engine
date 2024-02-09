@@ -32,9 +32,7 @@ public:
 		player, 
 		playerHealth, 
 		playerScore,	
-		state, 
-		configUtils.gameOverBadMessage, 
-		configUtils.gameOverGoodMessage, 
+		state,
 		configUtils.initialScene 
 	};
 

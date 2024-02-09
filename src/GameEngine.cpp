@@ -92,13 +92,9 @@ void Engine::handleState() {
 	// Should the Engine class handle printing these messages, or should the Renderer?
 	switch (gameInfo.state) {
 	case WIN:
-		if (gameInfo.gameOverGoodMessage != "")
-			std::cout << gameInfo.gameOverGoodMessage;
 		stop();
 		break;
 	case LOSE:
-		if (gameInfo.gameOverBadMessage != "")
-			std::cout << gameInfo.gameOverBadMessage;
 		stop();
 		break;
 	default:
@@ -107,18 +103,6 @@ void Engine::handleState() {
 }
 
 void Engine::start() {
-	// Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
-		return;
-	}
-
-	// Initialize SDL_image to handle PNGs
-	IMG_Init(IMG_INIT_PNG);
-
-	// Initialize SDL_ttf
-	TTF_Init();
-
 	// a window with proprties as defined by configUtils
 	SDL_Window* window = SDL_CreateWindow(
 		configUtils.gameTitle.c_str(),	// window title
@@ -146,11 +130,6 @@ void Engine::start() {
 
 	// run the game loop
 	doGameLoop();
-
-	// quit at the very end
-	SDL_Quit();
-	IMG_Quit();
-	TTF_Quit();
 }
 
 void Engine::doGameLoop() {
@@ -217,11 +196,28 @@ void Engine::stop() {
 // ----------- END CORE FUNCTIONS ------------
 
 int main(int argc, char* argv[]) {
+	// Initialize SDL
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
+		return 1;
+	}
+
+	// Initialize SDL_image to handle PNGs
+	IMG_Init(IMG_INIT_PNG);
+
+	// Initialize SDL_ttf
+	TTF_Init();
+
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);
 
 	Engine engine(renderer, configUtils);
 	engine.start();
+
+	// quit at the very end
+	SDL_Quit();
+	IMG_Quit();
+	TTF_Quit();
 
 	return 0;
 }

@@ -23,8 +23,5 @@ public:
 	int& playerScore; // the player's score
 	GameState& state; // the current state of the game
 
-	// the message to be shown upon game end
-	const std::string& gameOverBadMessage, gameOverGoodMessage;
-
 	Scene& currentScene;
 };

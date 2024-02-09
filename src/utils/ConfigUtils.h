@@ -5,6 +5,7 @@
 #include <iostream>
 #include <filesystem>
 #include <vector>
+#include <unordered_map>
 #include <optional>
 
 // my code
@@ -15,6 +16,8 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "glm/glm.hpp"
+#include "SDL2/SDL_render.h"
+#include "SDL2/SDL_ttf.h"
 
 class ConfigUtils {
 public:
@@ -23,10 +26,13 @@ public:
 
 	// relevant strings from game.config
 	std::string gameTitle = "";
-	std::string gameOverBadMessage, gameOverGoodMessage = "";
 	std::vector<std::string> introImages;
 	std::vector<std::string> introText;
-	std::string font;
+	TTF_Font* font;
+
+	// data cache
+	std::unordered_map<std::string, SDL_Texture*> imageTextures;
+	std::unordered_map<std::string, SDL_Texture*> textTextures;
 
 	// The initial scene from game.config
 	Scene initialScene;
