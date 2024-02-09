@@ -17,7 +17,9 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
+#include "SDL2/SDL_mixer.h"
 #include "Helper.h"
+#include "AudioHelper.h"
 
 // ---------- BEGIN MOTION FUNCTIONS ----------
 
@@ -135,6 +137,12 @@ void Engine::start() {
 void Engine::doGameLoop() {
 	int currentIntroIndex = 0;
 	isGameRunning = true;
+	bool introMusicPlaying = false;
+
+	if (configUtils.introMusic != "") {
+		renderer.playSound(configUtils.introMusic, -1);
+		introMusicPlaying = true;
+	}
 
 	while (isGameRunning) {
 		// Process events
@@ -171,6 +179,12 @@ void Engine::doGameLoop() {
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
 			renderer.renderIntro(currentIntroIndex);
 		}
+		// this ensures that the intro music is only halted once
+		else if(introMusicPlaying){
+			// Halt music playback on channel 0 (intro music)
+			AudioHelper::Mix_HaltChannel498(0);
+			introMusicPlaying = false;
+		}
 
 		// Present the render
 		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
@@ -197,16 +211,20 @@ void Engine::stop() {
 
 int main(int argc, char* argv[]) {
 	// Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
-		return 1;
-	}
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	// Initialize SDL_image to handle PNGs
 	IMG_Init(IMG_INIT_PNG);
 
 	// Initialize SDL_ttf
 	TTF_Init();
+
+	// Initialize SDL_mixer
+	Mix_Init(MIX_INIT_OGG);
+
+	// Open the default audio device for playback and allocate 16 channels for mixing
+	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
+	AudioHelper::Mix_AllocateChannels498(16);
 
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);
@@ -218,6 +236,7 @@ int main(int argc, char* argv[]) {
 	SDL_Quit();
 	IMG_Quit();
 	TTF_Quit();
+	Mix_Quit();
 
 	return 0;
 }

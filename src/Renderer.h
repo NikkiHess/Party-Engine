@@ -28,6 +28,9 @@ public:
 	// draw text on the screen
 	void drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y);
 
+	// play a sound "loops" times
+	void playSound(std::string& soundName, int loops);
+
 	// render the current view, returns the current GameState
 	void render(GameInfo& gameInfo);
 
@@ -44,7 +47,6 @@ public:
 	// returns LOSE if player quits
 	void promptPlayer(GameInfo& gameInfo);
 private:
-
 	// execute the commands contained in the dialogue string with the given
 	// Actor as a trigger
 	GameState executeCommands(Actor& trigger, const std::string& dialogue, GameInfo& gameInfo);

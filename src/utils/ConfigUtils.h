@@ -18,6 +18,7 @@
 #include "glm/glm.hpp"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
+#include "SDL2/SDL_mixer.h"
 
 class ConfigUtils {
 public:
@@ -28,11 +29,12 @@ public:
 	std::string gameTitle = "";
 	std::vector<std::string> introImages;
 	std::vector<std::string> introText;
-	TTF_Font* font;
+	std::string introMusic = "";
 
 	// data cache
-	std::unordered_map<std::string, SDL_Texture*> imageTextures;
-	std::unordered_map<std::string, SDL_Texture*> textTextures;
+	std::unordered_map<std::string, SDL_Texture*> imageTextures, textTextures;
+	std::unordered_map<std::string, Mix_Chunk*> sounds;
+	TTF_Font* font;
 
 	// The initial scene from game.config
 	Scene initialScene;

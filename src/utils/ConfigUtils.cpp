@@ -13,6 +13,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_mixer.h"
 
 bool ConfigUtils::fileExists(const std::string& path) {
 	// checks whether the cache contains an entry
@@ -77,6 +78,9 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 		for (rapidjson::Value& text : texts) {
 			introText.emplace_back(text.GetString());
 		}
+	}
+	if (document.HasMember("intro_bgm")) {
+		introMusic = document["intro_bgm"].GetString();
 	}
 }
 

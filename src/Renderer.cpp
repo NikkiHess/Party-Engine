@@ -19,6 +19,7 @@
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
 #include "Helper.h"
+#include "AudioHelper.h"
 
 void Renderer::renderIntro(int& index) {
 	// Clear the frame buffer at the beginning of a frame
@@ -31,6 +32,7 @@ void Renderer::renderIntro(int& index) {
 	);
 	SDL_RenderClear(sdlRenderer);
 
+	// Display any intro images
 	if (!configUtils.introImages.empty()) {
 		drawStaticImage(
 			// exhausted introImages? continue to render last one
@@ -41,6 +43,7 @@ void Renderer::renderIntro(int& index) {
 			configUtils.renderSize.y
 		);
 	}
+	// Display any intro text
 	if (!configUtils.introText.empty()) {
 		drawText(
 			// exhausted introText? continue to render last one
@@ -91,6 +94,37 @@ void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, in
 	SDL_RenderCopy(sdlRenderer, textTexture, nullptr, &textRect);
 
 	SDL_FreeSurface(textSurface);
+}
+
+void Renderer::playSound(std::string& soundName, int loops) {
+	std::string soundPath = "resources/audio/" + configUtils.introMusic; // the audio's path
+	// Verify that the intro music exists
+	if (configUtils.fileExists(soundPath + ".wav")) {
+		soundPath += ".wav";
+	}
+	else if (configUtils.fileExists(soundPath + ".ogg")) {
+		soundPath += ".ogg";
+	}
+	if (soundPath == "resources/audio/" + configUtils.introMusic) {
+		std::cout << "error: failed to play audio clip " + configUtils.introMusic;
+		exit(0);
+	}
+
+	// the sound to be played
+	Mix_Chunk* sound = nullptr;
+
+	// Is the sound cached? Load it
+	if (configUtils.sounds[soundName]) {
+		sound = configUtils.sounds[soundName];
+	}
+	// Otherwise, load from path and cache it
+	else {
+		sound = Mix_LoadWAV(soundPath.c_str());
+		configUtils.sounds[soundName] = sound;
+	}
+
+	// Play the sound on channel 0, looping indefinitely
+	AudioHelper::Mix_PlayChannel498(0, sound, -1);
 }
 
 void Renderer::render(GameInfo& gameInfo) {
