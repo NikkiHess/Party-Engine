@@ -98,6 +98,7 @@ void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, in
 }
 
 void Renderer::playSound(std::string& soundName, int loops) {
+#ifndef __linux__
 	std::string soundPath = "resources/audio/" + configUtils.introMusic; // the audio's path
 	// Verify that the intro music exists
 	if (configUtils.fileExists(soundPath + ".wav")) {
@@ -126,6 +127,7 @@ void Renderer::playSound(std::string& soundName, int loops) {
 
 	// Play the sound on channel 0, looping indefinitely
 	AudioHelper::Mix_PlayChannel498(0, sound, -1);
+#endif
 }
 
 void Renderer::render(GameInfo& gameInfo) {

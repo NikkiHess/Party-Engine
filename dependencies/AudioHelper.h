@@ -8,6 +8,7 @@
 
 class AudioHelper {
 public:
+#ifndef __linux__
 	static inline int Mix_PlayChannel498(int channel, Mix_Chunk* chunk, int loops)
 	{
 		if (chunk == nullptr)
@@ -77,7 +78,7 @@ public:
 		if (!IsAutograderMode())
 			Mix_CloseAudio();
 	}
-
+#endif
 private:
 	/* It's best for everyone if the autograder doesn't actually play any audio (it will still check that you try though). */
 	/* Imagine poor Professor Kloosterman hearing the autograder all day as it spams various sounds in my office. */

@@ -140,10 +140,12 @@ void Engine::doGameLoop() {
 	isGameRunning = true;
 	bool introMusicPlaying = false;
 
+#ifndef __linux__
 	if (configUtils.introMusic != "") {
 		renderer.playSound(configUtils.introMusic, -1);
 		introMusicPlaying = true;
 	}
+#endif
 
 	while (isGameRunning) {
 		// Process events
@@ -178,16 +180,19 @@ void Engine::doGameLoop() {
 		// render the game first
 		renderer.render(gameInfo);
 		
+		
 		// if there's an intro, render it on top of the game
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
 			renderer.renderIntro(currentIntroIndex);
 		}
+#ifndef __linux__
 		// this ensures that the intro music is only halted once
 		else if(introMusicPlaying){
 			// Halt music playback on channel 0 (intro music)
 			AudioHelper::Mix_HaltChannel498(0);
 			introMusicPlaying = false;
 		}
+#endif
 
 		// Present the render
 		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
