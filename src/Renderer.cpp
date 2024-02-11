@@ -74,13 +74,13 @@ void Renderer::drawActor(Actor& actor) {
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	SDL_Point pivot{
-		std::round(actor.view.pivotOffset.x.value_or(size.x * 0.5) * actor.transform.scale.x),
-		std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5) * actor.transform.scale.y)
+		static_cast<int>(std::round(actor.view.pivotOffset.x.value_or(size.x * 0.5) * actor.transform.scale.x)),
+		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5) * actor.transform.scale.y))
 	};
 
 	glm::ivec2 imagePos(
-		std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - pivot.x),
-		std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y)
+		static_cast<int>(std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - pivot.x)),
+		static_cast<int>(std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y))
 	);
 
 	// center position around the pivot point
