@@ -88,7 +88,7 @@ void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, 
 }
 
 void Renderer::drawActor(Actor& actor) {
-	const int pixelsPerUnit = 100;
+	int pixelsPerUnit = 100;
 	int width = 0, height = 0;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 
@@ -96,36 +96,38 @@ void Renderer::drawActor(Actor& actor) {
 	if (!actor.view.image && actor.view.imageName != "") {
 		actor.view.image = loadImageTexture(actor.view.imageName);
 	}
-	// query the image dimensions to get width and height
 	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &width, &height);
 
 	// calculate scaled width/height
-	width *= actor.transform.scale.x;
-	height *= actor.transform.scale.y;
+	int scaledWidth = width * actor.transform.scale.x;
+	int scaledHeight = height * actor.transform.scale.y;
 
-	if (actor.transform.scale.x < 0)
-		flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
-	if (actor.transform.scale.y < 0) 
-		flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
+	if (scaledWidth < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
+	if (scaledHeight < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
 
-	glm::dvec2 screenCenter(
-		configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
-	SDL_Point pivot{ 
-		actor.view.pivotOffset.x.value_or(width * 0.5) * actor.transform.scale.x,
-		actor.view.pivotOffset.y.value_or(height * 0.5) * actor.transform.scale.y
-	};
+	if (!actor.view.pivotOffset.has_value()) {
+		SDL_Point pivotOffset = {0, 0};
+		pivotOffset.x = std::round(width * 0.5);
+		pivotOffset.y = std::round(height * 0.5);
+		actor.view.pivotOffset = pivotOffset; // centered pivot offset
+	}
 
-	int x = std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - pivot.x);
-	int y = std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y);
+	double centerX = configUtils.renderSize.x / 2.0;
+	double centerY = configUtils.renderSize.y / 2.0;
+
+	double scaledOffsetX = actor.view.pivotOffset->x * actor.transform.scale.x;
+	double scaledOffsetY = actor.view.pivotOffset->y * actor.transform.scale.y;
+
+	int x = std::round(centerX + actor.transform.pos.x * pixelsPerUnit - scaledOffsetX);
+	int y = std::round(centerY + actor.transform.pos.y * pixelsPerUnit - scaledOffsetY);
 
 	// center position around the pivot point
-	SDL_Rect imageRect = { x, y, width, height };
+	SDL_Rect imageRect = { x, y, scaledWidth, scaledHeight };
 
-	// render with flip
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,
 		&imageRect, actor.transform.rotationDegrees,
-		0, flip
+		&actor.view.pivotOffset.value(), flip
 	);
 }
 

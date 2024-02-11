@@ -15,16 +15,11 @@ public:
 	double rotationDegrees = 0.0;
 };
 
-class OptionalDvec2 {
-public:
-	std::optional<double> x, y;
-};
-
 class View {
 public:
 	std::string imageName = "";
 	SDL_Texture* image = nullptr;
-	OptionalDvec2 pivotOffset;
+	std::optional<SDL_Point> pivotOffset;
 };
 
 class ActorProps {
