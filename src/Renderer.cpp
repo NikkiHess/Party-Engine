@@ -87,9 +87,10 @@ void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, 
 	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
 }
 
+// TODO: Make this MORE readable, it's really clunky
 void Renderer::drawActor(Actor& actor) {
 	int pixelsPerUnit = 100;
-	int width = 0, height = 0;
+	glm::ivec2 size(0, 0);
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 
 	// if the image hasn't been loaded in yet and there is one to be found, do it.
@@ -98,24 +99,28 @@ void Renderer::drawActor(Actor& actor) {
 	}
 
 	// get the width and height from the actor view
-	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &width, &height);
+	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
 
 	// scale size using actor.transform.scale
 	glm::ivec2 scaledSize(
-		width * actor.transform.scale.x, 
-		height * actor.transform.scale.y 
+		size.x * actor.transform.scale.x, 
+		size.y * actor.transform.scale.y 
 	);
 
-	if (scaledSize.x < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
-	if (scaledSize.y < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
+	if (scaledSize.x < 0) {
+		flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
+	}
+	if (scaledSize.y < 0) {
+		flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
+	}
 
 	glm::dvec2 screenCenter(configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
 
 	// x and y either from config or (width or height) * 0.5 * scale
-	// NOTE TO SELF: This seems to break if you use scaledWidth and scaledHeight. Why?
+	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	SDL_Point pivot{
-		std::round(actor.view.pivotOffset.x.value_or(width * 0.5) * actor.transform.scale.x),
-		std::round(actor.view.pivotOffset.y.value_or(height * 0.5) * actor.transform.scale.y)
+		std::round(actor.view.pivotOffset.x.value_or(size.x * 0.5) * actor.transform.scale.x),
+		std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5) * actor.transform.scale.y)
 	};
 
 	glm::ivec2 imagePos(
