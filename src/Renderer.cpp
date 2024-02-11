@@ -89,7 +89,7 @@ void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, 
 
 void Renderer::drawActor(Actor& actor) {
 	const int pixelsPerUnit = 100;
-	int width = 1, height = 1;
+	int width = 0, height = 0;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 
 	// if the image hasn't been loaded in yet and there is one to be found, do it.
