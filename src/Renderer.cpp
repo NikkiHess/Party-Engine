@@ -96,6 +96,8 @@ void Renderer::drawActor(Actor& actor) {
 	if (!actor.view.image && actor.view.imageName != "") {
 		actor.view.image = loadImageTexture(actor.view.imageName);
 	}
+
+	// get the width and height from the actor view
 	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &width, &height);
 
 	// calculate scaled width/height
