@@ -3,6 +3,7 @@
 
 // my code
 #include "AudioPlayer.h"
+#include "../errors/Error.h"
 
 // dependencies
 #include "AudioHelper.h"
@@ -17,8 +18,7 @@ void AudioPlayer::play(std::string& soundName, int loops) {
 		soundPath += ".ogg";
 	}
 	if (soundPath == "resources/audio/" + soundName) {
-		std::cout << "error: failed to play audio clip " + soundName;
-		exit(0);
+		Error::error("failed to play audio clip " + soundName);
 	}
 
 	// the sound to be played

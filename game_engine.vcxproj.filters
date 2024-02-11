@@ -1242,6 +1242,9 @@
     <ClInclude Include="src\audio\AudioPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\errors\Error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp">

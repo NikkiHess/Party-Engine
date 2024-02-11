@@ -132,7 +132,8 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 		if (sceneName != "") {
 			//printStats(gameInfo);
 			std::string scenePath = "resources/scenes/" + sceneName + ".scene";
-			configUtils.checkFile(scenePath, "scene " + sceneName + " is");
+
+			if (!configUtils.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
 
 			gameInfo.currentScene = Scene();
 			gameInfo.currentScene.name = sceneName;

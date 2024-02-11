@@ -1,12 +1,11 @@
-#include "ConfigUtils.h"
-
-// std stuff
+// std library
 #include <string>
 #include <iostream>
 #include <filesystem>
 #include <optional>
 
 // my code
+#include "ConfigUtils.h"
 #include "../gamedata/Scene.h"
 
 // dependencies
@@ -25,16 +24,6 @@ bool ConfigUtils::fileExists(const std::string& path) {
 	return exists;
 }
 
-void ConfigUtils::checkFile(const std::string& path, std::optional<std::string> print) {
-	if (!fileExists(path)) {
-		if (print.has_value())
-			std::cout << "error: " + print.value() + " missing";
-		else
-			std::cout << "error: " + path + " missing";
-		exit(0);
-	}
-}
-
 void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	// handle game title
 	if (document.HasMember("game_title"))
@@ -45,7 +34,8 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 		std::string fontName = document["font"].GetString();
 		std::string fontPath = "resources/fonts/" + fontName + ".ttf";
 
-		checkFile(fontPath, "font " + fontName);
+		if (!fileExists(fontPath))
+			Error::error("font " + fontName + " missing");
 
 		// open the font specified
 		font = TTF_OpenFont(fontPath.c_str(), 16);
@@ -60,8 +50,7 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 		for (rapidjson::Value& image : images) {
 			std::string imgString = image.GetString();
 			if (!fileExists("resources/images/" + imgString + ".png")) {
-				std::cout << "error: missing image " + imgString;
-				exit(0);
+				Error::error("missing image " + imgString);
 			}
 			
 			introImages.emplace_back(image.GetString());
@@ -69,8 +58,7 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	}
 	if (document.HasMember("intro_text")) {
 		if (font == nullptr) {
-			std::cout << "error: text render failed. No font configured";
-			exit(0);
+			Error::error("text render failed. No font configured");
 		}
 		rapidjson::GenericArray texts = document["intro_text"].GetArray();
 		introText.reserve(texts.Size());
@@ -92,7 +80,8 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	if (document.HasMember("hp_image")) {
 		std::string hpImageName = document["hp_image"].GetString();
 		std::string hpImagePath = "resources/images/" + hpImageName + ".png";
-		checkFile(hpImagePath, hpImageName);
+
+		if(!fileExists(hpImagePath)) Error::error(hpImageName + " missing");
 
 		hpImage = hpImageName;
 	}
@@ -102,15 +91,13 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 	// get the name of the initial scene
 	if (isInitialScene) {
 		if (!document.HasMember("initial_scene")) {
-			std::cout << "error: initial_scene unspecified";
-			exit(0);
+			Error::error("initial_scene unspecified");
 		}
 		scene.name = document["initial_scene"].GetString();
 
 		std::string scenePath = "resources/scenes/" + initialScene.name + ".scene";
 		if (!fileExists(scenePath)) {
-			std::cout << "error: scene " + initialScene.name + " is missing";
-			exit(0);
+			Error::error("scene " + initialScene.name + " is missing");
 		}
 		readJsonFile(scenePath, document);
 	}
@@ -118,8 +105,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 	// get the path of the initial scene and read its file
 	std::string scenePath = "resources/scenes/" + scene.name + ".scene";
 	if (!fileExists(scenePath)) {
-		std::cout << "error: scene " + scene.name + " is missing";
-		exit(0);
+		Error::error("scene " + scene.name + " is missing");
 	}
 	readJsonFile(scenePath, document);
 
@@ -134,7 +120,9 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 			if (docActors[i].HasMember("template")) {
 				std::string templateName = docActors[i]["template"].GetString();
 				std::string templatePath = "resources/actor_templates/" + templateName + ".template";
-				checkFile(templatePath, "template " + templateName + " is");
+
+				if (!fileExists(templatePath)) Error::error("template " + templateName + " is missing");
+
 				readJsonFile(templatePath, document);
 				setActorProps(actor, document);
 			}
@@ -149,18 +137,15 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 			if (actor.name == "player") {
 				player = &actor;
 
-				// verify the hp image exists
+				// if hpImage doesn't exist, error out
 				if (hpImage == "") {
-					// if there's a player but NO hpImage, error
-					std::cout << "error: player actor requires an hp_image be defined";
-					exit(0);
+					Error::error("player actor requires an hp_image be defined");
 				}
 			}
 		}
 	}
 	else {
-		std::cout << "error: \"actors\" is missing from " + scene.name;
-		exit(0);
+		Error::error("\"actors\" is missing from " + scene.name);
 	}
 }
 

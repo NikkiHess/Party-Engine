@@ -11,6 +11,7 @@
 // my code
 #include "../gamedata/Scene.h"
 #include "../gamedata/Actor.h"
+#include "../errors/Error.h"
 
 // dependencies
 #include "rapidjson/document.h"
@@ -60,9 +61,9 @@ public:
 		std::string gameConfig = resources + "game.config";
 		std::string renderingConfig = resources + "rendering.config";
 
-		checkFile(resources);
+		if (!fileExists(resources)) Error::error(resources + " missing");
 
-		checkFile(gameConfig);
+		if (!fileExists(gameConfig)) Error::error(gameConfig + " missing");
 		readJsonFile(resources + "game.config", document);
 		initializeGame(document);
 		initializeScene(initialScene, document, true);
@@ -76,7 +77,7 @@ public:
 	bool fileExists(const std::string& path);
 
 	// checks that a file exists, and if not prints an error message and exits with code 1
-	void checkFile(const std::string& path, std::optional<std::string> print = std::nullopt);
+	//void checkFile(const std::string& path, std::optional<std::string> print = std::nullopt);
 
 	// initializes the scene from its scene file
 	// utilizes Scene class

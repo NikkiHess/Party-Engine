@@ -116,13 +116,6 @@ void Engine::start() {
 		SDL_WINDOW_SHOWN				// flags
 	);
 
-	// if our window couldn't be created, we have a problem
-	if (window == nullptr) {
-		std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
-		SDL_Quit();
-		return;
-	}
-
 	// Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
 	SDL_Renderer* sdlRenderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 	renderer.sdlRenderer = sdlRenderer;
