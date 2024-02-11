@@ -31,7 +31,7 @@ public:
 	std::string name;
 
 	// instantiate an actor in the scene, returns the actor
-	Actor& instantiateActor(ActorProps& props);
+	void instantiateActor(Actor& actor);
 
 	~Scene() {
 		locToActors.clear();

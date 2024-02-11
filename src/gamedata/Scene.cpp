@@ -7,10 +7,9 @@
 #include <iostream>
 #include <vector>
 
-Actor& Scene::instantiateActor(ActorProps& props) {
-	glm::dvec2 actorPos(props.transform.pos.x, props.transform.pos.y);
-	Actor* actorPtr = new Actor(props);
-	Actor &actor = *actorPtr;
+void Scene::instantiateActor(Actor& actor) {
+	glm::dvec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);
+	Actor* actorPtr = &actor;
 	actor.id = actors.size();
 	
 	// insert the actor into the list of actors
@@ -18,6 +17,4 @@ Actor& Scene::instantiateActor(ActorProps& props) {
 
 	// insert the (location, actors) pair into the unordered map
 	locToActors[actorPos].emplace_back(actorPtr);
-
-	return actor;
 }

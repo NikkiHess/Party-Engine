@@ -89,7 +89,7 @@ private:
 	void initializeRendering(rapidjson::Document& document);
 
 	// set Actor props from a document
-	void setActorProps(ActorProps& props, rapidjson::Value& document);;
+	void setActorProps(Actor& actor, rapidjson::Value& document);
 
 	// reads a json file from path and puts it in the out_document
 	static void readJsonFile(const std::string& path, rapidjson::Document& outDocument) {

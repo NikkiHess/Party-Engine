@@ -128,23 +128,22 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 
 		scene.actors.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
-			ActorProps props;
+			Actor actor;
 
 			// initialize the ActorProps based on a template, if there is one
 			if (docActors[i].HasMember("template")) {
 				std::string templateName = docActors[i]["template"].GetString();
 				std::string templatePath = "resources/actor_templates/" + templateName + ".template";
 				checkFile(templatePath, "template " + templateName + " is");
-				// HOPEFULLY this leaves docActors intact
 				readJsonFile(templatePath, document);
-				setActorProps(props, document);
+				setActorProps(actor, document);
 			}
 
 			// override any template properties redefined by the scene document
-			setActorProps(props, docActors[i]);
+			setActorProps(actor, docActors[i]);
 
-			// instantiate actor based on these props
-			Actor& actor = scene.instantiateActor(props);
+			// instantiate the actor in the scene
+			scene.instantiateActor(actor);
 			
 			// the player is defined
 			if (actor.name == "player") {
@@ -179,46 +178,46 @@ void ConfigUtils::initializeRendering(rapidjson::Document& document) {
 		clearColor.b = document["clear_color_b"].GetInt();
 }
 
-void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {
+void ConfigUtils::setActorProps(Actor& actor, rapidjson::Value& document) {
 	if (document.HasMember("name"))
-		props.name = document["name"].GetString();
+		actor.name = document["name"].GetString();
 
 	if (document.HasMember("view_image"))
-		props.view.imageName = document["view_image"].GetString();
+		actor.view.imageName = document["view_image"].GetString();
 	if (document.HasMember("view_pivot_offset_x")) {
-		if(!props.view.pivotOffset.x.has_value())
-			props.view.pivotOffset.x = std::make_optional<double>();
+		if(!actor.view.pivotOffset.x.has_value())
+			actor.view.pivotOffset.x = std::make_optional<double>();
 
-		props.view.pivotOffset.x = document["view_pivot_offset_x"].GetDouble();
+		actor.view.pivotOffset.x = document["view_pivot_offset_x"].GetDouble();
 	}
 	if (document.HasMember("view_pivot_offset_y")) {
-		if (!props.view.pivotOffset.y.has_value())
-			props.view.pivotOffset.y = std::make_optional<double>();
+		if (!actor.view.pivotOffset.y.has_value())
+			actor.view.pivotOffset.y = std::make_optional<double>();
 
-		props.view.pivotOffset.y = document["view_pivot_offset_y"].GetDouble();
+		actor.view.pivotOffset.y = document["view_pivot_offset_y"].GetDouble();
 	}
 
 	if (document.HasMember("transform_position_x"))
-		props.transform.pos.x = document["transform_position_x"].GetDouble();
+		actor.transform.pos.x = document["transform_position_x"].GetDouble();
 	if (document.HasMember("transform_position_y"))
-		props.transform.pos.y = document["transform_position_y"].GetDouble();
+		actor.transform.pos.y = document["transform_position_y"].GetDouble();
 	if (document.HasMember("transform_scale_x"))
-		props.transform.scale.x = document["transform_scale_x"].GetDouble();
+		actor.transform.scale.x = document["transform_scale_x"].GetDouble();
 	if (document.HasMember("transform_scale_y"))
-		props.transform.scale.y = document["transform_scale_y"].GetDouble();
+		actor.transform.scale.y = document["transform_scale_y"].GetDouble();
 	if (document.HasMember("transform_rotation_degrees"))
-		props.transform.rotationDegrees = document["transform_rotation_degrees"].GetDouble();
+		actor.transform.rotationDegrees = document["transform_rotation_degrees"].GetDouble();
 
 	if (document.HasMember("vel_x"))
-		props.velocity.x = document["vel_x"].GetInt();
+		actor.velocity.x = document["vel_x"].GetInt();
 	if (document.HasMember("vel_y"))
-		props.velocity.y = document["vel_y"].GetInt();
+		actor.velocity.y = document["vel_y"].GetInt();
 
 	if (document.HasMember("blocking"))
-		props.blocking = document["blocking"].GetBool();
+		actor.blocking = document["blocking"].GetBool();
 
 	if (document.HasMember("nearby_dialogue"))
-		props.nearbyDialogue = document["nearby_dialogue"].GetString();
+		actor.nearbyDialogue = document["nearby_dialogue"].GetString();
 	if (document.HasMember("contact_dialogue"))
-		props.contactDialogue = document["contact_dialogue"].GetString();
+		actor.contactDialogue = document["contact_dialogue"].GetString();
 }

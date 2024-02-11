@@ -27,25 +27,14 @@ public:
 	OptionalDvec2 pivotOffset;
 };
 
-class ActorProps {
+class Actor {
 public:
 	std::string name = "";
 	Transform transform;
 	View view;
-	glm::ivec2 velocity;
+	glm::dvec2 velocity;
 	bool blocking = false;
 	std::string nearbyDialogue = "", contactDialogue = "";
-};
-
-class Actor {
-public:
-	std::string name;
-	Transform transform;
-	View view;
-	glm::dvec2 velocity;
-	bool blocking;
-	std::string nearbyDialogue;
-	std::string contactDialogue;
 
 	// PLAYER ONLY STATISTICS
 	// should be unused otherwise
@@ -53,13 +42,6 @@ public:
 
 	int id = 0;
 	bool triggeredScoreUp = false;
-
-	Actor(ActorProps& props)
-		: name(props.name), transform(props.transform), view(props.view), 
-		  velocity(glm::ivec2(props.velocity.x, props.velocity.x)), blocking(props.blocking), 
-		  nearbyDialogue(props.nearbyDialogue), contactDialogue(props.contactDialogue) {}
-
-	Actor() {}
 
 	// prints the actor's contact dialogue
 	void printContactDialogue() const;
