@@ -108,7 +108,6 @@ void Renderer::drawActor(Actor& actor) {
 	if (actor.transform.scale.y < 0) 
 		flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
 
-
 	glm::dvec2 screenCenter(
 		configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
 	SDL_Point pivot{ 
