@@ -118,7 +118,7 @@ void Renderer::drawActor(Actor& actor) {
 	double scaledOffsetX = actor.view.pivotOffset->x * actor.transform.scale.x;
 	double scaledOffsetY = actor.view.pivotOffset->y * actor.transform.scale.y;
 
-	int x = std::round(centerX + actor.transform.pos.x * pixelsPerUnit - scaledOffsetX);
+	int x = std::round(centerX + actor.transform.pos.x * pixelsPerUnit + scaledOffsetX);
 	int y = std::round(centerY + actor.transform.pos.y * pixelsPerUnit - scaledOffsetY);
 
 	// center position around the pivot point
