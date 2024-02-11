@@ -19,8 +19,6 @@ enum GameState {
 class GameInfo {
 public:
 	Actor* player; // the player
-	int& playerHealth; // the player's health
-	int& playerScore; // the player's score
 	GameState& state; // the current state of the game
 
 	Scene& currentScene;

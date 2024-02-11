@@ -24,14 +24,9 @@ public:
 	// player stuff
 	Actor* player = nullptr; // the player
 
-	int playerHealth = 3; // the player's current health
-	int playerScore = 0; // the player's current score
-
 	// load the game info after everything else has been loaded
 	GameInfo gameInfo{ 
-		player, 
-		playerHealth, 
-		playerScore,	
+		player,
 		state,
 		configUtils.initialScene 
 	};

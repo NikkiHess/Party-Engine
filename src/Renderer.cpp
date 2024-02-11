@@ -22,41 +22,6 @@
 #include "Helper.h"
 #include "AudioHelper.h"
 
-void Renderer::renderIntro(int& index) {
-	// Clear the frame buffer at the beginning of a frame
-	SDL_SetRenderDrawColor(
-		sdlRenderer,
-		configUtils.clearColor.r,
-		configUtils.clearColor.g,
-		configUtils.clearColor.b,
-		1
-	);
-	SDL_RenderClear(sdlRenderer);
-
-	// Display any intro images
-	if (!configUtils.introImages.empty()) {
-		drawStaticImage(
-			// exhausted introImages? continue to render last one
-			(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
-			0,
-			0,
-			configUtils.renderSize.x,
-			configUtils.renderSize.y
-		);
-	}
-	// Display any intro text
-	if (!configUtils.introText.empty()) {
-		drawText(
-			// exhausted introText? continue to render last one
-			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
-			16,
-			{ 255, 255, 255, 255 },
-			25,
-			configUtils.renderSize.y - 50
-		);
-	}
-}
-
 SDL_Texture* Renderer::loadImageTexture(std::string& imageName) {
 	SDL_Texture* imageTexture = nullptr;
 	// If cached, load the imageTexture
@@ -75,16 +40,6 @@ SDL_Texture* Renderer::loadImageTexture(std::string& imageName) {
 	}
 
 	return imageTexture;
-}
-
-void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
-	SDL_Texture* imageTexture = loadImageTexture(imageName);
-
-	// Set the rendering position and size (center, full size)
-	SDL_Rect imageRect = { x, y, width, height };
-
-	// Copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
 }
 
 // TODO: Make this MORE readable, it's really clunky
@@ -143,6 +98,16 @@ void Renderer::drawActor(Actor& actor) {
 	);
 }
 
+void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
+	SDL_Texture* imageTexture = loadImageTexture(imageName);
+
+	// Set the rendering position and size (center, full size)
+	SDL_Rect imageRect = { x, y, width, height };
+
+	// Copy the texture to the renderer
+	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
+}
+
 void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y) {
 	// create a surface to render our text
 	SDL_Surface* textSurface = TTF_RenderText_Solid(configUtils.font, text.c_str(), fontColor);
@@ -192,6 +157,41 @@ void Renderer::playSound(std::string& soundName, int loops) {
 #endif
 }
 
+void Renderer::renderIntro(int& index) {
+	// Clear the frame buffer at the beginning of a frame
+	SDL_SetRenderDrawColor(
+		sdlRenderer,
+		configUtils.clearColor.r,
+		configUtils.clearColor.g,
+		configUtils.clearColor.b,
+		1
+	);
+	SDL_RenderClear(sdlRenderer);
+
+	// Display any intro images
+	if (!configUtils.introImages.empty()) {
+		drawStaticImage(
+			// exhausted introImages? continue to render last one
+			(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
+			0,
+			0,
+			configUtils.renderSize.x,
+			configUtils.renderSize.y
+		);
+	}
+	// Display any intro text
+	if (!configUtils.introText.empty()) {
+		drawText(
+			// exhausted introText? continue to render last one
+			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
+			16,
+			{ 255, 255, 255, 255 },
+			25,
+			configUtils.renderSize.y - 50
+		);
+	}
+}
+
 void Renderer::render(GameInfo& gameInfo) {
 	// Clear the frame buffer at the beginning of a frame
 	SDL_SetRenderDrawColor(
@@ -206,6 +206,10 @@ void Renderer::render(GameInfo& gameInfo) {
 	for (Actor& actor : gameInfo.currentScene.actors) {
 		drawActor(actor);
 	}
+}
+
+void Renderer::renderHUD(GameInfo& gameInfo) {
+
 }
 
 void Renderer::printDialogue(GameInfo& gameInfo) {
@@ -245,7 +249,7 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 	if (gameInfo.state == PROCEED) {
 		std::string sceneName = StringUtils::getWordAfterPhrase(dialogue.str(), "proceed to");
 		if (sceneName != "") {
-			printStats(gameInfo);
+			//printStats(gameInfo);
 			std::string scenePath = "resources/scenes/" + sceneName + ".scene";
 			configUtils.checkFile(scenePath, "scene " + sceneName + " is");
 
@@ -261,11 +265,7 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 			render(gameInfo);
 		}
 	}
-	printStats(gameInfo);
-}
-
-void Renderer::printStats(GameInfo &gameInfo) {
-	std::cout << "health : " << gameInfo.playerHealth << ", score : " << gameInfo.playerScore << "\n";
+	//printStats(gameInfo);
 }
 
 void Renderer::promptPlayer(GameInfo& gameInfo) {
@@ -300,15 +300,15 @@ void Renderer::promptPlayer(GameInfo& gameInfo) {
 GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue, GameInfo& gameInfo) {
 	if (dialogue.find("health down") != std::string::npos) {
 		// if decreasing the player's health makes it <= 0, return a lose state
-		--gameInfo.playerHealth;
-		if (gameInfo.playerHealth <= 0) {
+		--gameInfo.player->health;
+		if (gameInfo.player->health <= 0) {
 			return LOSE;
 		}
 	}
 	if (dialogue.find("score up") != std::string::npos) {
 		// an NPC Actor may only trigger a score increase once
 		if (!trigger.triggeredScoreUp) {
-			++gameInfo.playerScore;
+			++gameInfo.player->score;
 			trigger.triggeredScoreUp = true;
 		}
 	}

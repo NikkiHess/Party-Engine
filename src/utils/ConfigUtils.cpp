@@ -89,20 +89,6 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	}
 }
 
-void ConfigUtils::initializeRendering(rapidjson::Document& document) {
-	if (document.HasMember("x_resolution"))
-		renderSize.x = document["x_resolution"].GetInt();
-	if (document.HasMember("y_resolution"))
-		renderSize.y = document["y_resolution"].GetInt();
-
-	if (document.HasMember("clear_color_r"))
-		clearColor.r = document["clear_color_r"].GetInt();
-	if (document.HasMember("clear_color_g"))
-		clearColor.g = document["clear_color_g"].GetInt();
-	if (document.HasMember("clear_color_b"))
-		clearColor.b = document["clear_color_b"].GetInt();
-}
-
 void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, bool isInitialScene = false) {
 	// get the name of the initial scene
 	if (isInitialScene) {
@@ -156,6 +142,25 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 	else {
 		std::cout << "error: \"actors\" is missing from " + scene.name;
 		exit(0);
+	}
+}
+
+void ConfigUtils::initializeRendering(rapidjson::Document& document) {
+	if (document.HasMember("x_resolution"))
+		renderSize.x = document["x_resolution"].GetInt();
+	if (document.HasMember("y_resolution"))
+		renderSize.y = document["y_resolution"].GetInt();
+
+	if (document.HasMember("clear_color_r"))
+		clearColor.r = document["clear_color_r"].GetInt();
+	if (document.HasMember("clear_color_g"))
+		clearColor.g = document["clear_color_g"].GetInt();
+	if (document.HasMember("clear_color_b"))
+		clearColor.b = document["clear_color_b"].GetInt();
+
+	// HUD
+	if (document.HasMember("hp_image")) {
+
 	}
 }
 

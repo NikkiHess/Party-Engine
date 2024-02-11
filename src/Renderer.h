@@ -19,8 +19,6 @@ public:
 
 	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize) {}
 
-	// render the intro images one by one, proceed when enter has been pressed
-	void renderIntro(int& index);
 
 	SDL_Texture* loadImageTexture(std::string& imageName);
 
@@ -36,15 +34,18 @@ public:
 	// play a sound "loops" times
 	void playSound(std::string& soundName, int loops);
 
+	// render the intro images one by one, proceed when enter has been pressed
+	void renderIntro(int& index);
+
 	// render the current view, returns the current GameState
 	void render(GameInfo& gameInfo);
+
+	// render the HUD
+	void renderHUD(GameInfo& gameInfo);
 
 	// print any dialogue from nearby Actors, returns the current GameState
 	// as a result of any dialogue commands executed via executeCommands
 	void printDialogue(GameInfo& gameInfo);
-
-	// print the player's current statistics
-	void printStats(GameInfo& gameInfo);
 
 	// prompt the player for an input command (n, e, s, w, quit)
 	// does nothing and proceeds upon invalid input

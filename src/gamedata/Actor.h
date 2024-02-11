@@ -37,7 +37,7 @@ public:
 	std::string nearbyDialogue = "", contactDialogue = "";
 };
 
-struct Actor {
+class Actor {
 public:
 	std::string name;
 	Transform transform;
@@ -46,6 +46,10 @@ public:
 	bool blocking;
 	std::string nearbyDialogue;
 	std::string contactDialogue;
+
+	// PLAYER ONLY STATISTICS
+	// should be unused otherwise
+	int health = 3, score = 0;
 
 	int id = 0;
 	bool triggeredScoreUp = false;

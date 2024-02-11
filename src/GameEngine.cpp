@@ -127,10 +127,6 @@ void Engine::start() {
 	SDL_Renderer* sdlRenderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 	renderer.sdlRenderer = sdlRenderer;
 
-	//// print the starting message
-	//if (gameInfo.gameStartMessage != "")
-	//	std::cout << gameInfo.gameStartMessage << "\n";
-
 	// run the game loop
 	doGameLoop();
 }
@@ -178,6 +174,9 @@ void Engine::doGameLoop() {
 
 		// render the game first
 		renderer.render(gameInfo);
+
+		// render HUD on top of the game
+		renderer.renderHUD(gameInfo);
 		
 		// if there's an intro, render it on top of the game
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
