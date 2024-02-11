@@ -67,7 +67,7 @@ void Engine::updateActorPosition(Actor& actor) {
 	// update the instanced actor's positon
 	actor.transform.pos += actor.velocity;
 
-	// add the new position of the actor to the unordered_map
+	// add the updated position of the actor to the unordered_map
 	auto& actorsAtPos = locToActors[actor.transform.pos];
 	actorsAtPos.emplace_back(&actor);
 }

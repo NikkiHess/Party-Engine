@@ -143,7 +143,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 			// override any template properties redefined by the scene document
 			setActorProps(props, docActors[i]);
 
-			// instantiate a new actor based on these props
+			// instantiate actor based on these props
 			Actor& actor = scene.instantiateActor(props);
 			
 			// the player is defined
