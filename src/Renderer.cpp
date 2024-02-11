@@ -107,11 +107,13 @@ void Renderer::drawActor(Actor& actor) {
 
 	glm::dvec2 screenCenter(configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
 
-	double scaledOffsetX = actor.view.pivotOffset.x.value_or(width * 0.5) * actor.transform.scale.x;
-	double scaledOffsetY = actor.view.pivotOffset.y.value_or(height * 0.5) * actor.transform.scale.y;
+	SDL_Point pivot{
+		std::round(actor.view.pivotOffset.x.value_or(width * 0.5) * actor.transform.scale.x),
+		std::round(actor.view.pivotOffset.y.value_or(height * 0.5) * actor.transform.scale.y)
+	};
 
-	int x = std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - scaledOffsetX);
-	int y = std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - scaledOffsetY);
+	int x = std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - pivot.x);
+	int y = std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y);
 
 	// center position around the pivot point
 	SDL_Rect imageRect = { x, y, scaledWidth, scaledHeight };
