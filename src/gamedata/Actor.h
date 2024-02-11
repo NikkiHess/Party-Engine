@@ -1,13 +1,33 @@
 #pragma once
 
+// std library
 #include <string>
+#include <optional>
 
+// dependencies
 #include "glm/glm.hpp"
+#include "SDL2/SDL_render.h"
+
+class Transform {
+public:
+	glm::dvec2 pos; // double vec
+	glm::dvec2 scale; // double vec
+	double rotationDegrees = 0.0;
+};
+
+class View {
+public:
+	std::string imageName = "";
+	SDL_Texture* image = nullptr;
+	std::optional<SDL_Point> pivotOffset;
+};
 
 class ActorProps {
 public:
 	std::string name = "";
-	int x = 0, y = 0, velX = 0, velY = 0;
+	Transform transform;
+	View view;
+	glm::ivec2 velocity;
 	bool blocking = false;
 	std::string nearbyDialogue = "", contactDialogue = "";
 };
@@ -15,8 +35,9 @@ public:
 struct Actor {
 public:
 	std::string name;
-	glm::ivec2 position;
-	glm::ivec2 velocity;
+	Transform transform;
+	View view;
+	glm::dvec2 velocity;
 	bool blocking;
 	std::string nearbyDialogue;
 	std::string contactDialogue;
@@ -25,8 +46,9 @@ public:
 	bool triggeredScoreUp = false;
 
 	Actor(ActorProps& props)
-		: name(props.name), position(glm::ivec2(props.x, props.y)), velocity(glm::ivec2(props.velX, props.velY)), 
-		  blocking(props.blocking), nearbyDialogue(props.nearbyDialogue), contactDialogue(props.contactDialogue) {}
+		: name(props.name), transform(props.transform), view(props.view), 
+		  velocity(glm::ivec2(props.velocity.x, props.velocity.x)), blocking(props.blocking), 
+		  nearbyDialogue(props.nearbyDialogue), contactDialogue(props.contactDialogue) {}
 
 	Actor() {}
 

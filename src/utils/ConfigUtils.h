@@ -30,6 +30,7 @@ public:
 	std::vector<std::string> introImages;
 	std::vector<std::string> introText;
 	std::string introMusic = "";
+	std::string gameplayMusic = "";
 
 	// data cache
 	std::unordered_map<std::string, SDL_Texture*> imageTextures, textTextures;

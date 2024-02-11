@@ -26,14 +26,14 @@
 
 void Engine::updatePositions() {
 	for (Actor& actor : gameInfo.currentScene.actors) {
-		if (actor.velocity != glm::ivec2(0)) {
+		if (actor.velocity != glm::dvec2(0)) {
 			// if this is our player Actor, perform our player actor movement
 			if (actor.name == "player") {
 				if (!wouldCollide(actor)) {
 					updateActorPosition(actor);
 				}
 				// stop the player's movement so they only move by 1
-				actor.velocity = glm::ivec2(0, 0);
+				actor.velocity = glm::dvec2(0);
 			}
 			// move NPC Actors
 			// if no collision, keep moving
@@ -52,7 +52,7 @@ void Engine::updatePositions() {
 void Engine::updateActorPosition(Actor& actor) {
 	// remove the old position of the actor from the unordered_map
 	auto& locToActors = gameInfo.currentScene.locToActors;
-	auto oldLocIt = locToActors.find(actor.position);
+	auto oldLocIt = locToActors.find(actor.transform.pos);
 	if (oldLocIt != locToActors.end()) {
 		auto& actorsAtPos = oldLocIt->second;
 		actorsAtPos.erase(std::remove_if(actorsAtPos.begin(), actorsAtPos.end(),
@@ -60,21 +60,21 @@ void Engine::updateActorPosition(Actor& actor) {
 				return a->id == actor.id;
 			}), actorsAtPos.end());
 		if (actorsAtPos.empty()) {
-			locToActors.erase(actor.position);
+			locToActors.erase(actor.transform.pos);
 		}
 	}
 
 	// update the instanced actor's positon
-	actor.position += actor.velocity;
+	actor.transform.pos += actor.velocity;
 
 	// add the new position of the actor to the unordered_map
-	auto& actorsAtPos = locToActors[actor.position];
+	auto& actorsAtPos = locToActors[actor.transform.pos];
 	actorsAtPos.emplace_back(&actor);
 }
 
 // check if an Actor would collide given its velocity
 bool Engine::wouldCollide(Actor& actor) {
-	glm::ivec2 futurePosition = actor.position + actor.velocity;
+	glm::ivec2 futurePosition = actor.transform.pos + actor.velocity;
 
 	auto it = gameInfo.currentScene.locToActors.find(futurePosition);
 	if (it != gameInfo.currentScene.locToActors.end()) {
@@ -139,8 +139,9 @@ void Engine::doGameLoop() {
 	int currentIntroIndex = 0;
 	isGameRunning = true;
 	bool introMusicPlaying = false;
+	bool gameplayMusicPlaying = false;
 
-	if (configUtils.introMusic != "") {
+	if (configUtils.introMusic != "" && !introMusicPlaying) {
 		renderer.playSound(configUtils.introMusic, -1);
 		introMusicPlaying = true;
 	}
@@ -184,10 +185,15 @@ void Engine::doGameLoop() {
 			renderer.renderIntro(currentIntroIndex);
 		}
 		// this ensures that the intro music is only halted once
+		// and then we start playing the gameplay music, because gameplay has begun
 		else if(introMusicPlaying){
 			// Halt music playback on channel 0 (intro music)
 			AudioHelper::Mix_HaltChannel498(0);
 			introMusicPlaying = false;
+
+			if (configUtils.gameplayMusic != "") {
+				renderer.playSound(configUtils.gameplayMusic, -1);
+			}
 		}
 
 		// Present the render

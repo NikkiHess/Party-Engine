@@ -82,6 +82,11 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	if (document.HasMember("intro_bgm")) {
 		introMusic = document["intro_bgm"].GetString();
 	}
+
+	// handle the gameplay
+	if (document.HasMember("gameplay_audio")) {
+		gameplayMusic = document["gameplay_audio"].GetString();
+	}
 }
 
 void ConfigUtils::initializeRendering(rapidjson::Document& document) {
@@ -157,16 +162,33 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {
 	if (document.HasMember("name"))
 		props.name = document["name"].GetString();
-	if (document.HasMember("x"))
-		props.x = document["x"].GetInt();
-	if (document.HasMember("y"))
-		props.y = document["y"].GetInt();
+
+	if (document.HasMember("view_image"))
+		props.view.imageName = document["view_image"].GetString();
+	if (document.HasMember("view_pivot_offset_x"))
+		props.view.pivotOffset->x = document["view_pivot_offset_x"].GetDouble();
+	if (document.HasMember("view_pivot_offset_y"))
+		props.view.pivotOffset->y = document["view_pivot_offset_y"].GetDouble();
+
+	if (document.HasMember("transform_position_x"))
+		props.transform.pos.x = document["transform_position_x"].GetDouble();
+	if (document.HasMember("transform_position_y"))
+		props.transform.pos.y = document["transform_position_y"].GetDouble();
+	if (document.HasMember("transform_scale_x"))
+		props.transform.scale.x = document["transform_scale_x"].GetDouble();
+	if (document.HasMember("transform_scale_y"))
+		props.transform.scale.y = document["transform_scale_y"].GetDouble();
+	if (document.HasMember("transform_rotation_degrees"))
+		props.transform.rotationDegrees = document["transform_rotation_degrees"].GetDouble();
+
 	if (document.HasMember("vel_x"))
-		props.velX = document["vel_x"].GetInt();
+		props.velocity.x = document["vel_x"].GetInt();
 	if (document.HasMember("vel_y"))
-		props.velY = document["vel_y"].GetInt();
+		props.velocity.y = document["vel_y"].GetInt();
+
 	if (document.HasMember("blocking"))
 		props.blocking = document["blocking"].GetBool();
+
 	if (document.HasMember("nearby_dialogue"))
 		props.nearbyDialogue = document["nearby_dialogue"].GetString();
 	if (document.HasMember("contact_dialogue"))

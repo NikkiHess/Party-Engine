@@ -22,8 +22,13 @@ public:
 	// render the intro images one by one, proceed when enter has been pressed
 	void renderIntro(int& index);
 
+	SDL_Texture* loadImageTexture(std::string& imageName);
+
 	// draw an unchanging image on the screen
 	void drawStaticImage(std::string& imageName, int x, int y, int width, int height);
+
+	// draw an unchanging image on the screen
+	void drawActor(Actor& actor);
 
 	// draw text on the screen
 	void drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y);

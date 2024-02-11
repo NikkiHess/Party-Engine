@@ -57,10 +57,10 @@ void Renderer::renderIntro(int& index) {
 	}
 }
 
-void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
+SDL_Texture* Renderer::loadImageTexture(std::string& imageName) {
 	SDL_Texture* imageTexture = nullptr;
 	// If cached, load the imageTexture
-	if(configUtils.imageTextures[imageName]) {
+	if (configUtils.imageTextures[imageName]) {
 		imageTexture = configUtils.imageTextures[imageName];
 	}
 	else {
@@ -74,11 +74,57 @@ void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, 
 		exit(0);
 	}
 
+	return imageTexture;
+}
+
+void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
+	SDL_Texture* imageTexture = loadImageTexture(imageName);
+
 	// Set the rendering position and size (center, full size)
 	SDL_Rect imageRect = { x, y, width, height };
 
 	// Copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
+}
+
+void Renderer::drawActor(Actor& actor) {
+	int pixelsPerUnit = 100;
+	int width = 0, height = 0;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+	// if the image hasn't been loaded in yet and there is one to be found, do it.
+	if (!actor.view.image && actor.view.imageName != "") {
+		actor.view.image = loadImageTexture(actor.view.imageName);
+	}
+	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &width, &height);
+
+	// calculate scaled width/height
+	int scaledWidth = width * actor.transform.scale.x;
+	int scaledHeight = height * actor.transform.scale.y;
+
+	if (scaledWidth < 0) flip = SDL_FLIP_HORIZONTAL;
+	if (scaledHeight < 0) flip = SDL_FLIP_VERTICAL;
+
+	if (!actor.view.pivotOffset.has_value()) {
+		SDL_Point pivotOffset = {0, 0};
+		pivotOffset.x = std::round(width * 0.5);
+		pivotOffset.y = std::round(height * 0.5);
+		actor.view.pivotOffset = pivotOffset; // centered pivot offset
+	}
+
+	// center position around the pivot point
+	SDL_Rect imageRect = { 
+		std::round(actor.transform.pos.x * pixelsPerUnit - actor.view.pivotOffset->x * actor.transform.scale.x),
+		std::round(actor.transform.pos.y * pixelsPerUnit - actor.view.pivotOffset->y * actor.transform.scale.y),
+		scaledWidth, 
+		scaledHeight 
+	};
+
+	SDL_RenderCopyEx(
+		sdlRenderer, actor.view.image, nullptr,
+		&imageRect, actor.transform.rotationDegrees,
+		&actor.view.pivotOffset.value(), flip
+	);
 }
 
 void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y) {
@@ -99,7 +145,7 @@ void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, in
 
 void Renderer::playSound(std::string& soundName, int loops) {
 #ifndef __linux__
-	std::string soundPath = "resources/audio/" + configUtils.introMusic; // the audio's path
+	std::string soundPath = "resources/audio/" + soundName; // the audio's path
 	// Verify that the intro music exists
 	if (configUtils.fileExists(soundPath + ".wav")) {
 		soundPath += ".wav";
@@ -107,8 +153,8 @@ void Renderer::playSound(std::string& soundName, int loops) {
 	else if (configUtils.fileExists(soundPath + ".ogg")) {
 		soundPath += ".ogg";
 	}
-	if (soundPath == "resources/audio/" + configUtils.introMusic) {
-		std::cout << "error: failed to play audio clip " + configUtils.introMusic;
+	if (soundPath == "resources/audio/" + soundName) {
+		std::cout << "error: failed to play audio clip " + soundName;
 		exit(0);
 	}
 
@@ -121,7 +167,7 @@ void Renderer::playSound(std::string& soundName, int loops) {
 	}
 	// Otherwise, load from path and cache it
 	else {
-		sound = Mix_LoadWAV(soundPath.c_str());
+		sound = AudioHelper::Mix_LoadWAV498(soundPath.c_str());
 		configUtils.sounds[soundName] = sound;
 	}
 
@@ -179,7 +225,7 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
-			auto actorIt = locToActors.find(glm::ivec2(x, y) + gameInfo.player->position);
+			auto actorIt = locToActors.find(glm::dvec2(x, y) + gameInfo.player->transform.pos);
 			if (actorIt != locToActors.end()) {
 				nearby.insert(nearby.end(), actorIt->second.begin(), actorIt->second.end());
 			}
@@ -192,7 +238,7 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 	for (Actor* actor : nearby) {
 		// let's not let the player do dialogue at all
 		if (actor->name != "player") {
-			if (actor->position == gameInfo.player->position) {
+			if (actor->transform.pos == gameInfo.player->transform.pos) {
 				actor->printContactDialogue();
 				gameInfo.state = executeCommands(*actor, actor->contactDialogue, gameInfo);
 				dialogue << actor->contactDialogue << "\n";

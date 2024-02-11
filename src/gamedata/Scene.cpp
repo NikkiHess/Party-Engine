@@ -8,7 +8,7 @@
 #include <vector>
 
 Actor& Scene::instantiateActor(ActorProps& props) {
-	glm::ivec2 actorPos(props.x, props.y);
+	glm::dvec2 actorPos(props.transform.pos.x, props.transform.pos.y);
 	Actor* actorPtr = new Actor(props);
 	Actor &actor = *actorPtr;
 	actor.id = actors.size();
