@@ -16,7 +16,7 @@
 #include "SDL2/SDL_mixer.h"
 
 bool ConfigUtils::fileExists(const std::string& path) {
-	// checks whether the cache contains an entry
+	// checks whether the cache contains the entry
 	if (fileExistsCache.count(path))
 		return fileExistsCache[path];
 	// if the cache doesn't contain an entry, create it and return it
@@ -165,10 +165,18 @@ void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {
 
 	if (document.HasMember("view_image"))
 		props.view.imageName = document["view_image"].GetString();
-	if (document.HasMember("view_pivot_offset_x"))
+	if (document.HasMember("view_pivot_offset_x")) {
+		if(!props.view.pivotOffset.has_value())
+			props.view.pivotOffset = std::make_optional<SDL_Point>();
+
 		props.view.pivotOffset->x = document["view_pivot_offset_x"].GetDouble();
-	if (document.HasMember("view_pivot_offset_y"))
+	}
+	if (document.HasMember("view_pivot_offset_y")) {
+		if (!props.view.pivotOffset.has_value())
+			props.view.pivotOffset = std::make_optional<SDL_Point>();
+
 		props.view.pivotOffset->y = document["view_pivot_offset_y"].GetDouble();
+	}
 
 	if (document.HasMember("transform_position_x"))
 		props.transform.pos.x = document["transform_position_x"].GetDouble();

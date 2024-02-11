@@ -102,8 +102,8 @@ void Renderer::drawActor(Actor& actor) {
 	int scaledWidth = width * actor.transform.scale.x;
 	int scaledHeight = height * actor.transform.scale.y;
 
-	if (scaledWidth < 0) flip = SDL_FLIP_HORIZONTAL;
-	if (scaledHeight < 0) flip = SDL_FLIP_VERTICAL;
+	if (scaledWidth < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
+	if (scaledHeight < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
 
 	if (!actor.view.pivotOffset.has_value()) {
 		SDL_Point pivotOffset = {0, 0};
@@ -115,16 +115,14 @@ void Renderer::drawActor(Actor& actor) {
 	double centerX = configUtils.renderSize.x / 2.0;
 	double centerY = configUtils.renderSize.y / 2.0;
 
-	int x = std::round(centerX + actor.transform.pos.x * pixelsPerUnit - actor.view.pivotOffset->x * actor.transform.scale.x);
-	int y = std::round(centerY + actor.transform.pos.y * pixelsPerUnit - actor.view.pivotOffset->y * actor.transform.scale.y);
+	double scaledOffsetX = actor.view.pivotOffset->x * actor.transform.scale.x;
+	double scaledOffsetY = actor.view.pivotOffset->y * actor.transform.scale.y;
+
+	int x = std::round(centerX + actor.transform.pos.x * pixelsPerUnit - scaledOffsetX);
+	int y = std::round(centerY + actor.transform.pos.y * pixelsPerUnit - scaledOffsetY);
 
 	// center position around the pivot point
-	SDL_Rect imageRect = { 
-		x,
-		y,
-		scaledWidth, 
-		scaledHeight 
-	};
+	SDL_Rect imageRect = { x, y, scaledWidth, scaledHeight };
 
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,
