@@ -38,7 +38,7 @@ public:
 	// data cache
 	std::unordered_map<std::string, SDL_Texture*> imageTextures, textTextures;
 	std::unordered_map<std::string, Mix_Chunk*> sounds;
-	TTF_Font* font;
+	TTF_Font* font = nullptr;
 
 	// The initial scene from game.config
 	Scene initialScene;
