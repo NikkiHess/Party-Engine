@@ -22,6 +22,8 @@
 
 class ConfigUtils {
 public:
+	// TODO: Separate these variables out into multiple classes, this is MESSY
+
 	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
 
@@ -31,6 +33,7 @@ public:
 	std::vector<std::string> introText;
 	std::string introMusic = "";
 	std::string gameplayMusic = "";
+	std::string hpImage = "";
 
 	// data cache
 	std::unordered_map<std::string, SDL_Texture*> imageTextures, textTextures;
@@ -39,8 +42,10 @@ public:
 
 	// The initial scene from game.config
 	Scene initialScene;
-	// Actors templates from the scene
+	// Actor templates from the scene
 	std::vector<Actor*> templates;
+
+	Actor* player;
 
 	// The render size, as defined by rendering.config
 	glm::ivec2 renderSize;

@@ -98,17 +98,17 @@ void Renderer::drawActor(Actor& actor) {
 	);
 }
 
-void Renderer::drawStaticImage(std::string& imageName, int x, int y, int width, int height) {
+void Renderer::drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {
 	SDL_Texture* imageTexture = loadImageTexture(imageName);
 
 	// Set the rendering position and size (center, full size)
-	SDL_Rect imageRect = { x, y, width, height };
+	SDL_Rect imageRect = { pos.x, pos.y, size.x, size.y };
 
 	// Copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
 }
 
-void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y) {
+void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, glm::ivec2 pos) {
 	// create a surface to render our text
 	SDL_Surface* textSurface = TTF_RenderText_Solid(configUtils.font, text.c_str(), fontColor);
 
@@ -116,7 +116,7 @@ void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, in
 	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
 
 	// create a rect to render the text in
-	SDL_Rect textRect = { x, y, textSurface->w, textSurface->h };
+	SDL_Rect textRect = { pos.x, pos.y, textSurface->w, textSurface->h };
 
 	// copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, textTexture, nullptr, &textRect);
@@ -173,10 +173,8 @@ void Renderer::renderIntro(int& index) {
 		drawStaticImage(
 			// exhausted introImages? continue to render last one
 			(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
-			0,
-			0,
-			configUtils.renderSize.x,
-			configUtils.renderSize.y
+			{0, 0}, // the position should be (0, 0)
+			{ configUtils.renderSize.x, configUtils.renderSize.y } // stretch to fit render size
 		);
 	}
 	// Display any intro text
@@ -186,8 +184,7 @@ void Renderer::renderIntro(int& index) {
 			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
 			16,
 			{ 255, 255, 255, 255 },
-			25,
-			configUtils.renderSize.y - 50
+			{ 25, configUtils.renderSize.y - 50 } // the pos will be {25, 50 higher than the bottom of the screen}
 		);
 	}
 }
@@ -209,7 +206,26 @@ void Renderer::render(GameInfo& gameInfo) {
 }
 
 void Renderer::renderHUD(GameInfo& gameInfo) {
+	// only do any of this if the player exists
+	if (gameInfo.player) {
+		// render the player's score
+		std::string scoreText = "score : " + std::to_string(gameInfo.player->score);
+		drawText(scoreText, 16, { 255, 255, 255, 255 }, { 5, 5 });
 
+		// render the player's hp
+		for (int i = 0; i < gameInfo.player->health; ++i) {
+			glm::ivec2 size(0, 0);
+			SDL_QueryTexture(loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
+
+			glm::ivec2 startPos{ 5, 25 };
+			glm::ivec2 offset{ i * (size.x + 5), 0 };
+			drawStaticImage(
+				configUtils.hpImage,
+				startPos + offset,
+				{ size.x, size.y }
+			);
+		}
+	}
 }
 
 void Renderer::printDialogue(GameInfo& gameInfo) {

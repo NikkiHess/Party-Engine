@@ -87,6 +87,15 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	if (document.HasMember("gameplay_audio")) {
 		gameplayMusic = document["gameplay_audio"].GetString();
 	}
+
+	// HUD
+	if (document.HasMember("hp_image")) {
+		std::string hpImageName = document["hp_image"].GetString();
+		std::string hpImagePath = "resources/images/" + hpImageName + ".png";
+		checkFile(hpImagePath, hpImageName);
+
+		hpImage = hpImageName;
+	}
 }
 
 void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, bool isInitialScene = false) {
@@ -135,8 +144,19 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 			setActorProps(props, docActors[i]);
 
 			// instantiate a new actor based on these props
-			scene.instantiateActor(props);
-			//std::cout << &scene.actors.back() << "\n"; // print actor address
+			Actor& actor = scene.instantiateActor(props);
+			
+			// the player is defined
+			if (actor.name == "player") {
+				player = &actor;
+
+				// verify the hp image exists
+				if (hpImage == "") {
+					// if there's a player but NO hpImage, error
+					std::cout << "error: player actor requires an hp_image be defined";
+					exit(0);
+				}
+			}
 		}
 	}
 	else {
@@ -157,11 +177,6 @@ void ConfigUtils::initializeRendering(rapidjson::Document& document) {
 		clearColor.g = document["clear_color_g"].GetInt();
 	if (document.HasMember("clear_color_b"))
 		clearColor.b = document["clear_color_b"].GetInt();
-
-	// HUD
-	if (document.HasMember("hp_image")) {
-
-	}
 }
 
 void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {

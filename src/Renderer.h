@@ -23,13 +23,13 @@ public:
 	SDL_Texture* loadImageTexture(std::string& imageName);
 
 	// draw an unchanging image on the screen
-	void drawStaticImage(std::string& imageName, int x, int y, int width, int height);
+	void drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
 
 	// draw an unchanging image on the screen
 	void drawActor(Actor& actor);
 
 	// draw text on the screen
-	void drawText(std::string& text, int fontSize, SDL_Color fontColor, int x, int y);
+	void drawText(std::string& text, int fontSize, SDL_Color fontColor, glm::ivec2 pos);
 
 	// play a sound "loops" times
 	void playSound(std::string& soundName, int loops);
