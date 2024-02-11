@@ -1,26 +1,26 @@
 // std library
+#include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <sstream>
-#include <cmath>
 #include <unordered_map>
-#include <algorithm>
 
 // include my code
-#include "Renderer.h"
-#include "../GameEngine.h"
-#include "../gamedata/GameInfo.h"
 #include "../gamedata/Actor.h"
+#include "../gamedata/GameInfo.h"
+#include "../GameEngine.h"
 #include "../utils/StringUtils.h"
+#include "Renderer.h"
 
 // dependencies
-#include "rapidjson/document.h"
+#include "AudioHelper.h"
 #include "glm/glm.hpp"
+#include "Helper.h"
+#include "rapidjson/document.h"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
-#include "SDL2/SDL_ttf.h"
 #include "SDL2/SDL_mixer.h"
-#include "Helper.h"
-#include "AudioHelper.h"
+#include "SDL2/SDL_ttf.h"
 
 void Renderer::renderIntro(int& index) {
 	// Clear the frame buffer at the beginning of a frame

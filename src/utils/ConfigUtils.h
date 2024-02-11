@@ -1,25 +1,25 @@
 #pragma once
 
 // std stuff
-#include <string>
-#include <iostream>
 #include <filesystem>
-#include <vector>
-#include <unordered_map>
+#include <iostream>
 #include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 // my code
-#include "../gamedata/Scene.h"
-#include "../gamedata/Actor.h"
 #include "../errors/Error.h"
+#include "../gamedata/Actor.h"
+#include "../gamedata/Scene.h"
 
 // dependencies
+#include "glm/glm.hpp"
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
-#include "glm/glm.hpp"
+#include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
-#include "SDL2/SDL_mixer.h"
 
 class ConfigUtils {
 public:

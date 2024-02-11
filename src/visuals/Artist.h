@@ -9,8 +9,8 @@
 
 // dependencies
 #include "glm/glm.hpp"
-#include "SDL2/SDL_render.h"
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
 // handles drawing of visuals (not displaying, that's Renderer's job)

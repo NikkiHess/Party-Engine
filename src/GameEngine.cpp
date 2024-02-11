@@ -1,8 +1,8 @@
 // std libraries
+#include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <sstream>
-#include <cmath>
-#include <algorithm>
 
 // include my code
 #include "GameEngine.h"
@@ -10,17 +10,17 @@
 #include "visuals/Renderer.h"
 
 // dependencies
-#include "rapidjson/document.h"
 #include "glm/glm.hpp"
+#include "rapidjson/document.h"
 
 // SDL2
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_render.h"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_ttf.h"
-#include "SDL2/SDL_mixer.h"
-#include "Helper.h"
 #include "AudioHelper.h"
+#include "Helper.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_mixer.h"
+#include "SDL2/SDL_render.h"
+#include "SDL2/SDL_ttf.h"
 
 // ---------- BEGIN MOTION FUNCTIONS ----------
 

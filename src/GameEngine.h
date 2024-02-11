@@ -1,16 +1,16 @@
 #pragma once
 
 // std library
-#include <string>
-#include <map>
 #include <algorithm>
+#include <map>
+#include <string>
 
 // my code
-#include "visuals/Renderer.h"
-#include "utils/ConfigUtils.h"
+#include "audio/AudioPlayer.h"
 #include "gamedata/Actor.h"
 #include "gamedata/GameInfo.h"
-#include "audio/AudioPlayer.h"
+#include "utils/ConfigUtils.h"
+#include "visuals/Renderer.h"
 
 // dependencies
 #include "glm/glm.hpp"

@@ -1,8 +1,8 @@
 #pragma once
 
 // std library
-#include <string>
 #include <optional>
+#include <string>
 
 // dependencies
 #include "glm/glm.hpp"

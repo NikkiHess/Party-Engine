@@ -1,8 +1,8 @@
 #pragma once
 
 // std library
-#include <string>
 #include <iostream>
+#include <string>
 
 // Probably wanna override std::exceptions later
 class Error
@@ -13,4 +13,3 @@ public:
 		exit(0);
 	}
 };
-

@@ -4,8 +4,8 @@
 #include <string>
 
 // my code
-#include "Scene.h"
 #include "Actor.h"
+#include "Scene.h"
 
 // the state the engine is in
 // normal = nothing of note happened

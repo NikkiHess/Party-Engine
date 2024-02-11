@@ -1,12 +1,12 @@
 // std library
-#include <string>
-#include <iostream>
 #include <filesystem>
+#include <iostream>
 #include <optional>
+#include <string>
 
 // my code
-#include "ConfigUtils.h"
 #include "../gamedata/Scene.h"
+#include "ConfigUtils.h"
 
 // dependencies
 #include "rapidjson/document.h"

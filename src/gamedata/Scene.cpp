@@ -1,10 +1,10 @@
-#include "Scene.h"
 #include "Actor.h"
+#include "Scene.h"
 
 // std library
+#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <iostream>
 #include <vector>
 
 void Scene::instantiateActor(Actor& actor) {

@@ -2,8 +2,8 @@
 #include <string>
 
 // my code
-#include "AudioPlayer.h"
 #include "../errors/Error.h"
+#include "AudioPlayer.h"
 
 // dependencies
 #include "AudioHelper.h"
