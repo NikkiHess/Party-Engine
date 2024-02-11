@@ -112,10 +112,16 @@ void Renderer::drawActor(Actor& actor) {
 		actor.view.pivotOffset = pivotOffset; // centered pivot offset
 	}
 
+	double centerX = configUtils.renderSize.x / 2.0;
+	double centerY = configUtils.renderSize.y / 2.0;
+
+	int x = std::round(centerX + actor.transform.pos.x * pixelsPerUnit - actor.view.pivotOffset->x * actor.transform.scale.x);
+	int y = std::round(centerY + actor.transform.pos.y * pixelsPerUnit - actor.view.pivotOffset->y * actor.transform.scale.y);
+
 	// center position around the pivot point
 	SDL_Rect imageRect = { 
-		std::round(actor.transform.pos.x * pixelsPerUnit - actor.view.pivotOffset->x * actor.transform.scale.x),
-		std::round(actor.transform.pos.y * pixelsPerUnit - actor.view.pivotOffset->y * actor.transform.scale.y),
+		x,
+		y,
 		scaledWidth, 
 		scaledHeight 
 	};
@@ -187,34 +193,9 @@ void Renderer::render(GameInfo& gameInfo) {
 	);
 	SDL_RenderClear(sdlRenderer);
 
-	//std::stringstream render; // the rendered view
-
-	//// render bounds
-	//glm::ivec2 topLeft(gameInfo.player->position.x - (renderSize.x / 2), gameInfo.player->position.y - (renderSize.y / 2));
-	//glm::ivec2 bottomRight(gameInfo.player->position.x + (renderSize.x / 2), gameInfo.player->position.y + (renderSize.y / 2));
-
-	//// perform the render of the current view given the bounds
-	//for (int y = topLeft.y; y <= bottomRight.y; ++y) {
-	//	for (int x = topLeft.x; x <= bottomRight.x; ++x) {
-	//		auto it = gameInfo.currentScene.locToActors.find(glm::ivec2(x, y));
-	//		if (it != gameInfo.currentScene.locToActors.end()) {
-	//			Actor* highest_id = it->second.back();
-	//			for (Actor* actor : it->second) {
-	//				if (actor->id > highest_id->id)
-	//					highest_id = actor;
-	//			}
-
-	//			render << highest_id->view;
-	//		}
-	//		else {
-	//			render << " ";
-	//		}
-	//	}
-	//	render << "\n";
-	//}
-
-	//// display the render
-	//std::cout << render.str();
+	for (Actor& actor : gameInfo.currentScene.actors) {
+		drawActor(actor);
+	}
 }
 
 void Renderer::printDialogue(GameInfo& gameInfo) {
