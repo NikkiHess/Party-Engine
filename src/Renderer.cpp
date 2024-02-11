@@ -99,14 +99,15 @@ void Renderer::drawActor(Actor& actor) {
 	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &width, &height);
 
 	// calculate scaled width/height
-	int scaledWidth = width * actor.transform.scale.x;
-	int scaledHeight = height * actor.transform.scale.y;
+	width *= actor.transform.scale.x;
+	height *= actor.transform.scale.y;
 
-	if (scaledWidth < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
-	if (scaledHeight < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
+	if (width < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
+	if (height < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
 
 	glm::dvec2 screenCenter(configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
 
+	// x and y either from config or (width or height) * 0.5 * scale
 	SDL_Point pivot{
 		std::round(actor.view.pivotOffset.x.value_or(width * 0.5) * actor.transform.scale.x),
 		std::round(actor.view.pivotOffset.y.value_or(height * 0.5) * actor.transform.scale.y)
@@ -116,7 +117,7 @@ void Renderer::drawActor(Actor& actor) {
 	int y = std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y);
 
 	// center position around the pivot point
-	SDL_Rect imageRect = { x, y, scaledWidth, scaledHeight };
+	SDL_Rect imageRect = { x, y, abs(width), abs(height) };
 
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,

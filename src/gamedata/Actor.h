@@ -11,7 +11,7 @@
 class Transform {
 public:
 	glm::dvec2 pos; // double vec
-	glm::dvec2 scale; // double vec
+	glm::dvec2 scale = { 1.0, 1.0 }; // double vec
 	double rotationDegrees = 0.0;
 };
 
