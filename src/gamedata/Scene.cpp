@@ -9,8 +9,8 @@
 
 Actor& Scene::instantiateActor(ActorProps& props) {
 	glm::dvec2 actorPos(props.transform.pos.x, props.transform.pos.y);
-	Actor* actorPtr = new Actor(props);
-	Actor &actor = *actorPtr;
+	Actor actor = Actor(props);
+	Actor* actorPtr = &actor;
 	actor.id = actors.size();
 	
 	// insert the actor into the list of actors
