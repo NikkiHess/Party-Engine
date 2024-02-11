@@ -105,21 +105,13 @@ void Renderer::drawActor(Actor& actor) {
 	if (scaledWidth < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
 	if (scaledHeight < 0) flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
 
-	if (!actor.view.pivotOffset.has_value()) {
-		SDL_Point pivotOffset = {0, 0};
-		pivotOffset.x = std::round(width * 0.5);
-		pivotOffset.y = std::round(height * 0.5);
-		actor.view.pivotOffset = pivotOffset; // centered pivot offset
-	}
+	glm::dvec2 screenCenter(configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
 
-	double centerX = configUtils.renderSize.x / 2.0;
-	double centerY = configUtils.renderSize.y / 2.0;
+	double scaledOffsetX = actor.view.pivotOffset.x.value_or(width * 0.5) * actor.transform.scale.x;
+	double scaledOffsetY = actor.view.pivotOffset.y.value_or(height * 0.5) * actor.transform.scale.y;
 
-	double scaledOffsetX = actor.view.pivotOffset->x * actor.transform.scale.x;
-	double scaledOffsetY = actor.view.pivotOffset->y * actor.transform.scale.y;
-
-	int x = std::round(centerX + actor.transform.pos.x * pixelsPerUnit - scaledOffsetX);
-	int y = std::round(centerY + actor.transform.pos.y * pixelsPerUnit - scaledOffsetY);
+	int x = std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - scaledOffsetX);
+	int y = std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - scaledOffsetY);
 
 	// center position around the pivot point
 	SDL_Rect imageRect = { x, y, scaledWidth, scaledHeight };
@@ -127,7 +119,7 @@ void Renderer::drawActor(Actor& actor) {
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,
 		&imageRect, actor.transform.rotationDegrees,
-		&actor.view.pivotOffset.value(), flip
+		0, flip
 	);
 }
 
