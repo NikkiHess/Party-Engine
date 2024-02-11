@@ -4,8 +4,9 @@
 #include <vector>
 
 // my code
-#include "gamedata/GameInfo.h"
-#include "utils/ConfigUtils.h"
+#include "../gamedata/GameInfo.h"
+#include "../utils/ConfigUtils.h"
+#include "Artist.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -13,23 +14,13 @@
 
 class Renderer {
 public:
-	SDL_Renderer* sdlRenderer; // the sdl renderer we're using
+	SDL_Renderer* sdlRenderer = nullptr; // the sdl renderer we're using
 	ConfigUtils& configUtils; // the ConfigUtils the game uses
 	glm::ivec2 renderSize; // the size of the rendered view
 
-	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize) {}
+	Artist artist; // responsible for drawing stuff
 
-
-	SDL_Texture* loadImageTexture(std::string& imageName);
-
-	// draw an unchanging image on the screen
-	void drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
-
-	// draw an unchanging image on the screen
-	void drawActor(Actor& actor);
-
-	// draw text on the screen
-	void drawText(std::string& text, int fontSize, SDL_Color fontColor, glm::ivec2 pos);
+	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize), artist(configUtils) {}
 
 	// play a sound "loops" times
 	void playSound(std::string& soundName, int loops);

@@ -969,7 +969,7 @@
     <ClInclude Include="dependencies\rapidjson\writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer.h">
+    <ClInclude Include="src\visuals\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gamedata\GameInfo.h">
@@ -1236,6 +1236,9 @@
     <ClInclude Include="dependencies\SDL2\SDL_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\visuals\Artist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp">
@@ -1244,7 +1247,7 @@
     <ClCompile Include="src\GameEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
+    <ClCompile Include="src\visuals\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\ConfigUtils.cpp">
@@ -1254,6 +1257,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gamedata\Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\visuals\Artist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1666,18 +1672,18 @@
     <None Include="dependencies\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="dependencies\SDL2\lib\SDL2.dll" />
     <None Include="dependencies\SDL2\SDL2.dll" />
-    <None Include="dependencies\SDL2\lib\SDL2_image.dll" />
-    <None Include="dependencies\SDL2\lib\SDL2_mixer.dll" />
-    <None Include="dependencies\SDL2\lib\SDL2_ttf.dll" />
+    <None Include="dependencies\SDL2\lib\windows\SDL2.dll" />
+    <None Include="dependencies\SDL2\lib\windows\SDL2_image.dll" />
+    <None Include="dependencies\SDL2\lib\windows\SDL2_mixer.dll" />
+    <None Include="dependencies\SDL2\lib\windows\SDL2_ttf.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="dependencies\SDL2\lib\SDL2test.lib" />
-    <Library Include="dependencies\SDL2\lib\SDL2.lib" />
-    <Library Include="dependencies\SDL2\lib\SDL2main.lib" />
-    <Library Include="dependencies\SDL2\lib\SDL2_image.lib" />
-    <Library Include="dependencies\SDL2\lib\SDL2_mixer.lib" />
-    <Library Include="dependencies\SDL2\lib\SDL2_ttf.lib" />
+    <Library Include="dependencies\SDL2\lib\windows\SDL2.lib" />
+    <Library Include="dependencies\SDL2\lib\windows\SDL2main.lib" />
+    <Library Include="dependencies\SDL2\lib\windows\SDL2test.lib" />
+    <Library Include="dependencies\SDL2\lib\windows\SDL2_image.lib" />
+    <Library Include="dependencies\SDL2\lib\windows\SDL2_mixer.lib" />
+    <Library Include="dependencies\SDL2\lib\windows\SDL2_ttf.lib" />
   </ItemGroup>
 </Project>

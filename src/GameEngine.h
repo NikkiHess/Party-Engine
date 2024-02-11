@@ -6,7 +6,7 @@
 #include <algorithm>
 
 // my code
-#include "Renderer.h"
+#include "visuals/Renderer.h"
 #include "utils/ConfigUtils.h"
 #include "gamedata/Actor.h"
 #include "gamedata/GameInfo.h"

@@ -7,7 +7,7 @@
 // include my code
 #include "GameEngine.h"
 #include "utils/ConfigUtils.h"
-#include "Renderer.h"
+#include "visuals/Renderer.h"
 
 // dependencies
 #include "rapidjson/document.h"
@@ -126,6 +126,7 @@ void Engine::start() {
 	// Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
 	SDL_Renderer* sdlRenderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
 	renderer.sdlRenderer = sdlRenderer;
+	renderer.artist.sdlRenderer = sdlRenderer;
 
 	// run the game loop
 	doGameLoop();

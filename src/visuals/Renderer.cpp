@@ -7,10 +7,10 @@
 
 // include my code
 #include "Renderer.h"
-#include "GameEngine.h"
-#include "gamedata/GameInfo.h"
-#include "gamedata/Actor.h"
-#include "utils/StringUtils.h"
+#include "../GameEngine.h"
+#include "../gamedata/GameInfo.h"
+#include "../gamedata/Actor.h"
+#include "../utils/StringUtils.h"
 
 // dependencies
 #include "rapidjson/document.h"
@@ -21,108 +21,6 @@
 #include "SDL2/SDL_mixer.h"
 #include "Helper.h"
 #include "AudioHelper.h"
-
-SDL_Texture* Renderer::loadImageTexture(std::string& imageName) {
-	SDL_Texture* imageTexture = nullptr;
-	// If cached, load the imageTexture
-	if (configUtils.imageTextures[imageName]) {
-		imageTexture = configUtils.imageTextures[imageName];
-	}
-	else {
-		std::string imagePath = "resources/images/" + imageName + ".png";
-		imageTexture = IMG_LoadTexture(sdlRenderer, imagePath.c_str());
-		configUtils.imageTextures[imageName] = imageTexture;
-	}
-
-	if (imageTexture == nullptr) {
-		std::cout << "Failed to load image: " << IMG_GetError() << "\n";
-		exit(0);
-	}
-
-	return imageTexture;
-}
-
-// TODO: Make this MORE readable, it's really clunky
-void Renderer::drawActor(Actor& actor) {
-	int pixelsPerUnit = 100;
-	glm::ivec2 size(0, 0);
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
-
-	// if the image hasn't been loaded in yet and there is one to be found, do it.
-	if (!actor.view.image && actor.view.imageName != "") {
-		actor.view.image = loadImageTexture(actor.view.imageName);
-	}
-
-	// get the width and height from the actor view
-	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
-
-	// scale size using actor.transform.scale
-	glm::ivec2 scaledSize(
-		size.x * actor.transform.scale.x, 
-		size.y * actor.transform.scale.y 
-	);
-
-	if (scaledSize.x < 0) {
-		flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
-	}
-	if (scaledSize.y < 0) {
-		flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
-	}
-
-	glm::dvec2 screenCenter(configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
-
-	// x and y either from config or (width or height) * 0.5 * scale
-	// NOTE TO SELF: the pivot point should always use size, not scaledSize
-	SDL_Point pivot{
-		static_cast<int>(std::round(actor.view.pivotOffset.x.value_or(size.x * 0.5) * actor.transform.scale.x)),
-		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5) * actor.transform.scale.y))
-	};
-
-	glm::ivec2 imagePos(
-		static_cast<int>(std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - pivot.x)),
-		static_cast<int>(std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y))
-	);
-
-	// center position around the pivot point
-	// offset by scaledSize if we flip either one
-	SDL_Rect imageRect = { 
-		imagePos.x + (scaledSize.x < 0 ? scaledSize.x : 0), 
-		imagePos.y + (scaledSize.y < 0 ? scaledSize.y : 0),
-		abs(scaledSize.x),
-		abs(scaledSize.y) };
-
-	SDL_RenderCopyEx(
-		sdlRenderer, actor.view.image, nullptr,
-		&imageRect, actor.transform.rotationDegrees,
-		&pivot, flip
-	);
-}
-
-void Renderer::drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {
-	SDL_Texture* imageTexture = loadImageTexture(imageName);
-
-	// Set the rendering position and size (center, full size)
-	SDL_Rect imageRect = { pos.x, pos.y, size.x, size.y };
-
-	// Copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
-}
-
-void Renderer::drawText(std::string& text, int fontSize, SDL_Color fontColor, glm::ivec2 pos) {
-	// create a surface to render our text
-	SDL_Surface* textSurface = TTF_RenderText_Solid(configUtils.font, text.c_str(), fontColor);
-
-	// create a texture from that surface
-	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
-
-	// create a rect to render the text in
-	SDL_Rect textRect = { pos.x, pos.y, textSurface->w, textSurface->h };
-
-	// copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, textTexture, nullptr, &textRect);
-
-	SDL_FreeSurface(textSurface);
-}
 
 void Renderer::playSound(std::string& soundName, int loops) {
 	std::string soundPath = "resources/audio/" + soundName; // the audio's path
@@ -168,7 +66,7 @@ void Renderer::renderIntro(int& index) {
 
 	// Display any intro images
 	if (!configUtils.introImages.empty()) {
-		drawStaticImage(
+		artist.drawStaticImage(
 			// exhausted introImages? continue to render last one
 			(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
 			{0, 0}, // the position should be (0, 0)
@@ -177,7 +75,7 @@ void Renderer::renderIntro(int& index) {
 	}
 	// Display any intro text
 	if (!configUtils.introText.empty()) {
-		drawText(
+		artist.drawText(
 			// exhausted introText? continue to render last one
 			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
 			16,
@@ -199,7 +97,7 @@ void Renderer::render(GameInfo& gameInfo) {
 	SDL_RenderClear(sdlRenderer);
 
 	for (Actor& actor : gameInfo.currentScene.actors) {
-		drawActor(actor);
+		artist.drawActor(actor);
 	}
 }
 
@@ -208,16 +106,16 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 	if (gameInfo.player) {
 		// render the player's score
 		std::string scoreText = "score : " + std::to_string(gameInfo.player->score);
-		drawText(scoreText, 16, { 255, 255, 255, 255 }, { 5, 5 });
+		artist.drawText(scoreText, 16, { 255, 255, 255, 255 }, { 5, 5 });
 
 		// render the player's hp
 		for (int i = 0; i < gameInfo.player->health; ++i) {
 			glm::ivec2 size(0, 0);
-			SDL_QueryTexture(loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
+			SDL_QueryTexture(artist.loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
 
 			glm::ivec2 startPos{ 5, 25 };
 			glm::ivec2 offset{ i * (size.x + 5), 0 };
-			drawStaticImage(
+			artist.drawStaticImage(
 				configUtils.hpImage,
 				startPos + offset,
 				{ size.x, size.y }

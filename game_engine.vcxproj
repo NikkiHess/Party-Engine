@@ -153,6 +153,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\visuals\Artist.h" />
     <ClInclude Include="dependencies\AudioHelper.h" />
     <ClInclude Include="dependencies\Helper.h" />
     <ClInclude Include="dependencies\SDL2\begin_code.h" />
@@ -557,16 +558,17 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\gamedata\Scene.h" />
     <ClInclude Include="src\utils\ConfigUtils.h" />
     <ClInclude Include="src\gamedata\GameInfo.h" />
-    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\visuals\Renderer.h" />
     <ClInclude Include="src\GameEngine.h" />
     <ClInclude Include="src\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\visuals\Artist.cpp" />
     <ClCompile Include="dependencies\glm\detail\glm.cpp" />
     <ClCompile Include="src\gamedata\Actor.cpp" />
     <ClCompile Include="src\gamedata\Scene.cpp" />
     <ClCompile Include="src\utils\ConfigUtils.cpp" />
-    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\visuals\Renderer.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
