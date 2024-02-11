@@ -141,7 +141,7 @@ void Engine::doGameLoop() {
 	bool introMusicPlaying = false;
 	bool gameplayMusicPlaying = false;
 
-	if (configUtils.introMusic != "" && !introMusicPlaying) {
+	if (configUtils.introMusic != "") {
 		renderer.playSound(configUtils.introMusic, -1);
 		introMusicPlaying = true;
 	}
@@ -191,8 +191,15 @@ void Engine::doGameLoop() {
 			AudioHelper::Mix_HaltChannel498(0);
 			introMusicPlaying = false;
 
-			if (configUtils.gameplayMusic != "") {
+			if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
 				renderer.playSound(configUtils.gameplayMusic, -1);
+				gameplayMusicPlaying = true;
+			}
+		}
+		else {
+			if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
+				renderer.playSound(configUtils.gameplayMusic, -1);
+				gameplayMusicPlaying = true;
 			}
 		}
 

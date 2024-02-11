@@ -166,16 +166,16 @@ void ConfigUtils::setActorProps(ActorProps& props, rapidjson::Value& document) {
 	if (document.HasMember("view_image"))
 		props.view.imageName = document["view_image"].GetString();
 	if (document.HasMember("view_pivot_offset_x")) {
-		if(!props.view.pivotOffset.has_value())
-			props.view.pivotOffset = std::make_optional<SDL_Point>();
+		if(!props.view.pivotOffset.x.has_value())
+			props.view.pivotOffset.x = std::make_optional<double>();
 
-		props.view.pivotOffset->x = document["view_pivot_offset_x"].GetDouble();
+		props.view.pivotOffset.x = document["view_pivot_offset_x"].GetDouble();
 	}
 	if (document.HasMember("view_pivot_offset_y")) {
-		if (!props.view.pivotOffset.has_value())
-			props.view.pivotOffset = std::make_optional<SDL_Point>();
+		if (!props.view.pivotOffset.y.has_value())
+			props.view.pivotOffset.y = std::make_optional<double>();
 
-		props.view.pivotOffset->y = document["view_pivot_offset_y"].GetDouble();
+		props.view.pivotOffset.y = document["view_pivot_offset_y"].GetDouble();
 	}
 
 	if (document.HasMember("transform_position_x"))
