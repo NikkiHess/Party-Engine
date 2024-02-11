@@ -179,7 +179,6 @@ void Engine::doGameLoop() {
 		// render the game first
 		renderer.render(gameInfo);
 		
-		
 		// if there's an intro, render it on top of the game
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
 			renderer.renderIntro(currentIntroIndex);
@@ -191,9 +190,14 @@ void Engine::doGameLoop() {
 			AudioHelper::Mix_HaltChannel498(0);
 			introMusicPlaying = false;
 
-			if (configUtils.gameplayMusic != "") {
+			if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
 				renderer.playSound(configUtils.gameplayMusic, -1);
+				gameplayMusicPlaying = true;
 			}
+		}
+		else if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
+			renderer.playSound(configUtils.gameplayMusic, -1);
+			gameplayMusicPlaying = true;
 		}
 
 		// Present the render
