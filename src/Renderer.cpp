@@ -121,7 +121,7 @@ void Renderer::drawActor(Actor& actor) {
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,
 		&imageRect, actor.transform.rotationDegrees,
-		0, flip
+		&pivot, flip
 	);
 }
 
