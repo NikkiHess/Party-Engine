@@ -1,5 +1,5 @@
 # List all source files
-SOURCES := src/GameEngine.cpp src/Renderer.cpp src/gamedata/Actor.cpp src/gamedata/Scene.cpp src/utils/ConfigUtils.cpp
+SOURCES := $(wildcard src/*.cpp) $(wildcard src/gamedata/*.cpp) $(wildcard src/utils/ConfigUtils.cpp)
 
 # Derive object file names from source file names
 OBJECTS := $(SOURCES:.cpp=.o)
