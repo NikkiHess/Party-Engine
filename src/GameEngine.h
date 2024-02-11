@@ -10,6 +10,7 @@
 #include "utils/ConfigUtils.h"
 #include "gamedata/Actor.h"
 #include "gamedata/GameInfo.h"
+#include "audio/AudioPlayer.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -18,6 +19,7 @@ class Engine {
 public:
 	Renderer& renderer;
 	ConfigUtils& configUtils;
+	AudioPlayer& audioPlayer;
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 
@@ -31,7 +33,7 @@ public:
 		configUtils.initialScene 
 	};
 
-	Engine(Renderer& renderer, ConfigUtils& configUtils) : renderer(renderer), configUtils(configUtils) {
+	Engine(Renderer& renderer, ConfigUtils& configUtils, AudioPlayer& audioPlayer) : renderer(renderer), configUtils(configUtils), audioPlayer(audioPlayer) {
 		std::vector<Actor>& actors = configUtils.initialScene.actors;
 		// this finds the player in the actors map
 		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });

@@ -139,7 +139,7 @@ void Engine::doGameLoop() {
 	bool gameplayMusicPlaying = false;
 
 	if (configUtils.introMusic != "" && !introMusicPlaying) {
-		renderer.playSound(configUtils.introMusic, -1);
+		audioPlayer.play(configUtils.introMusic, -1);
 		introMusicPlaying = true;
 	}
 
@@ -191,12 +191,12 @@ void Engine::doGameLoop() {
 			introMusicPlaying = false;
 
 			if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
-				renderer.playSound(configUtils.gameplayMusic, -1);
+				audioPlayer.play(configUtils.gameplayMusic, -1);
 				gameplayMusicPlaying = true;
 			}
 		}
 		else if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
-			renderer.playSound(configUtils.gameplayMusic, -1);
+			audioPlayer.play(configUtils.gameplayMusic, -1);
 			gameplayMusicPlaying = true;
 		}
 
@@ -241,8 +241,9 @@ int main(int argc, char* argv[]) {
 
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);
+	AudioPlayer audioPlayer(configUtils);
 
-	Engine engine(renderer, configUtils);
+	Engine engine(renderer, configUtils, audioPlayer);
 	engine.start();
 
 	// quit at the very end

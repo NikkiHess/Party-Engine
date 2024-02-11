@@ -1,5 +1,5 @@
 # List all source files
-SOURCES := $(wildcard src/*.cpp) $(wildcard src/gamedata/*.cpp) $(wildcard src/utils/*.cpp) $(wildcard src/visuals/*.cpp)
+SOURCES := $(wildcard src/*.cpp) $(wildcard src/gamedata/*.cpp) $(wildcard src/utils/*.cpp) $(wildcard src/visuals/*.cpp) $(wildcard src/audio/*.cpp)
 
 # Derive object file names from source file names
 OBJECTS := $(SOURCES:.cpp=.o)

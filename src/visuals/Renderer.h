@@ -22,9 +22,6 @@ public:
 
 	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize), artist(configUtils) {}
 
-	// play a sound "loops" times
-	void playSound(std::string& soundName, int loops);
-
 	// render the intro images one by one, proceed when enter has been pressed
 	void renderIntro(int& index);
 
