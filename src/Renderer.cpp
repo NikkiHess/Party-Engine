@@ -100,7 +100,7 @@ void Renderer::drawActor(Actor& actor) {
 	// get the width and height from the actor view
 	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &width, &height);
 
-	// calculate scaled width/height
+	// scale size using actor.transform.scale
 	int scaledWidth = width * actor.transform.scale.x;
 	int scaledHeight = height * actor.transform.scale.y;
 
@@ -120,7 +120,12 @@ void Renderer::drawActor(Actor& actor) {
 	int y = std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y);
 
 	// center position around the pivot point
-	SDL_Rect imageRect = { x, y, abs(scaledWidth), abs(scaledHeight) };
+	// offset by scaledSize if we flip either one
+	SDL_Rect imageRect = { 
+		x + (scaledWidth < 0 ? scaledWidth : 0), 
+		y + (scaledHeight < 0 ? scaledHeight : 0),
+		abs(scaledWidth), 
+		abs(scaledHeight) };
 
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,
