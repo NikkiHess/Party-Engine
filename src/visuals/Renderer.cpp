@@ -47,7 +47,6 @@ void Renderer::renderIntro(int& index) {
 		artist.drawText(
 			// exhausted introText? continue to render last one
 			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
-			16,
 			{ 255, 255, 255, 255 },
 			{ 25, configUtils.renderSize.y - 50 } // the pos will be {25, 50 higher than the bottom of the screen}
 		);
@@ -76,7 +75,7 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 	if (gameInfo.player) {
 		// render the player's score
 		std::string scoreText = "score : " + std::to_string(gameInfo.player->score);
-		artist.drawText(scoreText, 16, { 255, 255, 255, 255 }, { 5, 5 });
+		artist.drawText(scoreText, { 255, 255, 255, 255 }, { 5, 5 });
 
 		// render the player's hp
 		for (int i = 0; i < gameInfo.player->health; ++i) {

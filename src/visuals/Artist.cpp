@@ -18,12 +18,28 @@ SDL_Texture* Artist::loadImageTexture(std::string& imageName) {
 		configUtils.imageTextures[imageName] = imageTexture;
 	}
 
-	if (imageTexture == nullptr) {
-		std::cout << "Failed to load image: " << IMG_GetError() << "\n";
-		exit(0);
+	return imageTexture;
+}
+
+SDL_Texture* Artist::loadTextTexture(std::string& text, SDL_Color fontColor) {
+	SDL_Texture* textTexture = nullptr;
+	// If cached, load the imageTexture
+	if (configUtils.textTextures[text]) {
+		textTexture = configUtils.textTextures[text];
+	}
+	else {
+		// create a surface to render our text
+		SDL_Surface* textSurface = TTF_RenderText_Solid(configUtils.font, text.c_str(), fontColor);
+
+		// create a texture from that surface
+		SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
+
+		configUtils.textTextures[text] = textTexture;
+
+		SDL_FreeSurface(textSurface);
 	}
 
-	return imageTexture;
+	return textTexture;
 }
 
 void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
@@ -103,18 +119,16 @@ void Artist::drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 
 	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
 }
 
-void Artist::drawText(std::string& text, int fontSize, SDL_Color fontColor, glm::ivec2 pos) {
-	// create a surface to render our text
-	SDL_Surface* textSurface = TTF_RenderText_Solid(configUtils.font, text.c_str(), fontColor);
+void Artist::drawText(std::string& text, SDL_Color fontColor, glm::ivec2 pos) {
+	SDL_Texture* textTexture = loadTextTexture(text, fontColor);
 
-	// create a texture from that surface
-	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
+	int width = 0, height = 0;
+
+	SDL_QueryTexture(textTexture, nullptr, nullptr, &width, &height);
 
 	// create a rect to render the text in
-	SDL_Rect textRect = { pos.x, pos.y, textSurface->w, textSurface->h };
+	SDL_Rect textRect = { pos.x, pos.y, width, height };
 
 	// copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, textTexture, nullptr, &textRect);
-
-	SDL_FreeSurface(textSurface);
 }

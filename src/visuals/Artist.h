@@ -26,6 +26,9 @@ public:
 	// load an image texture from its name
 	SDL_Texture* loadImageTexture(std::string& imageName);
 
+	// load an text texture from its content
+	SDL_Texture* loadTextTexture(std::string& text, SDL_Color fontColor);
+
 	// draw an unchanging image on the screen
 	void drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
 
@@ -33,6 +36,6 @@ public:
 	void drawActor(GameInfo& gameInfo, Actor& actor);
 
 	// draw text on the screen
-	void drawText(std::string& text, int fontSize, SDL_Color fontColor, glm::ivec2 pos);
+	void drawText(std::string& text, SDL_Color fontColor, glm::ivec2 pos);
 };
 
