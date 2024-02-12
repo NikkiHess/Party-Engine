@@ -73,8 +73,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 
 	// calculate the center of the screen, offset by the camera position
 	glm::dvec2 screenCenter(
-		configUtils.renderSize.x / 2 - configUtils.cameraOffset.x * Constants::PIXELS_PER_UNIT, 
-		configUtils.renderSize.y / 2 - configUtils.cameraOffset.y * Constants::PIXELS_PER_UNIT
+		configUtils.renderSize.x / 2.0 - configUtils.cameraOffset.x * Constants::PIXELS_PER_UNIT, 
+		configUtils.renderSize.y / 2.0 - configUtils.cameraOffset.y * Constants::PIXELS_PER_UNIT
 	);
 
 	// x and y either from config or (width or height) * 0.5 * scale
