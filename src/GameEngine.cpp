@@ -210,6 +210,10 @@ void Engine::doGameLoop() {
 			// render dialogue on top of the game
 			renderer.renderDialogue(gameInfo);
 			handleState();
+			if (gameInfo.state == PROCEED) {
+				Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+				continue;
+			}
 		}
 
 		// render HUD on top of the game

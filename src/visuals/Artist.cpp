@@ -107,8 +107,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	SDL_Rect imageRect = {
 		rectPos.x,
 		rectPos.y,
-		abs(scaledSize.x),
-		abs(scaledSize.y) };
+		std::abs(scaledSize.x),
+		std::abs(scaledSize.y) };
 
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,
