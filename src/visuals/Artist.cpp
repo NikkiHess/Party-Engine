@@ -90,17 +90,23 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 		playerPos.y * Constants::PIXELS_PER_UNIT
 	);
 
-	// the final image position
+	// the image position, without the scale offset
 	glm::ivec2 imagePos(
 		static_cast<int>(std::round(screenCenter.x + actor.transform.pos.x * Constants::PIXELS_PER_UNIT - pivot.x - playerPosOffset.x)),
 		static_cast<int>(std::round(screenCenter.y + actor.transform.pos.y * Constants::PIXELS_PER_UNIT - pivot.y - playerPosOffset.y))
 	);
 
+	// account for odd flips
+	glm::ivec2 rectPos(
+		imagePos.x + (scaledSize.x < 0 ? scaledSize.x - (scaledSize.x % 2) : 0),
+		imagePos.y + (scaledSize.y < 0 ? scaledSize.y - (scaledSize.y % 2) : 0)
+	);
+
 	// center position around the pivot point
 	// offset by scaledSize if we flip either one
 	SDL_Rect imageRect = {
-		imagePos.x + (scaledSize.x < 0 ? scaledSize.x - 1 : 0),
-		imagePos.y + (scaledSize.y < 0 ? scaledSize.y - 1 : 0),
+		rectPos.x,
+		rectPos.y,
 		abs(scaledSize.x),
 		abs(scaledSize.y) };
 
