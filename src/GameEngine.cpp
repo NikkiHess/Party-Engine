@@ -201,19 +201,19 @@ void Engine::doGameLoop() {
 					}
 				}
 			}
-
-			// render the game first
-			renderer.render(gameInfo);
-
-			if (player) {
-				// render dialogue on top of the game
-				renderer.renderDialogue(gameInfo);
-				handleState();
-
-				// render HUD on top of the game
-				renderer.renderHUD(gameInfo);
-			}
 		}
+
+		// render the game first
+		renderer.render(gameInfo);
+
+		if (player) {
+			// render dialogue on top of the game
+			renderer.renderDialogue(gameInfo);
+			handleState();
+		}
+
+		// render HUD on top of the game
+		renderer.renderHUD(gameInfo);
 		
 		// if there's an intro, render it on top of the game
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
@@ -237,14 +237,9 @@ void Engine::doGameLoop() {
 		}
 
 		// Present the render
-		if (!gameInfo.discardFrame) {
-			Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
 
-			SDL_Delay(1);
-		}
-		else {
-			gameInfo.discardFrame = false;
-		}
+		SDL_Delay(1);
 
 		//// prompt the player to take an action
 		//renderer.promptPlayer(gameInfo);

@@ -71,22 +71,25 @@ void Renderer::render(GameInfo& gameInfo) {
 }
 
 void Renderer::renderHUD(GameInfo& gameInfo) {
-	// render the player's score
-	std::string scoreText = "score : " + std::to_string(gameInfo.player->score);
-	artist.drawText(scoreText, { 255, 255, 255, 255 }, { 5, 5 });
+	// only do any of this if the player exists
+	if (gameInfo.player) {
+		// render the player's score
+		std::string scoreText = "score : " + std::to_string(gameInfo.player->score);
+		artist.drawText(scoreText, { 255, 255, 255, 255 }, { 5, 5 });
 
-	// render the player's hp
-	for (int i = 0; i < gameInfo.player->health; ++i) {
-		glm::ivec2 size(0, 0);
-		SDL_QueryTexture(artist.loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
+		// render the player's hp
+		for (int i = 0; i < gameInfo.player->health; ++i) {
+			glm::ivec2 size(0, 0);
+			SDL_QueryTexture(artist.loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
 
-		glm::ivec2 startPos{ 5, 25 };
-		glm::ivec2 offset{ i * (size.x + 5), 0 };
-		artist.drawStaticImage(
-			configUtils.hpImage,
-			startPos + offset,
-			{ size.x, size.y }
-		);
+			glm::ivec2 startPos{ 5, 25 };
+			glm::ivec2 offset{ i * (size.x + 5), 0 };
+			artist.drawStaticImage(
+				configUtils.hpImage,
+				startPos + offset,
+				{ size.x, size.y }
+			);
+		}
 	}
 }
 
@@ -125,7 +128,6 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 	}
 	
 	if (gameInfo.state == PROCEED) {
-		gameInfo.discardFrame = true;
 		for (std::string& dialogueStr : dialogue) {
 			std::string sceneName = StringUtils::getWordAfterPhrase(dialogueStr, "proceed to");
 			if (sceneName != "") {
