@@ -25,8 +25,9 @@ void AudioPlayer::play(std::string& soundName, int loops) {
 	Mix_Chunk* sound = nullptr;
 
 	// Is the sound cached? Load it
-	if (configUtils.sounds[soundName]) {
-		sound = configUtils.sounds[soundName];
+	auto it = configUtils.sounds.find(soundName);
+	if (it != configUtils.sounds.end()) {
+		sound = it->second;
 	}
 	// Otherwise, load from path and cache it
 	else {

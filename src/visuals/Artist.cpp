@@ -9,8 +9,9 @@
 SDL_Texture* Artist::loadImageTexture(std::string& imageName) {
 	SDL_Texture* imageTexture = nullptr;
 	// If cached, load the imageTexture
-	if (configUtils.imageTextures[imageName]) {
-		imageTexture = configUtils.imageTextures[imageName];
+	auto it = configUtils.imageTextures.find(imageName);
+	if (it != configUtils.imageTextures.end()) {
+		imageTexture = it->second;
 	}
 	else {
 		std::string imagePath = "resources/images/" + imageName + ".png";
@@ -23,9 +24,10 @@ SDL_Texture* Artist::loadImageTexture(std::string& imageName) {
 
 SDL_Texture* Artist::loadTextTexture(std::string& text, SDL_Color fontColor) {
 	SDL_Texture* textTexture = nullptr;
-	// If cached, load the imageTexture
-	if (configUtils.textTextures[text]) {
-		textTexture = configUtils.textTextures[text];
+	// If cached, load the textTexture
+	auto it = configUtils.textTextures.find(text);
+	if (it != configUtils.textTextures.end()) {
+		textTexture = it->second;
 	}
 	else {
 		// create a surface to render our text
