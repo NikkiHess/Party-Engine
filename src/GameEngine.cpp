@@ -237,19 +237,15 @@ void Engine::doGameLoop() {
 		}
 
 		// Present the render
-		if (!gameInfo.discardFrame) {
-			Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
 
+		if (!gameInfo.discardFrame) {
 			SDL_Delay(1);
 		}
 		else {
 			gameInfo.discardFrame = false;
 		}
 
-		//// prompt the player to take an action
-		//renderer.promptPlayer(gameInfo);
-		//handleState();
-		//
 		//// update Actor positions
 		//updatePositions();
 	}
