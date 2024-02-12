@@ -267,7 +267,7 @@ int main(int argc, char* argv[]) {
 	Mix_Init(MIX_INIT_OGG);
 	// Open the default audio device for playback and allocate 16 channels for mixing
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
-	AudioHelper::Mix_AllocateChannels498(16);
+	//AudioHelper::Mix_AllocateChannels498(16);
 
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);

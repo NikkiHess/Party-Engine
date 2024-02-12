@@ -35,5 +35,5 @@ void AudioPlayer::play(std::string& soundName, int loops) {
 	}
 
 	// Play the sound on channel 0, looping indefinitely
-	AudioHelper::Mix_PlayChannel498(0, sound, -1);
+	AudioHelper::Mix_PlayChannel498(0, sound, loops);
 }
