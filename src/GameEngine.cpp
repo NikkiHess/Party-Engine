@@ -171,36 +171,32 @@ void Engine::doGameLoop() {
 				if (player) {
 					if (nextEvent.type == SDL_KEYDOWN) {
 						SDL_Scancode scancode = nextEvent.key.keysym.scancode;
-						bool playerMoved = false;
+						glm::dvec2 newPos = player->transform.pos;
 
 						// handle movement
 						switch (scancode) {
 							case SDL_SCANCODE_UP:
 							case SDL_SCANCODE_W:
-								--player->transform.pos.y;
-								playerMoved = true;
+								newPos += glm::dvec2(0, -1);
+								gameInfo.currentScene.moveActor(player, newPos);
 								break;
 							case SDL_SCANCODE_DOWN:
 							case SDL_SCANCODE_S:
-								++player->transform.pos.y;
-								playerMoved = true;
+								newPos += glm::dvec2(0, 1);
+								gameInfo.currentScene.moveActor(player, newPos);
 								break;
 							case SDL_SCANCODE_LEFT:
 							case SDL_SCANCODE_A:
-								--player->transform.pos.x;
-								playerMoved = true;
+								newPos += glm::dvec2(-1, 0);
+								gameInfo.currentScene.moveActor(player, newPos);
 								break;
 							case SDL_SCANCODE_RIGHT:
 							case SDL_SCANCODE_D:
-								++player->transform.pos.x;
-								playerMoved = true;
+								newPos += glm::dvec2(1, 0);
+								gameInfo.currentScene.moveActor(player, newPos);
 								break;
 							default:
 								break;
-						}
-						if (playerMoved) {
-							std::sort(gameInfo.currentScene.actorsByRenderOrder.begin(), gameInfo.currentScene.actorsByRenderOrder.end(), RenderOrderComparator());
-							playerMoved = false;
 						}
 					}
 				}

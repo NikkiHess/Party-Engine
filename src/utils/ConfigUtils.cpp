@@ -113,7 +113,6 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
 		scene.actors.reserve(docActors.Size());
-		scene.actorsByRenderOrder.reserve(docActors.Size());
 		scene.locToActors.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
 			Actor actor;
@@ -143,8 +142,6 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 				}
 			}
 		}
-		// after all of this, sort actors by render order
-		std::sort(scene.actorsByRenderOrder.begin(), scene.actorsByRenderOrder.end(), RenderOrderComparator());
 	}
 	else {
 		Error::error("\"actors\" is missing from " + scene.name);
