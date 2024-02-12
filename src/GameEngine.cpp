@@ -277,10 +277,11 @@ int main(int argc, char* argv[]) {
 	engine.start();
 
 	// quit at the very end
-	SDL_Quit();
-	IMG_Quit();
-	TTF_Quit();
-	Mix_Quit();
+	// this is best practice, but staff doesn't do them
+	//SDL_Quit();
+	//IMG_Quit();
+	//TTF_Quit();
+	//Mix_Quit();
 
 	return 0;
 }

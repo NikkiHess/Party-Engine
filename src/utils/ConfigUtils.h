@@ -40,6 +40,7 @@ public:
 	std::unordered_map<std::string, SDL_Texture*> imageTextures, textTextures;
 	std::unordered_map<std::string, Mix_Chunk*> sounds;
 	TTF_Font* font = nullptr;
+	std::unordered_map<std::string, bool> fileExistsCache;
 
 	// The initial scene from game.config
 	Scene initialScene;
@@ -51,8 +52,6 @@ public:
 	// the camera offset, as defined by rendering.config
 	glm::dvec2 cameraOffset;
 	glm::ivec3 clearColor;
-
-	std::unordered_map<std::string, bool> fileExistsCache;
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
