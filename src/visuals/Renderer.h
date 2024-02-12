@@ -31,15 +31,9 @@ public:
 	// render the HUD
 	void renderHUD(GameInfo& gameInfo);
 
-	// print any dialogue from nearby Actors, returns the current GameState
+	// render any dialogue from nearby Actors, returns the current GameState
 	// as a result of any dialogue commands executed via executeCommands
-	void printDialogue(GameInfo& gameInfo);
-
-	// prompt the player for an input command (n, e, s, w, quit)
-	// does nothing and proceeds upon invalid input
-	// returns NORMAL if player doesn't quit
-	// returns LOSE if player quits
-	void promptPlayer(GameInfo& gameInfo);
+	void renderDialogue(GameInfo& gameInfo);
 private:
 	// execute the commands contained in the dialogue string with the given
 	// Actor as a trigger

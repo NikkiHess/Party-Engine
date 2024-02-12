@@ -93,17 +93,21 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 	}
 }
 
-void Renderer::printDialogue(GameInfo& gameInfo) {
-	std::stringstream dialogue; // the dialogue to be printed
-	auto& locToActors = gameInfo.currentScene.locToActors;
+void Renderer::renderDialogue(GameInfo& gameInfo) {
+	std::vector<std::string> dialogue; // the dialogue to be printed
 	std::vector<Actor*> nearby;
 
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
-			auto actorIt = locToActors.find(glm::dvec2(x, y) + gameInfo.player->transform.pos);
-			if (actorIt != locToActors.end()) {
-				nearby.insert(nearby.end(), actorIt->second.begin(), actorIt->second.end());
+			auto actorIt = gameInfo.currentScene.locToActors.find(gameInfo.player->transform.pos + glm::dvec2(x, y));
+			if (actorIt != gameInfo.currentScene.locToActors.end()) {
+				for (Actor* actor : actorIt->second) {
+					// only push back if they have dialogue and ARE NOT the player
+					if (actor->name != "player" && (actor->nearbyDialogue != "" || actor->contactDialogue != "")) {
+						nearby.push_back(actor);
+					}
+				}
 			}
 		}
 	}
@@ -112,67 +116,44 @@ void Renderer::printDialogue(GameInfo& gameInfo) {
 	if(nearby.size() > 1)
 		std::sort(nearby.begin(), nearby.end(), ActorComparator());
 	for (Actor* actor : nearby) {
-		// let's not let the player do dialogue at all
-		if (actor->name != "player") {
-			if (actor->transform.pos == gameInfo.player->transform.pos) {
-				actor->printContactDialogue();
-				gameInfo.state = executeCommands(*actor, actor->contactDialogue, gameInfo);
-				dialogue << actor->contactDialogue << "\n";
-			}
-			else {
-				actor->printNearbyDialogue();
-				gameInfo.state = executeCommands(*actor, actor->nearbyDialogue, gameInfo);
-				dialogue << actor->nearbyDialogue << "\n";
-			}
+		std::string name = actor->name;
+		if (actor->transform.pos == gameInfo.player->transform.pos) {
+			gameInfo.state = executeCommands(*actor, actor->contactDialogue, gameInfo);
+			dialogue.push_back(actor->contactDialogue);
+		}
+		else {
+			gameInfo.state = executeCommands(*actor, actor->nearbyDialogue, gameInfo);
+			dialogue.push_back(actor->nearbyDialogue);
 		}
 	}
 	
 	if (gameInfo.state == PROCEED) {
-		std::string sceneName = StringUtils::getWordAfterPhrase(dialogue.str(), "proceed to");
-		if (sceneName != "") {
-			//printStats(gameInfo);
-			std::string scenePath = "resources/scenes/" + sceneName + ".scene";
+		for (std::string& dialogueStr : dialogue) {
+			std::string sceneName = StringUtils::getWordAfterPhrase(dialogueStr, "proceed to");
+			if (sceneName != "") {
+				std::string scenePath = "resources/scenes/" + sceneName + ".scene";
 
-			if (!configUtils.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
+				if (!configUtils.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
 
-			gameInfo.currentScene = Scene();
-			gameInfo.currentScene.name = sceneName;
-			configUtils.initializeScene(gameInfo.currentScene, configUtils.document, false);
+				gameInfo.currentScene = Scene();
+				gameInfo.currentScene.name = sceneName;
+				configUtils.initializeScene(gameInfo.currentScene, configUtils.document, false);
 
-			auto playerIt = std::find_if(gameInfo.currentScene.actors.begin(), gameInfo.currentScene.actors.end(), [](Actor actor) { return actor.name == "player"; });
+				auto playerIt = std::find_if(gameInfo.currentScene.actors.begin(), gameInfo.currentScene.actors.end(), [](Actor actor) { return actor.name == "player"; });
 
-			if (playerIt != gameInfo.currentScene.actors.end()) {
-				gameInfo.player = &*playerIt;
+				if (playerIt != gameInfo.currentScene.actors.end()) {
+					gameInfo.player = &*playerIt;
+				}
 			}
-			render(gameInfo);
 		}
 	}
-	//printStats(gameInfo);
-}
 
-void Renderer::promptPlayer(GameInfo& gameInfo) {
-	std::cout << "Please make a decision..." << "\n";
-	std::cout << "Your options are \"n\", \"e\", \"s\", \"w\", \"quit\"" << "\n";
-
-	// receive the player's selection
-	std::string selection;
-	std::cin >> selection;
-
-	if (selection == "quit") {
-		gameInfo.state = LOSE;
-	}
-	// do movement (update player velocity)
-	else if (selection == "n") {
-		--gameInfo.player->velocity.y;
-	}
-	else if (selection == "e") {
-		++gameInfo.player->velocity.x;
-	}
-	else if (selection == "s") {
-		++gameInfo.player->velocity.y;
-	}
-	else if (selection == "w") {
-		--gameInfo.player->velocity.x;
+	for (int i = 0; i < dialogue.size(); ++i) {
+		artist.drawText(
+			dialogue[i],
+			{ 255, 255, 255, 255 },
+			{ 25, renderSize.y - 50 - (dialogue.size() - 1 - i) * 50 }
+		);
 	}
 }
 
@@ -180,10 +161,18 @@ void Renderer::promptPlayer(GameInfo& gameInfo) {
 // execute all game commands from the given dialogue given the trigger Actor
 // returns the game state generated from executing the command
 GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue, GameInfo& gameInfo) {
-	if (dialogue.find("health down") != std::string::npos) {
-		// if decreasing the player's health makes it <= 0, return a lose state
-		--gameInfo.player->health;
-		if (gameInfo.player->health <= 0) {
+	// if the player can take damage/game over, execute these commands
+	int cooldownOver = gameInfo.player->lastHealthDownFrame + gameInfo.player->healthDownCooldown;
+	if (gameInfo.currentFrame >= cooldownOver) {
+		if (dialogue.find("health down") != std::string::npos) {
+			// if decreasing the player's health makes it <= 0, return a lose state
+			--gameInfo.player->health;
+			gameInfo.player->lastHealthDownFrame = gameInfo.currentFrame;
+			if (gameInfo.player->health <= 0) {
+				return LOSE;
+			}
+		}
+		if (dialogue.find("game over") != std::string::npos) {
 			return LOSE;
 		}
 	}
@@ -196,9 +185,6 @@ GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue,
 	}
 	if (dialogue.find("you win") != std::string::npos) {
 		return WIN;
-	}
-	if (dialogue.find("game over") != std::string::npos) {
-		return LOSE;
 	}
 	if (dialogue.find("proceed to") != std::string::npos) {
 		return PROCEED;

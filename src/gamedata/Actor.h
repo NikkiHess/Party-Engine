@@ -40,15 +40,11 @@ public:
 	// PLAYER ONLY STATISTICS
 	// should be unused otherwise
 	int health = 3, score = 0;
+	int lastHealthDownFrame = -180;
+	int healthDownCooldown = 180;
 
 	int id = 0;
 	bool triggeredScoreUp = false;
-
-	// prints the actor's contact dialogue
-	void printContactDialogue() const;
-
-	// prints the actor's nearby dialogue
-	void printNearbyDialogue() const;
 };
 
 class ActorComparator {

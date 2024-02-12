@@ -22,6 +22,7 @@ public:
 	AudioPlayer& audioPlayer;
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
+	int currentFrame = 0;
 
 	// player stuff
 	Actor* player = nullptr; // the player
@@ -30,7 +31,8 @@ public:
 	GameInfo gameInfo{ 
 		player,
 		state,
-		configUtils.initialScene 
+		configUtils.initialScene,
+		currentFrame
 	};
 
 	Engine(Renderer& renderer, ConfigUtils& configUtils, AudioPlayer& audioPlayer) : renderer(renderer), configUtils(configUtils), audioPlayer(audioPlayer) {

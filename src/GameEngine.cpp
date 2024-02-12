@@ -206,6 +206,10 @@ void Engine::doGameLoop() {
 		// render the game first
 		renderer.render(gameInfo);
 
+		// render dialogue on top of the game
+		renderer.renderDialogue(gameInfo);
+		handleState();
+
 		// render HUD on top of the game
 		renderer.renderHUD(gameInfo);
 		
@@ -233,10 +237,8 @@ void Engine::doGameLoop() {
 		// Present the render
 		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
 
+		++currentFrame;
 		SDL_Delay(1);
-
-		//renderer.printDialogue(gameInfo);
-		//handleState();
 
 		//// prompt the player to take an action
 		//renderer.promptPlayer(gameInfo);
@@ -265,9 +267,8 @@ int main(int argc, char* argv[]) {
 
 	// Initialize SDL_mixer
 	Mix_Init(MIX_INIT_OGG);
-	// Open the default audio device for playback and allocate 16 channels for mixing
+	// Open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
-	//AudioHelper::Mix_AllocateChannels498(16);
 
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);
