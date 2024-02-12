@@ -98,8 +98,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 
 	// account for odd flips
 	glm::ivec2 rectPos(
-		imagePos.x + (scaledSize.x < 0 ? scaledSize.x - (scaledSize.x % 2) : 0),
-		imagePos.y + (scaledSize.y < 0 ? scaledSize.y - (scaledSize.y % 2) : 0)
+		imagePos.x + (scaledSize.x < 0 ? scaledSize.x + (scaledSize.x % 2) : 0),
+		imagePos.y + (scaledSize.y < 0 ? scaledSize.y + (scaledSize.y % 2) : 0)
 	);
 
 	// center position around the pivot point
