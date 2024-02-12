@@ -22,4 +22,5 @@ public:
 	GameState& state; // the current state of the game
 
 	Scene& currentScene;
+	bool discardFrame = false;
 };
