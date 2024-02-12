@@ -163,11 +163,12 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 GameState Renderer::executeCommands(Actor& trigger, const std::string& dialogue, GameInfo& gameInfo) {
 	// if the player can take damage/game over, execute these commands
 	int cooldownOver = gameInfo.player->lastHealthDownFrame + gameInfo.player->healthDownCooldown;
-	if (gameInfo.currentFrame >= cooldownOver) {
+	if (Helper::GetFrameNumber() >= cooldownOver) {
 		if (dialogue.find("health down") != std::string::npos) {
 			// if decreasing the player's health makes it <= 0, return a lose state
 			--gameInfo.player->health;
-			gameInfo.player->lastHealthDownFrame = gameInfo.currentFrame;
+			// set this frame as the last time health was taken away
+			gameInfo.player->lastHealthDownFrame = Helper::GetFrameNumber();
 			if (gameInfo.player->health <= 0) {
 				return LOSE;
 			}

@@ -206,9 +206,11 @@ void Engine::doGameLoop() {
 		// render the game first
 		renderer.render(gameInfo);
 
-		// render dialogue on top of the game
-		renderer.renderDialogue(gameInfo);
-		handleState();
+		if (player) {
+			// render dialogue on top of the game
+			renderer.renderDialogue(gameInfo);
+			handleState();
+		}
 
 		// render HUD on top of the game
 		renderer.renderHUD(gameInfo);
@@ -237,7 +239,6 @@ void Engine::doGameLoop() {
 		// Present the render
 		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
 
-		++currentFrame;
 		SDL_Delay(1);
 
 		//// prompt the player to take an action
