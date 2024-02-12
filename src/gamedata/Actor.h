@@ -35,6 +35,7 @@ public:
 	glm::dvec2 velocity;
 	bool blocking = false;
 	std::string nearbyDialogue = "", contactDialogue = "";
+	int renderOrder = 0;
 
 	// PLAYER ONLY STATISTICS
 	// should be unused otherwise
@@ -54,5 +55,15 @@ class ActorComparator {
 public:
 	bool operator()(Actor* actor1, Actor* actor2) {
 		return actor1->id < actor2->id;
+	}
+};
+
+class RenderOrderComparator {
+public:
+	bool operator()(Actor* actor1, Actor* actor2) {
+		if (actor1->renderOrder == actor2->renderOrder) {
+			return actor1->transform.pos.y < actor2->transform.pos.y;
+		}
+		return actor1->renderOrder < actor2->renderOrder;
 	}
 };

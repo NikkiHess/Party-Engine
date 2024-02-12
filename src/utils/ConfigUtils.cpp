@@ -29,7 +29,7 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	if (document.HasMember("game_title"))
 		gameTitle = document["game_title"].GetString();
 
-	// handle messages
+	// handle font
 	if (document.HasMember("font")) {
 		std::string fontName = document["font"].GetString();
 		std::string fontPath = "resources/fonts/" + fontName + ".ttf";
@@ -113,6 +113,8 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
 		scene.actors.reserve(docActors.Size());
+		scene.actorsByRenderOrder.reserve(docActors.Size());
+		scene.locToActors.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
 			Actor actor;
 
@@ -133,16 +135,16 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 			// instantiate the actor in the scene
 			scene.instantiateActor(actor);
 			
-			// the player is defined
+			// if the player is defined
 			if (actor.name == "player") {
-				player = &actor;
-
 				// if hpImage doesn't exist, error out
 				if (hpImage == "") {
 					Error::error("player actor requires an hp_image be defined");
 				}
 			}
 		}
+		// after all of this, sort actors by render order
+		std::sort(scene.actorsByRenderOrder.begin(), scene.actorsByRenderOrder.end(), RenderOrderComparator());
 	}
 	else {
 		Error::error("\"actors\" is missing from " + scene.name);
@@ -150,11 +152,17 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 }
 
 void ConfigUtils::initializeRendering(rapidjson::Document& document) {
+	// handle camera
 	if (document.HasMember("x_resolution"))
 		renderSize.x = document["x_resolution"].GetInt();
 	if (document.HasMember("y_resolution"))
 		renderSize.y = document["y_resolution"].GetInt();
+	if (document.HasMember("cam_offset_x"))
+		cameraOffset.x = document["cam_offset_x"].GetDouble();
+	if (document.HasMember("cam_offset_y"))
+		cameraOffset.y = document["cam_offset_y"].GetDouble();
 
+	// handle bg color
 	if (document.HasMember("clear_color_r"))
 		clearColor.r = document["clear_color_r"].GetInt();
 	if (document.HasMember("clear_color_g"))
@@ -205,4 +213,7 @@ void ConfigUtils::setActorProps(Actor& actor, rapidjson::Value& document) {
 		actor.nearbyDialogue = document["nearby_dialogue"].GetString();
 	if (document.HasMember("contact_dialogue"))
 		actor.contactDialogue = document["contact_dialogue"].GetString();
+
+	if(document.HasMember("render_order"))
+		actor.renderOrder = document["render_order"].GetInt();
 }

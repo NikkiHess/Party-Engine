@@ -6,6 +6,7 @@
 // my code
 #include "../gamedata/Actor.h"
 #include "../utils/ConfigUtils.h"
+#include "../gamedata/GameInfo.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -29,7 +30,7 @@ public:
 	void drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
 
 	// draw an unchanging image on the screen
-	void drawActor(Actor& actor);
+	void drawActor(GameInfo& gameInfo, Actor& actor);
 
 	// draw text on the screen
 	void drawText(std::string& text, int fontSize, SDL_Color fontColor, glm::ivec2 pos);

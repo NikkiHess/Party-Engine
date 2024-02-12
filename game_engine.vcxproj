@@ -153,6 +153,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\errors\Error.h" />
     <ClInclude Include="src\audio\AudioPlayer.h" />
     <ClInclude Include="src\visuals\Artist.h" />

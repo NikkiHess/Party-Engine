@@ -3,6 +3,8 @@
 
 // my code
 #include "Artist.h"
+#include "../Constants.h"
+#include "../gamedata/GameInfo.h"
 
 SDL_Texture* Artist::loadImageTexture(std::string& imageName) {
 	SDL_Texture* imageTexture = nullptr;
@@ -24,11 +26,11 @@ SDL_Texture* Artist::loadImageTexture(std::string& imageName) {
 	return imageTexture;
 }
 
-// TODO: Make this MORE readable, it's really clunky
-void Artist::drawActor(Actor& actor) {
-	int pixelsPerUnit = 100;
+void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	glm::ivec2 size(0, 0);
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+	glm::dvec2& playerPos = gameInfo.player->transform.pos;
 
 	// if the image hasn't been loaded in yet and there is one to be found, do it.
 	if (!actor.view.image && actor.view.imageName != "") {
@@ -51,7 +53,11 @@ void Artist::drawActor(Actor& actor) {
 		flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
 	}
 
-	glm::dvec2 screenCenter(configUtils.renderSize.x / 2.0, configUtils.renderSize.y / 2.0);
+	// calculate the center of the screen, offset by the camera position
+	glm::dvec2 screenCenter(
+		configUtils.renderSize.x / 2 - configUtils.cameraOffset.x * Constants::PIXELS_PER_UNIT, 
+		configUtils.renderSize.y / 2 - configUtils.cameraOffset.y * Constants::PIXELS_PER_UNIT
+	);
 
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
@@ -60,9 +66,16 @@ void Artist::drawActor(Actor& actor) {
 		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5) * actor.transform.scale.y))
 	};
 
+	// subtract this
+	glm::dvec2 playerPosOffset(
+		playerPos.x * Constants::PIXELS_PER_UNIT,
+		playerPos.y * Constants::PIXELS_PER_UNIT
+	);
+
+	// the final image position
 	glm::ivec2 imagePos(
-		static_cast<int>(std::round(screenCenter.x + actor.transform.pos.x * pixelsPerUnit - pivot.x)),
-		static_cast<int>(std::round(screenCenter.y + actor.transform.pos.y * pixelsPerUnit - pivot.y))
+		static_cast<int>(std::round(screenCenter.x + actor.transform.pos.x * Constants::PIXELS_PER_UNIT - pivot.x - playerPosOffset.x)),
+		static_cast<int>(std::round(screenCenter.y + actor.transform.pos.y * Constants::PIXELS_PER_UNIT - pivot.y - playerPosOffset.y))
 	);
 
 	// center position around the pivot point

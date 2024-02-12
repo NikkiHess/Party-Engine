@@ -10,8 +10,6 @@
 
 // dependencies
 #include "glm/glm.hpp"
-//#define GLM_ENABLE_EXPERIMENTAL
-//#include "glm/gtx/hash.hpp"
 
 class Scene
 {
@@ -27,10 +25,11 @@ private:
 	};
 public:
 	std::vector<Actor> actors;
+	std::vector<Actor*> actorsByRenderOrder;
 	std::unordered_map<glm::ivec2, std::vector<Actor*>, KeyFuncs, KeyFuncs> locToActors;
 	std::string name;
 
-	// instantiate an actor in the scene, returns the actor
+	// instantiate an actor in the scene
 	void instantiateActor(Actor& actor);
 
 	~Scene() {

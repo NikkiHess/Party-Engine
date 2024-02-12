@@ -46,10 +46,10 @@ public:
 	// Actor templates from the scene
 	std::vector<Actor*> templates;
 
-	Actor* player;
-
 	// The render size, as defined by rendering.config
 	glm::ivec2 renderSize;
+	// the camera offset, as defined by rendering.config
+	glm::dvec2 cameraOffset;
 	glm::ivec3 clearColor;
 
 	std::unordered_map<std::string, bool> fileExistsCache;

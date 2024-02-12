@@ -5,6 +5,7 @@
 #include <sstream>
 
 // include my code
+#include "Constants.h"
 #include "GameEngine.h"
 #include "utils/ConfigUtils.h"
 #include "visuals/Renderer.h"
@@ -151,17 +152,46 @@ void Engine::doGameLoop() {
 
 					// Go to the next intro image if we press space or enter
 					switch (scancode) {
-					case SDL_SCANCODE_SPACE:
-					case SDL_SCANCODE_RETURN:
-						++currentIntroIndex;
-						break;
-					default:
-						break;
+						case SDL_SCANCODE_SPACE:
+						case SDL_SCANCODE_RETURN:
+							++currentIntroIndex;
+							break;
+						default:
+							break;
 					}
 				}
 				// Go to the next intro image if we click
 				if (nextEvent.type == SDL_MOUSEBUTTONDOWN) {
 					++currentIntroIndex;
+				}
+			}
+			// gameplay handling
+			else {
+				if (nextEvent.type == SDL_KEYDOWN) {
+					SDL_Scancode scancode = nextEvent.key.keysym.scancode;
+
+					// handle movement
+					switch (scancode) {
+					case SDL_SCANCODE_UP:
+					case SDL_SCANCODE_W:
+						--player->transform.pos.y;
+						break;
+					case SDL_SCANCODE_DOWN:
+					case SDL_SCANCODE_S:
+						++player->transform.pos.y;
+						break;
+						case SDL_SCANCODE_LEFT:
+					case SDL_SCANCODE_A:
+						--player->transform.pos.x;
+						break;
+					case SDL_SCANCODE_RIGHT:
+					case SDL_SCANCODE_D:
+						++player->transform.pos.x;
+						break;
+					default:
+						break;
+					}
+					std::sort(gameInfo.currentScene.actorsByRenderOrder.begin(), gameInfo.currentScene.actorsByRenderOrder.end(), RenderOrderComparator());
 				}
 			}
 		}

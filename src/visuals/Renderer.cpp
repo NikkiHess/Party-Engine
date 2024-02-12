@@ -65,8 +65,9 @@ void Renderer::render(GameInfo& gameInfo) {
 	);
 	SDL_RenderClear(sdlRenderer);
 
-	for (Actor& actor : gameInfo.currentScene.actors) {
-		artist.drawActor(actor);
+	// draw all actors in order of transform_position_y
+	for (Actor* actor : gameInfo.currentScene.actorsByRenderOrder) {
+		artist.drawActor(gameInfo, *actor);
 	}
 }
 
