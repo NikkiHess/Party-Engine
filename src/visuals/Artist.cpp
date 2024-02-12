@@ -30,7 +30,7 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	glm::ivec2 size(0, 0);
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 
-	glm::dvec2& playerPos = gameInfo.player->transform.pos;
+	glm::dvec2 playerPos = (gameInfo.player ? gameInfo.player->transform.pos : glm::dvec2(0));
 
 	// if the image hasn't been loaded in yet and there is one to be found, do it.
 	if (!actor.view.image && actor.view.imageName != "") {
