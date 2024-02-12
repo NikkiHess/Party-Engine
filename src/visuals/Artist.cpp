@@ -99,8 +99,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	// center position around the pivot point
 	// offset by scaledSize if we flip either one
 	SDL_Rect imageRect = {
-		imagePos.x + (scaledSize.x < 0 ? scaledSize.x : 0),
-		imagePos.y + (scaledSize.y < 0 ? scaledSize.y : 0),
+		imagePos.x + (scaledSize.x < 0 ? scaledSize.x - 1 : 0),
+		imagePos.y + (scaledSize.y < 0 ? scaledSize.y - 1 : 0),
 		abs(scaledSize.x),
 		abs(scaledSize.y) };
 
