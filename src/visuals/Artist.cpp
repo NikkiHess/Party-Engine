@@ -32,7 +32,7 @@ SDL_Texture* Artist::loadTextTexture(std::string& text, SDL_Color fontColor) {
 		SDL_Surface* textSurface = TTF_RenderText_Solid(configUtils.font, text.c_str(), fontColor);
 
 		// create a texture from that surface
-		SDL_Texture* textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
+		textTexture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
 
 		configUtils.textTextures[text] = textTexture;
 
