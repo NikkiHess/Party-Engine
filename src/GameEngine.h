@@ -23,6 +23,7 @@ public:
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 	bool gameOver = false;
+	bool gameOverMusicPlaying = false;
 
 	// player stuff
 	Actor* player = nullptr; // the player

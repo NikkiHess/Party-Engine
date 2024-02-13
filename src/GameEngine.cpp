@@ -76,33 +76,23 @@ void Engine::handleState() {
     switch (gameInfo.state) {
     case WIN:
         AudioHelper::Mix_HaltChannel498(0);
+        if (!gameOverMusicPlaying && configUtils.gameOverGoodAudio != "") {
+            audioPlayer.play(configUtils.gameOverGoodAudio, 0);
+            gameOverMusicPlaying = true;
+        }
         gameOver = true;
 		break;
 	case LOSE:
         AudioHelper::Mix_HaltChannel498(0);
-        gameOver = true;
+        if (!gameOverMusicPlaying && configUtils.gameOverBadAudio != "") {
+            audioPlayer.play(configUtils.gameOverBadAudio, 0);
+            gameOverMusicPlaying = true;
+        }
 		break;
 	default:
 		break;
 	}
-}
-
-void Engine::preloadResources() {
-    // preload intro images
-    for (std::string introImage : configUtils.introImages) {
-        renderer.artist.loadImageTexture(introImage);
-    }
-
-    // preload intro text
-    for (std::string introText : configUtils.introText) {
-        renderer.artist.loadTextTexture(introText, {255, 255, 255, 255});
-    }
-
-    // preload actor images
-    for (Actor& actor : gameInfo.currentScene.actors) {
-        actor.view.image = renderer.artist.loadImageTexture(actor.view.imageName);
-    }
-}
+} 
 
 void Engine::start() {
 	// a window with proprties as defined by configUtils
@@ -249,11 +239,6 @@ void Engine::doGameLoop() {
                         { configUtils.renderSize.x, configUtils.renderSize.y }
                     );
                 }
-
-                if (!gameOverMusicPlaying && configUtils.gameOverGoodAudio != "") {
-                    audioPlayer.play(configUtils.gameOverGoodAudio, 0);
-                    gameOverMusicPlaying = true;
-                }
             }
             else if (gameInfo.state == LOSE) {
                 if (configUtils.gameOverBadImage != "") {
@@ -262,11 +247,6 @@ void Engine::doGameLoop() {
                         { 0, 0 },
                         { configUtils.renderSize.x, configUtils.renderSize.y }
                     );
-                }
-
-                if (!gameOverMusicPlaying && configUtils.gameOverBadAudio != "") {
-                    audioPlayer.play(configUtils.gameOverBadAudio, 0);
-                    gameOverMusicPlaying = true;
                 }
             }
         }

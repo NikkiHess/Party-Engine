@@ -53,7 +53,6 @@ public:
 	glm::dvec2 cameraOffset;
 	glm::ivec3 clearColor;
 
-
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
 	ConfigUtils() : renderSize(640, 360), clearColor(255, 255, 255) {
