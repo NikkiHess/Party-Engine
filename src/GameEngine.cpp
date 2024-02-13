@@ -72,26 +72,22 @@ bool Engine::wouldCollide(Actor* actor) {
 // ----------- BEGIN CORE FUNCTIONS -----------
 
 void Engine::handleState() {
-	// Should the Engine class handle printing these messages, or should the Renderer?
-    switch (gameInfo.state) {
-    case WIN:
+    if (gameInfo.state == WIN &&
+        !gameOverMusicPlaying &&
+        configUtils.gameOverGoodAudio != "") {
         AudioHelper::Mix_HaltChannel498(0);
-        if (!gameOverMusicPlaying && configUtils.gameOverGoodAudio != "") {
-            audioPlayer.play(configUtils.gameOverGoodAudio, 0);
-            gameOverMusicPlaying = true;
-        }
+        audioPlayer.play(configUtils.gameOverGoodAudio, 0);
+        gameOverMusicPlaying = true;
         gameOver = true;
-		break;
-	case LOSE:
+    }
+    else if (gameInfo.state == LOSE &&
+        !gameOverMusicPlaying &&
+        configUtils.gameOverBadAudio != "") {
         AudioHelper::Mix_HaltChannel498(0);
-        if (!gameOverMusicPlaying && configUtils.gameOverBadAudio != "") {
-            audioPlayer.play(configUtils.gameOverBadAudio, 0);
-            gameOverMusicPlaying = true;
-        }
-		break;
-	default:
-		break;
-	}
+        audioPlayer.play(configUtils.gameOverBadAudio, 0);
+        gameOverMusicPlaying = true;
+        gameOver = true;
+    }
 } 
 
 void Engine::start() {
@@ -117,8 +113,7 @@ void Engine::start() {
 void Engine::doGameLoop() {
     int currentIntroIndex = 0;
     isGameRunning = true;
-    bool introMusicPlaying = false, gameplayMusicPlaying = false,
-        gameOverMusicPlaying = false;
+    bool introMusicPlaying = false, gameplayMusicPlaying = false;
 
     if (configUtils.introMusic != "" && !introMusicPlaying) {
         audioPlayer.play(configUtils.introMusic, -1);
@@ -220,6 +215,7 @@ void Engine::doGameLoop() {
                 // render dialogue on top of the game
                 renderer.renderDialogue(gameInfo);
                 handleState();
+                
                 if (gameInfo.state == PROCEED) {
                     gameInfo.state = NORMAL;
                     continue;
