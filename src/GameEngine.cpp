@@ -248,10 +248,8 @@ void Engine::doGameLoop() {
             }
         }
 
-        // Present the render
+        // Present the render AND DELAY, apparently it does that for us
         Helper::SDL_RenderPresent498(renderer.sdlRenderer);
-
-        SDL_Delay(1);
     }
 }
 
