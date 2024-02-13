@@ -73,16 +73,35 @@ bool Engine::wouldCollide(Actor* actor) {
 
 void Engine::handleState() {
 	// Should the Engine class handle printing these messages, or should the Renderer?
-	switch (gameInfo.state) {
-	case WIN:
-		stop();
+    switch (gameInfo.state) {
+    case WIN:
+        AudioHelper::Mix_HaltChannel498(0);
+        gameOver = true;
 		break;
 	case LOSE:
-		stop();
+        AudioHelper::Mix_HaltChannel498(0);
+        gameOver = true;
 		break;
 	default:
 		break;
 	}
+}
+
+void Engine::preloadResources() {
+    // preload intro images
+    for (std::string introImage : configUtils.introImages) {
+        renderer.artist.loadImageTexture(introImage);
+    }
+
+    // preload intro text
+    for (std::string introText : configUtils.introText) {
+        renderer.artist.loadTextTexture(introText, {255, 255, 255, 255});
+    }
+
+    // preload actor images
+    for (Actor& actor : gameInfo.currentScene.actors) {
+        actor.view.image = renderer.artist.loadImageTexture(actor.view.imageName);
+    }
 }
 
 void Engine::start() {
@@ -108,8 +127,8 @@ void Engine::start() {
 void Engine::doGameLoop() {
     int currentIntroIndex = 0;
     isGameRunning = true;
-    bool introMusicPlaying = false;
-    bool gameplayMusicPlaying = false;
+    bool introMusicPlaying = false, gameplayMusicPlaying = false,
+        gameOverMusicPlaying = false;
 
     if (configUtils.introMusic != "" && !introMusicPlaying) {
         audioPlayer.play(configUtils.introMusic, -1);
@@ -185,7 +204,7 @@ void Engine::doGameLoop() {
             renderer.renderIntro(currentIntroIndex);
         }
         // handle and render gameplay
-        else {
+        else if(!gameOver) {
             // halt the intro music if it's playing
             if (introMusicPlaying) {
                 AudioHelper::Mix_HaltChannel498(0);
@@ -218,6 +237,37 @@ void Engine::doGameLoop() {
 
                 // render HUD on top of the game
                 renderer.renderHUD(gameInfo);
+            }
+        }
+        // game over
+        else {
+            if (gameInfo.state == WIN) {
+                if (configUtils.gameOverGoodImage != "") {
+                    renderer.artist.drawStaticImage(
+                        configUtils.gameOverGoodImage,
+                        { 0, 0 },
+                        { configUtils.renderSize.x, configUtils.renderSize.y }
+                    );
+                }
+
+                if (!gameOverMusicPlaying && configUtils.gameOverGoodAudio != "") {
+                    audioPlayer.play(configUtils.gameOverGoodAudio, 0);
+                    gameOverMusicPlaying = true;
+                }
+            }
+            else if (gameInfo.state == LOSE) {
+                if (configUtils.gameOverBadImage != "") {
+                    renderer.artist.drawStaticImage(
+                        configUtils.gameOverBadImage,
+                        { 0, 0 },
+                        { configUtils.renderSize.x, configUtils.renderSize.y }
+                    );
+                }
+
+                if (!gameOverMusicPlaying && configUtils.gameOverBadAudio != "") {
+                    audioPlayer.play(configUtils.gameOverBadAudio, 0);
+                    gameOverMusicPlaying = true;
+                }
             }
         }
 

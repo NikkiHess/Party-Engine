@@ -85,6 +85,20 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 
 		hpImage = hpImageName;
 	}
+
+	// handle the game over sequence
+	if (document.HasMember("game_over_bad_image")) {
+		gameOverBadImage = document["game_over_bad_image"].GetString();
+	}
+	if (document.HasMember("game_over_bad_audio")) {
+		gameOverBadAudio = document["game_over_bad_audio"].GetString();
+	}
+	if (document.HasMember("game_over_good_image")) {
+		gameOverGoodImage = document["game_over_good_image"].GetString();
+	}
+	if (document.HasMember("game_over_good_audio")) {
+		gameOverGoodAudio = document["game_over_good_audio"].GetString();
+	}
 }
 
 void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, bool isInitialScene = false) {

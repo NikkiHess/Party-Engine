@@ -23,8 +23,6 @@
 
 class ConfigUtils {
 public:
-	// TODO: Separate these variables out into multiple classes, this is MESSY
-
 	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
 
@@ -35,6 +33,8 @@ public:
 	std::string introMusic = "";
 	std::string gameplayMusic = "";
 	std::string hpImage = "";
+	std::string gameOverBadImage = "", gameOverBadAudio = "",
+		gameOverGoodImage = "", gameOverGoodAudio = "";
 
 	// data cache
 	std::unordered_map<std::string, SDL_Texture*> imageTextures, textTextures;
@@ -52,6 +52,7 @@ public:
 	// the camera offset, as defined by rendering.config
 	glm::dvec2 cameraOffset;
 	glm::ivec3 clearColor;
+
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables

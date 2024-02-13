@@ -22,6 +22,7 @@ public:
 	AudioPlayer& audioPlayer;
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
+	bool gameOver = false;
 
 	// player stuff
 	Actor* player = nullptr; // the player
@@ -44,6 +45,9 @@ public:
 		}
 	}
 
+	// preload and cache all resources (images, sounds, fonts)
+	void preloadResources();
+
 	// initialize the game window, renderer, and start the main game loop
 	void start();
 
@@ -61,7 +65,7 @@ public:
 
 	// handles the current state
 	// NORMAL = do nothing
-	// WIN or LOSE = exit 
+	// WIN or LOSE = game over screen 
 	void handleState();
 private:
 	// update the position of a specific actor (used in update_positions)
