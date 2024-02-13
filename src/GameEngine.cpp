@@ -71,25 +71,6 @@ bool Engine::wouldCollide(Actor* actor) {
 
 // ----------- BEGIN CORE FUNCTIONS -----------
 
-void Engine::handleState() {
-    if (gameInfo.state == WIN &&
-        !gameOverMusicPlaying &&
-        configUtils.gameOverGoodAudio != "") {
-        AudioHelper::Mix_HaltChannel498(0);
-        audioPlayer.play(configUtils.gameOverGoodAudio, 0);
-        gameOverMusicPlaying = true;
-        gameOver = true;
-    }
-    else if (gameInfo.state == LOSE &&
-        !gameOverMusicPlaying &&
-        configUtils.gameOverBadAudio != "") {
-        AudioHelper::Mix_HaltChannel498(0);
-        audioPlayer.play(configUtils.gameOverBadAudio, 0);
-        gameOverMusicPlaying = true;
-        gameOver = true;
-    }
-} 
-
 void Engine::start() {
 	// a window with proprties as defined by configUtils
 	SDL_Window* window = SDL_CreateWindow(
@@ -214,10 +195,28 @@ void Engine::doGameLoop() {
             if (player) {
                 // render dialogue on top of the game
                 renderer.renderDialogue(gameInfo);
-                handleState();
-                
-                if (gameInfo.state == PROCEED) {
-                    gameInfo.state = NORMAL;
+
+                switch (state) {
+                case WIN:
+                    if (!gameOverMusicPlaying && 
+                        configUtils.gameOverGoodAudio != "") {
+                        AudioHelper::Mix_HaltChannel498(0);
+                        audioPlayer.play(configUtils.gameOverGoodAudio, 0);
+                        gameOverMusicPlaying = true;
+                        gameOver = true;
+                    }
+                    continue;
+                case LOSE:
+                    if (!gameOverMusicPlaying &&
+                        configUtils.gameOverBadAudio != "") {
+                        AudioHelper::Mix_HaltChannel498(0);
+                        audioPlayer.play(configUtils.gameOverBadAudio, 0);
+                        gameOverMusicPlaying = true;
+                        gameOver = true;
+                    }
+                    continue;
+                case PROCEED:
+                    state = NORMAL;
                     continue;
                 }
 

@@ -63,11 +63,6 @@ public:
 
 	// returns whether an actor would collide given its velocity
 	bool wouldCollide(Actor* actor);
-
-	// handles the current state
-	// NORMAL = do nothing
-	// WIN or LOSE = game over screen 
-	void handleState();
 private:
 	// update the position of a specific actor (used in update_positions)
 	void updateActorPosition(Actor* actor);
