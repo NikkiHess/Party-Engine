@@ -201,6 +201,9 @@ void Engine::doGameLoop() {
 					}
 				}
 			}
+
+			// update Actor positions
+			updatePositions();
 		}
 
 		// render the game first
@@ -211,7 +214,7 @@ void Engine::doGameLoop() {
 			renderer.renderDialogue(gameInfo);
 			handleState();
 			if (gameInfo.state == PROCEED) {
-				Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+				gameInfo.state = NORMAL;
 				continue;
 			}
 		}
@@ -244,13 +247,6 @@ void Engine::doGameLoop() {
 		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
 
 		SDL_Delay(1);
-
-		//// prompt the player to take an action
-		//renderer.promptPlayer(gameInfo);
-		//handleState();
-		//
-		//// update Actor positions
-		//updatePositions();
 	}
 }
 
