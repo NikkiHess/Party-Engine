@@ -27,16 +27,18 @@
 
 void Engine::updateNPCPositions() {
 	for (Actor* actor : gameInfo.currentScene.motionActors) {
-		// if no collision, keep moving
-		// if collision, reverse velocity (move next turn)
-		// make sure they're moving so we don't do unnecessary calculations
-        // if no collision, keep moving
-		if (!wouldCollide(actor)) {
-			updateActorPosition(actor);
-		}
-		else {
-			actor->velocity = -actor->velocity;
-		}
+        if (std::abs(actor->velocity.x) > 0 || std::abs(actor->velocity.y) > 0) {
+            // if no collision, keep moving
+            // if collision, reverse velocity (move next turn)
+            // make sure they're moving so we don't do unnecessary calculations
+            // if no collision, keep moving
+            if (!wouldCollide(actor)) {
+                updateActorPosition(actor);
+            }
+            else {
+                actor->velocity = -actor->velocity;
+            }
+        }
 	}
 }
 
