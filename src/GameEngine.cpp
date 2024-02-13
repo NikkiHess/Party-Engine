@@ -201,7 +201,6 @@ void Engine::doGameLoop() {
             // move NPCs before render, just like we move player before render
             // only move on frames divisible by 60, but not frame 0
             if (Helper::GetFrameNumber() % 60 == 0 && Helper::GetFrameNumber() != 0) {
-                // update Actor positions
                 updateNPCPositions();
             }
 
