@@ -53,11 +53,11 @@ public:
 	// shut down the main game loop
 	void stop();
 
-	// update all Actor positions according to their velocity
-	void updatePositions();
+	// update all NPC Actor positions according to their velocity
+	void updateNPCPositions();
 
 	// returns whether an actor would collide given its velocity
-	bool wouldCollide(Actor& actor);
+	bool wouldCollide(Actor* actor);
 
 	// handles the current state
 	// NORMAL = do nothing
@@ -65,5 +65,5 @@ public:
 	void handleState();
 private:
 	// update the position of a specific actor (used in update_positions)
-	void updateActorPosition(Actor& actor);
+	void updateActorPosition(Actor* actor);
 };

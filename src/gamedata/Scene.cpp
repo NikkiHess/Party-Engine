@@ -17,8 +17,15 @@ void Scene::instantiateActor(Actor& actor) {
 	// insert the actor into the "sorted-by-render-order" list
 	actorsByRenderOrder.emplace(&actors.back());
 
+	// if a non-player actor has velocity, insert into motion list
+	if (actor.name != "player") {
+		if (std::abs(actors.back().velocity.x) > 0 || std::abs(actors.back().velocity.y) > 0) {
+			motionActors.emplace(&actors.back());
+		}
+	}
+
 	// insert the (location, actors) pair into the unordered map
-	locToActors[actorPos].emplace_back(&actors.back());
+	locToActors[actorPos].emplace(&actors.back());
 }
 
 void Scene::moveActor(Actor* actor, const glm::ivec2& newPos) {

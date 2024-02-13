@@ -3,6 +3,7 @@
 // std stuff
 #include <string>
 #include <set>
+#include <unordered_set>
 #include <unordered_map>
 #include <vector>
 
@@ -27,7 +28,8 @@ private:
 public:
 	std::vector<Actor> actors;
 	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder; // actors sorted by their render order
-	std::unordered_map<glm::ivec2, std::vector<Actor*>, KeyFuncs, KeyFuncs> locToActors;
+	std::set<Actor*, ActorComparator> motionActors;
+	std::unordered_map<glm::ivec2, std::unordered_set<Actor*>, KeyFuncs, KeyFuncs> locToActors;
 	std::string name;
 
 	// instantiate an actor in the scene

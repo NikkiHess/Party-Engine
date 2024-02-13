@@ -25,57 +25,36 @@
 
 // ---------- BEGIN MOTION FUNCTIONS ----------
 
-void Engine::updatePositions() {
-	for (Actor& actor : gameInfo.currentScene.actors) {
-		if (actor.velocity != glm::dvec2(0)) {
-			// if this is our player Actor, perform our player actor movement
-			if (actor.name == "player") {
-				if (!wouldCollide(actor)) {
-					updateActorPosition(actor);
-				}
-				// stop the player's movement so they only move by 1
-				actor.velocity = glm::dvec2(0);
-			}
-			// move NPC Actors
-			// if no collision, keep moving
-			// if collision, reverse velocity (move next turn)
-			else {
-				// make sure they're moving so we don't do unnecessary calculations
-				if (!wouldCollide(actor))
-					updateActorPosition(actor);
-				else
-					actor.velocity = -actor.velocity;
-			}
+void Engine::updateNPCPositions() {
+	for (Actor* actor : gameInfo.currentScene.motionActors) {
+		// if no collision, keep moving
+		// if collision, reverse velocity (move next turn)
+		// make sure they're moving so we don't do unnecessary calculations
+        // if no collision, keep moving
+		if (!wouldCollide(actor)) {
+			updateActorPosition(actor);
+		}
+		else {
+			actor->velocity = -actor->velocity;
 		}
 	}
 }
 
-void Engine::updateActorPosition(Actor& actor) {
+void Engine::updateActorPosition(Actor* actor) {
 	// remove the old position of the actor from the unordered_map
 	auto& locToActors = gameInfo.currentScene.locToActors;
-	auto oldLocIt = locToActors.find(actor.transform.pos);
-	if (oldLocIt != locToActors.end()) {
-		auto& actorsAtPos = oldLocIt->second;
-		actorsAtPos.erase(std::remove_if(actorsAtPos.begin(), actorsAtPos.end(),
-			[&actor](const Actor* a) {
-				return a->id == actor.id;
-			}), actorsAtPos.end());
-		if (actorsAtPos.empty()) {
-			locToActors.erase(actor.transform.pos);
-		}
-	}
+    locToActors[actor->transform.pos].erase(actor);
 
 	// update the instanced actor's positon
-	actor.transform.pos += actor.velocity;
+    actor->transform.pos += actor->velocity;
 
 	// add the updated position of the actor to the unordered_map
-	auto& actorsAtPos = locToActors[actor.transform.pos];
-	actorsAtPos.emplace_back(&actor);
+    locToActors[actor->transform.pos].emplace(actor);
 }
 
 // check if an Actor would collide given its velocity
-bool Engine::wouldCollide(Actor& actor) {
-	glm::ivec2 futurePosition = actor.transform.pos + actor.velocity;
+bool Engine::wouldCollide(Actor* actor) {
+	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
 
 	auto it = gameInfo.currentScene.locToActors.find(futurePosition);
 	if (it != gameInfo.currentScene.locToActors.end()) {
@@ -127,127 +106,127 @@ void Engine::start() {
 }
 
 void Engine::doGameLoop() {
-	int currentIntroIndex = 0;
-	isGameRunning = true;
-	bool introMusicPlaying = false;
-	bool gameplayMusicPlaying = false;
+    int currentIntroIndex = 0;
+    isGameRunning = true;
+    bool introMusicPlaying = false;
+    bool gameplayMusicPlaying = false;
 
-	if (configUtils.introMusic != "" && !introMusicPlaying) {
-		audioPlayer.play(configUtils.introMusic, -1);
-		introMusicPlaying = true;
-	}
+    if (configUtils.introMusic != "" && !introMusicPlaying) {
+        audioPlayer.play(configUtils.introMusic, -1);
+        introMusicPlaying = true;
+    }
 
-	while (isGameRunning) {
-		// Process events
-		SDL_Event nextEvent;
-		while (Helper::SDL_PollEvent498(&nextEvent)) {
-			if (nextEvent.type == SDL_QUIT) {
-				stop();
-			}
-			// Intro handling
-			if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
-				// if a key is pressed
-				if (nextEvent.type == SDL_KEYDOWN) {
-					SDL_Scancode scancode = nextEvent.key.keysym.scancode;
+    while (isGameRunning) {
+        // Process events
+        SDL_Event nextEvent;
+        while (Helper::SDL_PollEvent498(&nextEvent)) {
+            if (nextEvent.type == SDL_QUIT) {
+                stop();
+            }
+            // Intro handling
+            if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+                // if a key is pressed
+                if (nextEvent.type == SDL_KEYDOWN) {
+                    SDL_Scancode scancode = nextEvent.key.keysym.scancode;
 
-					// Go to the next intro image if we press space or enter
-					switch (scancode) {
-						case SDL_SCANCODE_SPACE:
-						case SDL_SCANCODE_RETURN:
-							++currentIntroIndex;
-							break;
-						default:
-							break;
-					}
-				}
-				// Go to the next intro image if we click
-				if (nextEvent.type == SDL_MOUSEBUTTONDOWN) {
-					++currentIntroIndex;
-				}
-			}
-			// gameplay handling
-			else {
-				// only allow player motion if there IS a player
-				if (player) {
-					if (nextEvent.type == SDL_KEYDOWN) {
-						SDL_Scancode scancode = nextEvent.key.keysym.scancode;
-						glm::dvec2 newPos = player->transform.pos;
+                    // Go to the next intro image if we press space or enter
+                    switch (scancode) {
+                    case SDL_SCANCODE_SPACE:
+                    case SDL_SCANCODE_RETURN:
+                        ++currentIntroIndex;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                // Go to the next intro image if we click
+                if (nextEvent.type == SDL_MOUSEBUTTONDOWN) {
+                    ++currentIntroIndex;
+                }
+            }
+            // gameplay handling
+            else if (player) {
+                // only allow player motion if there IS a player
+                if (nextEvent.type == SDL_KEYDOWN) {
+                    SDL_Scancode scancode = nextEvent.key.keysym.scancode;
+                    glm::dvec2 newPos = player->transform.pos;
 
-						// handle movement
-						switch (scancode) {
-							case SDL_SCANCODE_UP:
-							case SDL_SCANCODE_W:
-								newPos += glm::dvec2(0, -1);
-								gameInfo.currentScene.moveActor(player, newPos);
-								break;
-							case SDL_SCANCODE_DOWN:
-							case SDL_SCANCODE_S:
-								newPos += glm::dvec2(0, 1);
-								gameInfo.currentScene.moveActor(player, newPos);
-								break;
-							case SDL_SCANCODE_LEFT:
-							case SDL_SCANCODE_A:
-								newPos += glm::dvec2(-1, 0);
-								gameInfo.currentScene.moveActor(player, newPos);
-								break;
-							case SDL_SCANCODE_RIGHT:
-							case SDL_SCANCODE_D:
-								newPos += glm::dvec2(1, 0);
-								gameInfo.currentScene.moveActor(player, newPos);
-								break;
-							default:
-								break;
-						}
-					}
-				}
+                    // handle movement
+                    switch (scancode) {
+                    case SDL_SCANCODE_UP:
+                    case SDL_SCANCODE_W:
+                        newPos += glm::dvec2(0, -1);
+                        gameInfo.currentScene.moveActor(player, newPos);
+                        break;
+                    case SDL_SCANCODE_DOWN:
+                    case SDL_SCANCODE_S:
+                        newPos += glm::dvec2(0, 1);
+                        gameInfo.currentScene.moveActor(player, newPos);
+                        break;
+                    case SDL_SCANCODE_LEFT:
+                    case SDL_SCANCODE_A:
+                        newPos += glm::dvec2(-1, 0);
+                        gameInfo.currentScene.moveActor(player, newPos);
+                        break;
+                    case SDL_SCANCODE_RIGHT:
+                    case SDL_SCANCODE_D:
+                        newPos += glm::dvec2(1, 0);
+                        gameInfo.currentScene.moveActor(player, newPos);
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
 
-				// render the game first
-				renderer.render(gameInfo);
+        // if there's an intro, render it
+        if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+            renderer.renderIntro(currentIntroIndex);
+        }
+        // handle and render gameplay
+        else {
+            // halt the intro music if it's playing
+            if (introMusicPlaying) {
+                AudioHelper::Mix_HaltChannel498(0);
+                introMusicPlaying = false;
+            }
 
-				if (player) {
-					// render dialogue on top of the game
-					renderer.renderDialogue(gameInfo);
-					handleState();
-					if (gameInfo.state == PROCEED) {
-						gameInfo.state = NORMAL;
-						continue;
-					}
+            // start the gameplay music if there is any
+            if (!gameplayMusicPlaying && configUtils.gameplayMusic != "") {
+                audioPlayer.play(configUtils.gameplayMusic, -1);
+                gameplayMusicPlaying = true;
+            }
 
-					// render HUD on top of the game
-					renderer.renderHUD(gameInfo);
-				}
-			}
+            // move NPCs before render, just like we move player before render
+            // only move on frames divisible by 60, but not frame 0
+            if (Helper::GetFrameNumber() % 60 == 0 && Helper::GetFrameNumber() != 0) {
+                // update Actor positions
+                updateNPCPositions();
+            }
 
-			// update Actor positions
-			updatePositions();
-		}
-		
-		// if there's an intro, render it on top of the game
-		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
-			renderer.renderIntro(currentIntroIndex);
-		}
-		// this ensures that the intro music is only halted once
-		// and then we start playing the gameplay music, because gameplay has begun
-		else if(introMusicPlaying){
-			// Halt music playback on channel 0 (intro music)
-			AudioHelper::Mix_HaltChannel498(0);
-			introMusicPlaying = false;
+            // render the game first
+            renderer.render(gameInfo);
 
-			if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
-				audioPlayer.play(configUtils.gameplayMusic, -1);
-				gameplayMusicPlaying = true;
-			}
-		}
-		else if (configUtils.gameplayMusic != "" && !gameplayMusicPlaying) {
-			audioPlayer.play(configUtils.gameplayMusic, -1);
-			gameplayMusicPlaying = true;
-		}
+            if (player) {
+                // render dialogue on top of the game
+                renderer.renderDialogue(gameInfo);
+                handleState();
+                if (gameInfo.state == PROCEED) {
+                    gameInfo.state = NORMAL;
+                    continue;
+                }
 
-		// Present the render
-		Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+                // render HUD on top of the game
+                renderer.renderHUD(gameInfo);
+            }
+        }
 
-		SDL_Delay(1);
-	}
+        // Present the render
+        Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+
+        SDL_Delay(1);
+    }
 }
 
 void Engine::stop() {

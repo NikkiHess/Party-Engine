@@ -49,7 +49,7 @@ public:
 
 class ActorComparator {
 public:
-	bool operator()(Actor* actor1, Actor* actor2) {
+	bool operator()(Actor* actor1, Actor* actor2) const {
 		return actor1->id < actor2->id;
 	}
 };
