@@ -200,27 +200,27 @@ void Engine::doGameLoop() {
 						}
 					}
 				}
+
+				// render the game first
+				renderer.render(gameInfo);
+
+				if (player) {
+					// render dialogue on top of the game
+					renderer.renderDialogue(gameInfo);
+					handleState();
+					if (gameInfo.state == PROCEED) {
+						gameInfo.state = NORMAL;
+						continue;
+					}
+
+					// render HUD on top of the game
+					renderer.renderHUD(gameInfo);
+				}
 			}
 
 			// update Actor positions
 			updatePositions();
 		}
-
-		// render the game first
-		renderer.render(gameInfo);
-
-		if (player) {
-			// render dialogue on top of the game
-			renderer.renderDialogue(gameInfo);
-			handleState();
-			if (gameInfo.state == PROCEED) {
-				gameInfo.state = NORMAL;
-				continue;
-			}
-		}
-
-		// render HUD on top of the game
-		renderer.renderHUD(gameInfo);
 		
 		// if there's an intro, render it on top of the game
 		if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
