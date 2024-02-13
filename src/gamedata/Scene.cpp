@@ -19,7 +19,7 @@ void Scene::instantiateActor(Actor& actor) {
 
 	// if a non-player actor has velocity, insert into motion list
 	if (actor.name != "player") {
-		if (std::abs(actors.back().velocity.x) > 0 || std::abs(actors.back().velocity.y) > 0) {
+		if (std::abs(actor.velocity.x) > 0 || std::abs(actor.velocity.y) > 0) {
 			motionActors.emplace(&actors.back());
 		}
 	}
