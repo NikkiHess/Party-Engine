@@ -289,10 +289,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/dependencies/SDL2/lib/osx",
 				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"LINDSAYS_LAPTOP=1",
-					"DEBUG=1",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies";
 				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/SDL2/lib/OSX";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -307,7 +304,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/dependencies/SDL2/lib/osx",
 				);
-				GCC_PREPROCESSOR_DEFINITIONS = "LINDSAYS_LAPTOP=1";
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies";
 				LD_RUNPATH_SEARCH_PATHS = "$(PROJECT_DIR)/dependencies/SDL2/lib/OSX";
 				PRODUCT_NAME = "$(TARGET_NAME)";
