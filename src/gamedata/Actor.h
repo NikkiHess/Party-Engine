@@ -45,6 +45,8 @@ public:
 
 	int id = 0;
 	bool triggeredScoreUp = false;
+    
+    Actor() : velocity(0, 0) {}
 };
 
 class ActorComparator {

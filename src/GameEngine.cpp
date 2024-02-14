@@ -4,6 +4,13 @@
 #include <iostream>
 #include <sstream>
 
+// includes for running on local MacOS machine
+#ifdef LINDSAYS_LAPTOP
+#include <filesystem>
+#include <fstream>
+#include <string>
+#endif
+
 // include my code
 #include "Constants.h"
 #include "GameEngine.h"
@@ -220,6 +227,8 @@ void Engine::doGameLoop() {
                 case PROCEED:
                     state = NORMAL;
                     continue;
+                default:
+                    break;
                 }
 
                 // render HUD on top of the game
@@ -262,6 +271,10 @@ void Engine::stop() {
 // ----------- END CORE FUNCTIONS ------------
 
 int main(int argc, char* argv[]) {
+#ifdef LINDSAYS_LAPTOP
+    std::filesystem::current_path("/Users/lindsaygreig/Desktop/game_engine_nkhess");
+#endif
+    
 	// Initialize SDL
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
