@@ -54,5 +54,5 @@ public:
 	void doGameLoop();
 
 	// shut down the main game loop
-	void stop();
+	void queueStop();
 };
