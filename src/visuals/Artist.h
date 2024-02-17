@@ -18,8 +18,10 @@
 class Artist
 {
 public:
-	SDL_Renderer* sdlRenderer; // the SDL renderer object passed in from Renderer
 	ConfigUtils& configUtils; // the ConfigUtils passed in from Renderer
+	SDL_Renderer* sdlRenderer; // the SDL renderer object passed in from Renderer
+
+	static const int PIXELS_PER_UNIT = 100;
 
 	Artist(ConfigUtils& configUtils) : configUtils(configUtils) {};
 

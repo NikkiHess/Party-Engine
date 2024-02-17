@@ -1245,9 +1245,6 @@
     <ClInclude Include="src\errors\Error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Constants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp">
@@ -1263,9 +1260,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gamedata\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gamedata\Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\visuals\Artist.cpp">

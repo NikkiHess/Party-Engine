@@ -3,7 +3,6 @@
 
 // my code
 #include "Artist.h"
-#include "../Constants.h"
 #include "../gamedata/GameInfo.h"
 
 SDL_Texture* Artist::loadImageTexture(std::string& imageName) {
@@ -73,8 +72,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	// with camera offset and zoom correction
 	// we divide by the zoom factor here because that will center things correctly
 	glm::dvec2 screenCenter(
-		(configUtils.renderSize.x / 2.0 - configUtils.cameraOffset.x * Constants::PIXELS_PER_UNIT) / configUtils.zoomFactor,
-		(configUtils.renderSize.y / 2.0 - configUtils.cameraOffset.y * Constants::PIXELS_PER_UNIT) / configUtils.zoomFactor
+		(configUtils.renderSize.x / 2.0 - configUtils.cameraOffset.x * PIXELS_PER_UNIT) / configUtils.zoomFactor,
+		(configUtils.renderSize.y / 2.0 - configUtils.cameraOffset.y * PIXELS_PER_UNIT) / configUtils.zoomFactor
 	);
 
 	// x and y either from config or (width or height) * 0.5 * scale
@@ -87,14 +86,14 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	// the offset to apply to all actors relative to the player
 	// subtract this
 	glm::dvec2 playerPosOffset(
-		(gameInfo.player ? gameInfo.player->transform.pos.x * Constants::PIXELS_PER_UNIT : 0),
-		(gameInfo.player ? gameInfo.player->transform.pos.y * Constants::PIXELS_PER_UNIT : 0)
+		(gameInfo.player ? gameInfo.player->transform.pos.x * PIXELS_PER_UNIT : 0),
+		(gameInfo.player ? gameInfo.player->transform.pos.y * PIXELS_PER_UNIT : 0)
 	);
 
 	// the image position, without the scale offset
 	glm::ivec2 imagePos(
-		static_cast<int>(std::round((screenCenter.x + actor.transform.pos.x * Constants::PIXELS_PER_UNIT - pivot.x - playerPosOffset.x))),
-		static_cast<int>(std::round((screenCenter.y + actor.transform.pos.y * Constants::PIXELS_PER_UNIT - pivot.y - playerPosOffset.y)))
+		static_cast<int>(std::round((screenCenter.x + actor.transform.pos.x * PIXELS_PER_UNIT - pivot.x - playerPosOffset.x))),
+		static_cast<int>(std::round((screenCenter.y + actor.transform.pos.y * PIXELS_PER_UNIT - pivot.y - playerPosOffset.y)))
 	);
 
 	// rect position to be rendered, accounting for odd flips

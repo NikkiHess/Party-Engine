@@ -6,7 +6,6 @@
 #include <filesystem>
 
 // include my code
-#include "Constants.h"
 #include "GameEngine.h"
 #include "utils/ConfigUtils.h"
 #include "visuals/Renderer.h"
@@ -23,56 +22,6 @@
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
-
-// ---------- BEGIN MOTION FUNCTIONS ----------
-
-void Engine::updateNPCPositions() {
-	for (Actor* actor : gameInfo.currentScene.motionActors) {
-        if (std::abs(actor->velocity.x) > 0 || std::abs(actor->velocity.y) > 0) {
-            // if no collision, keep moving
-            // if collision, reverse velocity (move next turn)
-            // make sure they're moving so we don't do unnecessary calculations
-            // if no collision, keep moving
-            if (!wouldCollide(actor)) {
-                updateActorPosition(actor);
-            }
-            else {
-                actor->velocity = -actor->velocity;
-            }
-        }
-	}
-}
-
-void Engine::updateActorPosition(Actor* actor) {
-	// remove the old position of the actor from the unordered_map
-	auto& locToActors = gameInfo.currentScene.locToActors;
-    locToActors[actor->transform.pos].erase(actor);
-
-	// update the instanced actor's positon
-    actor->transform.pos += actor->velocity;
-
-	// add the updated position of the actor to the unordered_map
-    locToActors[actor->transform.pos].emplace(actor);
-}
-
-// check if an Actor would collide given its velocity
-bool Engine::wouldCollide(Actor* actor) {
-	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
-
-	auto it = gameInfo.currentScene.locToActors.find(futurePosition);
-	if (it != gameInfo.currentScene.locToActors.end()) {
-		for (Actor* other : it->second) {
-			if (other->blocking)
-				return true;
-		}
-	}
-
-	return false;
-}
-
-// ----------- END MOTION FUNCTIONS -----------
-
-// ----------- BEGIN CORE FUNCTIONS -----------
 
 void Engine::start() {
 	// a window with proprties as defined by configUtils
@@ -137,34 +86,34 @@ void Engine::doGameLoop() {
                 // only allow player motion if there IS a player
                 if (nextEvent.type == SDL_KEYDOWN) {
                     SDL_Scancode scancode = nextEvent.key.keysym.scancode;
-                    glm::dvec2 newPos = player->transform.pos;
 
                     // handle movement
                     switch (scancode) {
                     case SDL_SCANCODE_UP:
                     case SDL_SCANCODE_W:
-                        newPos += glm::dvec2(0, -1);
-                        gameInfo.currentScene.moveActor(player, newPos);
+                        player->velocity += glm::dvec2(0, -1);
+                        gameInfo.scene.moveActor(player);
                         break;
                     case SDL_SCANCODE_DOWN:
                     case SDL_SCANCODE_S:
-                        newPos += glm::dvec2(0, 1);
-                        gameInfo.currentScene.moveActor(player, newPos);
+                        player->velocity += glm::dvec2(0, 1);
+                        gameInfo.scene.moveActor(player);
                         break;
                     case SDL_SCANCODE_LEFT:
                     case SDL_SCANCODE_A:
-                        newPos += glm::dvec2(-1, 0);
-                        gameInfo.currentScene.moveActor(player, newPos);
+                        player->velocity += glm::dvec2(-1, 0);
+                        gameInfo.scene.moveActor(player);
                         break;
                     case SDL_SCANCODE_RIGHT:
                     case SDL_SCANCODE_D:
-                        newPos += glm::dvec2(1, 0);
-                        gameInfo.currentScene.moveActor(player, newPos);
+                        player->velocity += glm::dvec2(1, 0);
+                        gameInfo.scene.moveActor(player);
                         break;
                     default:
                         break;
                     }
                 }
+                player->velocity = glm::dvec2(0);
             }
         }
 
@@ -189,7 +138,7 @@ void Engine::doGameLoop() {
             // move NPCs before render, just like we move player before render
             // only move on frames divisible by 60, but not frame 0
             if (Helper::GetFrameNumber() % 60 == 0 && Helper::GetFrameNumber() != 0) {
-                updateNPCPositions();
+                gameInfo.scene.moveNPCActors();
             }
 
             // render the game first
@@ -260,10 +209,9 @@ void Engine::stop() {
 	isGameRunning = false;
 }
 
-// ----------- END CORE FUNCTIONS ------------
-
 int main(int argc, char* argv[]) {
-//    std::filesystem::current_path("/Users/lindsaygreig/Desktop/game_engine_nkhess");
+    // for MacOS local runs
+    // std::filesystem::current_path("/Users/lindsaygreig/Desktop/game_engine_nkhess");
     
 	// Initialize SDL
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);

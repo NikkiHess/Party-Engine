@@ -68,7 +68,7 @@ void Renderer::render(GameInfo& gameInfo) {
 	SDL_RenderSetScale(sdlRenderer, configUtils.zoomFactor, configUtils.zoomFactor);
 
 	// draw all actors in order of transform_position_y
-	for (Actor* actor : gameInfo.currentScene.actorsByRenderOrder) {
+	for (Actor* actor : gameInfo.scene.actorsByRenderOrder) {
 		artist.drawActor(gameInfo, *actor);
 	}
 }
@@ -103,8 +103,8 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
-			auto actorIt = gameInfo.currentScene.locToActors.find(gameInfo.player->transform.pos + glm::dvec2(x, y));
-			if (actorIt != gameInfo.currentScene.locToActors.end()) {
+			auto actorIt = gameInfo.scene.locToActors.find(gameInfo.player->transform.pos + glm::dvec2(x, y));
+			if (actorIt != gameInfo.scene.locToActors.end()) {
 				for (Actor* actor : actorIt->second) {
 					// only push back if they have dialogue and ARE NOT the player
 					if (actor->name != "player" && (actor->nearbyDialogue != "" || actor->contactDialogue != "")) {
@@ -138,13 +138,13 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 
 				if (!configUtils.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
 
-				gameInfo.currentScene = Scene();
-				gameInfo.currentScene.name = sceneName;
-				configUtils.initializeScene(gameInfo.currentScene, configUtils.document, false);
+				gameInfo.scene = Scene();
+				gameInfo.scene.name = sceneName;
+				configUtils.initializeScene(gameInfo.scene, configUtils.document, false);
 
-				auto playerIt = std::find_if(gameInfo.currentScene.actors.begin(), gameInfo.currentScene.actors.end(), [](Actor actor) { return actor.name == "player"; });
+				auto playerIt = std::find_if(gameInfo.scene.actors.begin(), gameInfo.scene.actors.end(), [](Actor actor) { return actor.name == "player"; });
 
-				if (playerIt != gameInfo.currentScene.actors.end()) {
+				if (playerIt != gameInfo.scene.actors.end()) {
 					gameInfo.player = &*playerIt;
 				}
 			}

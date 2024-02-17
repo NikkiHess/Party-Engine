@@ -21,5 +21,5 @@ public:
 	Actor* player; // the player
 	GameState& state; // the current state of the game
 
-	Scene& currentScene;
+	Scene& scene;
 };

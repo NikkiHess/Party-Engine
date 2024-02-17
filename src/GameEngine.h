@@ -46,9 +46,6 @@ public:
 		}
 	}
 
-	// preload and cache all resources (images, sounds, fonts)
-	void preloadResources();
-
 	// initialize the game window, renderer, and start the main game loop
 	void start();
 
@@ -57,13 +54,4 @@ public:
 
 	// shut down the main game loop
 	void stop();
-
-	// update all NPC Actor positions according to their velocity
-	void updateNPCPositions();
-
-	// returns whether an actor would collide given its velocity
-	bool wouldCollide(Actor* actor);
-private:
-	// update the position of a specific actor (used in update_positions)
-	void updateActorPosition(Actor* actor);
 };
