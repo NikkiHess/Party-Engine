@@ -35,7 +35,7 @@ void Renderer::renderIntro(int& index) {
 
 	// Display any intro images
 	if (!configUtils.introImages.empty()) {
-		artist.drawStaticImage(
+		artist.drawUIImage(
 			// exhausted introImages? continue to render last one
 			(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
 			{0, 0}, // the position should be (0, 0)
@@ -44,7 +44,7 @@ void Renderer::renderIntro(int& index) {
 	}
 	// Display any intro text
 	if (!configUtils.introText.empty()) {
-		artist.drawText(
+		artist.drawUIText(
 			// exhausted introText? continue to render last one
 			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
 			{ 255, 255, 255, 255 },
@@ -64,6 +64,9 @@ void Renderer::render(GameInfo& gameInfo) {
 	);
 	SDL_RenderClear(sdlRenderer);
 
+	// set the render scale according to the configured zoom factor
+	SDL_RenderSetScale(sdlRenderer, configUtils.zoomFactor, configUtils.zoomFactor);
+
 	// draw all actors in order of transform_position_y
 	for (Actor* actor : gameInfo.currentScene.actorsByRenderOrder) {
 		artist.drawActor(gameInfo, *actor);
@@ -71,9 +74,12 @@ void Renderer::render(GameInfo& gameInfo) {
 }
 
 void Renderer::renderHUD(GameInfo& gameInfo) {
+	// set the render scale according to the configured zoom factor
+	SDL_RenderSetScale(sdlRenderer, 1, 1);
+
 	// render the player's score
 	std::string scoreText = "score : " + std::to_string(gameInfo.player->score);
-	artist.drawText(scoreText, { 255, 255, 255, 255 }, { 5, 5 });
+	artist.drawUIText(scoreText, { 255, 255, 255, 255 }, { 5, 5 });
 
 	// render the player's hp
 	for (int i = 0; i < gameInfo.player->health; ++i) {
@@ -82,7 +88,7 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 
 		glm::ivec2 startPos{ 5, 25 };
 		glm::ivec2 offset{ i * (size.x + 5), 0 };
-		artist.drawStaticImage(
+		artist.drawUIImage(
 			configUtils.hpImage,
 			startPos + offset,
 			{ size.x, size.y }
@@ -146,7 +152,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 	}
 
 	for (int i = 0; i < dialogue.size(); ++i) {
-		artist.drawText(
+		artist.drawUIText(
 			dialogue[i],
 			{ 255, 255, 255, 255 },
 			{ 25, renderSize.y - 50 - (dialogue.size() - 1 - i) * 50 }

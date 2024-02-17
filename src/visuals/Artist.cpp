@@ -45,17 +45,13 @@ SDL_Texture* Artist::loadTextTexture(std::string& text, SDL_Color fontColor) {
 }
 
 void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
-	glm::ivec2 size(0, 0);
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
-
-	glm::dvec2 playerPos = (gameInfo.player ? gameInfo.player->transform.pos : glm::dvec2(0));
-
-	// if the image hasn't been loaded in yet and there is one to be found, do it.
+	// check if the actor's image needs to be loaded
 	if (!actor.view.image && actor.view.imageName != "") {
 		actor.view.image = loadImageTexture(actor.view.imageName);
 	}
 
-	// get the width and height from the actor view
+	// get the actor's image size
+	glm::ivec2 size(0, 0);
 	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
 
 	// scale size using actor.transform.scale
@@ -64,17 +60,21 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 		size.y * actor.transform.scale.y
 	);
 
-	if (scaledSize.x < 0) {
-		flip = SDL_RendererFlip(flip | SDL_FLIP_HORIZONTAL);
-	}
-	if (scaledSize.y < 0) {
-		flip = SDL_RendererFlip(flip | SDL_FLIP_VERTICAL);
+	// determine the flip state
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	if (scaledSize.x < 0 || scaledSize.y < 0) {
+		flip = SDL_RendererFlip(
+			flip | (scaledSize.x < 0 ? SDL_FLIP_HORIZONTAL : 0) |
+			(scaledSize.y < 0 ? SDL_FLIP_VERTICAL : 0)
+		);
 	}
 
-	// calculate the center of the screen, offset by the camera position
+	// calculate the center of the screen
+	// with camera offset and zoom correction
+	// we divide by the zoom factor here because that will center things correctly
 	glm::dvec2 screenCenter(
-		configUtils.renderSize.x / 2.0 - configUtils.cameraOffset.x * Constants::PIXELS_PER_UNIT, 
-		configUtils.renderSize.y / 2.0 - configUtils.cameraOffset.y * Constants::PIXELS_PER_UNIT
+		(configUtils.renderSize.x / 2.0 - configUtils.cameraOffset.x * Constants::PIXELS_PER_UNIT) / configUtils.zoomFactor,
+		(configUtils.renderSize.y / 2.0 - configUtils.cameraOffset.y * Constants::PIXELS_PER_UNIT) / configUtils.zoomFactor
 	);
 
 	// x and y either from config or (width or height) * 0.5 * scale
@@ -84,10 +84,11 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5) * actor.transform.scale.y))
 	};
 
+	// the offset to apply to all actors relative to the player
 	// subtract this
 	glm::dvec2 playerPosOffset(
-		playerPos.x * Constants::PIXELS_PER_UNIT,
-		playerPos.y * Constants::PIXELS_PER_UNIT
+		(gameInfo.player ? gameInfo.player->transform.pos.x * Constants::PIXELS_PER_UNIT : 0),
+		(gameInfo.player ? gameInfo.player->transform.pos.y * Constants::PIXELS_PER_UNIT : 0)
 	);
 
 	// the image position, without the scale offset
@@ -96,7 +97,7 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 		static_cast<int>(std::round(screenCenter.y + actor.transform.pos.y * Constants::PIXELS_PER_UNIT - pivot.y - playerPosOffset.y))
 	);
 
-	// account for odd flips
+	// rect position to be rendered, accounting for odd flips
 	glm::ivec2 rectPos(
 		imagePos.x + (scaledSize.x < 0 ? scaledSize.x + (scaledSize.x % 2) : 0),
 		imagePos.y + (scaledSize.y < 0 ? scaledSize.y + (scaledSize.y % 2) : 0)
@@ -108,8 +109,10 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 		rectPos.x,
 		rectPos.y,
 		std::abs(scaledSize.x),
-		std::abs(scaledSize.y) };
+		std::abs(scaledSize.y) 
+	};
 
+	// render the actor image
 	SDL_RenderCopyEx(
 		sdlRenderer, actor.view.image, nullptr,
 		&imageRect, actor.transform.rotationDegrees,
@@ -117,17 +120,20 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	);
 }
 
-void Artist::drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {
+void Artist::drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {
 	SDL_Texture* imageTexture = loadImageTexture(imageName);
 
 	// Set the rendering position and size (center, full size)
 	SDL_Rect imageRect = { pos.x, pos.y, size.x, size.y };
 
+	// UI images should always be unscaled
+	SDL_RenderSetScale(sdlRenderer, 1, 1);
+
 	// Copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
 }
 
-void Artist::drawText(std::string& text, SDL_Color fontColor, glm::ivec2 pos) {
+void Artist::drawUIText(std::string& text, SDL_Color fontColor, glm::ivec2 pos) {
 	SDL_Texture* textTexture = loadTextTexture(text, fontColor);
 
 	int width = 0, height = 0;
@@ -136,6 +142,9 @@ void Artist::drawText(std::string& text, SDL_Color fontColor, glm::ivec2 pos) {
 
 	// create a rect to render the text in
 	SDL_Rect textRect = { pos.x, pos.y, width, height };
+
+	// UI text should always be unscaled
+	SDL_RenderSetScale(sdlRenderer, 1, 1);
 
 	// copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, textTexture, nullptr, &textRect);

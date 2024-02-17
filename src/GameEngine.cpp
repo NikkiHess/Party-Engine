@@ -233,7 +233,7 @@ void Engine::doGameLoop() {
         else {
             if (gameInfo.state == WIN) {
                 if (configUtils.gameOverGoodImage != "") {
-                    renderer.artist.drawStaticImage(
+                    renderer.artist.drawUIImage(
                         configUtils.gameOverGoodImage,
                         { 0, 0 },
                         { configUtils.renderSize.x, configUtils.renderSize.y }
@@ -242,7 +242,7 @@ void Engine::doGameLoop() {
             }
             else if (gameInfo.state == LOSE) {
                 if (configUtils.gameOverBadImage != "") {
-                    renderer.artist.drawStaticImage(
+                    renderer.artist.drawUIImage(
                         configUtils.gameOverBadImage,
                         { 0, 0 },
                         { configUtils.renderSize.x, configUtils.renderSize.y }

@@ -30,12 +30,12 @@ public:
 	SDL_Texture* loadTextTexture(std::string& text, SDL_Color fontColor);
 
 	// draw an unchanging image on the screen
-	void drawStaticImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
+	void drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
 
 	// draw an unchanging image on the screen
 	void drawActor(GameInfo& gameInfo, Actor& actor);
 
 	// draw text on the screen
-	void drawText(std::string& text, SDL_Color fontColor, glm::ivec2 pos);
+	void drawUIText(std::string& text, SDL_Color fontColor, glm::ivec2 pos);
 };
 

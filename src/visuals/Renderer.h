@@ -20,7 +20,9 @@ public:
 
 	Artist artist; // responsible for drawing stuff
 
-	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize), artist(configUtils) {}
+	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize), artist(configUtils) {
+		
+	}
 
 	// render the intro images one by one, proceed when enter has been pressed
 	void renderIntro(int& index);
