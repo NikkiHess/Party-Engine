@@ -123,11 +123,8 @@ void Engine::doGameLoop() {
                 gameplayMusicPlaying = true;
             }
 
-            // move NPCs before render, just like we move player before render
-            // only move on frames divisible by 60, but not frame 0
-            if (Helper::GetFrameNumber() % 60 == 0 && Helper::GetFrameNumber() != 0) {
-                gameInfo.scene.moveNPCActors();
-            }
+            // move all npc actors according to their velocity
+            gameInfo.scene.moveNPCActors();
 
             // render the game first
             renderer.render(gameInfo);
