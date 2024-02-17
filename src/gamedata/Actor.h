@@ -10,21 +10,21 @@
 
 class Transform {
 public:
-	glm::dvec2 pos; // double vec
-	glm::dvec2 scale = { 1.0, 1.0 }; // double vec
+	glm::vec2 pos;
+	glm::vec2 scale = { 1.0, 1.0 };
 	double rotationDegrees = 0.0;
 };
 
-class OptionalDvec2 {
+class OptionalVec2 {
 public:
-	std::optional<double> x, y;
+	std::optional<float> x, y;
 };
 
 class View {
 public:
 	std::string imageName = "";
 	SDL_Texture* image = nullptr;
-	OptionalDvec2 pivotOffset;
+	OptionalVec2 pivotOffset;
 };
 
 class Actor {
@@ -32,16 +32,17 @@ public:
 	std::string name = "";
 	Transform transform;
 	View view;
-	glm::dvec2 velocity;
+	glm::vec2 velocity;
 	bool blocking = false;
 	std::string nearbyDialogue = "", contactDialogue = "";
 	int renderOrder = 0;
 
-	// PLAYER ONLY STATISTICS
+	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise
 	int health = 3, score = 0;
 	int lastHealthDownFrame = -180;
 	int healthDownCooldown = 180;
+	float speed = 0.02;
 
 	int id = 0;
 	bool triggeredScoreUp = false;

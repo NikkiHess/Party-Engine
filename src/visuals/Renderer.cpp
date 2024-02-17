@@ -103,7 +103,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
-			auto actorIt = gameInfo.scene.locToActors.find(gameInfo.player->transform.pos + glm::dvec2(x, y));
+			auto actorIt = gameInfo.scene.locToActors.find(gameInfo.player->transform.pos + glm::vec2(x, y));
 			if (actorIt != gameInfo.scene.locToActors.end()) {
 				for (Actor* actor : actorIt->second) {
 					// only push back if they have dialogue and ARE NOT the player

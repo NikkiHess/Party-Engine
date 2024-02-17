@@ -11,6 +11,7 @@
 #include "gamedata/GameInfo.h"
 #include "utils/ConfigUtils.h"
 #include "visuals/Renderer.h"
+#include "gamedata/Input.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -20,22 +21,22 @@ public:
 	Renderer& renderer;
 	ConfigUtils& configUtils;
 	AudioPlayer& audioPlayer;
+	Input& input;
+
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 	bool gameOver = false;
 	bool gameOverMusicPlaying = false;
-
-	// player stuff
 	Actor* player = nullptr; // the player
 
 	// load the game info after everything else has been loaded
-	GameInfo gameInfo{ 
+	GameInfo gameInfo { 
 		player,
 		state,
 		configUtils.initialScene,
 	};
 
-	Engine(Renderer& renderer, ConfigUtils& configUtils, AudioPlayer& audioPlayer) : renderer(renderer), configUtils(configUtils), audioPlayer(audioPlayer) {
+	Engine(Renderer& renderer, ConfigUtils& configUtils, AudioPlayer& audioPlayer, Input& input) : renderer(renderer), configUtils(configUtils), audioPlayer(audioPlayer), input(input) {
 		std::vector<Actor>& actors = configUtils.initialScene.actors;
 		// this finds the player in the actors map
 		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });

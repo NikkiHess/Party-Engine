@@ -153,6 +153,8 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\gamedata\Direction.h" />
+    <ClInclude Include="src\gamedata\Input.h" />
     <ClInclude Include="src\errors\Error.h" />
     <ClInclude Include="src\audio\AudioPlayer.h" />
     <ClInclude Include="src\visuals\Artist.h" />
@@ -565,6 +567,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gamedata\Input.cpp" />
     <ClCompile Include="src\audio\AudioPlayer.cpp" />
     <ClCompile Include="src\visuals\Artist.cpp" />
     <ClCompile Include="dependencies\glm\detail\glm.cpp" />

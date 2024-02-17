@@ -16,13 +16,13 @@
 class Scene
 {
 private:
-	// handles hashing for dvec2
+	// handles hashing for vec2
 	struct HashLoc {
-		size_t operator()(const glm::dvec2& k) const {
-			return std::hash<double>()(k.x) ^ std::hash<double>()(k.y);
+		size_t operator()(const glm::vec2& k) const {
+			return std::hash<float>()(k.x) ^ std::hash<float>()(k.y);
 		}
 
-		bool operator()(const glm::dvec2& a, const glm::dvec2& b) const {
+		bool operator()(const glm::vec2& a, const glm::vec2& b) const {
 			return a.x == b.x && a.y == b.y;
 		}
 	};
@@ -30,7 +30,7 @@ public:
 	std::vector<Actor> actors;
 	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder; // actors sorted by their render order
 	std::set<Actor*, ActorComparator> motionActors;
-	std::unordered_map<glm::dvec2, std::unordered_set<Actor*>, HashLoc, HashLoc> locToActors;
+	std::unordered_map<glm::vec2, std::unordered_set<Actor*>, HashLoc, HashLoc> locToActors;
 	std::string name;
 
 	// instantiate an actor in the scene

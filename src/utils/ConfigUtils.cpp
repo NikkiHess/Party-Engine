@@ -231,4 +231,11 @@ void ConfigUtils::setActorProps(Actor& actor, rapidjson::Value& document) {
 
 	if(document.HasMember("render_order"))
 		actor.renderOrder = document["render_order"].GetInt();
+
+	// if we're working with the player and want them to have speed, set it from config
+	if (actor.name == "player") {
+		if (document.HasMember("player_movement_speed")) {
+			actor.speed = document["player_movement_speed"].GetFloat();
+		}
+	}
 }

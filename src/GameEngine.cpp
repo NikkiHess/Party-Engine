@@ -9,6 +9,8 @@
 #include "GameEngine.h"
 #include "utils/ConfigUtils.h"
 #include "visuals/Renderer.h"
+#include "gamedata/Input.h"
+#include "gamedata/Direction.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -55,66 +57,52 @@ void Engine::doGameLoop() {
 
     while (isGameRunning) {
         // Process events
-        SDL_Event nextEvent;
-        while (Helper::SDL_PollEvent498(&nextEvent)) {
-            if (nextEvent.type == SDL_QUIT) {
+        SDL_Event sdlEvent;
+        while (Helper::SDL_PollEvent498(&sdlEvent)) {
+            input.processEvent(sdlEvent);
+            // handle a quit event
+            if (sdlEvent.type == SDL_QUIT) {
                 stop();
             }
-            // Intro handling
-            if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
-                // if a key is pressed
-                if (nextEvent.type == SDL_KEYDOWN) {
-                    SDL_Scancode scancode = nextEvent.key.keysym.scancode;
 
-                    // Go to the next intro image if we press space or enter
-                    switch (scancode) {
-                    case SDL_SCANCODE_SPACE:
-                    case SDL_SCANCODE_RETURN:
-                        ++currentIntroIndex;
-                        break;
-                    default:
-                        break;
-                    }
-                }
-                // Go to the next intro image if we click
-                if (nextEvent.type == SDL_MOUSEBUTTONDOWN) {
+            // intro handling
+            if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+                // buttons to proceed are: space, return, left click
+                if (sdlEvent.type == SDL_MOUSEBUTTONDOWN || input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
                     ++currentIntroIndex;
                 }
             }
+
             // gameplay handling
             else if (player) {
-                // only allow player motion if there IS a player
-                if (nextEvent.type == SDL_KEYDOWN) {
-                    SDL_Scancode scancode = nextEvent.key.keysym.scancode;
-
-                    // handle movement
-                    switch (scancode) {
-                    case SDL_SCANCODE_UP:
-                    case SDL_SCANCODE_W:
-                        player->velocity += glm::dvec2(0, -1);
-                        gameInfo.scene.moveActor(player);
-                        break;
-                    case SDL_SCANCODE_DOWN:
-                    case SDL_SCANCODE_S:
-                        player->velocity += glm::dvec2(0, 1);
-                        gameInfo.scene.moveActor(player);
-                        break;
-                    case SDL_SCANCODE_LEFT:
-                    case SDL_SCANCODE_A:
-                        player->velocity += glm::dvec2(-1, 0);
-                        gameInfo.scene.moveActor(player);
-                        break;
-                    case SDL_SCANCODE_RIGHT:
-                    case SDL_SCANCODE_D:
-                        player->velocity += glm::dvec2(1, 0);
-                        gameInfo.scene.moveActor(player);
-                        break;
-                    default:
-                        break;
-                    }
+                // upward movement (up/w)
+                if (input.getKey(SDL_SCANCODE_UP) || input.getKey(SDL_SCANCODE_W)) {
+                    player->velocity += Direction::UP;
                 }
-                player->velocity = glm::dvec2(0);
+                // downward movement (down/s)
+                if (input.getKey(SDL_SCANCODE_DOWN) || input.getKey(SDL_SCANCODE_S)) {
+                    player->velocity += Direction::DOWN;
+                }
+                // leftward movement (left/a)
+                if (input.getKey(SDL_SCANCODE_LEFT) || input.getKey(SDL_SCANCODE_A)) {
+                    player->velocity += Direction::LEFT;
+                }
+                // rightward movement (right/d)
+                if (input.getKey(SDL_SCANCODE_RIGHT) || input.getKey(SDL_SCANCODE_D)) {
+                    player->velocity += Direction::RIGHT;
+                }
+
+                // if the player has velocity, move them and reset their velocity
+                if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
+                    // start by normalizing and multiplying by speed
+                    player->velocity = glm::normalize(player->velocity) * player->speed;
+                    gameInfo.scene.moveActor(player);
+                    player->velocity = glm::vec2(0);
+                }
             }
+
+            // make the input not "newly down" or "newly up" anymore
+            input.lateUpdate();
         }
 
         // if there's an intro, render it
@@ -230,8 +218,9 @@ int main(int argc, char* argv[]) {
 	ConfigUtils configUtils;
 	Renderer renderer(configUtils);
 	AudioPlayer audioPlayer(configUtils);
+    Input input;
 
-	Engine engine(renderer, configUtils, audioPlayer);
+	Engine engine(renderer, configUtils, audioPlayer, input);
 	engine.start();
 
 	// quit at the very end
