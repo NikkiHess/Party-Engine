@@ -93,8 +93,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 
 	// the image position, without the scale offset
 	glm::ivec2 imagePos(
-		static_cast<int>(std::round(screenCenter.x + actor.transform.pos.x * Constants::PIXELS_PER_UNIT - pivot.x - playerPosOffset.x)),
-		static_cast<int>(std::round(screenCenter.y + actor.transform.pos.y * Constants::PIXELS_PER_UNIT - pivot.y - playerPosOffset.y))
+		static_cast<int>(std::round((screenCenter.x + actor.transform.pos.x * Constants::PIXELS_PER_UNIT - pivot.x - playerPosOffset.x))),
+		static_cast<int>(std::round((screenCenter.y + actor.transform.pos.y * Constants::PIXELS_PER_UNIT - pivot.y - playerPosOffset.y)))
 	);
 
 	// rect position to be rendered, accounting for odd flips

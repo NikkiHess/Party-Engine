@@ -168,12 +168,14 @@ void ConfigUtils::initializeRendering(rapidjson::Document& document) {
 		renderSize.x = document["x_resolution"].GetInt();
 	if (document.HasMember("y_resolution"))
 		renderSize.y = document["y_resolution"].GetInt();
-	if (document.HasMember("cam_offset_x"))
-		cameraOffset.x = document["cam_offset_x"].GetDouble();
-	if (document.HasMember("cam_offset_y"))
-		cameraOffset.y = document["cam_offset_y"].GetDouble();
+
+	// get the zoom factor first, so it can be applied to our camera offset
 	if (document.HasMember("zoom_factor"))
 		zoomFactor = document["zoom_factor"].GetDouble();
+	if (document.HasMember("cam_offset_x"))
+		cameraOffset.x = document["cam_offset_x"].GetDouble() * zoomFactor;
+	if (document.HasMember("cam_offset_y"))
+		cameraOffset.y = document["cam_offset_y"].GetDouble() * zoomFactor;
 
 	// handle bg color
 	if (document.HasMember("clear_color_r"))
