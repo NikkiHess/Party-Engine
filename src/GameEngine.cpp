@@ -64,19 +64,26 @@ void Engine::doGameLoop() {
             if (sdlEvent.type == SDL_QUIT) {
                 queueStop();
             }
+
+            // intro click handling
+            if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+                // buttons to proceed are: space, return, left click
+                if (sdlEvent.type == SDL_MOUSEBUTTONDOWN) {
+                    ++currentIntroIndex;
+                }
+            }
         }
 
-        // intro handling
+        // intro button handling handling
         if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
             // buttons to proceed are: space, return, left click
-            if (sdlEvent.type == SDL_MOUSEBUTTONDOWN || input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
+            if (input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
                 ++currentIntroIndex;
             }
         }
 
         // gameplay handling
         else if (player) {
-            std::cout << sdlEvent.key.keysym.scancode << " = " << input.keyboardStates[sdlEvent.key.keysym.scancode] << "\n";
             // upward movement (up/w)
             if (input.getKey(SDL_SCANCODE_UP) || input.getKey(SDL_SCANCODE_W)) {
                 player->velocity += Direction::UP;
