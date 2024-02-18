@@ -5,7 +5,7 @@
 #include <unordered_set>
 
 // dependencies
-#include <SDL2/sdl.h>
+#include "SDL2/sdl.h"
 
 enum InputState {
 	UP,
