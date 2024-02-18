@@ -11,9 +11,12 @@
 		1A726B682B7B5DD700A4E05F /* AudioPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B662B7B5DD600A4E05F /* AudioPlayer.cpp */; };
 		1A726B6C2B7B5E0800A4E05F /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B6A2B7B5E0800A4E05F /* Renderer.cpp */; };
 		1A726B6D2B7B5E0800A4E05F /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B6B2B7B5E0800A4E05F /* Artist.cpp */; };
-		1A726B702B7B5EA600A4E05F /* Actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B6E2B7B5EA500A4E05F /* Actor.cpp */; };
 		1A726B712B7B5EA600A4E05F /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B6F2B7B5EA600A4E05F /* Scene.cpp */; };
-		1A726B732B7B5EAF00A4E05F /* ConfigUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B722B7B5EAF00A4E05F /* ConfigUtils.cpp */; };
+		1AC9F5932B8215BE00ACD679 /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5922B8215BE00ACD679 /* Input.cpp */; };
+		1AC9F5952B8215DD00ACD679 /* ResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5942B8215DD00ACD679 /* ResourceManager.cpp */; };
+		1AC9F5992B8215F000ACD679 /* RenderingConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5962B8215F000ACD679 /* RenderingConfig.cpp */; };
+		1AC9F59A2B8215F000ACD679 /* SceneConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5972B8215F000ACD679 /* SceneConfig.cpp */; };
+		1AC9F59B2B8215F000ACD679 /* GameConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5982B8215F000ACD679 /* GameConfig.cpp */; };
 		1AFE9C5C2B7603720052907A /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFE9C582B7603720052907A /* SDL2_ttf.framework */; };
 		1AFE9C5D2B7603720052907A /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFE9C592B7603720052907A /* SDL2_image.framework */; };
 		1AFE9C5E2B7603720052907A /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFE9C5A2B7603720052907A /* SDL2_mixer.framework */; };
@@ -37,10 +40,13 @@
 		1A726B662B7B5DD600A4E05F /* AudioPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioPlayer.cpp; path = src/audio/AudioPlayer.cpp; sourceTree = "<group>"; };
 		1A726B6A2B7B5E0800A4E05F /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Renderer.cpp; path = src/visuals/Renderer.cpp; sourceTree = "<group>"; };
 		1A726B6B2B7B5E0800A4E05F /* Artist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Artist.cpp; path = src/visuals/Artist.cpp; sourceTree = "<group>"; };
-		1A726B6E2B7B5EA500A4E05F /* Actor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Actor.cpp; path = src/gamedata/Actor.cpp; sourceTree = "<group>"; };
 		1A726B6F2B7B5EA600A4E05F /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Scene.cpp; path = src/gamedata/Scene.cpp; sourceTree = "<group>"; };
-		1A726B722B7B5EAF00A4E05F /* ConfigUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConfigUtils.cpp; path = src/utils/ConfigUtils.cpp; sourceTree = "<group>"; };
 		1A97D24F2B71B040007E39F4 /* game_engine */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = game_engine; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AC9F5922B8215BE00ACD679 /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Input.cpp; path = src/gamedata/Input.cpp; sourceTree = "<group>"; };
+		1AC9F5942B8215DD00ACD679 /* ResourceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ResourceManager.cpp; path = src/utils/ResourceManager.cpp; sourceTree = "<group>"; };
+		1AC9F5962B8215F000ACD679 /* RenderingConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderingConfig.cpp; path = src/utils/config/RenderingConfig.cpp; sourceTree = "<group>"; };
+		1AC9F5972B8215F000ACD679 /* SceneConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneConfig.cpp; path = src/utils/config/SceneConfig.cpp; sourceTree = "<group>"; };
+		1AC9F5982B8215F000ACD679 /* GameConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameConfig.cpp; path = src/utils/config/GameConfig.cpp; sourceTree = "<group>"; };
 		1AFE9C582B7603720052907A /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = dependencies/SDL2/lib/osx/SDL2_ttf.framework; sourceTree = "<group>"; };
 		1AFE9C592B7603720052907A /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = dependencies/SDL2/lib/osx/SDL2_image.framework; sourceTree = "<group>"; };
 		1AFE9C5A2B7603720052907A /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = dependencies/SDL2/lib/osx/SDL2_mixer.framework; sourceTree = "<group>"; };
@@ -65,8 +71,11 @@
 		1A97D2462B71B040007E39F4 = {
 			isa = PBXGroup;
 			children = (
-				1A726B722B7B5EAF00A4E05F /* ConfigUtils.cpp */,
-				1A726B6E2B7B5EA500A4E05F /* Actor.cpp */,
+				1AC9F5982B8215F000ACD679 /* GameConfig.cpp */,
+				1AC9F5962B8215F000ACD679 /* RenderingConfig.cpp */,
+				1AC9F5972B8215F000ACD679 /* SceneConfig.cpp */,
+				1AC9F5942B8215DD00ACD679 /* ResourceManager.cpp */,
+				1AC9F5922B8215BE00ACD679 /* Input.cpp */,
 				1A726B6F2B7B5EA600A4E05F /* Scene.cpp */,
 				1A726B6B2B7B5E0800A4E05F /* Artist.cpp */,
 				1A726B6A2B7B5E0800A4E05F /* Renderer.cpp */,
@@ -153,13 +162,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AC9F59A2B8215F000ACD679 /* SceneConfig.cpp in Sources */,
+				1AC9F5992B8215F000ACD679 /* RenderingConfig.cpp in Sources */,
+				1AC9F5952B8215DD00ACD679 /* ResourceManager.cpp in Sources */,
+				1AC9F5932B8215BE00ACD679 /* Input.cpp in Sources */,
 				1A726B712B7B5EA600A4E05F /* Scene.cpp in Sources */,
 				1A726B6C2B7B5E0800A4E05F /* Renderer.cpp in Sources */,
 				1A726B652B7B5DC700A4E05F /* GameEngine.cpp in Sources */,
+				1AC9F59B2B8215F000ACD679 /* GameConfig.cpp in Sources */,
 				1A726B6D2B7B5E0800A4E05F /* Artist.cpp in Sources */,
-				1A726B732B7B5EAF00A4E05F /* ConfigUtils.cpp in Sources */,
 				1A726B682B7B5DD700A4E05F /* AudioPlayer.cpp in Sources */,
-				1A726B702B7B5EA600A4E05F /* Actor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
