@@ -50,7 +50,7 @@ public:
 	// The render size, as defined by rendering.config
 	glm::ivec2 renderSize;
 	// the camera offset, as defined by rendering.config
-	glm::vec2 cameraOffset;
+	glm::dvec2 cameraOffset;
 	glm::ivec3 clearColor;
 	// the zoom factor of the camera
 	double zoomFactor = 1;
