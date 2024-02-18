@@ -9,7 +9,7 @@
 #include "audio/AudioPlayer.h"
 #include "gamedata/Actor.h"
 #include "gamedata/GameInfo.h"
-#include "utils/ConfigManager.h"
+#include "utils/config/ConfigManager.h"
 #include "visuals/Renderer.h"
 #include "gamedata/Input.h"
 

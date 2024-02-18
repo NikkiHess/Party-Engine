@@ -11,9 +11,9 @@
 #include <vector>
 
 // my code
-#include "../errors/Error.h"
-#include "../gamedata/Actor.h"
-#include "../gamedata/Scene.h"
+#include "../../errors/Error.h"
+#include "../../gamedata/Actor.h"
+#include "../../gamedata/Scene.h"
 
 // dependencies
 #include "glm/glm.hpp"

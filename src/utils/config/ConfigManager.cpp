@@ -5,8 +5,9 @@
 #include <string>
 
 // my code
-#include "../gamedata/Scene.h"
 #include "ConfigManager.h"
+#include "../../gamedata/Scene.h"
+#include "../../errors/Error.h"
 
 // dependencies
 #include "rapidjson/document.h"

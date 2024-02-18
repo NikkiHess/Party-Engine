@@ -7,7 +7,7 @@
 
 // include my code
 #include "GameEngine.h"
-#include "utils/ConfigManager.h"
+#include "utils/config/ConfigManager.h"
 #include "visuals/Renderer.h"
 #include "gamedata/Input.h"
 #include "gamedata/Direction.h"

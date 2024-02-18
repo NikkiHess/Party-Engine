@@ -5,7 +5,7 @@
 
 // my code
 #include "../gamedata/GameInfo.h"
-#include "../utils/ConfigManager.h"
+#include "../utils/config/ConfigManager.h"
 #include "Artist.h"
 
 // dependencies

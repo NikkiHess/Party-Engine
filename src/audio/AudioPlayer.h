@@ -4,7 +4,7 @@
 #include <string>
 
 // my code
-#include "../utils/ConfigManager.h"
+#include "../utils/config/ConfigManager.h"
 
 class AudioPlayer
 {

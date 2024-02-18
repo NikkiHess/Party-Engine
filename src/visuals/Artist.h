@@ -5,7 +5,7 @@
 
 // my code
 #include "../gamedata/Actor.h"
-#include "../utils/ConfigManager.h"
+#include "../utils/config/ConfigManager.h"
 #include "../gamedata/GameInfo.h"
 #include "../utils/ResourceManager.h"
 
