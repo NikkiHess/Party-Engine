@@ -23,49 +23,55 @@
 #include "SDL2/SDL_ttf.h"
 
 void Renderer::renderIntro(int& index) {
+	GameConfig& gameConfig = configManager.gameConfig;
+	RenderingConfig& renderConfig = configManager.renderingConfig;
+
 	// Clear the frame buffer at the beginning of a frame
 	SDL_SetRenderDrawColor(
 		sdlRenderer,
-		configManager.clearColor.r,
-		configManager.clearColor.g,
-		configManager.clearColor.b,
+		renderConfig.clearColor.r,
+		renderConfig.clearColor.g,
+		renderConfig.clearColor.b,
 		1
 	);
 	SDL_RenderClear(sdlRenderer);
 
+
 	// Display any intro images
-	if (!configManager.introImages.empty()) {
+	if (!gameConfig.introImages.empty()) {
 		artist.drawUIImage(
 			// exhausted introImages? continue to render last one
-			(index < configManager.introImages.size() ? configManager.introImages[index] : configManager.introImages[configManager.introImages.size() - 1]),
+			(index < gameConfig.introImages.size() ? gameConfig.introImages[index] : gameConfig.introImages[gameConfig.introImages.size() - 1]),
 			{0, 0}, // the position should be (0, 0)
-			{ configManager.renderSize.x, configManager.renderSize.y } // stretch to fit render size
+			{ renderConfig.renderSize.x, renderConfig.renderSize.y } // stretch to fit render size
 		);
 	}
 	// Display any intro text
-	if (!configManager.introText.empty()) {
+	if (!gameConfig.introText.empty()) {
 		artist.drawUIText(
 			// exhausted introText? continue to render last one
-			(index < configManager.introText.size() ? configManager.introText[index] : configManager.introText[configManager.introText.size() - 1]),
+			(index < gameConfig.introText.size() ? gameConfig.introText[index] : gameConfig.introText[gameConfig.introText.size() - 1]),
 			{ 255, 255, 255, 255 },
-			{ 25, configManager.renderSize.y - 50 } // the pos will be {25, 50 higher than the bottom of the screen}
+			{ 25, renderConfig.renderSize.y - 50 } // the pos will be {25, 50 higher than the bottom of the screen}
 		);
 	}
 }
 
 void Renderer::render(GameInfo& gameInfo) {
+	RenderingConfig& renderConfig = configManager.renderingConfig;
+
 	// Clear the frame buffer at the beginning of a frame
 	SDL_SetRenderDrawColor(
 		sdlRenderer, 
-		configManager.clearColor.r, 
-		configManager.clearColor.g, 
-		configManager.clearColor.b, 
+		renderConfig.clearColor.r,
+		renderConfig.clearColor.g,
+		renderConfig.clearColor.b,
 		1
 	);
 	SDL_RenderClear(sdlRenderer);
 
 	// set the render scale according to the configured zoom factor
-	SDL_RenderSetScale(sdlRenderer, configManager.zoomFactor, configManager.zoomFactor);
+	SDL_RenderSetScale(sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
 
 	// draw all actors in order of transform_position_y
 	for (Actor* actor : gameInfo.scene.actorsByRenderOrder) {
@@ -81,15 +87,17 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 	std::string scoreText = "score : " + std::to_string(gameInfo.player->score);
 	artist.drawUIText(scoreText, { 255, 255, 255, 255 }, { 5, 5 });
 
+	GameConfig& gameConfig = configManager.gameConfig;
+
 	// render the player's hp
 	for (int i = 0; i < gameInfo.player->health; ++i) {
 		glm::ivec2 size(0, 0);
-		SDL_QueryTexture(artist.resourceManager.loadImageTexture(configManager.hpImage), nullptr, nullptr, &size.x, &size.y);
+		SDL_QueryTexture(artist.resourceManager.loadImageTexture(gameConfig.hpImage), nullptr, nullptr, &size.x, &size.y);
 
 		glm::ivec2 startPos{ 5, 25 };
 		glm::ivec2 offset{ i * (size.x + 5), 0 };
 		artist.drawUIImage(
-			configManager.hpImage,
+			gameConfig.hpImage,
 			startPos + offset,
 			{ size.x, size.y }
 		);
@@ -136,12 +144,12 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 			if (sceneName != "") {
 				std::string scenePath = "resources/scenes/" + sceneName + ".scene";
 
-				if (!configManager.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
+				if (!resourceManager.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
 
 				gameInfo.scene = Scene();
 				gameInfo.scene.name = sceneName;
 				// initialize the new scene immediately
-				configManager.initializeScene(gameInfo.scene, configManager.document, false);
+				configManager.sceneConfig.parse(configManager.document, resourceManager, gameInfo.scene, configManager.gameConfig.hpImage);
 
 				auto playerIt = std::find_if(gameInfo.scene.actors.begin(), gameInfo.scene.actors.end(), [](Actor actor) { return actor.name == "player"; });
 

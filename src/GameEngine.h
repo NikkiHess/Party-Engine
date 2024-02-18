@@ -33,18 +33,18 @@ public:
 	GameInfo gameInfo { 
 		player,
 		state,
-		configManager.initialScene,
+		configManager.sceneConfig.initialScene,
 	};
 
 	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input) : renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input) {
-		std::vector<Actor>& actors = configManager.initialScene.actors;
+		std::vector<Actor>& actors = configManager.sceneConfig.initialScene.actors;
 		// this finds the player in the actors map
 		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });
 
 		if (playerIt != actors.end()) {
 			player = &*playerIt;
 			// set the player's speed from the config
-			player->speed = configManager.playerSpeed;
+			player->speed = configManager.gameConfig.playerSpeed;
 			gameInfo.player = player;
 		}
 	}

@@ -4,14 +4,14 @@
 #include <string>
 
 // my code
-#include "../utils/config/ConfigManager.h"
+#include "../utils/ResourceManager.h"
 
 class AudioPlayer
 {
 public:
-	ConfigManager& configManager; // the ConfigManager passed in
+	ResourceManager& resourceManager;
 
-	AudioPlayer(ConfigManager& configManager) : configManager(configManager) {}
+	AudioPlayer(ResourceManager& resourceManager) : resourceManager(resourceManager) {}
 
 	// play a sound "loops" times
 	void play(std::string& soundName, int loops);

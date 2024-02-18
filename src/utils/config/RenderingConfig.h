@@ -1,0 +1,20 @@
+#pragma once
+
+// depedencies
+#include "rapidjson/document.h"
+#include "glm/glm.hpp"
+
+class RenderingConfig {
+public:
+	// The render size, as defined by rendering.config
+	glm::ivec2 renderSize = glm::ivec2(640, 360);
+	// the camera offset, as defined by rendering.config
+	glm::vec2 cameraOffset;
+	glm::ivec3 clearColor = glm::ivec3(255, 255, 255);
+	// the zoom factor of the camera
+	float zoomFactor = 1;
+
+	// parses information from rendering.config
+	void parse(rapidjson::Document& document);
+};
+

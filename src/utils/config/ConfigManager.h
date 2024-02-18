@@ -1,6 +1,4 @@
 #pragma once
-#pragma warning(disable:6262) // I know readJsonFile uses a lot of stack, will fix later(?)
-#pragma warning(push)
 
 // std stuff
 #include <filesystem>
@@ -14,115 +12,58 @@
 #include "../../errors/Error.h"
 #include "../../gamedata/Actor.h"
 #include "../../gamedata/Scene.h"
+#include "GameConfig.h"
+#include "SceneConfig.h"
+#include "RenderingConfig.h"
+#include "../ResourceManager.h"
+#include "JsonUtils.h"
 
 // dependencies
 #include "glm/glm.hpp"
 #include "rapidjson/document.h"
-#include "rapidjson/filereadstream.h"
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
 class ConfigManager {
 public:
+	GameConfig gameConfig;
+	SceneConfig sceneConfig;
+	RenderingConfig renderingConfig;
+
 	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
 
-	// relevant strings from game.config
-	std::string gameTitle = "";
-	std::vector<std::string> introImages;
-	std::vector<std::string> introText;
-	std::string introMusic = "";
-	std::string gameplayMusic = "";
-	std::string hpImage = "";
-	std::string gameOverBadImage = "", gameOverBadAudio = "",
-		gameOverGoodImage = "", gameOverGoodAudio = "";
-
-	// data cache
-	std::unordered_map<std::string, SDL_Texture*> imageTextures, textTextures;
-	std::unordered_map<std::string, Mix_Chunk*> sounds;
-	TTF_Font* font = nullptr;
-	std::unordered_map<std::string, bool> fileExistsCache;
-
-	// The initial scene from game.config
-	Scene initialScene;
-	// Actor templates from the scene
-	std::vector<Actor*> templates;
-	// player speed from game.config
-	float playerSpeed = 0.02f;
-
-	// The render size, as defined by rendering.config
-	glm::ivec2 renderSize;
-	// the camera offset, as defined by rendering.config
-	glm::vec2 cameraOffset;
-	glm::ivec3 clearColor;
-	// the zoom factor of the camera
-	float zoomFactor = 1;
-
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
-	ConfigManager() : renderSize(640, 360), clearColor(255, 255, 255) {
-		std::string resources = "resources/";
-		std::string gameConfig = resources + "game.config";
-		std::string renderingConfig = resources + "rendering.config";
-
-		if (!fileExists(resources)) Error::error(resources + " missing");
-
-		if (!fileExists(gameConfig)) Error::error(gameConfig + " missing");
-		readJsonFile(resources + "game.config", document);
-		initializeGame(document);
-		initializeScene(initialScene, document, true);
-
-		if (fileExists(renderingConfig)) {
-			readJsonFile(resources + "rendering.config", document);
-			initializeRendering(document);
-		}
-	}
-
-	bool fileExists(const std::string& path);
-
-	// checks that a file exists, and if not prints an error message and exits with code 1
-	//void checkFile(const std::string& path, std::optional<std::string> print = std::nullopt);
-
-	// initializes the scene from its scene file
-	// utilizes Scene class
-	// called at the start of the game and when we proceed to a new scene
-	void initializeScene(Scene& scene, rapidjson::Document& sceneDocument, bool isInitialScene);
-private:
-	// initializes data from the resources/game.config file
-	void initializeGame(rapidjson::Document& gameDocument);
-
-	// initializes the render_size loaded in from the resources/rendering.config file
-	void initializeRendering(rapidjson::Document& renderingDocument);
-
-	// set Actor props from a document
-	void setActorProps(Actor& actor, rapidjson::Value& actorDocument);
-
-	// reads a json file from path and puts it in the out_document
-	static void readJsonFile(const std::string& path, rapidjson::Document& outDocument) {
-		FILE* filePointer = nullptr;
-#ifdef _WIN32
-		fopen_s(&filePointer, path.c_str(), "rb");
-#else
-		filePointer = fopen(path.c_str(), "rb");
-#endif'
-		// close the use and close the filePointer if it's null
-		if (filePointer != nullptr) {
-			char buffer[65536];
-			rapidjson::FileReadStream stream(filePointer, buffer, sizeof(buffer));
-			outDocument.ParseStream(stream);
-			std::fclose(filePointer);
-		}
-		else {
-			std::cerr << "JSON file pointer is null.\n";
+	ConfigManager(ResourceManager& resourceManager) {
+		if (!resourceManager.fileExists("resources/")) {
+			Error::error("resources/ missing");
 		}
 
-		if (outDocument.HasParseError()) {
-			rapidjson::ParseErrorCode errorCode = outDocument.GetParseError();
-			std::cout << "error parsing json at [" << path << "]" << std::endl;
-			exit(0);
+		// handle game.config
+		if (!resourceManager.fileExists("resources/game.config")) {
+			Error::error("resources/game.config missing");
+		}
+		JsonUtils::readJsonFile("resources/game.config", document);
+		gameConfig.parse(document, resourceManager);
+
+		// handle initial scene's .scene file
+		if (!document.HasMember("initial_scene")) {
+			Error::error("initial_scene unspecified");
+		}
+		// the name of the initial scene
+		std::string sceneName = document["initial_scene"].GetString();
+		if (!resourceManager.fileExists("resources/scenes/" + sceneName + ".scene")) {
+			Error::error("scene " + sceneName + " is missing");
+		}
+		JsonUtils::readJsonFile("resources/scenes/" + sceneName + ".scene", document);
+		sceneConfig.parse(document, resourceManager, sceneConfig.initialScene, gameConfig.hpImage);
+
+		// handle rendering.config, which may or may not exist
+		if (resourceManager.fileExists("resources/rendering.config")) {
+			JsonUtils::readJsonFile("resources/rendering.config", document);
+			renderingConfig.parse(document);
 		}
 	}
 };
-
-#pragma warning(pop)

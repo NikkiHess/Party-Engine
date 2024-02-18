@@ -6,6 +6,8 @@
 #include "../gamedata/GameInfo.h"
 
 void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
+	RenderingConfig& renderConfig = configManager.renderingConfig;
+
 	// check if the actor's image needs to be loaded
 	if (!actor.view.image && actor.view.imageName != "") {
 		actor.view.image = resourceManager.loadImageTexture(actor.view.imageName);
@@ -34,8 +36,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	// with camera offset and zoom correction
 	// we divide by the zoom factor here because that will center things correctly
 	glm::vec2 screenCenter(
-		(configManager.renderSize.x / 2.0 - configManager.cameraOffset.x * PIXELS_PER_UNIT) / configManager.zoomFactor,
-		(configManager.renderSize.y / 2.0 - configManager.cameraOffset.y * PIXELS_PER_UNIT) / configManager.zoomFactor
+		(renderConfig.renderSize.x / 2.0 - renderConfig.cameraOffset.x * PIXELS_PER_UNIT) / renderConfig.zoomFactor,
+		(renderConfig.renderSize.y / 2.0 - renderConfig.cameraOffset.y * PIXELS_PER_UNIT) / renderConfig.zoomFactor
 	);
 
 	// x and y either from config or (width or height) * 0.5 * scale

@@ -8,6 +8,8 @@
 // include my code
 #include "GameEngine.h"
 #include "utils/config/ConfigManager.h"
+#include "utils/config/GameConfig.h"
+#include "utils/config/RenderingConfig.h"
 #include "visuals/Renderer.h"
 #include "gamedata/Input.h"
 #include "gamedata/Direction.h"
@@ -30,8 +32,11 @@ void Engine::start() {
     isGameRunning = true;
     bool introMusicPlaying = false, gameplayMusicPlaying = false;
 
-    if (configManager.introMusic != "" && !introMusicPlaying) {
-        audioPlayer.play(configManager.introMusic, -1);
+    GameConfig& gameConfig = configManager.gameConfig;
+    RenderingConfig& renderConfig = configManager.renderingConfig;
+
+    if (gameConfig.introMusic != "" && !introMusicPlaying) {
+        audioPlayer.play(gameConfig.introMusic, -1);
         introMusicPlaying = true;
     }
 
@@ -46,7 +51,7 @@ void Engine::start() {
             }
 
             // intro click handlinga
-            if (currentIntroIndex < configManager.introImages.size() || currentIntroIndex < configManager.introText.size()) {
+            if (currentIntroIndex < gameConfig.introImages.size() || currentIntroIndex < gameConfig.introText.size()) {
                 // buttons to proceed are: space, return, left click
                 if (sdlEvent.type == SDL_MOUSEBUTTONDOWN) {
                     ++currentIntroIndex;
@@ -55,7 +60,7 @@ void Engine::start() {
         }
 
         // intro button handling handling
-        if (currentIntroIndex < configManager.introImages.size() || currentIntroIndex < configManager.introText.size()) {
+        if (currentIntroIndex < gameConfig.introImages.size() || currentIntroIndex < gameConfig.introText.size()) {
             // buttons to proceed are: space, return, left click
             if (input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
                 ++currentIntroIndex;
@@ -94,7 +99,7 @@ void Engine::start() {
         input.lateUpdate();
 
         // if there's an intro, render it
-        if (currentIntroIndex < configManager.introImages.size() || currentIntroIndex < configManager.introText.size()) {
+        if (currentIntroIndex < gameConfig.introImages.size() || currentIntroIndex < gameConfig.introText.size()) {
             renderer.renderIntro(currentIntroIndex);
         }
         // handle and render gameplay
@@ -106,8 +111,8 @@ void Engine::start() {
             }
 
             // start the gameplay music if there is any
-            if (!gameplayMusicPlaying && configManager.gameplayMusic != "") {
-                audioPlayer.play(configManager.gameplayMusic, -1);
+            if (!gameplayMusicPlaying && gameConfig.gameplayMusic != "") {
+                audioPlayer.play(gameConfig.gameplayMusic, -1);
                 gameplayMusicPlaying = true;
             }
 
@@ -124,18 +129,18 @@ void Engine::start() {
                 switch (state) {
                     case WIN:
                         if (!gameOverMusicPlaying &&
-                            configManager.gameOverGoodAudio != "") {
+                            gameConfig.gameOverGoodAudio != "") {
                             AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(configManager.gameOverGoodAudio, 0);
+                            audioPlayer.play(gameConfig.gameOverGoodAudio, 0);
                             gameOverMusicPlaying = true;
                             gameOver = true;
                         }
                         continue;
                     case LOSE:
                         if (!gameOverMusicPlaying &&
-                            configManager.gameOverBadAudio != "") {
+                            gameConfig.gameOverBadAudio != "") {
                             AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(configManager.gameOverBadAudio, 0);
+                            audioPlayer.play(gameConfig.gameOverBadAudio, 0);
                             gameOverMusicPlaying = true;
                             gameOver = true;
                         }
@@ -154,20 +159,20 @@ void Engine::start() {
         // game over
         else {
             if (gameInfo.state == WIN) {
-                if (configManager.gameOverGoodImage != "") {
+                if (gameConfig.gameOverGoodImage != "") {
                     renderer.artist.drawUIImage(
-                        configManager.gameOverGoodImage,
+                        gameConfig.gameOverGoodImage,
                         { 0, 0 },
-                        { configManager.renderSize.x, configManager.renderSize.y }
+                        { renderConfig.renderSize.x, renderConfig.renderSize.y }
                     );
                 }
             }
             else if (gameInfo.state == LOSE) {
-                if (configManager.gameOverBadImage != "") {
+                if (gameConfig.gameOverBadImage != "") {
                     renderer.artist.drawUIImage(
-                        configManager.gameOverBadImage,
+                        gameConfig.gameOverBadImage,
                         { 0, 0 },
-                        { configManager.renderSize.x, configManager.renderSize.y }
+                        { renderConfig.renderSize.x, renderConfig.renderSize.y }
                     );
                 }
             }
@@ -200,9 +205,10 @@ int main(int argc, char* argv[]) {
 	// Open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 
-	ConfigManager configManager;
-	Renderer renderer(configManager);
-	AudioPlayer audioPlayer(configManager);
+    ResourceManager resourceManager;
+	ConfigManager configManager(resourceManager);
+	Renderer renderer(configManager, resourceManager);
+	AudioPlayer audioPlayer(resourceManager);
     Input input;
 
 	Engine engine(renderer, configManager, audioPlayer, input);

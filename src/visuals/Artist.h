@@ -21,11 +21,11 @@ class Artist
 public:
 	ConfigManager& configManager; // the ConfigManager passed in from Renderer
 	SDL_Renderer* sdlRenderer = nullptr; // the SDL renderer object passed in from Renderer
-	ResourceManager resourceManager;
+	ResourceManager& resourceManager;
 
 	static const int PIXELS_PER_UNIT = 100;
 
-	Artist(ConfigManager& configManager) : configManager(configManager), resourceManager(configManager) {}
+	Artist(ConfigManager& configManager, ResourceManager& resourceManager) : configManager(configManager), resourceManager(resourceManager) {}
 
 	// draw an unchanging image on the screen
 	void drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
