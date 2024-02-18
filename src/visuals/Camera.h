@@ -24,8 +24,8 @@ public:
 
 		// the player's position
 		return glm::vec2(
-			player->transform.pos.x * renderConfig.pixelsPerUnit/* - player->view.pivotOffset.x.value_or(w * 0.5)*/,
-			player->transform.pos.y * renderConfig.pixelsPerUnit/* - player->view.pivotOffset.y.value_or(h * 0.5)*/
+			player->transform.pos.x * renderConfig.pixelsPerUnit,
+			player->transform.pos.y * renderConfig.pixelsPerUnit
 		);
 	}
 

@@ -41,8 +41,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor, Camera& camera) {
 
 	// camera center in pixel coordinates
 	glm::ivec2 cameraCenter(
-		renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit,
-		renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit
+		(renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor,
+		(renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor
 	);
 
 	// actor world position in pixel coordinates
