@@ -26,22 +26,6 @@
 #include "SDL2/SDL_ttf.h"
 
 void Engine::start() {
-    // a window with proprties as defined by configUtils
-    SDL_Window* window = SDL_CreateWindow(
-        configUtils.gameTitle.c_str(),	// window title
-        SDL_WINDOWPOS_CENTERED,			// initial x
-        SDL_WINDOWPOS_CENTERED,			// iniital y
-        configUtils.renderSize.x,		// width, in pixels
-        configUtils.renderSize.y,		// height, in pixels
-        SDL_WINDOW_SHOWN				// flags
-    );
-
-    // Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
-    SDL_Renderer* sdlRenderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-    renderer.sdlRenderer = sdlRenderer;
-    renderer.artist.sdlRenderer = sdlRenderer;
-    renderer.artist.resourceManager.sdlRenderer = sdlRenderer;
-
 	// run the game loop
 	doGameLoop();
 }

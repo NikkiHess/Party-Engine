@@ -17,7 +17,7 @@
 class ResourceManager {
 public:
 	ConfigUtils& configUtils;
-	SDL_Renderer* sdlRenderer;
+	SDL_Renderer* sdlRenderer = nullptr;
 
 	ResourceManager(ConfigUtils& configUtils) : configUtils(configUtils) {}
 

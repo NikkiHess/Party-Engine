@@ -25,8 +25,7 @@ public:
 
 	static const int PIXELS_PER_UNIT = 100;
 
-	Artist(ConfigUtils& configUtils, SDL_Renderer* sdlRenderer) 
-		: configUtils(configUtils), resourceManager(configUtils) {}
+	Artist(ConfigUtils& configUtils) : configUtils(configUtils), resourceManager(configUtils) {}
 
 	// draw an unchanging image on the screen
 	void drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
