@@ -34,7 +34,7 @@ void Input::lateUpdate() {
 }
 
 bool Input::getKey(SDL_Scancode code) {
-	return keyboardStates[code] == InputState::DOWN;
+	return keyboardStates[code] == InputState::DOWN || keyboardStates[code] == InputState::NEWLY_DOWN;
 }
 
 bool Input::getKeyDown(SDL_Scancode code) {
