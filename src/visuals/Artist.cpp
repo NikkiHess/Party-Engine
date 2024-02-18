@@ -71,7 +71,7 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	// calculate the center of the screen
 	// with camera offset and zoom correction
 	// we divide by the zoom factor here because that will center things correctly
-	glm::dvec2 screenCenter(
+	glm::vec2 screenCenter(
 		(configUtils.renderSize.x / 2.0 - configUtils.cameraOffset.x * PIXELS_PER_UNIT) / configUtils.zoomFactor,
 		(configUtils.renderSize.y / 2.0 - configUtils.cameraOffset.y * PIXELS_PER_UNIT) / configUtils.zoomFactor
 	);
@@ -85,7 +85,7 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 
 	// the offset to apply to all actors relative to the player
 	// subtract this
-	glm::dvec2 playerPosOffset(
+	glm::vec2 playerPosOffset(
 		(gameInfo.player ? gameInfo.player->transform.pos.x * PIXELS_PER_UNIT : 0),
 		(gameInfo.player ? gameInfo.player->transform.pos.y * PIXELS_PER_UNIT : 0)
 	);

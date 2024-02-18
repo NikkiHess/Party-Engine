@@ -11,20 +11,20 @@
 class Transform {
 public:
 	glm::vec2 pos;
-	glm::dvec2 scale = { 1.0, 1.0 };
-	double rotationDegrees = 0.0;
+	glm::vec2 scale = { 1.0, 1.0 };
+	float rotationDegrees = 0.0;
 };
 
-class OptionalDVec2 {
+class OptionalVec2 {
 public:
-	std::optional<double> x, y;
+	std::optional<float> x, y;
 };
 
 class View {
 public:
 	std::string imageName = "";
 	SDL_Texture* image = nullptr;
-	OptionalDVec2 pivotOffset;
+	OptionalVec2 pivotOffset;
 };
 
 class Actor {
