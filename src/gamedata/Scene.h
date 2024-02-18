@@ -28,9 +28,12 @@ private:
 	};
 public:
 	std::vector<Actor> actors;
-	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder; // actors sorted by their render order
+	// actors sorted by render order -> y pos -> id
+	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder;
+	// actors that move, sorted by id
 	std::set<Actor*, ActorComparator> motionActors;
-	std::unordered_map<glm::vec2, std::unordered_set<Actor*>, HashLoc, HashLoc> locToActors;
+	// location to actors map, actors at location sorted by id
+	std::unordered_map<glm::vec2, std::set<Actor*, ActorComparator>, HashLoc, HashLoc> locToActors;
 	std::string name;
 
 	// instantiate an actor in the scene

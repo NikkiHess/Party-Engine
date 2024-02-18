@@ -66,6 +66,14 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 		imagePos.y + (scaledSize.y < 0 ? scaledSize.y + (scaledSize.y % 2) : 0)
 	);
 
+	// if actor is not within visible area, skip rendering (cull)
+	// include a little leeway so as not to unrender while still on screen
+	if (imagePos.x < -std::abs(scaledSize.x * 1.2f) || imagePos.x > renderConfig.renderSize.x * 1.1f ||
+		imagePos.y < -std::abs(scaledSize.y * 1.2f) || imagePos.y > renderConfig.renderSize.y * 1.1f) {
+		std::cout << actor.name << " unrendered\n";
+		return;
+	}
+
 	// center position around the pivot point
 	// offset by scaledSize if we flip either one
 	SDL_Rect imageRect = {
