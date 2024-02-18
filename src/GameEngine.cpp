@@ -64,46 +64,47 @@ void Engine::doGameLoop() {
             if (sdlEvent.type == SDL_QUIT) {
                 queueStop();
             }
-
-            // intro handling
-            if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
-                // buttons to proceed are: space, return, left click
-                if (sdlEvent.type == SDL_MOUSEBUTTONDOWN || input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
-                    ++currentIntroIndex;
-                }
-            }
-
-            // gameplay handling
-            else if (player) {
-                // upward movement (up/w)
-                if (input.getKey(SDL_SCANCODE_UP) || input.getKey(SDL_SCANCODE_W)) {
-                    player->velocity += Direction::UP;
-                }
-                // downward movement (down/s)
-                if (input.getKey(SDL_SCANCODE_DOWN) || input.getKey(SDL_SCANCODE_S)) {
-                    player->velocity += Direction::DOWN;
-                }
-                // leftward movement (left/a)
-                if (input.getKey(SDL_SCANCODE_LEFT) || input.getKey(SDL_SCANCODE_A)) {
-                    player->velocity += Direction::LEFT;
-                }
-                // rightward movement (right/d)
-                if (input.getKey(SDL_SCANCODE_RIGHT) || input.getKey(SDL_SCANCODE_D)) {
-                    player->velocity += Direction::RIGHT;
-                }
-
-                // if the player has velocity, move them and reset their velocity
-                if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
-                    // start by normalizing and multiplying by speed
-                    player->velocity = glm::normalize(player->velocity) * player->speed;
-                    gameInfo.scene.moveActor(player);
-                    player->velocity = glm::vec2(0);
-                }
-            }
-
-            // make the input not "newly down" or "newly up" anymore
-            input.lateUpdate();
         }
+
+        // intro handling
+        if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+            // buttons to proceed are: space, return, left click
+            if (sdlEvent.type == SDL_MOUSEBUTTONDOWN || input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
+                ++currentIntroIndex;
+            }
+        }
+
+        // gameplay handling
+        else if (player) {
+            std::cout << sdlEvent.key.keysym.scancode << " = " << input.keyboardStates[sdlEvent.key.keysym.scancode] << "\n";
+            // upward movement (up/w)
+            if (input.getKey(SDL_SCANCODE_UP) || input.getKey(SDL_SCANCODE_W)) {
+                player->velocity += Direction::UP;
+            }
+            // downward movement (down/s)
+            if (input.getKey(SDL_SCANCODE_DOWN) || input.getKey(SDL_SCANCODE_S)) {
+                player->velocity += Direction::DOWN;
+            }
+            // leftward movement (left/a)
+            if (input.getKey(SDL_SCANCODE_LEFT) || input.getKey(SDL_SCANCODE_A)) {
+                player->velocity += Direction::LEFT;
+            }
+            // rightward movement (right/d)
+            if (input.getKey(SDL_SCANCODE_RIGHT) || input.getKey(SDL_SCANCODE_D)) {
+                player->velocity += Direction::RIGHT;
+            }
+
+            // if the player has velocity, move them and reset their velocity
+            if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
+                // start by normalizing and multiplying by speed
+                player->velocity = glm::normalize(player->velocity) * player->speed;
+                gameInfo.scene.moveActor(player);
+            }
+            player->velocity = glm::vec2(0);
+        }
+
+        // make the input not "newly down" or "newly up" anymore
+        input.lateUpdate();
 
         // if there's an intro, render it
         if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
