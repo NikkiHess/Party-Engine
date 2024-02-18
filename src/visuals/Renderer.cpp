@@ -84,7 +84,7 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 	// render the player's hp
 	for (int i = 0; i < gameInfo.player->health; ++i) {
 		glm::ivec2 size(0, 0);
-		SDL_QueryTexture(artist.loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
+		SDL_QueryTexture(artist.resourceManager.loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
 
 		glm::ivec2 startPos{ 5, 25 };
 		glm::ivec2 offset{ i * (size.x + 5), 0 };

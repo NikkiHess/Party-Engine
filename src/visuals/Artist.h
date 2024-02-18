@@ -7,6 +7,7 @@
 #include "../gamedata/Actor.h"
 #include "../utils/ConfigUtils.h"
 #include "../gamedata/GameInfo.h"
+#include "../utils/ResourceManager.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -19,17 +20,13 @@ class Artist
 {
 public:
 	ConfigUtils& configUtils; // the ConfigUtils passed in from Renderer
-	SDL_Renderer* sdlRenderer; // the SDL renderer object passed in from Renderer
+	SDL_Renderer* sdlRenderer = nullptr; // the SDL renderer object passed in from Renderer
+	ResourceManager resourceManager;
 
 	static const int PIXELS_PER_UNIT = 100;
 
-	Artist(ConfigUtils& configUtils) : configUtils(configUtils) {};
-
-	// load an image texture from its name
-	SDL_Texture* loadImageTexture(std::string& imageName);
-
-	// load an text texture from its content
-	SDL_Texture* loadTextTexture(std::string& text, SDL_Color fontColor);
+	Artist(ConfigUtils& configUtils, SDL_Renderer* sdlRenderer) 
+		: configUtils(configUtils), resourceManager(configUtils) {}
 
 	// draw an unchanging image on the screen
 	void drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
