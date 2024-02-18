@@ -20,7 +20,6 @@ public:
 	SDL_Renderer* sdlRenderer = nullptr;
 	ConfigManager& configManager;
 	ResourceManager& resourceManager;
-	glm::ivec2 renderSize = { 0, 0 }; // the size of the rendered view
 
 	Artist artist; // responsible for drawing stuff
 

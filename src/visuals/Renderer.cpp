@@ -164,7 +164,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 		artist.drawUIText(
 			dialogue[i],
 			{ 255, 255, 255, 255 },
-			{ 25, renderSize.y - 50 - (dialogue.size() - 1 - i) * 50 }
+			{ 25, configManager.renderingConfig.renderSize.y - 50 - (dialogue.size() - 1 - i) * 50 }
 		);
 	}
 }
