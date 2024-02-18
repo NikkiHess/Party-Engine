@@ -43,6 +43,8 @@ public:
 
 		if (playerIt != actors.end()) {
 			player = &*playerIt;
+			// set the player's speed from the config
+			player->speed = configUtils.playerSpeed;
 			gameInfo.player = player;
 		}
 	}

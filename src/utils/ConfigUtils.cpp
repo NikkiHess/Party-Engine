@@ -24,14 +24,15 @@ bool ConfigUtils::fileExists(const std::string& path) {
 	return exists;
 }
 
-void ConfigUtils::initializeGame(rapidjson::Document& document) {
+// initializes from game.config
+void ConfigUtils::initializeGame(rapidjson::Document& gameDocument) {
 	// handle game title
-	if (document.HasMember("game_title"))
-		gameTitle = document["game_title"].GetString();
+	if (gameDocument.HasMember("game_title"))
+		gameTitle = gameDocument["game_title"].GetString();
 
 	// handle font
-	if (document.HasMember("font")) {
-		std::string fontName = document["font"].GetString();
+	if (gameDocument.HasMember("font")) {
+		std::string fontName = gameDocument["font"].GetString();
 		std::string fontPath = "resources/fonts/" + fontName + ".ttf";
 
 		if (!fileExists(fontPath))
@@ -42,8 +43,8 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	}
 
 	// handle the intro
-	if (document.HasMember("intro_image")) {
-		rapidjson::GenericArray images = document["intro_image"].GetArray();
+	if (gameDocument.HasMember("intro_image")) {
+		rapidjson::GenericArray images = gameDocument["intro_image"].GetArray();
 		introImages.reserve(images.Size());
 
 		// Copy the images over one by one, checking each along the way
@@ -56,29 +57,29 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 			introImages.emplace_back(image.GetString());
 		}
 	}
-	if (document.HasMember("intro_text")) {
+	if (gameDocument.HasMember("intro_text")) {
 		if (font == nullptr) {
 			Error::error("text render failed. No font configured");
 		}
-		rapidjson::GenericArray texts = document["intro_text"].GetArray();
+		rapidjson::GenericArray texts = gameDocument["intro_text"].GetArray();
 		introText.reserve(texts.Size());
 		
 		for (rapidjson::Value& text : texts) {
 			introText.emplace_back(text.GetString());
 		}
 	}
-	if (document.HasMember("intro_bgm")) {
-		introMusic = document["intro_bgm"].GetString();
+	if (gameDocument.HasMember("intro_bgm")) {
+		introMusic = gameDocument["intro_bgm"].GetString();
 	}
 
 	// handle the gameplay
-	if (document.HasMember("gameplay_audio")) {
-		gameplayMusic = document["gameplay_audio"].GetString();
+	if (gameDocument.HasMember("gameplay_audio")) {
+		gameplayMusic = gameDocument["gameplay_audio"].GetString();
 	}
 
 	// HUD
-	if (document.HasMember("hp_image")) {
-		std::string hpImageName = document["hp_image"].GetString();
+	if (gameDocument.HasMember("hp_image")) {
+		std::string hpImageName = gameDocument["hp_image"].GetString();
 		std::string hpImagePath = "resources/images/" + hpImageName + ".png";
 
 		if(!fileExists(hpImagePath)) Error::error(hpImageName + " missing");
@@ -87,33 +88,38 @@ void ConfigUtils::initializeGame(rapidjson::Document& document) {
 	}
 
 	// handle the game over sequence
-	if (document.HasMember("game_over_bad_image")) {
-		gameOverBadImage = document["game_over_bad_image"].GetString();
+	if (gameDocument.HasMember("game_over_bad_image")) {
+		gameOverBadImage = gameDocument["game_over_bad_image"].GetString();
 	}
-	if (document.HasMember("game_over_bad_audio")) {
-		gameOverBadAudio = document["game_over_bad_audio"].GetString();
+	if (gameDocument.HasMember("game_over_bad_audio")) {
+		gameOverBadAudio = gameDocument["game_over_bad_audio"].GetString();
 	}
-	if (document.HasMember("game_over_good_image")) {
-		gameOverGoodImage = document["game_over_good_image"].GetString();
+	if (gameDocument.HasMember("game_over_good_image")) {
+		gameOverGoodImage = gameDocument["game_over_good_image"].GetString();
 	}
-	if (document.HasMember("game_over_good_audio")) {
-		gameOverGoodAudio = document["game_over_good_audio"].GetString();
+	if (gameDocument.HasMember("game_over_good_audio")) {
+		gameOverGoodAudio = gameDocument["game_over_good_audio"].GetString();
+	}
+	
+	if (gameDocument.HasMember("player_movement_speed")) {
+		playerSpeed = gameDocument["player_movement_speed"].GetFloat();
 	}
 }
 
-void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, bool isInitialScene = false) {
+// initializes a scene from a .scene file
+void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& sceneDocument, bool isInitialScene = false) {
 	// get the name of the initial scene
 	if (isInitialScene) {
-		if (!document.HasMember("initial_scene")) {
+		if (!sceneDocument.HasMember("initial_scene")) {
 			Error::error("initial_scene unspecified");
 		}
-		scene.name = document["initial_scene"].GetString();
+		scene.name = sceneDocument["initial_scene"].GetString();
 
 		std::string scenePath = "resources/scenes/" + initialScene.name + ".scene";
 		if (!fileExists(scenePath)) {
 			Error::error("scene " + initialScene.name + " is missing");
 		}
-		readJsonFile(scenePath, document);
+		readJsonFile(scenePath, sceneDocument);
 	}
 
 	// get the path of the initial scene and read its file
@@ -121,10 +127,10 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 	if (!fileExists(scenePath)) {
 		Error::error("scene " + scene.name + " is missing");
 	}
-	readJsonFile(scenePath, document);
+	readJsonFile(scenePath, sceneDocument);
 
-	if (document.HasMember("actors")) {
-		rapidjson::GenericArray docActors = document["actors"].GetArray();
+	if (sceneDocument.HasMember("actors")) {
+		rapidjson::GenericArray docActors = sceneDocument["actors"].GetArray();
 
 		scene.actors.reserve(docActors.Size());
 		scene.locToActors.reserve(docActors.Size());
@@ -138,8 +144,8 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 
 				if (!fileExists(templatePath)) Error::error("template " + templateName + " is missing");
 
-				readJsonFile(templatePath, document);
-				setActorProps(actor, document);
+				readJsonFile(templatePath, sceneDocument);
+				setActorProps(actor, sceneDocument);
 			}
 
 			// override any template properties redefined by the scene document
@@ -162,80 +168,75 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& document, b
 	}
 }
 
-void ConfigUtils::initializeRendering(rapidjson::Document& document) {
+// initializes the rendering configuration
+void ConfigUtils::initializeRendering(rapidjson::Document& renderingDocument) {
 	// handle camera
-	if (document.HasMember("x_resolution"))
-		renderSize.x = document["x_resolution"].GetInt();
-	if (document.HasMember("y_resolution"))
-		renderSize.y = document["y_resolution"].GetInt();
+	if (renderingDocument.HasMember("x_resolution"))
+		renderSize.x = renderingDocument["x_resolution"].GetInt();
+	if (renderingDocument.HasMember("y_resolution"))
+		renderSize.y = renderingDocument["y_resolution"].GetInt();
 
 	// get the zoom factor first, so it can be applied to our camera offset
-	if (document.HasMember("zoom_factor"))
-		zoomFactor = document["zoom_factor"].GetFloat();
-	if (document.HasMember("cam_offset_x"))
-		cameraOffset.x = document["cam_offset_x"].GetFloat() * zoomFactor;
-	if (document.HasMember("cam_offset_y"))
-		cameraOffset.y = document["cam_offset_y"].GetFloat() * zoomFactor;
+	if (renderingDocument.HasMember("zoom_factor"))
+		zoomFactor = renderingDocument["zoom_factor"].GetFloat();
+	if (renderingDocument.HasMember("cam_offset_x"))
+		cameraOffset.x = renderingDocument["cam_offset_x"].GetFloat() * zoomFactor;
+	if (renderingDocument.HasMember("cam_offset_y"))
+		cameraOffset.y = renderingDocument["cam_offset_y"].GetFloat() * zoomFactor;
 
 	// handle bg color
-	if (document.HasMember("clear_color_r"))
-		clearColor.r = document["clear_color_r"].GetInt();
-	if (document.HasMember("clear_color_g"))
-		clearColor.g = document["clear_color_g"].GetInt();
-	if (document.HasMember("clear_color_b"))
-		clearColor.b = document["clear_color_b"].GetInt();
+	if (renderingDocument.HasMember("clear_color_r"))
+		clearColor.r = renderingDocument["clear_color_r"].GetInt();
+	if (renderingDocument.HasMember("clear_color_g"))
+		clearColor.g = renderingDocument["clear_color_g"].GetInt();
+	if (renderingDocument.HasMember("clear_color_b"))
+		clearColor.b = renderingDocument["clear_color_b"].GetInt();
 }
 
-void ConfigUtils::setActorProps(Actor& actor, rapidjson::Value& document) {
-	if (document.HasMember("name"))
-		actor.name = document["name"].GetString();
+// initializes an actor from its configuration
+void ConfigUtils::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
+	if (actorDocument.HasMember("name"))
+		actor.name = actorDocument["name"].GetString();
 
-	if (document.HasMember("view_image"))
-		actor.view.imageName = document["view_image"].GetString();
-	if (document.HasMember("view_pivot_offset_x")) {
+	if (actorDocument.HasMember("view_image"))
+		actor.view.imageName = actorDocument["view_image"].GetString();
+	if (actorDocument.HasMember("view_pivot_offset_x")) {
 		if(!actor.view.pivotOffset.x.has_value())
 			actor.view.pivotOffset.x = std::make_optional<float>();
 
-		actor.view.pivotOffset.x = document["view_pivot_offset_x"].GetFloat();
+		actor.view.pivotOffset.x = actorDocument["view_pivot_offset_x"].GetFloat();
 	}
-	if (document.HasMember("view_pivot_offset_y")) {
+	if (actorDocument.HasMember("view_pivot_offset_y")) {
 		if (!actor.view.pivotOffset.y.has_value())
 			actor.view.pivotOffset.y = std::make_optional<float>();
 
-		actor.view.pivotOffset.y = document["view_pivot_offset_y"].GetFloat();
+		actor.view.pivotOffset.y = actorDocument["view_pivot_offset_y"].GetFloat();
 	}
 
-	if (document.HasMember("transform_position_x"))
-		actor.transform.pos.x = document["transform_position_x"].GetFloat();
-	if (document.HasMember("transform_position_y"))
-		actor.transform.pos.y = document["transform_position_y"].GetFloat();
-	if (document.HasMember("transform_scale_x"))
-		actor.transform.scale.x = document["transform_scale_x"].GetFloat();
-	if (document.HasMember("transform_scale_y"))
-		actor.transform.scale.y = document["transform_scale_y"].GetFloat();
-	if (document.HasMember("transform_rotation_degrees"))
-		actor.transform.rotationDegrees = document["transform_rotation_degrees"].GetFloat();
+	if (actorDocument.HasMember("transform_position_x"))
+		actor.transform.pos.x = actorDocument["transform_position_x"].GetFloat();
+	if (actorDocument.HasMember("transform_position_y"))
+		actor.transform.pos.y = actorDocument["transform_position_y"].GetFloat();
+	if (actorDocument.HasMember("transform_scale_x"))
+		actor.transform.scale.x = actorDocument["transform_scale_x"].GetFloat();
+	if (actorDocument.HasMember("transform_scale_y"))
+		actor.transform.scale.y = actorDocument["transform_scale_y"].GetFloat();
+	if (actorDocument.HasMember("transform_rotation_degrees"))
+		actor.transform.rotationDegrees = actorDocument["transform_rotation_degrees"].GetFloat();
 
-	if (document.HasMember("vel_x"))
-		actor.velocity.x = document["vel_x"].GetInt();
-	if (document.HasMember("vel_y"))
-		actor.velocity.y = document["vel_y"].GetInt();
+	if (actorDocument.HasMember("vel_x"))
+		actor.velocity.x = actorDocument["vel_x"].GetFloat();
+	if (actorDocument.HasMember("vel_y"))
+		actor.velocity.y = actorDocument["vel_y"].GetFloat();
 
-	if (document.HasMember("blocking"))
-		actor.blocking = document["blocking"].GetBool();
+	if (actorDocument.HasMember("blocking"))
+		actor.blocking = actorDocument["blocking"].GetBool();
 
-	if (document.HasMember("nearby_dialogue"))
-		actor.nearbyDialogue = document["nearby_dialogue"].GetString();
-	if (document.HasMember("contact_dialogue"))
-		actor.contactDialogue = document["contact_dialogue"].GetString();
+	if (actorDocument.HasMember("nearby_dialogue"))
+		actor.nearbyDialogue = actorDocument["nearby_dialogue"].GetString();
+	if (actorDocument.HasMember("contact_dialogue"))
+		actor.contactDialogue = actorDocument["contact_dialogue"].GetString();
 
-	if(document.HasMember("render_order"))
-		actor.renderOrder = document["render_order"].GetInt();
-
-	// if we're working with the player and want them to have speed, set it from config
-	if (actor.name == "player") {
-		if (document.HasMember("player_movement_speed")) {
-			actor.speed = document["player_movement_speed"].GetFloat();
-		}
-	}
+	if(actorDocument.HasMember("render_order"))
+		actor.renderOrder = actorDocument["render_order"].GetInt();
 }

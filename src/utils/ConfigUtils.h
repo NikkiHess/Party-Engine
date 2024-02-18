@@ -46,6 +46,8 @@ public:
 	Scene initialScene;
 	// Actor templates from the scene
 	std::vector<Actor*> templates;
+	// player speed from game.config
+	float playerSpeed = 0.02;
 
 	// The render size, as defined by rendering.config
 	glm::ivec2 renderSize;
@@ -82,16 +84,16 @@ public:
 
 	// initializes the scene from its scene file
 	// utilizes Scene class
-	void initializeScene(Scene& scene, rapidjson::Document& document, bool isInitialScene);
+	void initializeScene(Scene& scene, rapidjson::Document& sceneDocument, bool isInitialScene);
 private:
 	// initializes data from the resources/game.config file
-	void initializeGame(rapidjson::Document& document);
+	void initializeGame(rapidjson::Document& gameDocument);
 
 	// initializes the render_size loaded in from the resources/rendering.config file
-	void initializeRendering(rapidjson::Document& document);
+	void initializeRendering(rapidjson::Document& renderingDocument);
 
 	// set Actor props from a document
-	void setActorProps(Actor& actor, rapidjson::Value& document);
+	void setActorProps(Actor& actor, rapidjson::Value& actorDocument);
 
 	// reads a json file from path and puts it in the out_document
 	static void readJsonFile(const std::string& path, rapidjson::Document& outDocument) {
