@@ -12,7 +12,7 @@ class Transform {
 public:
 	glm::vec2 pos;
 	glm::vec2 scale = { 1.0, 1.0 };
-	float rotationDegrees = 0.0;
+	double rotationDegrees = 0.0;
 };
 
 class OptionalVec2 {

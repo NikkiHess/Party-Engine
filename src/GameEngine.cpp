@@ -62,7 +62,7 @@ void Engine::doGameLoop() {
             input.processEvent(sdlEvent);
             // handle a quit event
             if (sdlEvent.type == SDL_QUIT) {
-                queueStop();
+                stop();
             }
 
             // intro handling
@@ -190,7 +190,7 @@ void Engine::doGameLoop() {
     }
 }
 
-void Engine::queueStop() {
+void Engine::stop() {
 	isGameRunning = false;
 }
 
