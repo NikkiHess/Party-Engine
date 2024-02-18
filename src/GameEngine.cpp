@@ -119,6 +119,9 @@ void Engine::start() {
             // move all npc actors according to their velocity
             gameInfo.scene.moveNPCActors();
 
+            // update the camera position to match where the player is (because all actors have moved by now)
+            camera.update(gameInfo.player, renderConfig.easeFactor);
+
             // render the game first
             renderer.render(gameInfo);
 
@@ -180,9 +183,6 @@ void Engine::start() {
 
         // Present the render AND DELAY, apparently it does that for us
         Helper::SDL_RenderPresent498(renderer.sdlRenderer);
-
-        // update the camera position to match where the player is
-        camera.update(gameInfo.player, renderConfig.easeFactor);
     }
 }
 
