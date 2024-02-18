@@ -49,11 +49,8 @@ public:
 		}
 	}
 
-	// initialize the game window, renderer, and start the main game loop
+	// start the main game loop
 	void start();
-
-	// execute the main game loop
-	void doGameLoop();
 
 	// shut down the main game loop
 	void queueStop();

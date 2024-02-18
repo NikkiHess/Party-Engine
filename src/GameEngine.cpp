@@ -26,11 +26,6 @@
 #include "SDL2/SDL_ttf.h"
 
 void Engine::start() {
-	// run the game loop
-	doGameLoop();
-}
-
-void Engine::doGameLoop() {
     int currentIntroIndex = 0;
     isGameRunning = true;
     bool introMusicPlaying = false, gameplayMusicPlaying = false;
@@ -103,7 +98,7 @@ void Engine::doGameLoop() {
             renderer.renderIntro(currentIntroIndex);
         }
         // handle and render gameplay
-        else if(!gameOver) {
+        else if (!gameOver) {
             // halt the intro music if it's playing
             if (introMusicPlaying) {
                 AudioHelper::Mix_HaltChannel498(0);
@@ -127,29 +122,29 @@ void Engine::doGameLoop() {
                 renderer.renderDialogue(gameInfo);
 
                 switch (state) {
-                case WIN:
-                    if (!gameOverMusicPlaying && 
-                        configUtils.gameOverGoodAudio != "") {
-                        AudioHelper::Mix_HaltChannel498(0);
-                        audioPlayer.play(configUtils.gameOverGoodAudio, 0);
-                        gameOverMusicPlaying = true;
-                        gameOver = true;
-                    }
-                    continue;
-                case LOSE:
-                    if (!gameOverMusicPlaying &&
-                        configUtils.gameOverBadAudio != "") {
-                        AudioHelper::Mix_HaltChannel498(0);
-                        audioPlayer.play(configUtils.gameOverBadAudio, 0);
-                        gameOverMusicPlaying = true;
-                        gameOver = true;
-                    }
-                    continue;
-                case PROCEED:
-                    state = NORMAL;
-                    continue;
-                default:
-                    break;
+                    case WIN:
+                        if (!gameOverMusicPlaying &&
+                            configUtils.gameOverGoodAudio != "") {
+                            AudioHelper::Mix_HaltChannel498(0);
+                            audioPlayer.play(configUtils.gameOverGoodAudio, 0);
+                            gameOverMusicPlaying = true;
+                            gameOver = true;
+                        }
+                        continue;
+                    case LOSE:
+                        if (!gameOverMusicPlaying &&
+                            configUtils.gameOverBadAudio != "") {
+                            AudioHelper::Mix_HaltChannel498(0);
+                            audioPlayer.play(configUtils.gameOverBadAudio, 0);
+                            gameOverMusicPlaying = true;
+                            gameOver = true;
+                        }
+                        continue;
+                    case PROCEED:
+                        state = NORMAL;
+                        continue;
+                    default:
+                        break;
                 }
 
                 // render HUD on top of the game
