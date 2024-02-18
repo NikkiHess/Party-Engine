@@ -53,7 +53,7 @@ public:
 	glm::dvec2 cameraOffset;
 	glm::ivec3 clearColor;
 	// the zoom factor of the camera
-	double zoomFactor = 1;
+	float zoomFactor = 1;
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables

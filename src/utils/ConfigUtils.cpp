@@ -171,11 +171,11 @@ void ConfigUtils::initializeRendering(rapidjson::Document& document) {
 
 	// get the zoom factor first, so it can be applied to our camera offset
 	if (document.HasMember("zoom_factor"))
-		zoomFactor = document["zoom_factor"].GetDouble();
+		zoomFactor = document["zoom_factor"].GetFloat();
 	if (document.HasMember("cam_offset_x"))
-		cameraOffset.x = document["cam_offset_x"].GetDouble() * zoomFactor;
+		cameraOffset.x = document["cam_offset_x"].GetFloat() * zoomFactor;
 	if (document.HasMember("cam_offset_y"))
-		cameraOffset.y = document["cam_offset_y"].GetDouble() * zoomFactor;
+		cameraOffset.y = document["cam_offset_y"].GetFloat() * zoomFactor;
 
 	// handle bg color
 	if (document.HasMember("clear_color_r"))
@@ -194,27 +194,27 @@ void ConfigUtils::setActorProps(Actor& actor, rapidjson::Value& document) {
 		actor.view.imageName = document["view_image"].GetString();
 	if (document.HasMember("view_pivot_offset_x")) {
 		if(!actor.view.pivotOffset.x.has_value())
-			actor.view.pivotOffset.x = std::make_optional<double>();
+			actor.view.pivotOffset.x = std::make_optional<float>();
 
-		actor.view.pivotOffset.x = document["view_pivot_offset_x"].GetDouble();
+		actor.view.pivotOffset.x = document["view_pivot_offset_x"].GetFloat();
 	}
 	if (document.HasMember("view_pivot_offset_y")) {
 		if (!actor.view.pivotOffset.y.has_value())
-			actor.view.pivotOffset.y = std::make_optional<double>();
+			actor.view.pivotOffset.y = std::make_optional<float>();
 
-		actor.view.pivotOffset.y = document["view_pivot_offset_y"].GetDouble();
+		actor.view.pivotOffset.y = document["view_pivot_offset_y"].GetFloat();
 	}
 
 	if (document.HasMember("transform_position_x"))
-		actor.transform.pos.x = document["transform_position_x"].GetDouble();
+		actor.transform.pos.x = document["transform_position_x"].GetFloat();
 	if (document.HasMember("transform_position_y"))
-		actor.transform.pos.y = document["transform_position_y"].GetDouble();
+		actor.transform.pos.y = document["transform_position_y"].GetFloat();
 	if (document.HasMember("transform_scale_x"))
-		actor.transform.scale.x = document["transform_scale_x"].GetDouble();
+		actor.transform.scale.x = document["transform_scale_x"].GetFloat();
 	if (document.HasMember("transform_scale_y"))
-		actor.transform.scale.y = document["transform_scale_y"].GetDouble();
+		actor.transform.scale.y = document["transform_scale_y"].GetFloat();
 	if (document.HasMember("transform_rotation_degrees"))
-		actor.transform.rotationDegrees = document["transform_rotation_degrees"].GetDouble();
+		actor.transform.rotationDegrees = document["transform_rotation_degrees"].GetFloat();
 
 	if (document.HasMember("vel_x"))
 		actor.velocity.x = document["vel_x"].GetInt();
