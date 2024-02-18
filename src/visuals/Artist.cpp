@@ -67,10 +67,11 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	);
 
 	// if actor is not within visible area, skip rendering (cull)
-	// include a little leeway so as not to unrender while still on screen
-	if (imagePos.x < -std::abs(scaledSize.x * 1.2f) || imagePos.x > renderConfig.renderSize.x * 1.1f ||
-		imagePos.y < -std::abs(scaledSize.y * 1.2f) || imagePos.y > renderConfig.renderSize.y * 1.1f) {
-		std::cout << actor.name << " unrendered\n";
+	// include a little buffer so as not to cull too early
+	// make sure to divide upper bound by zoom factor, because otherwise stuff gets unrendered at zoomFactor < 1
+	if (imagePos.x < -std::abs(scaledSize.x * 1.2f) || imagePos.x > renderConfig.renderSize.x * 1.1f / renderConfig.zoomFactor ||
+		imagePos.y < -std::abs(scaledSize.y * 1.2f) || imagePos.y > renderConfig.renderSize.y * 1.1f / renderConfig.zoomFactor) {
+		//std::cout << actor.name << " culled\n";
 		return;
 	}
 

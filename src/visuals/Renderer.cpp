@@ -109,6 +109,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 	std::vector<Actor*> nearby;
 
 	// loop over nearby locations and see if there are actors there, if so, play their dialogue
+	// these actors SHOULD already be in order considering locToActors uses a set of actors in order of id
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
 			auto actorIt = gameInfo.scene.locToActors.find(gameInfo.player->transform.pos + glm::vec2(x, y));
@@ -123,9 +124,6 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 		}
 	}
 
-	// sort the actors we are near
-	if(nearby.size() > 1)
-		std::sort(nearby.begin(), nearby.end(), ActorComparator());
 	for (Actor* actor : nearby) {
 		std::string name = actor->name;
 		if (actor->transform.pos == gameInfo.player->transform.pos) {
