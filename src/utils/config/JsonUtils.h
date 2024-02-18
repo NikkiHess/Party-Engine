@@ -16,7 +16,7 @@ public:
 		fopen_s(&filePointer, path.c_str(), "rb");
 #else
 		filePointer = fopen(path.c_str(), "rb");
-#endif'
+#endif
 		// close the use and close the filePointer if it's null
 		if (filePointer != nullptr) {
 			char buffer[65536];

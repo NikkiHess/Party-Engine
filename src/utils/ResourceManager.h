@@ -3,10 +3,10 @@
 // std library
 #include <string>
 #include <filesystem>
+#include <unordered_map>
 
 // my code
 #include "../gamedata/Actor.h"
-#include "../gamedata/GameInfo.h"
 
 // dependencies
 #include "glm/glm.hpp"

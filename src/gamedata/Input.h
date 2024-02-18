@@ -5,7 +5,7 @@
 #include <unordered_set>
 
 // dependencies
-#include "SDL2/sdl.h"
+#include "SDL2/SDL.h"
 
 enum InputState {
 	UP,
@@ -37,7 +37,7 @@ public:
 
 	// returns whether the key is newly down
 	bool getKeyDown(SDL_Scancode keycode);
-//private:
+private:
 	std::unordered_map<SDL_Scancode, InputState> keyboardStates;
 	std::unordered_set<SDL_Scancode> newlyUpKeycodes;
 	std::unordered_set<SDL_Scancode> newlyDownKeycodes;

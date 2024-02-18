@@ -14,8 +14,12 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor, Camera& camera) {
 	}
 
 	// get the actor's image size
-	glm::ivec2 size(0, 0);
-	SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
+	glm::ivec2 size(0);
+	if (actor.view.imageSize == glm::ivec2(0)) {
+		SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
+		actor.view.imageSize = size;
+	}
+	size = actor.view.imageSize;
 
 	// scale size using actor.transform.scale
 	glm::ivec2 scaledSize(
