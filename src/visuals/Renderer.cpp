@@ -140,6 +140,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 
 				gameInfo.scene = Scene();
 				gameInfo.scene.name = sceneName;
+				// initialize the new scene immediately
 				configUtils.initializeScene(gameInfo.scene, configUtils.document, false);
 
 				auto playerIt = std::find_if(gameInfo.scene.actors.begin(), gameInfo.scene.actors.end(), [](Actor actor) { return actor.name == "player"; });

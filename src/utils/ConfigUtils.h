@@ -84,6 +84,7 @@ public:
 
 	// initializes the scene from its scene file
 	// utilizes Scene class
+	// called at the start of the game and when we proceed to a new scene
 	void initializeScene(Scene& scene, rapidjson::Document& sceneDocument, bool isInitialScene);
 private:
 	// initializes data from the resources/game.config file
