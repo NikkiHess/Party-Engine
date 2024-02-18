@@ -5,7 +5,7 @@
 
 // my code
 #include "../gamedata/Actor.h"
-#include "../utils/ConfigUtils.h"
+#include "../utils/ConfigManager.h"
 #include "../gamedata/GameInfo.h"
 #include "../utils/ResourceManager.h"
 
@@ -19,13 +19,13 @@
 class Artist
 {
 public:
-	ConfigUtils& configUtils; // the ConfigUtils passed in from Renderer
+	ConfigManager& configManager; // the ConfigManager passed in from Renderer
 	SDL_Renderer* sdlRenderer = nullptr; // the SDL renderer object passed in from Renderer
 	ResourceManager resourceManager;
 
 	static const int PIXELS_PER_UNIT = 100;
 
-	Artist(ConfigUtils& configUtils) : configUtils(configUtils), resourceManager(configUtils) {}
+	Artist(ConfigManager& configManager) : configManager(configManager), resourceManager(configManager) {}
 
 	// draw an unchanging image on the screen
 	void drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);

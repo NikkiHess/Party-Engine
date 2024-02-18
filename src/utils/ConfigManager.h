@@ -1,4 +1,6 @@
 #pragma once
+#pragma warning(disable:6262) // I know readJsonFile uses a lot of stack, will fix later(?)
+#pragma warning(push)
 
 // std stuff
 #include <filesystem>
@@ -21,7 +23,7 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
-class ConfigUtils {
+class ConfigManager {
 public:
 	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
@@ -47,7 +49,7 @@ public:
 	// Actor templates from the scene
 	std::vector<Actor*> templates;
 	// player speed from game.config
-	float playerSpeed = 0.02;
+	float playerSpeed = 0.02f;
 
 	// The render size, as defined by rendering.config
 	glm::ivec2 renderSize;
@@ -59,7 +61,7 @@ public:
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
-	ConfigUtils() : renderSize(640, 360), clearColor(255, 255, 255) {
+	ConfigManager() : renderSize(640, 360), clearColor(255, 255, 255) {
 		std::string resources = "resources/";
 		std::string gameConfig = resources + "game.config";
 		std::string renderingConfig = resources + "rendering.config";
@@ -103,11 +105,17 @@ private:
 		fopen_s(&filePointer, path.c_str(), "rb");
 #else
 		filePointer = fopen(path.c_str(), "rb");
-#endif
-		char buffer[65536];
-		rapidjson::FileReadStream stream(filePointer, buffer, sizeof(buffer));
-		outDocument.ParseStream(stream);
-		std::fclose(filePointer);
+#endif'
+		// close the use and close the filePointer if it's null
+		if (filePointer != nullptr) {
+			char buffer[65536];
+			rapidjson::FileReadStream stream(filePointer, buffer, sizeof(buffer));
+			outDocument.ParseStream(stream);
+			std::fclose(filePointer);
+		}
+		else {
+			std::cerr << "JSON file pointer is null.\n";
+		}
 
 		if (outDocument.HasParseError()) {
 			rapidjson::ParseErrorCode errorCode = outDocument.GetParseError();
@@ -116,3 +124,5 @@ private:
 		}
 	}
 };
+
+#pragma warning(pop)

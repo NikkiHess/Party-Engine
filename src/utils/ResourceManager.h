@@ -5,7 +5,7 @@
 
 // my code
 #include "../gamedata/Actor.h"
-#include "../utils/ConfigUtils.h"
+#include "../utils/ConfigManager.h"
 #include "../gamedata/GameInfo.h"
 
 // dependencies
@@ -16,10 +16,10 @@
 
 class ResourceManager {
 public:
-	ConfigUtils& configUtils;
+	ConfigManager& configManager;
 	SDL_Renderer* sdlRenderer = nullptr;
 
-	ResourceManager(ConfigUtils& configUtils) : configUtils(configUtils) {}
+	ResourceManager(ConfigManager& configManager) : configManager(configManager) {}
 
 	// load an image texture from its name
 	SDL_Texture* loadImageTexture(std::string& imageName);

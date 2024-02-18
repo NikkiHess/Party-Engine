@@ -975,7 +975,7 @@
     <ClInclude Include="src\gamedata\GameInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\ConfigUtils.h">
+    <ClInclude Include="src\utils\ConfigManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gamedata\Scene.h">
@@ -1265,7 +1265,7 @@
     <ClCompile Include="src\visuals\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\ConfigUtils.cpp">
+    <ClCompile Include="src\utils\ConfigManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gamedata\Scene.cpp">

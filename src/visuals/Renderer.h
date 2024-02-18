@@ -5,7 +5,7 @@
 
 // my code
 #include "../gamedata/GameInfo.h"
-#include "../utils/ConfigUtils.h"
+#include "../utils/ConfigManager.h"
 #include "Artist.h"
 
 // dependencies
@@ -16,19 +16,19 @@
 class Renderer {
 public:
 	SDL_Renderer* sdlRenderer = nullptr; // the sdl renderer we're using
-	ConfigUtils& configUtils; // the ConfigUtils the game uses
+	ConfigManager& configManager; // the ConfigManager the game uses
 	glm::ivec2 renderSize; // the size of the rendered view
 
 	Artist artist; // responsible for drawing stuff
 
-	Renderer(ConfigUtils& configUtils) : configUtils(configUtils), renderSize(configUtils.renderSize), artist(configUtils) {
-		// a window with proprties as defined by configUtils
+	Renderer(ConfigManager& configManager) : configManager(configManager), renderSize(configManager.renderSize), artist(configManager) {
+		// a window with proprties as defined by configManager
 		SDL_Window* window = SDL_CreateWindow(
-			configUtils.gameTitle.c_str(),	// window title
+			configManager.gameTitle.c_str(),	// window title
 			SDL_WINDOWPOS_CENTERED,			// initial x
 			SDL_WINDOWPOS_CENTERED,			// iniital y
-			configUtils.renderSize.x,		// width, in pixels
-			configUtils.renderSize.y,		// height, in pixels
+			configManager.renderSize.x,		// width, in pixels
+			configManager.renderSize.y,		// height, in pixels
 			SDL_WINDOW_SHOWN				// flags
 		);
 

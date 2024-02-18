@@ -10,7 +10,7 @@
 
 class Transform {
 public:
-	glm::vec2 pos;
+	glm::vec2 pos = { 0.0, 0.0 };
 	glm::vec2 scale = { 1.0, 1.0 };
 	float rotationDegrees = 0.0;
 };
@@ -42,7 +42,7 @@ public:
 	int health = 3, score = 0;
 	int lastHealthDownFrame = -180;
 	int healthDownCooldown = 180;
-	float speed = 0.02;
+	float speed = 0.02f;
 
 	int id = 0;
 	bool triggeredScoreUp = false;

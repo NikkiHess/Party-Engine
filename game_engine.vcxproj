@@ -561,7 +561,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="dependencies\rapidjson\stringbuffer.h" />
     <ClInclude Include="dependencies\rapidjson\writer.h" />
     <ClInclude Include="src\gamedata\Scene.h" />
-    <ClInclude Include="src\utils\ConfigUtils.h" />
+    <ClInclude Include="src\utils\ConfigManager.h" />
     <ClInclude Include="src\gamedata\GameInfo.h" />
     <ClInclude Include="src\visuals\Renderer.h" />
     <ClInclude Include="src\GameEngine.h" />
@@ -574,7 +574,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClCompile Include="src\visuals\Artist.cpp" />
     <ClCompile Include="dependencies\glm\detail\glm.cpp" />
     <ClCompile Include="src\gamedata\Scene.cpp" />
-    <ClCompile Include="src\utils\ConfigUtils.cpp" />
+    <ClCompile Include="src\utils\ConfigManager.cpp" />
     <ClCompile Include="src\visuals\Renderer.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
   </ItemGroup>

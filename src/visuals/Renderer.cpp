@@ -26,29 +26,29 @@ void Renderer::renderIntro(int& index) {
 	// Clear the frame buffer at the beginning of a frame
 	SDL_SetRenderDrawColor(
 		sdlRenderer,
-		configUtils.clearColor.r,
-		configUtils.clearColor.g,
-		configUtils.clearColor.b,
+		configManager.clearColor.r,
+		configManager.clearColor.g,
+		configManager.clearColor.b,
 		1
 	);
 	SDL_RenderClear(sdlRenderer);
 
 	// Display any intro images
-	if (!configUtils.introImages.empty()) {
+	if (!configManager.introImages.empty()) {
 		artist.drawUIImage(
 			// exhausted introImages? continue to render last one
-			(index < configUtils.introImages.size() ? configUtils.introImages[index] : configUtils.introImages[configUtils.introImages.size() - 1]),
+			(index < configManager.introImages.size() ? configManager.introImages[index] : configManager.introImages[configManager.introImages.size() - 1]),
 			{0, 0}, // the position should be (0, 0)
-			{ configUtils.renderSize.x, configUtils.renderSize.y } // stretch to fit render size
+			{ configManager.renderSize.x, configManager.renderSize.y } // stretch to fit render size
 		);
 	}
 	// Display any intro text
-	if (!configUtils.introText.empty()) {
+	if (!configManager.introText.empty()) {
 		artist.drawUIText(
 			// exhausted introText? continue to render last one
-			(index < configUtils.introText.size() ? configUtils.introText[index] : configUtils.introText[configUtils.introText.size() - 1]),
+			(index < configManager.introText.size() ? configManager.introText[index] : configManager.introText[configManager.introText.size() - 1]),
 			{ 255, 255, 255, 255 },
-			{ 25, configUtils.renderSize.y - 50 } // the pos will be {25, 50 higher than the bottom of the screen}
+			{ 25, configManager.renderSize.y - 50 } // the pos will be {25, 50 higher than the bottom of the screen}
 		);
 	}
 }
@@ -57,15 +57,15 @@ void Renderer::render(GameInfo& gameInfo) {
 	// Clear the frame buffer at the beginning of a frame
 	SDL_SetRenderDrawColor(
 		sdlRenderer, 
-		configUtils.clearColor.r, 
-		configUtils.clearColor.g, 
-		configUtils.clearColor.b, 
+		configManager.clearColor.r, 
+		configManager.clearColor.g, 
+		configManager.clearColor.b, 
 		1
 	);
 	SDL_RenderClear(sdlRenderer);
 
 	// set the render scale according to the configured zoom factor
-	SDL_RenderSetScale(sdlRenderer, configUtils.zoomFactor, configUtils.zoomFactor);
+	SDL_RenderSetScale(sdlRenderer, configManager.zoomFactor, configManager.zoomFactor);
 
 	// draw all actors in order of transform_position_y
 	for (Actor* actor : gameInfo.scene.actorsByRenderOrder) {
@@ -84,12 +84,12 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 	// render the player's hp
 	for (int i = 0; i < gameInfo.player->health; ++i) {
 		glm::ivec2 size(0, 0);
-		SDL_QueryTexture(artist.resourceManager.loadImageTexture(configUtils.hpImage), nullptr, nullptr, &size.x, &size.y);
+		SDL_QueryTexture(artist.resourceManager.loadImageTexture(configManager.hpImage), nullptr, nullptr, &size.x, &size.y);
 
 		glm::ivec2 startPos{ 5, 25 };
 		glm::ivec2 offset{ i * (size.x + 5), 0 };
 		artist.drawUIImage(
-			configUtils.hpImage,
+			configManager.hpImage,
 			startPos + offset,
 			{ size.x, size.y }
 		);
@@ -136,12 +136,12 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 			if (sceneName != "") {
 				std::string scenePath = "resources/scenes/" + sceneName + ".scene";
 
-				if (!configUtils.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
+				if (!configManager.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
 
 				gameInfo.scene = Scene();
 				gameInfo.scene.name = sceneName;
 				// initialize the new scene immediately
-				configUtils.initializeScene(gameInfo.scene, configUtils.document, false);
+				configManager.initializeScene(gameInfo.scene, configManager.document, false);
 
 				auto playerIt = std::find_if(gameInfo.scene.actors.begin(), gameInfo.scene.actors.end(), [](Actor actor) { return actor.name == "player"; });
 

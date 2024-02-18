@@ -6,7 +6,7 @@
 
 // my code
 #include "../gamedata/Scene.h"
-#include "ConfigUtils.h"
+#include "ConfigManager.h"
 
 // dependencies
 #include "rapidjson/document.h"
@@ -14,7 +14,7 @@
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_mixer.h"
 
-bool ConfigUtils::fileExists(const std::string& path) {
+bool ConfigManager::fileExists(const std::string& path) {
 	// checks whether the cache contains the entry
 	if (fileExistsCache.count(path))
 		return fileExistsCache[path];
@@ -25,7 +25,7 @@ bool ConfigUtils::fileExists(const std::string& path) {
 }
 
 // initializes from game.config
-void ConfigUtils::initializeGame(rapidjson::Document& gameDocument) {
+void ConfigManager::initializeGame(rapidjson::Document& gameDocument) {
 	// handle game title
 	if (gameDocument.HasMember("game_title"))
 		gameTitle = gameDocument["game_title"].GetString();
@@ -107,7 +107,7 @@ void ConfigUtils::initializeGame(rapidjson::Document& gameDocument) {
 }
 
 // initializes a scene from a .scene file
-void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& sceneDocument, bool isInitialScene = false) {
+void ConfigManager::initializeScene(Scene &scene, rapidjson::Document& sceneDocument, bool isInitialScene = false) {
 	// get the name of the initial scene
 	if (isInitialScene) {
 		if (!sceneDocument.HasMember("initial_scene")) {
@@ -169,7 +169,7 @@ void ConfigUtils::initializeScene(Scene &scene, rapidjson::Document& sceneDocume
 }
 
 // initializes the rendering configuration
-void ConfigUtils::initializeRendering(rapidjson::Document& renderingDocument) {
+void ConfigManager::initializeRendering(rapidjson::Document& renderingDocument) {
 	// handle camera
 	if (renderingDocument.HasMember("x_resolution"))
 		renderSize.x = renderingDocument["x_resolution"].GetInt();
@@ -194,7 +194,7 @@ void ConfigUtils::initializeRendering(rapidjson::Document& renderingDocument) {
 }
 
 // initializes an actor from its configuration
-void ConfigUtils::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
+void ConfigManager::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 	if (actorDocument.HasMember("name"))
 		actor.name = actorDocument["name"].GetString();
 

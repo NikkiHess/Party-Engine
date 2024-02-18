@@ -9,7 +9,7 @@
 #include "audio/AudioPlayer.h"
 #include "gamedata/Actor.h"
 #include "gamedata/GameInfo.h"
-#include "utils/ConfigUtils.h"
+#include "utils/ConfigManager.h"
 #include "visuals/Renderer.h"
 #include "gamedata/Input.h"
 
@@ -19,7 +19,7 @@
 class Engine {
 public:
 	Renderer& renderer;
-	ConfigUtils& configUtils;
+	ConfigManager& configManager;
 	AudioPlayer& audioPlayer;
 	Input& input;
 
@@ -33,18 +33,18 @@ public:
 	GameInfo gameInfo { 
 		player,
 		state,
-		configUtils.initialScene,
+		configManager.initialScene,
 	};
 
-	Engine(Renderer& renderer, ConfigUtils& configUtils, AudioPlayer& audioPlayer, Input& input) : renderer(renderer), configUtils(configUtils), audioPlayer(audioPlayer), input(input) {
-		std::vector<Actor>& actors = configUtils.initialScene.actors;
+	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input) : renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input) {
+		std::vector<Actor>& actors = configManager.initialScene.actors;
 		// this finds the player in the actors map
 		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });
 
 		if (playerIt != actors.end()) {
 			player = &*playerIt;
 			// set the player's speed from the config
-			player->speed = configUtils.playerSpeed;
+			player->speed = configManager.playerSpeed;
 			gameInfo.player = player;
 		}
 	}

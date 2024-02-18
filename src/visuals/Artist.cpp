@@ -34,8 +34,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	// with camera offset and zoom correction
 	// we divide by the zoom factor here because that will center things correctly
 	glm::vec2 screenCenter(
-		(configUtils.renderSize.x / 2.0 - configUtils.cameraOffset.x * PIXELS_PER_UNIT) / configUtils.zoomFactor,
-		(configUtils.renderSize.y / 2.0 - configUtils.cameraOffset.y * PIXELS_PER_UNIT) / configUtils.zoomFactor
+		(configManager.renderSize.x / 2.0 - configManager.cameraOffset.x * PIXELS_PER_UNIT) / configManager.zoomFactor,
+		(configManager.renderSize.y / 2.0 - configManager.cameraOffset.y * PIXELS_PER_UNIT) / configManager.zoomFactor
 	);
 
 	// x and y either from config or (width or height) * 0.5 * scale

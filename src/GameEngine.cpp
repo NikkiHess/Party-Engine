@@ -7,7 +7,7 @@
 
 // include my code
 #include "GameEngine.h"
-#include "utils/ConfigUtils.h"
+#include "utils/ConfigManager.h"
 #include "visuals/Renderer.h"
 #include "gamedata/Input.h"
 #include "gamedata/Direction.h"
@@ -30,8 +30,8 @@ void Engine::start() {
     isGameRunning = true;
     bool introMusicPlaying = false, gameplayMusicPlaying = false;
 
-    if (configUtils.introMusic != "" && !introMusicPlaying) {
-        audioPlayer.play(configUtils.introMusic, -1);
+    if (configManager.introMusic != "" && !introMusicPlaying) {
+        audioPlayer.play(configManager.introMusic, -1);
         introMusicPlaying = true;
     }
 
@@ -45,8 +45,8 @@ void Engine::start() {
                 queueStop();
             }
 
-            // intro click handling
-            if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+            // intro click handlinga
+            if (currentIntroIndex < configManager.introImages.size() || currentIntroIndex < configManager.introText.size()) {
                 // buttons to proceed are: space, return, left click
                 if (sdlEvent.type == SDL_MOUSEBUTTONDOWN) {
                     ++currentIntroIndex;
@@ -55,7 +55,7 @@ void Engine::start() {
         }
 
         // intro button handling handling
-        if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+        if (currentIntroIndex < configManager.introImages.size() || currentIntroIndex < configManager.introText.size()) {
             // buttons to proceed are: space, return, left click
             if (input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
                 ++currentIntroIndex;
@@ -94,7 +94,7 @@ void Engine::start() {
         input.lateUpdate();
 
         // if there's an intro, render it
-        if (currentIntroIndex < configUtils.introImages.size() || currentIntroIndex < configUtils.introText.size()) {
+        if (currentIntroIndex < configManager.introImages.size() || currentIntroIndex < configManager.introText.size()) {
             renderer.renderIntro(currentIntroIndex);
         }
         // handle and render gameplay
@@ -106,8 +106,8 @@ void Engine::start() {
             }
 
             // start the gameplay music if there is any
-            if (!gameplayMusicPlaying && configUtils.gameplayMusic != "") {
-                audioPlayer.play(configUtils.gameplayMusic, -1);
+            if (!gameplayMusicPlaying && configManager.gameplayMusic != "") {
+                audioPlayer.play(configManager.gameplayMusic, -1);
                 gameplayMusicPlaying = true;
             }
 
@@ -124,18 +124,18 @@ void Engine::start() {
                 switch (state) {
                     case WIN:
                         if (!gameOverMusicPlaying &&
-                            configUtils.gameOverGoodAudio != "") {
+                            configManager.gameOverGoodAudio != "") {
                             AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(configUtils.gameOverGoodAudio, 0);
+                            audioPlayer.play(configManager.gameOverGoodAudio, 0);
                             gameOverMusicPlaying = true;
                             gameOver = true;
                         }
                         continue;
                     case LOSE:
                         if (!gameOverMusicPlaying &&
-                            configUtils.gameOverBadAudio != "") {
+                            configManager.gameOverBadAudio != "") {
                             AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(configUtils.gameOverBadAudio, 0);
+                            audioPlayer.play(configManager.gameOverBadAudio, 0);
                             gameOverMusicPlaying = true;
                             gameOver = true;
                         }
@@ -154,20 +154,20 @@ void Engine::start() {
         // game over
         else {
             if (gameInfo.state == WIN) {
-                if (configUtils.gameOverGoodImage != "") {
+                if (configManager.gameOverGoodImage != "") {
                     renderer.artist.drawUIImage(
-                        configUtils.gameOverGoodImage,
+                        configManager.gameOverGoodImage,
                         { 0, 0 },
-                        { configUtils.renderSize.x, configUtils.renderSize.y }
+                        { configManager.renderSize.x, configManager.renderSize.y }
                     );
                 }
             }
             else if (gameInfo.state == LOSE) {
-                if (configUtils.gameOverBadImage != "") {
+                if (configManager.gameOverBadImage != "") {
                     renderer.artist.drawUIImage(
-                        configUtils.gameOverBadImage,
+                        configManager.gameOverBadImage,
                         { 0, 0 },
-                        { configUtils.renderSize.x, configUtils.renderSize.y }
+                        { configManager.renderSize.x, configManager.renderSize.y }
                     );
                 }
             }
@@ -200,12 +200,12 @@ int main(int argc, char* argv[]) {
 	// Open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 
-	ConfigUtils configUtils;
-	Renderer renderer(configUtils);
-	AudioPlayer audioPlayer(configUtils);
+	ConfigManager configManager;
+	Renderer renderer(configManager);
+	AudioPlayer audioPlayer(configManager);
     Input input;
 
-	Engine engine(renderer, configUtils, audioPlayer, input);
+	Engine engine(renderer, configManager, audioPlayer, input);
 	engine.start();
 
 	// quit SDL at the very end
