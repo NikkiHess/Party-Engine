@@ -22,6 +22,7 @@ public:
 	ConfigManager& configManager;
 	AudioPlayer& audioPlayer;
 	Input& input;
+	Camera& camera;
 
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
@@ -34,9 +35,12 @@ public:
 		player,
 		state,
 		configManager.sceneConfig.initialScene,
+		camera
 	};
 
-	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input) : renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input) {
+	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input, Camera& camera, ResourceManager& resourceManager) 
+		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input), camera(camera) {
+		
 		std::vector<Actor>& actors = configManager.sceneConfig.initialScene.actors;
 		// this finds the player in the actors map
 		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });
@@ -46,6 +50,11 @@ public:
 			// set the player's speed from the config
 			player->speed = configManager.gameConfig.playerSpeed;
 			gameInfo.player = player;
+
+			// preload the player view to calculate the position
+			player->view.image = resourceManager.loadImageTexture(player->view.imageName);
+
+			camera.jump(player);
 		}
 	}
 

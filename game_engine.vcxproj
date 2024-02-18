@@ -567,6 +567,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\gamedata\Scene.h" />
     <ClInclude Include="src\utils\config\ConfigManager.h" />
     <ClInclude Include="src\gamedata\GameInfo.h" />
+    <ClInclude Include="src\visuals\Camera.h" />
     <ClInclude Include="src\visuals\Renderer.h" />
     <ClInclude Include="src\GameEngine.h" />
     <ClInclude Include="src\utils\StringUtils.h" />

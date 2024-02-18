@@ -24,6 +24,7 @@ class View {
 public:
 	std::string imageName = "";
 	SDL_Texture* image = nullptr;
+	// the pivot offset, in pixels
 	OptionalVec2 pivotOffset;
 };
 

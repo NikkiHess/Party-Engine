@@ -75,7 +75,7 @@ void Renderer::render(GameInfo& gameInfo) {
 
 	// draw all actors in order of transform_position_y
 	for (Actor* actor : gameInfo.scene.actorsByRenderOrder) {
-		artist.drawActor(gameInfo, *actor);
+		artist.drawActor(gameInfo, *actor, gameInfo.camera);
 	}
 }
 

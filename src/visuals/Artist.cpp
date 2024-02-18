@@ -5,7 +5,7 @@
 #include "Artist.h"
 #include "../gamedata/GameInfo.h"
 
-void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
+void Artist::drawActor(GameInfo& gameInfo, Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
 	// check if the actor's image needs to be loaded
@@ -32,45 +32,36 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 		);
 	}
 
-	// calculate the center of the screen
-	// with camera offset and zoom correction
-	// we divide by the zoom factor here because that will center things correctly
-	glm::vec2 screenCenter(
-		(renderConfig.renderSize.x / 2.0 - renderConfig.cameraOffset.x * PIXELS_PER_UNIT) / renderConfig.zoomFactor,
-		(renderConfig.renderSize.y / 2.0 - renderConfig.cameraOffset.y * PIXELS_PER_UNIT) / renderConfig.zoomFactor
-	);
-
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	SDL_Point pivot{
-		static_cast<int>(std::round(actor.view.pivotOffset.x.value_or(size.x * 0.5) * actor.transform.scale.x)),
-		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5) * actor.transform.scale.y))
+		static_cast<int>(std::round(actor.view.pivotOffset.x.value_or(size.x * 0.5))),
+		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5)))
 	};
 
-	// the offset to apply to all actors relative to the player
-	// subtract this
-	glm::vec2 playerPosOffset(
-		(gameInfo.player ? gameInfo.player->transform.pos.x * PIXELS_PER_UNIT : 0),
-		(gameInfo.player ? gameInfo.player->transform.pos.y * PIXELS_PER_UNIT : 0)
+	// camera center in pixel coordinates
+	glm::ivec2 cameraCenter(
+		renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit,
+		renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit
 	);
 
-	// the image position, without the scale offset
-	glm::ivec2 imagePos(
-		static_cast<int>(std::round((screenCenter.x + actor.transform.pos.x * PIXELS_PER_UNIT - pivot.x - playerPosOffset.x))),
-		static_cast<int>(std::round((screenCenter.y + actor.transform.pos.y * PIXELS_PER_UNIT - pivot.y - playerPosOffset.y)))
+	// actor world position in pixel coordinates
+	glm::ivec2 actorWorldPos(
+		static_cast<int>(std::round(actor.transform.pos.x * renderConfig.pixelsPerUnit) - pivot.x),
+		static_cast<int>(std::round(actor.transform.pos.y * renderConfig.pixelsPerUnit) - pivot.y)
 	);
 
-	// rect position to be rendered, accounting for odd flips
-	glm::ivec2 rectPos(
-		imagePos.x + (scaledSize.x < 0 ? scaledSize.x + (scaledSize.x % 2) : 0),
-		imagePos.y + (scaledSize.y < 0 ? scaledSize.y + (scaledSize.y % 2) : 0)
-	);
+	// actor position relative to the camera
+	glm::ivec2 actorCameraRelativePos = actorWorldPos - glm::ivec2(std::round(camera.pos.x), std::round(camera.pos.y));
+
+	// actor screen position, accounting for rendering at screen center
+	glm::ivec2 actorScreenPos = cameraCenter + actorCameraRelativePos;
 
 	// if actor is not within visible area, skip rendering (cull)
 	// include a little buffer so as not to cull too early
 	// make sure to divide upper bound by zoom factor, because otherwise stuff gets unrendered at zoomFactor < 1
-	if (imagePos.x < -std::abs(scaledSize.x * 1.2f) || imagePos.x > renderConfig.renderSize.x * 1.1f / renderConfig.zoomFactor ||
-		imagePos.y < -std::abs(scaledSize.y * 1.2f) || imagePos.y > renderConfig.renderSize.y * 1.1f / renderConfig.zoomFactor) {
+	if (actorScreenPos.x < -std::abs(scaledSize.x * 1.2f) || actorScreenPos.x > renderConfig.renderSize.x * 1.1f / renderConfig.zoomFactor ||
+		actorScreenPos.y < -std::abs(scaledSize.y * 1.2f) || actorScreenPos.y > renderConfig.renderSize.y * 1.1f / renderConfig.zoomFactor) {
 		//std::cout << actor.name << " culled\n";
 		return;
 	}
@@ -78,8 +69,8 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor) {
 	// center position around the pivot point
 	// offset by scaledSize if we flip either one
 	SDL_Rect imageRect = {
-		rectPos.x,
-		rectPos.y,
+		actorScreenPos.x,
+		actorScreenPos.y,
 		std::abs(scaledSize.x),
 		std::abs(scaledSize.y) 
 	};

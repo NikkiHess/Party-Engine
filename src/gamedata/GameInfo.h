@@ -7,6 +7,8 @@
 #include "Actor.h"
 #include "Scene.h"
 
+class Camera;
+
 // the state the engine is in
 // normal = nothing of note happened
 // win = stop the engine with a win message
@@ -18,8 +20,9 @@ enum GameState {
 // information about the game, which can be shared between classes
 class GameInfo {
 public:
-	Actor* player; // the player
-	GameState& state; // the current state of the game
+	Actor* player;
+	GameState& state;
 
 	Scene& scene;
+	Camera& camera;
 };

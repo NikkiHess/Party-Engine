@@ -10,6 +10,8 @@ void RenderingConfig::parse(rapidjson::Document& renderingDocument) {
 	// get the zoom factor first, so it can be applied to our camera offset
 	if (renderingDocument.HasMember("zoom_factor"))
 		zoomFactor = renderingDocument["zoom_factor"].GetFloat();
+	if (renderingDocument.HasMember("cam_ease_factor"))
+		easeFactor = renderingDocument["cam_ease_factor"].GetFloat();
 	if (renderingDocument.HasMember("cam_offset_x"))
 		cameraOffset.x = renderingDocument["cam_offset_x"].GetFloat() * zoomFactor;
 	if (renderingDocument.HasMember("cam_offset_y"))

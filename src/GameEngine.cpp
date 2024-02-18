@@ -180,6 +180,9 @@ void Engine::start() {
 
         // Present the render AND DELAY, apparently it does that for us
         Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+
+        // update the camera position to match where the player is
+        camera.update(gameInfo.player, renderConfig.easeFactor);
     }
 }
 
@@ -210,8 +213,9 @@ int main(int argc, char* argv[]) {
 	Renderer renderer(configManager, resourceManager);
 	AudioPlayer audioPlayer(resourceManager);
     Input input;
+    Camera camera(configManager);
 
-	Engine engine(renderer, configManager, audioPlayer, input);
+	Engine engine(renderer, configManager, audioPlayer, input, camera, resourceManager);
 	engine.start();
 
 	// quit SDL at the very end

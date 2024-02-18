@@ -13,6 +13,11 @@ public:
 	glm::ivec3 clearColor = glm::ivec3(255, 255, 255);
 	// the zoom factor of the camera
 	float zoomFactor = 1;
+	// the ease factor of the camera, for smoooooth movement
+	float easeFactor = 1;
+
+	// not technically configurable yet
+	float pixelsPerUnit = 100;
 
 	// parses information from rendering.config
 	void parse(rapidjson::Document& document);
