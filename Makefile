@@ -6,7 +6,7 @@ OBJECTS := $(SOURCES:.cpp=.o)
 DEBUG_OBJECTS := $(SOURCES:.cpp=.debug.o)
 
 # Compiler flags
-CXXFLAGS := -std=c++17 -I./dependencies -O2
+CXXFLAGS := -std=c++17 -I./dependencies -O3
 DEBUG_CXXFLAGS := -std=c++17 -I./dependencies -O0 -g -Wall -Wextra
 
 # Linker flags

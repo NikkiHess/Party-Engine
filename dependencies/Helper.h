@@ -19,8 +19,9 @@
 #include <sstream>
 #include <cstdlib>
 #include <algorithm>
+#include <iomanip>
 
- /* WARNING : You may need to adjust the following include paths if your headers / file structures is different. */
+ /* WARNING : You may need to adjust the following include paths if your headers / file structures are different. */
  /* Here is the instructor solution folder structure (if we make $(ProjectDir) a include directory, these paths are valid. */
  /* https://bit.ly/3OClfHc */
 
@@ -35,7 +36,7 @@ class Helper {
 public:
 	/* Turn RECORDING_MODE on to record inputs as you play. */
 	/* The input file may be fed back in to replay your game session (autograder does this). */
-	inline static const bool RECORDING_MODE = false;
+	inline static const bool RECORDING_MODE = true;
 	inline static const char* USER_INPUT_FILENAME = "sdl_user_input.txt";
 
 	/* The Helper.h function works differently (and thus your program works differently) */
@@ -51,8 +52,7 @@ public:
 	static inline Uint32 current_frame_start_timestamp = 0;
 	static int GetFrameNumber() { return frame_number; }
 
-	static SDL_Renderer* SDL_CreateRenderer498(SDL_Window* window, int index, Uint32 flags)
-	{
+	static SDL_Renderer* SDL_CreateRenderer498(SDL_Window* window, int index, Uint32 flags) {
 		if (IsAutograderMode())
 			flags &= ~SDL_RENDERER_PRESENTVSYNC; // VSync is disabled to let frames render faster in the autograder.
 
@@ -61,23 +61,19 @@ public:
 
 	/* Wrapper that will inject input events into the SDL Event Queue if a user input file is found */
 	/* This is what enables playback of inputs and game session replay. */
-	static int SDL_PollEvent498(SDL_Event* e)
-	{
+	static int SDL_PollEvent498(SDL_Event* e) {
 		SDL_ConsiderInputFile();
 		return ::SDL_PollEvent(e);
 	}
 
 	/* Wrapper that renders to screen while also persisting to a .BMP file */
-	static void SDL_RenderPresent498(SDL_Renderer* renderer)
-	{
-		if (renderer == nullptr)
-		{
+	static void SDL_RenderPresent498(SDL_Renderer* renderer) {
+		if (renderer == nullptr) {
 			std::cout << "ERROR : The renderer pointer passed to Helper::SDL_RenderPresent498() is a nullptr." << std::endl;
 			exit(0);
 		}
 
-		if (input_status == NOT_INITIALIZED)
-		{
+		if (input_status == NOT_INITIALIZED) {
 			std::cout << "ERROR : Please do not attempt to render (Helper::SDL_RenderPresent498()) before you've entered the game loop (IE, begun calling Helper::SDL_PollEvent498()." << std::endl;
 			exit(0);
 		}
@@ -85,13 +81,10 @@ public:
 		static bool initialized = false;
 		static SDL_Surface* saving_surface = nullptr;
 
-		if (RECORDING_MODE || _autograder_mode)
-		{
-			if (!initialized)
-			{
+		if (RECORDING_MODE || _autograder_mode) {
+			if (!initialized) {
 				/* Check for existence of frames folder and establish it if necessary. */
-				if (!std::filesystem::exists(frame_directory_relative_path))
-				{
+				if (!std::filesystem::exists(frame_directory_relative_path)) {
 					std::filesystem::create_directory(frame_directory_relative_path);
 				}
 
@@ -132,20 +125,15 @@ private:
 	static inline std::ofstream recording_file;
 
 	/* Do not use SDL_GetKeyboardState(), as it will not observe the input file. */
-	static void SDL_ConsiderInputFile()
-	{
+	static void SDL_ConsiderInputFile() {
 		/* Lazy Initialize */
-		if (input_status == NOT_INITIALIZED)
-		{
+		if (input_status == NOT_INITIALIZED) {
 			LoadSDLEventsFromInputFile();
 		}
 
-		if (input_status == INPUT_FILE_PRESENT)
-		{
-			if (frame_to_user_input.find(frame_number) != frame_to_user_input.end())
-			{
-				while (!frame_to_user_input[frame_number].empty())
-				{
+		if (input_status == INPUT_FILE_PRESENT) {
+			if (frame_to_user_input.find(frame_number) != frame_to_user_input.end()) {
+				while (!frame_to_user_input[frame_number].empty()) {
 					SDL_PushEvent(&(frame_to_user_input[frame_number].front()));
 					frame_to_user_input[frame_number].pop();
 				}
@@ -170,10 +158,8 @@ private:
 			}
 
 			/* If there are any events we care about, write them to file. */
-			if (relevant_events.size() > 0)
-			{
-				if (!recording_file.is_open())
-				{
+			if (relevant_events.size() > 0) {
+				if (!recording_file.is_open()) {
 					recording_file.open("recorded_sdl_user_input.txt");
 				}
 
@@ -188,29 +174,24 @@ private:
 					recording_file << event_type << ",";
 
 					/* Each event could be of multiple types, with differing numbers of parameters. */
-					if (event_type == SDL_KEYDOWN || event_type == SDL_KEYUP)
-					{
+					if (event_type == SDL_KEYDOWN || event_type == SDL_KEYUP) {
 						SDL_Scancode keycode = relevant_events[i].key.keysym.scancode;
 						recording_file << keycode;
 					}
-					else if (event_type == SDL_MOUSEMOTION)
-					{
+					else if (event_type == SDL_MOUSEMOTION) {
 						Sint32 x = relevant_events[i].motion.x;
 						Sint32 y = relevant_events[i].motion.y;
 						recording_file << x << "," << y;
 					}
-					else if (event_type == SDL_MOUSEBUTTONDOWN)
-					{
+					else if (event_type == SDL_MOUSEBUTTONDOWN) {
 						int button_index = static_cast<int>(relevant_events[i].button.button);
 						recording_file << button_index;
 					}
-					else if (event_type == SDL_MOUSEBUTTONUP)
-					{
+					else if (event_type == SDL_MOUSEBUTTONUP) {
 						int button_index = static_cast<int>(relevant_events[i].button.button);
 						recording_file << button_index;
 					}
-					else if (event_type == SDL_MOUSEWHEEL)
-					{
+					else if (event_type == SDL_MOUSEWHEEL) {
 						Sint32 scroll_amount = relevant_events[i].wheel.preciseY;
 						recording_file << scroll_amount;
 					}
@@ -255,12 +236,10 @@ private:
 	/* If the engine detects it is being autograded, it will run as fast as possible. */
 	static void SDL_Delay() {
 
-		if (_autograder_mode)
-		{
+		if (_autograder_mode) {
 			//::SDL_Delay(1); Don't bother delaying at all. Gotta go fast when autograding.
 		}
-		else
-		{
+		else {
 			Uint32 current_frame_end_timestamp = SDL_GetTicks();  // Record end time of the frame
 			Uint32 current_frame_duration_milliseconds = current_frame_end_timestamp - current_frame_start_timestamp;
 			Uint32 desired_frame_duration_milliseconds = 16;
@@ -273,13 +252,11 @@ private:
 		current_frame_start_timestamp = SDL_GetTicks();  // Record start time of the frame
 	}
 
-	static void LoadSDLEventsFromInputFile()
-	{
+	static void LoadSDLEventsFromInputFile() {
 		if (IsAutograderMode())
 			_autograder_mode = true;
 
-		if (!std::filesystem::exists(USER_INPUT_FILENAME))
-		{
+		if (!std::filesystem::exists(USER_INPUT_FILENAME)) {
 			input_status = INPUT_FILE_MISSING;
 			return;
 		}
@@ -301,6 +278,12 @@ private:
 				std::istringstream eventStream(eventStr);
 				std::string event_type_string;
 				std::getline(eventStream, event_type_string, ',');
+
+				// Remove any '\r' carriage returns we might find
+				// (may be needed for stoi to work on osx / linux when sdl_user_input.txt has been authored on windows)
+				// (depends on how student chooses to download the test cases)
+				event_type_string.erase(std::remove(event_type_string.begin(), event_type_string.end(), '\r'), event_type_string.end());
+
 				if (event_type_string == "")
 					continue;
 
@@ -310,8 +293,7 @@ private:
 
 				/* Handle unpacking for different event types */
 
-				if (event_type == SDL_KEYUP || event_type == SDL_KEYDOWN)
-				{
+				if (event_type == SDL_KEYUP || event_type == SDL_KEYDOWN) {
 					std::string keycode;
 					std::getline(eventStream, keycode, ',');
 					if (keycode == "")
@@ -319,8 +301,7 @@ private:
 
 					fabricated_sdl_event.key.keysym.scancode = static_cast<SDL_Scancode>(std::stoi(keycode));
 				}
-				else if (event_type == SDL_MOUSEMOTION)
-				{
+				else if (event_type == SDL_MOUSEMOTION) {
 					std::string x_str;
 					std::getline(eventStream, x_str, ',');
 					std::string y_str;
@@ -332,8 +313,7 @@ private:
 					fabricated_sdl_event.motion.x = static_cast<Sint32>(std::stoi(x_str));
 					fabricated_sdl_event.motion.y = static_cast<Sint32>(std::stoi(y_str));
 				}
-				else if (event_type == SDL_MOUSEBUTTONDOWN || event_type == SDL_MOUSEBUTTONUP)
-				{
+				else if (event_type == SDL_MOUSEBUTTONDOWN || event_type == SDL_MOUSEBUTTONUP) {
 					std::string mouse_button_index_str;
 					std::getline(eventStream, mouse_button_index_str, ',');
 
@@ -342,8 +322,7 @@ private:
 
 					fabricated_sdl_event.button.button = static_cast<Uint8>(std::stoi(mouse_button_index_str));
 				}
-				else if (event_type == SDL_MOUSEWHEEL)
-				{
+				else if (event_type == SDL_MOUSEWHEEL) {
 					std::string mouse_wheel_movement_str;
 					std::getline(eventStream, mouse_wheel_movement_str, ',');
 
