@@ -37,7 +37,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 
 	// scale size using actor.transform.scale
 	// also flip on x if the actor is flipped at the moment
-	glm::ivec2 scaledSize(
+	glm::vec2 scaledSize(
 		size.x * actor.transform.scale.x * (actor.flipped ? -1 : 1),
 		size.y * actor.transform.scale.y
 	);
@@ -59,22 +59,22 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	};
 
 	// camera center in pixel coordinates
-	glm::ivec2 cameraCenter(
+	glm::vec2 cameraCenter(
 		(renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor,
 		(renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor
 	);
 
 	// actor world position in pixel coordinates
-	glm::ivec2 actorWorldPos(
-		static_cast<int>(std::round(actor.transform.pos.x * renderConfig.pixelsPerUnit) - pivot.x),
-		static_cast<int>(std::round(actor.transform.pos.y * renderConfig.pixelsPerUnit) - pivot.y)
+	glm::vec2 actorWorldPos(
+		(actor.transform.pos.x * renderConfig.pixelsPerUnit) - pivot.x,
+		(actor.transform.pos.y * renderConfig.pixelsPerUnit) - pivot.y
 	);
 
 	// actor position relative to the camera
-	glm::ivec2 actorCameraRelativePos = actorWorldPos - glm::ivec2(std::round(camera.pos.x), std::round(camera.pos.y));
+	glm::vec2 actorCameraRelativePos = actorWorldPos - glm::vec2(std::round(camera.pos.x), std::round(camera.pos.y));
 
 	// actor screen position, accounting for rendering at screen center
-	glm::ivec2 actorScreenPos = cameraCenter + actorCameraRelativePos;
+	glm::vec2 actorScreenPos = cameraCenter + actorCameraRelativePos;
 
 	// bounce :)
 	if (actor.movementBounce && actor.bounce) {
