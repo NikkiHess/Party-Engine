@@ -93,8 +93,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// center position around the pivot point
 	// offset by scaledSize if we flip either one
 	SDL_Rect imageRect = {
-		actorScreenPos.x,
-		actorScreenPos.y,
+		static_cast<int>(std::round(actorScreenPos.x)),
+		static_cast<int>(std::round(actorScreenPos.y)),
 		std::abs(scaledSize.x),
 		std::abs(scaledSize.y) 
 	};
