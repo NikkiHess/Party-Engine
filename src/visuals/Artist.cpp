@@ -29,6 +29,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 		actor.view.imageBack.size = size;
 	}
 	size = actor.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
+	glm::ivec2 frontSize(actor.view.imageFront.size);
 
 	// get the renderImage AFTER we load it in...
 	SDL_Texture* renderImage = actor.showBack ? actor.view.imageBack.image : actor.view.imageFront.image;
@@ -52,8 +53,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	SDL_Point pivot{
-		static_cast<int>(std::round(actor.view.pivotOffset.x.value_or(size.x * 0.5))),
-		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(size.y * 0.5)))
+		static_cast<int>(std::round(actor.view.pivotOffset.x.value_or(frontSize.x * 0.5))),
+		static_cast<int>(std::round(actor.view.pivotOffset.y.value_or(frontSize.y * 0.5)))
 	};
 
 	// camera center in pixel coordinates
