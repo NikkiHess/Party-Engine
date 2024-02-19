@@ -157,6 +157,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\utils\config\JsonUtils.h" />
     <ClInclude Include="src\utils\config\SceneConfig.h" />
     <ClInclude Include="src\utils\config\GameConfig.h" />
+    <ClInclude Include="src\utils\OptionalVec2.h" />
     <ClInclude Include="src\utils\ResourceManager.h" />
     <ClInclude Include="src\gamedata\Direction.h" />
     <ClInclude Include="src\gamedata\Input.h" />

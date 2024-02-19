@@ -4,6 +4,9 @@
 #include <optional>
 #include <string>
 
+// my code
+#include "../utils/OptionalVec2.h"
+
 // dependencies
 #include "glm/glm.hpp"
 #include "SDL2/SDL_render.h"
@@ -13,11 +16,6 @@ public:
 	glm::vec2 pos = { 0.0, 0.0 };
 	glm::vec2 scale = { 1.0, 1.0 };
 	float rotationDegrees = 0.0;
-};
-
-class OptionalVec2 {
-public:
-	std::optional<float> x, y;
 };
 
 class TextureImage {
