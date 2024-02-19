@@ -86,6 +86,10 @@ void Engine::start() {
                 player->velocity += Direction::RIGHT;
             }
 
+            if (player->velocity == glm::vec2(0)) {
+                player->bounce = false;
+            }
+
             // if the player has velocity, move them and reset their velocity
             if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
                 // start by normalizing and multiplying by speed

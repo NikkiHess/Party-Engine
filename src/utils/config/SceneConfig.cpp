@@ -79,6 +79,9 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 		actor.velocity.x = actorDocument["vel_x"].GetFloat();
 	if (actorDocument.HasMember("vel_y"))
 		actor.velocity.y = actorDocument["vel_y"].GetFloat();
+	if (actorDocument.HasMember("movement_bounce_enabled")) {
+		actor.movementBounce = actorDocument["movement_bounce_enabled"].GetBool();
+	}
 
 	if (actorDocument.HasMember("blocking"))
 		actor.blocking = actorDocument["blocking"].GetBool();

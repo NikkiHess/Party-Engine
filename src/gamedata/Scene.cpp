@@ -76,6 +76,10 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 		}
 	}
 
+	if (actor->movementBounce) {
+		actor->bounce = true;
+	}
+
 	// add the updated position of the actor to the unordered_map
 	locToActors[actor->transform.pos].emplace(actor);
 	actorsByRenderOrder.emplace(actor);

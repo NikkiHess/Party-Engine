@@ -3,6 +3,7 @@
 
 // my code
 #include "Artist.h"
+#include "Helper.h"
 #include "../gamedata/GameInfo.h"
 
 void Artist::drawActor(Actor& actor, Camera& camera) {
@@ -74,6 +75,11 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 
 	// actor screen position, accounting for rendering at screen center
 	glm::ivec2 actorScreenPos = cameraCenter + actorCameraRelativePos;
+
+	// bounce :)
+	if (actor.movementBounce && actor.bounce) {
+		actorScreenPos += glm::vec2(0, -glm::abs(glm::sin(Helper::GetFrameNumber() * 0.15f)) * 10.0f);
+	}
 
 	// if actor is not within visible area, skip rendering (cull)
 	// include a little buffer so as not to cull too early
