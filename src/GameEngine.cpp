@@ -196,7 +196,7 @@ void Engine::queueStop() {
 
 int main(int argc, char* argv[]) {
     // for MacOS local runs
-    // std::filesystem::current_path("/Users/lindsaygreig/Desktop/game_engine_nkhess");
+    //std::filesystem::current_path("/Users/lindsaygreig/Desktop/game_engine_nkhess");
     
 	// Initialize SDL
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
