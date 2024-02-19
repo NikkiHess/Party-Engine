@@ -20,11 +20,17 @@ public:
 	std::optional<float> x, y;
 };
 
+class TextureImage {
+public:
+	SDL_Texture* image = nullptr;
+	std::string name = "";
+	glm::ivec2 size = glm::ivec2(0);
+};
+
 class View {
 public:
-	std::string imageName = "";
-	SDL_Texture* image = nullptr;
-	glm::ivec2 imageSize = glm::ivec2(0);
+	TextureImage imageFront;
+	TextureImage imageBack;
 	// the pivot offset, in pixels
 	OptionalVec2 pivotOffset;
 };
@@ -39,6 +45,10 @@ public:
 	std::string nearbyDialogue = "", contactDialogue = "";
 	int renderOrder = 0;
 
+	// whether the actor is currently flipped (attempting move west)
+	bool flipped = false;
+	bool showBack = false;
+
 	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise
 	int health = 3, score = 0;
@@ -52,6 +62,7 @@ public:
     Actor() : velocity(0, 0) {}
 };
 
+// TODO: Move to .cpp, this is ugly
 class ActorComparator {
 public:
 	bool operator()(Actor* actor1, Actor* actor2) const {

@@ -90,7 +90,7 @@ void Engine::start() {
             if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
                 // start by normalizing and multiplying by speed
                 player->velocity = glm::normalize(player->velocity) * player->speed;
-                gameInfo.scene.moveActor(player);
+                gameInfo.scene.moveActor(player, renderConfig.actorFlipping);
             }
             player->velocity = glm::vec2(0);
         }
@@ -117,7 +117,7 @@ void Engine::start() {
             }
 
             // move all npc actors according to their velocity
-            gameInfo.scene.moveNPCActors();
+            gameInfo.scene.moveNPCActors(renderConfig.actorFlipping);
 
             // update the camera position to match where the player is (because all actors have moved by now)
             camera.update(gameInfo.player, renderConfig.easeFactor);

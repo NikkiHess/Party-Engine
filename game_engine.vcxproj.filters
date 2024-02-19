@@ -1239,7 +1239,7 @@
     <ClInclude Include="src\visuals\Artist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\audio\AudioPlayer.h">
+    <ClInclude Include="src\audio\AudioPlayer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\errors\Error.h">

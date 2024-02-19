@@ -24,4 +24,8 @@ void RenderingConfig::parse(rapidjson::Document& renderingDocument) {
 		clearColor.g = renderingDocument["clear_color_g"].GetInt();
 	if (renderingDocument.HasMember("clear_color_b"))
 		clearColor.b = renderingDocument["clear_color_b"].GetInt();
+
+	// handle actor animations
+	if (renderingDocument.HasMember("x_scale_actor_flipping_on_movement"))
+		actorFlipping = renderingDocument["x_scale_actor_flipping_on_movement"].GetBool();
 }

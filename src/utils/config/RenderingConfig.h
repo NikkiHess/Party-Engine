@@ -16,7 +16,10 @@ public:
 	// the ease factor of the camera, for smoooooth movement
 	float easeFactor = 1;
 
-	// not technically configurable yet
+	// actor rendering
+	bool actorFlipping = false; // decides whether the actor flips when moving west, false by default
+
+	// not configurable, messy if not 100
 	float pixelsPerUnit = 100;
 
 	// parses information from rendering.config

@@ -8,24 +8,33 @@
 void Artist::drawActor(Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
-	// check if the actor's image needs to be loaded
-	if (!actor.view.image && actor.view.imageName != "") {
-		actor.view.image = resourceManager.loadImageTexture(actor.view.imageName);
+	// get the actor's image front/back size
+	SDL_Texture* renderImage = actor.showBack ? actor.view.imageBack.image : actor.view.imageFront.image;
+	glm::ivec2 size(0);
+
+	// check if the actor's images need to be loaded
+	if (!actor.view.imageFront.image && actor.view.imageFront.name != "") {
+		actor.view.imageFront.image = resourceManager.loadImageTexture(actor.view.imageFront.name);
+	}
+	if (!actor.view.imageBack.image && actor.view.imageBack.name != "") {
+		actor.view.imageBack.image = resourceManager.loadImageTexture(actor.view.imageBack.name);
 	}
 
-	// get the actor's image size
-	glm::ivec2 size(0);
-	if (actor.view.imageSize == glm::ivec2(0)) {
-		if (actor.view.image) {
-			SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
-		}
-		actor.view.imageSize = size;
+	// load in the images' sizes if they haven't been already
+	if (actor.view.imageFront.size == glm::ivec2(0)) {
+		SDL_QueryTexture(actor.view.imageFront.image, nullptr, nullptr, &size.x, &size.y);
+		actor.view.imageFront.size = size;
 	}
-	size = actor.view.imageSize;
+	if (actor.view.imageBack.size == glm::ivec2(0)) {
+		SDL_QueryTexture(actor.view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
+		actor.view.imageBack.size = size;
+	}
+	size = actor.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
 
 	// scale size using actor.transform.scale
+	// also flip on x if the actor is flipped at the moment
 	glm::ivec2 scaledSize(
-		size.x * actor.transform.scale.x,
+		size.x * actor.transform.scale.x * (actor.flipped ? -1 : 1),
 		size.y * actor.transform.scale.y
 	);
 
@@ -68,7 +77,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// make sure to divide upper bound by zoom factor, because otherwise stuff gets unrendered at zoomFactor < 1
 	if (actorScreenPos.x < -std::abs(scaledSize.x * 1.2f) || actorScreenPos.x > renderConfig.renderSize.x * 1.1f / renderConfig.zoomFactor ||
 		actorScreenPos.y < -std::abs(scaledSize.y * 1.2f) || actorScreenPos.y > renderConfig.renderSize.y * 1.1f / renderConfig.zoomFactor) {
-		//std::cout << actor.name << " culled\n";
+		// std::cout << actor.name << " culled\n";
 		return;
 	}
 
@@ -81,10 +90,10 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 		std::abs(scaledSize.y) 
 	};
 
-	if (actor.view.image) {
+	if (actor.view.imageFront.image) {
 		// render the actor image
 		SDL_RenderCopyEx(
-			sdlRenderer, actor.view.image, nullptr,
+			sdlRenderer, renderImage, nullptr,
 			&imageRect, actor.transform.rotationDegrees,
 			&pivot, flip
 		);

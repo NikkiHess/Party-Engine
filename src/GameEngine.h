@@ -52,7 +52,10 @@ public:
 			gameInfo.player = player;
 
 			// preload the player view to calculate the position
-			player->view.image = resourceManager.loadImageTexture(player->view.imageName);
+			player->view.imageFront.image = resourceManager.loadImageTexture(player->view.imageFront.name);
+			if (player->view.imageBack.name != "") {
+				player->view.imageBack.image = resourceManager.loadImageTexture(player->view.imageBack.name);
+			}
 
 			camera.jump(player);
 		}

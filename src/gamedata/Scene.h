@@ -40,11 +40,11 @@ public:
 	void instantiateActor(Actor& actor);
 
 	// move all NPC actors in the scene
-	void moveNPCActors();
+	void moveNPCActors(bool flipping);
 
 	// move an actor according to its velocity
 	// and update its render order
-	void moveActor(Actor* actor);
+	void moveActor(Actor* actor, bool flipping);
 
 	// check if an actor would collide given its velocity
 	bool wouldCollide(Actor* actor);
