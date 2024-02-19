@@ -53,28 +53,8 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 	// update the instanced actor's positon
 	actor->transform.pos += actor->velocity;
 
-	// if we have flipping enabled + move west, flip actor
-	// if we have flipping enabled + move east, unflip actor
-	// do not handle 0 velocity, keep flip the same in that case
-	if (flipping) {
-		if (actor->velocity.x < 0) {
-			actor->flipped = true;
-		}
-		else if (actor->velocity.x > 0) {
-			actor->flipped = false;
-		}
-	}
-
-	// if we have a view_image_back
-	if (actor->view.imageBack.image) {
-		// velocity y is NEGATIVE if you go up
-		if (actor->velocity.y < 0) {
-			actor->showBack = true;
-		}
-		if (actor->velocity.y > 0) {
-			actor->showBack = false;
-		}
-	}
+	actor->handleFlipping(flipping);
+	actor->handleVerticalFacing();
 
 	if (actor->movementBounce) {
 		actor->bounce = true;

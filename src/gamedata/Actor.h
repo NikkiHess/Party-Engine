@@ -62,30 +62,17 @@ public:
 	bool triggeredScoreUp = false;
     
     Actor() : velocity(0, 0) {}
+
+	void handleFlipping(bool flipping);
+	void handleVerticalFacing();
 };
 
-// TODO: Move to .cpp, this is ugly
 class ActorComparator {
 public:
-	bool operator()(Actor* actor1, Actor* actor2) const {
-		return actor1->id < actor2->id;
-	}
+	bool operator()(Actor* actor1, Actor* actor2) const;
 };
 
 class RenderOrderComparator {
 public:
-	bool operator()(const Actor* actor1, const Actor* actor2) const {
-		// render orders equal? render by y pos
-		if (actor1->renderOrder == actor2->renderOrder) {
-			// y pos equal? render by id
-			if (actor1->transform.pos.y == actor2->transform.pos.y) {
-				return actor1->id < actor2->id;
-			}
-
-			// y pos not equal? compare
-			return actor1->transform.pos.y < actor2->transform.pos.y;
-		}
-		// render order not equal? compare
-		return actor1->renderOrder < actor2->renderOrder;
-	}
+	bool operator()(const Actor* actor1, const Actor* actor2) const;
 };

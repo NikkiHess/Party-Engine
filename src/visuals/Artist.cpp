@@ -13,19 +13,19 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	glm::ivec2 size(0);
 
 	// check if the actor's images need to be loaded
-	if (!actor.showBack && !actor.view.imageFront.image && actor.view.imageFront.name != "") {
+	if (!actor.view.imageFront.image && actor.view.imageFront.name != "") {
 		actor.view.imageFront.image = resourceManager.loadImageTexture(actor.view.imageFront.name);
 	}
-	if (actor.showBack && !actor.view.imageBack.image && actor.view.imageBack.name != "") {
+	if (!actor.view.imageBack.image && actor.view.imageBack.name != "") {
 		actor.view.imageBack.image = resourceManager.loadImageTexture(actor.view.imageBack.name);
 	}
 
 	// load in the images' sizes if they haven't been already
-	if (!actor.showBack && actor.view.imageFront.size == glm::ivec2(0)) {
+	if (actor.view.imageFront.size == glm::ivec2(0)) {
 		SDL_QueryTexture(actor.view.imageFront.image, nullptr, nullptr, &size.x, &size.y);
 		actor.view.imageFront.size = size;
 	}
-	if (actor.showBack && actor.view.imageBack.size == glm::ivec2(0)) {
+	if (actor.view.imageBack.size == glm::ivec2(0)) {
 		SDL_QueryTexture(actor.view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
 		actor.view.imageBack.size = size;
 	}
