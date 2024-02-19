@@ -29,16 +29,16 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 		SDL_QueryTexture(actor.view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
 		actor.view.imageBack.size = size;
 	}
-	size = actor.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
+	size = actor.transform.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
 	glm::ivec2 frontSize(actor.view.imageFront.size);
 
 	// get the renderImage AFTER we load it in...
-	SDL_Texture* renderImage = actor.showBack ? actor.view.imageBack.image : actor.view.imageFront.image;
+	SDL_Texture* renderImage = actor.transform.showBack ? actor.view.imageBack.image : actor.view.imageFront.image;
 
 	// scale size using actor.transform.scale
 	// also flip on x if the actor is flipped at the moment
 	glm::vec2 scaledSize(
-		size.x * actor.transform.scale.x * (actor.flipped ? -1 : 1),
+		size.x * actor.transform.scale.x * (actor.transform.flipped ? -1 : 1),
 		size.y * actor.transform.scale.y
 	);
 
@@ -77,7 +77,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	glm::vec2 actorScreenPos = cameraCenter + actorCameraRelativePos;
 
 	// bounce :)
-	if (actor.movementBounce && actor.bounce) {
+	if (actor.movementBounce && actor.transform.bounce) {
 		actorScreenPos += glm::vec2(0, -glm::abs(glm::sin(Helper::GetFrameNumber() * 0.15f)) * 10.0f);
 	}
 
@@ -95,8 +95,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	SDL_Rect imageRect = {
 		static_cast<int>(std::round(actorScreenPos.x)),
 		static_cast<int>(std::round(actorScreenPos.y)),
-		std::abs(scaledSize.x),
-		std::abs(scaledSize.y) 
+		static_cast<int>(std::abs(scaledSize.x)),
+		static_cast<int>(std::abs(scaledSize.y))
 	};
 
 	if (actor.view.imageFront.image) {

@@ -16,6 +16,11 @@ public:
 	glm::vec2 pos = { 0.0, 0.0 };
 	glm::vec2 scale = { 1.0, 1.0 };
 	float rotationDegrees = 0.0;
+
+	// whether the actor is currently flipped (attempting move west)
+	bool flipped = false;
+	bool showBack = false;
+	bool bounce = false;
 };
 
 class TextureImage {
@@ -40,14 +45,8 @@ public:
 	View view;
 	glm::vec2 velocity;
 	bool movementBounce = false;
-	bool blocking = false;
 	std::string nearbyDialogue = "", contactDialogue = "";
 	int renderOrder = 0;
-
-	// whether the actor is currently flipped (attempting move west)
-	bool flipped = false;
-	bool showBack = false;
-	bool bounce = false;
 
 	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise

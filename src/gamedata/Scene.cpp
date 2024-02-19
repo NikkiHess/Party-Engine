@@ -57,7 +57,7 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 	actor->handleVerticalFacing();
 
 	if (actor->movementBounce) {
-		actor->bounce = true;
+		actor->transform.bounce = true;
 	}
 
 	// add the updated position of the actor to the unordered_map
@@ -71,8 +71,7 @@ bool Scene::wouldCollide(Actor* actor) {
 	auto it = locToActors.find(futurePosition);
 	if (it != locToActors.end()) {
 		for (Actor* other : it->second) {
-			if (other->blocking)
-				return true;
+
 		}
 	}
 

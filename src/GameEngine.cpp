@@ -87,7 +87,7 @@ void Engine::start() {
             }
 
             if (player->velocity == glm::vec2(0)) {
-                player->bounce = false;
+                player->transform.bounce = false;
             }
 
             // if the player has velocity, move them and reset their velocity

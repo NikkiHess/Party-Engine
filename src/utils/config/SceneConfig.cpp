@@ -83,9 +83,6 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 		actor.movementBounce = actorDocument["movement_bounce_enabled"].GetBool();
 	}
 
-	if (actorDocument.HasMember("blocking"))
-		actor.blocking = actorDocument["blocking"].GetBool();
-
 	if (actorDocument.HasMember("nearby_dialogue"))
 		actor.nearbyDialogue = actorDocument["nearby_dialogue"].GetString();
 	if (actorDocument.HasMember("contact_dialogue"))

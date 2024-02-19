@@ -9,10 +9,10 @@ void Actor::handleFlipping(bool flipping) {
 	// if move east, unflip actor
 	// do NOT handle 0 velocity, keep flip the same in that case
 	if (velocity.x < 0) {
-		flipped = true;
+		transform.flipped = true;
 	}
 	else if (velocity.x > 0) {
-		flipped = false;
+		transform.flipped = false;
 	}
 }
 
@@ -21,10 +21,10 @@ void Actor::handleVerticalFacing() {
 	if (view.imageBack.image) {
 		// velocity y is NEGATIVE if you go up
 		if (velocity.y < 0) {
-			showBack = true;
+			transform.showBack = true;
 		}
 		if (velocity.y > 0) {
-			showBack = false;
+			transform.showBack = false;
 		}
 	}
 }
