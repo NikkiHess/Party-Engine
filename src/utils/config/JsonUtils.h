@@ -29,7 +29,7 @@ public:
 		}
 
 		if (outDocument.HasParseError()) {
-			rapidjson::ParseErrorCode errorCode = outDocument.GetParseError();
+			//rapidjson::ParseErrorCode errorCode = outDocument.GetParseError();
 			std::cout << "error parsing json at [" << path << "]" << std::endl;
 			exit(0);
 		}

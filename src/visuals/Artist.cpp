@@ -5,7 +5,7 @@
 #include "Artist.h"
 #include "../gamedata/GameInfo.h"
 
-void Artist::drawActor(GameInfo& gameInfo, Actor& actor, Camera& camera) {
+void Artist::drawActor(Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
 	// check if the actor's image needs to be loaded
@@ -16,7 +16,9 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor, Camera& camera) {
 	// get the actor's image size
 	glm::ivec2 size(0);
 	if (actor.view.imageSize == glm::ivec2(0)) {
-		SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
+		if (actor.view.image) {
+			SDL_QueryTexture(actor.view.image, nullptr, nullptr, &size.x, &size.y);
+		}
 		actor.view.imageSize = size;
 	}
 	size = actor.view.imageSize;
@@ -79,12 +81,14 @@ void Artist::drawActor(GameInfo& gameInfo, Actor& actor, Camera& camera) {
 		std::abs(scaledSize.y) 
 	};
 
-	// render the actor image
-	SDL_RenderCopyEx(
-		sdlRenderer, actor.view.image, nullptr,
-		&imageRect, actor.transform.rotationDegrees,
-		&pivot, flip
-	);
+	if (actor.view.image) {
+		// render the actor image
+		SDL_RenderCopyEx(
+			sdlRenderer, actor.view.image, nullptr,
+			&imageRect, actor.transform.rotationDegrees,
+			&pivot, flip
+		);
+	}
 }
 
 void Artist::drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {

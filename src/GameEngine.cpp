@@ -28,7 +28,7 @@
 #include "SDL2/SDL_ttf.h"
 
 void Engine::start() {
-    int currentIntroIndex = 0;
+    size_t currentIntroIndex = 0;
     isGameRunning = true;
     bool introMusicPlaying = false, gameplayMusicPlaying = false;
 

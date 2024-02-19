@@ -45,7 +45,7 @@ public:
 	}
 
 	// render the intro images one by one, proceed when enter has been pressed
-	void renderIntro(int& index);
+	void renderIntro(size_t& index);
 
 	// render the current view, returns the current GameState
 	void render(GameInfo& gameInfo);

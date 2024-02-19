@@ -22,7 +22,7 @@
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_ttf.h"
 
-void Renderer::renderIntro(int& index) {
+void Renderer::renderIntro(size_t& index) {
 	GameConfig& gameConfig = configManager.gameConfig;
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
@@ -75,7 +75,7 @@ void Renderer::render(GameInfo& gameInfo) {
 
 	// draw all actors in order of transform_position_y
 	for (Actor* actor : gameInfo.scene.actorsByRenderOrder) {
-		artist.drawActor(gameInfo, *actor, gameInfo.camera);
+		artist.drawActor(*actor, gameInfo.camera);
 	}
 }
 
@@ -158,7 +158,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 		}
 	}
 
-	for (int i = 0; i < dialogue.size(); ++i) {
+	for (size_t i = 0; i < dialogue.size(); ++i) {
 		artist.drawUIText(
 			dialogue[i],
 			{ 255, 255, 255, 255 },

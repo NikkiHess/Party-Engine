@@ -1,19 +1,22 @@
 # List all source files
 SOURCES := $(wildcard src/*.cpp) $(wildcard src/gamedata/*.cpp) $(wildcard src/utils/*.cpp) $(wildcard src/utils/config/*.cpp) $(wildcard src/visuals/*.cpp) $(wildcard src/audio/*.cpp)
 
-# Derive object file names from source file names
+# Derive object file names from source file names for release and debug
 OBJECTS := $(SOURCES:.cpp=.o)
+DEBUG_OBJECTS := $(SOURCES:.cpp=.debug.o)
 
 # Compiler flags
 CXXFLAGS := -std=c++17 -I./dependencies -O2
+DEBUG_CXXFLAGS := -std=c++17 -I./dependencies -O0 -g -Wall -Wextra
 
 # Linker flags
 LDFLAGS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
-# Target executable
+# Target executables
 TARGET := game_engine_linux
+DEBUG_TARGET := game_engine_linux_debug
 
-# Main rule to build the executable
+# Main rule to build the release executable
 $(TARGET): $(OBJECTS)
 	clang++ $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
@@ -21,6 +24,14 @@ $(TARGET): $(OBJECTS)
 %.o: %.cpp
 	clang++ $(CXXFLAGS) -c -o $@ $<
 
+# Rule to build the debug executable
+debug: $(DEBUG_OBJECTS)
+	clang++ $(DEBUG_CXXFLAGS) -o $(DEBUG_TARGET) $^ $(LDFLAGS)
+
+# Rule to compile each source file into a debug object file
+%.debug.o: %.cpp
+	clang++ $(DEBUG_CXXFLAGS) -c -o $@ $<
+
 # Clean rule to remove compiled files
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(DEBUG_OBJECTS) $(TARGET) $(DEBUG_TARGET)

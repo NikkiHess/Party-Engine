@@ -11,9 +11,9 @@
 class Camera {
 public:
 	glm::vec2 pos = { 0, 0 };
-	RenderingConfig& renderConfig;
+	const RenderingConfig& renderConfig;
 
-	Camera(ConfigManager& configManager) : renderConfig(configManager.renderingConfig) {}
+	Camera(const ConfigManager& configManager) : renderConfig(configManager.renderingConfig) {}
 
 	glm::vec2 getPlayerPos(Actor* player) {
 		// calculate the center of the screen
