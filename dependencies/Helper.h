@@ -36,7 +36,7 @@ class Helper {
 public:
 	/* Turn RECORDING_MODE on to record inputs as you play. */
 	/* The input file may be fed back in to replay your game session (autograder does this). */
-	inline static const bool RECORDING_MODE = true;
+	inline static const bool RECORDING_MODE = false;
 	inline static const char* USER_INPUT_FILENAME = "sdl_user_input.txt";
 
 	/* The Helper.h function works differently (and thus your program works differently) */
