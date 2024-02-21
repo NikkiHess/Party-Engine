@@ -6,6 +6,8 @@
 #include "Helper.h"
 #include "../gamedata/GameInfo.h"
 
+#define COLLIDER_DEBUG 0
+
 void Artist::drawActor(Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
@@ -59,6 +61,26 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 
 	// actor screen position, accounting for rendering at screen center
 	glm::vec2 actorScreenPos = cameraCenter + actorCameraRelativePos;
+
+#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
+	// Calculate the screen position of the actor's bounding box
+	glm::vec2 actorBoundingBoxPos = actorScreenPos - glm::vec2(extents.left, extents.top);
+
+	// Calculate the size of the bounding box
+	glm::ivec2 boundingBoxSize(extents.right - extents.left, extents.bottom - extents.top);
+
+	// Create an SDL_Rect for the bounding box
+	SDL_Rect boundingBoxRect = {
+		static_cast<int>(std::round(actorBoundingBoxPos.x)),
+		static_cast<int>(std::round(actorBoundingBoxPos.y)),
+		boundingBoxSize.x,
+		boundingBoxSize.y
+	};
+
+	// Draw the bounding box
+	SDL_SetRenderDrawColor(sdlRenderer, 255, 0, 0, 255); // Red color
+	SDL_RenderDrawRect(sdlRenderer, &boundingBoxRect);
+#endif
 
 	// bounce :)
 	if (actor.movementBounce && actor.transform.bounce) {
