@@ -9,28 +9,11 @@
 void Artist::drawActor(Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
-	// check if the actor's images need to be loaded
-	if (!actor.view.imageFront.image && actor.view.imageFront.name != "") {
-		actor.view.imageFront.image = resourceManager.loadImageTexture(actor.view.imageFront.name);
-	}
-	if (!actor.view.imageBack.image && actor.view.imageBack.name != "") {
-		actor.view.imageBack.image = resourceManager.loadImageTexture(actor.view.imageBack.name);
-	}
+	// if the actor's textures haven't been loaded, do so
+	actor.loadTextures(resourceManager);
 
 	// get the actor's image front/back size
-	glm::ivec2 size(0);
-
-	// load in the images' sizes if they haven't been already
-	if (actor.view.imageFront.size == glm::ivec2(0)) {
-		SDL_QueryTexture(actor.view.imageFront.image, nullptr, nullptr, &size.x, &size.y);
-		actor.view.imageFront.size = size;
-	}
-	if (actor.view.imageBack.size == glm::ivec2(0)) {
-		SDL_QueryTexture(actor.view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
-		actor.view.imageBack.size = size;
-	}
-	
-	size = actor.transform.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
+	glm::ivec2 size = actor.transform.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
 	glm::ivec2 frontSize(actor.view.imageFront.size);
 
 	// get the renderImage AFTER we load it in...

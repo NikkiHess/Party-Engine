@@ -29,6 +29,29 @@ void Actor::handleVerticalFacing() {
 	}
 }
 
+void Actor::loadTextures(ResourceManager& resourceManager) {
+	// check if the actor's images need to be loaded
+	if (!view.imageFront.image && view.imageFront.name != "") {
+		view.imageFront.image = resourceManager.loadImageTexture(view.imageFront.name);
+	}
+	if (!view.imageBack.image && view.imageBack.name != "") {
+		view.imageBack.image = resourceManager.loadImageTexture(view.imageBack.name);
+	}
+
+	// get the actor's image front/back size
+	glm::ivec2 size(0);
+
+	// load in the images' sizes if they haven't been already
+	if (view.imageFront.size == glm::ivec2(0)) {
+		SDL_QueryTexture(view.imageFront.image, nullptr, nullptr, &size.x, &size.y);
+		view.imageFront.size = size;
+	}
+	if (view.imageBack.size == glm::ivec2(0)) {
+		SDL_QueryTexture(view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
+		view.imageBack.size = size;
+	}
+}
+
 bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {
 	return actor1->id < actor2->id;
 }

@@ -5,6 +5,7 @@
 #include <string>
 
 // my code
+#include "../utils/ResourceManager.h"
 #include "../utils/OptionalVec2.h"
 #include "BoxCollider.h"
 
@@ -73,6 +74,8 @@ public:
 
 	void handleFlipping(bool flipping);
 	void handleVerticalFacing();
+
+	void loadTextures(ResourceManager& resourceManager);
 };
 
 class ActorComparator {
