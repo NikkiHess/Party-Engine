@@ -7,7 +7,7 @@
 // my code
 #include "../utils/ResourceManager.h"
 #include "../utils/OptionalVec2.h"
-#include "BoxCollider.h"
+#include "../utils/config/RenderingConfig.h"
 
 // dependencies
 #include "glm/glm.hpp"

@@ -43,7 +43,7 @@ public:
 	void instantiateActor(Actor& actor);
 
 	// move all NPC actors in the scene
-	void moveNPCActors(bool flipping);
+	void moveAllActors(bool flipping);
 
 	// move an actor according to its velocity
 	// and update its render order

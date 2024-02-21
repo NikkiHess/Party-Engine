@@ -75,7 +75,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	};
 
 	if (actor.view.imageFront.image) {
-		SDL_Point pivotPoint = { pivot.x, pivot.y };
+		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
 		// render the actor image
 		SDL_RenderCopyEx(
 			sdlRenderer, renderImage, nullptr,
@@ -90,37 +90,23 @@ void Artist::drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, glm::vec2&
 		RenderingConfig& renderConfig = configManager.renderingConfig;
 
 		glm::vec2 center{
-		static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
-		static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
+			static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
+			static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
 		};
 
 		actor.calculateBoxCollider(renderConfig, actorScreenPos, center);
 
 		SDL_Rect iRect = {
-			actor.boxCollider->x,
-			actor.boxCollider->y,
-			actor.boxCollider->w,
-			actor.boxCollider->h,
+			static_cast<int>(actor.boxCollider->x),
+			static_cast<int>(actor.boxCollider->y),
+			static_cast<int>(actor.boxCollider->w),
+			static_cast<int>(actor.boxCollider->h),
 		};
 
 		SDL_SetRenderDrawColor(sdlRenderer, 255, 0, 0, 255); // red
 		SDL_RenderDrawRect(sdlRenderer, &iRect);
 
 	}
-
-	//if (actor.boxCollider.hasExtents()) {
-	//	// Create an SDL_Rect for the bounding box, based on the extents from pivot and the screen position
-	//	SDL_Rect boundingBoxRect = {
-	//		static_cast<int>(std::round(actor.boxCollider.getScreenExtents(renderConfig, actorScreenPos).left.value())),
-	//		static_cast<int>(std::round(actor.boxCollider.getScreenExtents(renderConfig, actorScreenPos).top.value())),
-	//		static_cast<int>(std::round(actor.boxCollider.size.x * renderConfig.pixelsPerUnit)),
-	//		static_cast<int>(std::round(actor.boxCollider.size.y * renderConfig.pixelsPerUnit))
-	//	};
-
-	//	// Draw the bounding box
-	//	SDL_SetRenderDrawColor(sdlRenderer, 255, 0, 0, 255); // red
-	//	SDL_RenderDrawRect(sdlRenderer, &boundingBoxRect);
-	//}
 }
 
 void Artist::drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {

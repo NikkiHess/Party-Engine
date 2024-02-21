@@ -19,11 +19,9 @@ void Scene::instantiateActor(Actor& actor) {
 	// insert the actor into the "sorted-by-render-order" list
 	actorsByRenderOrder.emplace(&actors.back());
 
-	// if a non-player actor has velocity, insert into motion list
-	if (actor.name != "player") {
-		if (std::abs(actor.velocity.x) > 0 || std::abs(actor.velocity.y) > 0) {
-			motionActors.emplace(&actors.back());
-		}
+	// if an actor has velocity, insert into motion list
+	if (std::abs(actor.velocity.x) > 0 || std::abs(actor.velocity.y) > 0 || actor.name == "player") {
+		motionActors.emplace(&actors.back());
 	}
 
 	// all actors that can collide need to be kept track of as well
@@ -35,11 +33,15 @@ void Scene::instantiateActor(Actor& actor) {
 	locToActors[actorPos].emplace(&actors.back());
 }
 
-void Scene::moveNPCActors(bool flipping) {
+void Scene::moveAllActors(bool flipping) {
 	for (Actor* actor : motionActors) {
 		// possibly rendundant check, leaving it here just in case :)
 		if (std::abs(actor->velocity.x) > 0 || std::abs(actor->velocity.y) > 0) {
 			moveActor(actor, flipping);
+
+			if (actor->name == "player") {
+				actor->velocity = glm::vec2(0);
+			}
 		}
 	}
 }
@@ -77,20 +79,16 @@ bool Scene::wouldCollide(Actor* actor) {
 		return false;
 
 	SDL_FRect future = *actor->boxCollider;
-	future.x += actor->velocity.x;
-	future.y += actor->velocity.y;
+	// multiply by pixels-per-unit
+	future.x += actor->velocity.x * 100;
+	future.y += actor->velocity.y * 100;
 
-	std::cout << "FUTURE: " << future.x + future.w << " " << future.y + future.h << "\n";
 	for (Actor* other : collisionActors) {
-		if (!other->boxCollider) continue;
-
-		// ids are guaranteed unique, names are not
 		// make sure we don't check an actor against itself
-		if (actor->id != other->id) {
-			if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
-				//std::cout << Helper::GetFrameNumber() << "\n";
-				return true;
-			}
+		if (!other->boxCollider || actor == other) continue;
+
+		if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
+			return true;
 		}
 	}
 

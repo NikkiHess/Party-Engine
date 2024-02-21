@@ -153,7 +153,6 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\gamedata\BoxCollider.h" />
     <ClInclude Include="src\utils\config\RenderingConfig.h" />
     <ClInclude Include="src\utils\config\JsonUtils.h" />
     <ClInclude Include="src\utils\config\SceneConfig.h" />
@@ -575,7 +574,6 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\gamedata\BoxCollider.cpp" />
     <ClCompile Include="src\gamedata\Actor.cpp" />
     <ClCompile Include="src\utils\config\RenderingConfig.cpp" />
     <ClCompile Include="src\utils\config\SceneConfig.cpp" />
