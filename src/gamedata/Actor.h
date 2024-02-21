@@ -6,6 +6,7 @@
 
 // my code
 #include "../utils/OptionalVec2.h"
+#include "BoxCollider.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -30,25 +31,11 @@ public:
 	glm::ivec2 size = glm::ivec2(0);
 };
 
-class View {
-public:
+struct View {
 	TextureImage imageFront;
 	TextureImage imageBack;
 	// the pivot offset, in pixels
 	OptionalVec2 pivot;
-};
-
-class BoxCollider {
-public:
-	// the size of the box collider (uses x and y)
-	glm::vec2 size;
-
-	// the extents of the box collider (relative)
-	// calculated if and only if size is received
-	glm::vec4 extents;
-
-	// calculates extents given pivot and size
-	void calculateExtents(OptionalVec2& pivot);
 };
 
 class Actor {

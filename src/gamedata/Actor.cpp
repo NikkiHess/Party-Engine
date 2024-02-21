@@ -1,9 +1,5 @@
 #include "Actor.h"
 
-void BoxCollider::calculateExtents() {
-	BoxCollider
-}
-
 void Actor::handleFlipping(bool flipping) {
 	// if we don't do flipping, don't bother
 	if (!flipping)

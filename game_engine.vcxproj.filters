@@ -1272,6 +1272,9 @@
     <ClInclude Include="src\utils\OptionalVec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gamedata\BoxCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp">
@@ -1308,6 +1311,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gamedata\Actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gamedata\BoxCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

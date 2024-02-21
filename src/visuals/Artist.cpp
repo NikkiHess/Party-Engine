@@ -32,8 +32,6 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	size = actor.transform.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
 	glm::ivec2 frontSize(actor.view.imageFront.size);
 
-	// calculate the actor's extents given its pivot, so that when we move it
-
 	// get the renderImage AFTER we load it in...
 	SDL_Texture* renderImage = actor.transform.showBack ? actor.view.imageBack.image : actor.view.imageFront.image;
 

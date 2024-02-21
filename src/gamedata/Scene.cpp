@@ -31,44 +31,45 @@ void Scene::instantiateActor(Actor& actor) {
 void Scene::moveNPCActors(bool flipping) {
 	for (Actor* actor : motionActors) {
 		if (std::abs(actor->velocity.x) > 0 || std::abs(actor->velocity.y) > 0) {
-			// if no collision, keep moving
-			// if collision, reverse velocity (move next turn)
-			// make sure they're moving so we don't do unnecessary calculations
-			// if no collision, keep moving
-			if (!wouldCollide(actor)) {
-				moveActor(actor, flipping);
-			}
-			else {
-				actor->velocity = -actor->velocity;
-			}
+			moveActor(actor, flipping);
 		}
 	}
 }
 
 void Scene::moveActor(Actor* actor, bool flipping) {
-	// remove the old position of the actor from the unordered_map
-	locToActors[actor->transform.pos].erase(actor);
-	actorsByRenderOrder.erase(actor);
+	// NPCS: if collision, reverse velocity + move next turn
+	// PLAYER: if collision, don't move
+	// if no collision, keep moving
+	if (!wouldCollide(actor)) {
+		// remove the old position of the actor from the unordered_map
+		locToActors[actor->transform.pos].erase(actor);
+		actorsByRenderOrder.erase(actor);
 
-	// update the instanced actor's positon
-	actor->transform.pos += actor->velocity;
+		// update the instanced actor's position if they wouldn't collide
+		actor->transform.pos += actor->velocity;
 
-	actor->handleFlipping(flipping);
-	actor->handleVerticalFacing();
+		actor->handleFlipping(flipping);
+		actor->handleVerticalFacing();
 
-	if (actor->movementBounce) {
-		actor->transform.bounce = true;
+		if (actor->movementBounce) {
+			actor->transform.bounce = true;
+		}
+
+		// add the updated position of the actor to the unordered_map
+		locToActors[actor->transform.pos].emplace(actor);
+		actorsByRenderOrder.emplace(actor);
 	}
-
-	// add the updated position of the actor to the unordered_map
-	locToActors[actor->transform.pos].emplace(actor);
-	actorsByRenderOrder.emplace(actor);
+	else if (actor->name != "player") {
+		actor->velocity = -actor->velocity;
+	}
 }
 
 bool Scene::wouldCollide(Actor* actor) {
 	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
 
-	
+	if (!actor->boxCollider.hasExtents() && actor->boxCollider.size != glm::vec2(0)) {
+		actor->boxCollider.calculateExtents(actor->view.pivot);
+	}
 
 	return false;
 }
