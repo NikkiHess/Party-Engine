@@ -14,5 +14,5 @@ public:
 	AudioPlayer(ResourceManager& resourceManager) : resourceManager(resourceManager) {}
 
 	// play a sound "loops" times
-	void play(std::string& soundName, int loops);
+	void play(std::string& soundName, int loops, int channel);
 };

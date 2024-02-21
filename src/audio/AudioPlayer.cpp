@@ -11,7 +11,7 @@
 
 #define WSL 0
 
-void AudioPlayer::play(std::string& soundName, int loops) {
+void AudioPlayer::play(std::string& soundName, int loops, int channel) {
 // this code will not compile if WSL is defined above
 #if not(defined(WSL) && WSL == 1)
 	std::string soundPath = "resources/audio/" + soundName; // the audio's path
@@ -41,6 +41,6 @@ void AudioPlayer::play(std::string& soundName, int loops) {
 	}
 
 	// Play the sound on channel 0, looping indefinitely
-	AudioHelper::Mix_PlayChannel498(0, sound, loops);
+	AudioHelper::Mix_PlayChannel498(channel, sound, loops);
 #endif
 }

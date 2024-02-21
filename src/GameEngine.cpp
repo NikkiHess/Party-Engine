@@ -39,7 +39,7 @@ void Engine::start() {
     RenderingConfig& renderConfig = configManager.renderingConfig;
 
     if (gameConfig.introMusic != "" && !introMusicPlaying) {
-        audioPlayer.play(gameConfig.introMusic, -1);
+        audioPlayer.play(gameConfig.introMusic, -1, 0);
         introMusicPlaying = true;
     }
 
@@ -167,7 +167,7 @@ void Engine::start() {
 
             // start the gameplay music if there is any
             if (!gameplayMusicPlaying && gameConfig.gameplayMusic != "") {
-                audioPlayer.play(gameConfig.gameplayMusic, -1);
+                audioPlayer.play(gameConfig.gameplayMusic, -1, 0);
                 gameplayMusicPlaying = true;
             }
 
@@ -191,7 +191,7 @@ void Engine::start() {
                         if (!gameOverMusicPlaying &&
                             gameConfig.gameOverGoodAudio != "") {
                             AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(gameConfig.gameOverGoodAudio, 0);
+                            audioPlayer.play(gameConfig.gameOverGoodAudio, 0, 0);
                             gameOverMusicPlaying = true;
                             gameOver = true;
                         }
@@ -200,7 +200,7 @@ void Engine::start() {
                         if (!gameOverMusicPlaying &&
                             gameConfig.gameOverBadAudio != "") {
                             AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(gameConfig.gameOverBadAudio, 0);
+                            audioPlayer.play(gameConfig.gameOverBadAudio, 0, 0);
                             gameOverMusicPlaying = true;
                             gameOver = true;
                         }
