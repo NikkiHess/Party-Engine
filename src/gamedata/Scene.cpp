@@ -16,6 +16,7 @@
 // dependencies
 #include "Helper.h"
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_rect.h"
 
 void Scene::instantiateActor(Actor& actor) {
 	glm::vec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);
@@ -133,6 +134,28 @@ std::map<std::string, Actor*> Scene::moveActor(Actor* actor, bool flipping) {
 	return outDialogue;
 }
 
+bool hasInterSectionForLinux(const SDL_FRect* actorRect, const SDL_FRect* otherRect) {
+	// If one rectangle is completely to the left of the other
+	if (actorRect->x + actorRect->w <= otherRect->x)
+		return false;
+
+	// If one rectangle is completely to the right of the other 
+	if (otherRect->x + otherRect->w <= actorRect->x)
+		return false;
+
+	// If one rectangle is completely above the other
+	if (actorRect->y + actorRect->h <= otherRect->y)
+		return false;
+
+	// If one rectangle is completely below the other
+	if (otherRect->y + otherRect->h <= actorRect->y)
+		return false;
+
+	// If we reach here, the rectangles must overlap
+	return true;
+}
+
+
 void Scene::checkCollisions(Actor* actor) {
 	if (!actor->boxCollider)
 		return;
@@ -146,10 +169,18 @@ void Scene::checkCollisions(Actor* actor) {
 		// make sure we don't check an actor against itself
 		if (!other->boxCollider || actor == other) continue;
 
+#ifndef __linux__
 		if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
 			actor->collidingActorsThisFrame.emplace(other);
 			other->collidingActorsThisFrame.emplace(actor);
 		}
+#endif
+#ifdef __linux__
+		if (hasInterSectionForLinux(&future, &*other->boxCollider)) {
+			actor->collidingActorsThisFrame.emplace(other);
+			other->collidingActorsThisFrame.emplace(actor);
+		}
+#endif
 	}
 }
 
@@ -166,10 +197,18 @@ void Scene::checkTriggers(Actor* actor) {
 		// make sure we don't check an actor against itself
 		if (!other->boxTrigger || actor == other) continue;
 
-		if (SDL_HasIntersectionF(&future, &*other->boxTrigger)) {
-			actor->triggeringActorsThisFrame.emplace(other);
-			other->triggeringActorsThisFrame.emplace(actor);
+#ifndef __linux__
+		if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
+			actor->collidingActorsThisFrame.emplace(other);
+			other->collidingActorsThisFrame.emplace(actor);
 		}
+#endif
+#ifdef __linux__
+		if (hasInterSectionForLinux(&future, &*other->boxCollider)) {
+			actor->collidingActorsThisFrame.emplace(other);
+			other->collidingActorsThisFrame.emplace(actor);
+		}
+#endif
 	}
 }
 
