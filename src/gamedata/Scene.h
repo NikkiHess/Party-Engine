@@ -46,7 +46,7 @@ public:
 	// and update its render order
 	void moveActor(Actor* actor, bool flipping);
 
-	// check if an actor would collide given its velocity
+	// check if an actor would collide if it moved (given velocity)
 	bool wouldCollide(Actor* actor);
 
 	~Scene() {

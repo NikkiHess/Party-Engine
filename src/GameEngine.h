@@ -62,6 +62,12 @@ public:
 	}
 
 	// start the main game loop
+	// LOOP ORDER OF EVENTS:
+	// 1.) Input
+	// 2.) Move Actors if applicable
+	// 3.) Render
+	// 4.) Handle render events
+	// 5.) Present render (flip)
 	void start();
 
 	// shut down the main game loop

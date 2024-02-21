@@ -68,12 +68,7 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 bool Scene::wouldCollide(Actor* actor) {
 	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
 
-	auto it = locToActors.find(futurePosition);
-	if (it != locToActors.end()) {
-		for (Actor* other : it->second) {
-
-		}
-	}
+	
 
 	return false;
 }

@@ -40,6 +40,8 @@ void Engine::start() {
         introMusicPlaying = true;
     }
 
+    // main game loop
+    // see function declaration/docs for order of events
     while (isGameRunning) {
         // Process events
         SDL_Event sdlEvent;

@@ -35,18 +35,42 @@ public:
 	TextureImage imageFront;
 	TextureImage imageBack;
 	// the pivot offset, in pixels
-	OptionalVec2 pivotOffset;
+	OptionalVec2 pivot;
+};
+
+class BoxCollider {
+public:
+	// the size of the box collider (uses x and y)
+	glm::vec2 size;
+
+	// the extents of the box collider (relative)
+	// calculated if and only if size is received
+	glm::vec4 extents;
+
+	// calculates extents given pivot and size
+	void calculateExtents(OptionalVec2& pivot);
 };
 
 class Actor {
 public:
+	// the actor's name
 	std::string name = "";
+	// the actor's transform
 	Transform transform;
+	// the actor's view (imageFront, imageBack, and pivot)
 	View view;
+	// the actor's x and y velocity
 	glm::vec2 velocity;
 	bool movementBounce = false;
+
+	// the actor's dialogue
 	std::string nearbyDialogue = "", contactDialogue = "";
+
+	// the actor's location in the render order
 	int renderOrder = 0;
+
+	// the actor's collider properties
+	BoxCollider boxCollider;
 
 	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise

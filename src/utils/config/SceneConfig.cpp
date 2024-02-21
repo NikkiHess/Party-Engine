@@ -44,26 +44,35 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 
 // initializes an actor from its configuration
 void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
+	// handle name
 	if (actorDocument.HasMember("name"))
 		actor.name = actorDocument["name"].GetString();
 
+	// handle view
 	if (actorDocument.HasMember("view_image"))
 		actor.view.imageFront.name = actorDocument["view_image"].GetString();
 	if (actorDocument.HasMember("view_image_back"))
 		actor.view.imageBack.name = actorDocument["view_image_back"].GetString();
 	if (actorDocument.HasMember("view_pivot_offset_x")) {
-		if (!actor.view.pivotOffset.x.has_value())
-			actor.view.pivotOffset.x = std::make_optional<float>();
+		if (!actor.view.pivot.x.has_value())
+			actor.view.pivot.x = std::make_optional<float>();
 
-		actor.view.pivotOffset.x = actorDocument["view_pivot_offset_x"].GetFloat();
+		actor.view.pivot.x = actorDocument["view_pivot_offset_x"].GetFloat();
 	}
 	if (actorDocument.HasMember("view_pivot_offset_y")) {
-		if (!actor.view.pivotOffset.y.has_value())
-			actor.view.pivotOffset.y = std::make_optional<float>();
+		if (!actor.view.pivot.y.has_value())
+			actor.view.pivot.y = std::make_optional<float>();
 
-		actor.view.pivotOffset.y = actorDocument["view_pivot_offset_y"].GetFloat();
+		actor.view.pivot.y = actorDocument["view_pivot_offset_y"].GetFloat();
 	}
 
+	// handle collisions
+	if (actorDocument.HasMember("box_collider_width"))
+		actor.boxCollider.size.x = actorDocument["box_collider_width"].GetFloat();
+	if (actorDocument.HasMember("box_collider_height"))
+		actor.boxCollider.size.y = actorDocument["box_collider_height"].GetFloat();
+
+	// handle transform
 	if (actorDocument.HasMember("transform_position_x"))
 		actor.transform.pos.x = actorDocument["transform_position_x"].GetFloat();
 	if (actorDocument.HasMember("transform_position_y"))
@@ -75,6 +84,7 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 	if (actorDocument.HasMember("transform_rotation_degrees"))
 		actor.transform.rotationDegrees = actorDocument["transform_rotation_degrees"].GetFloat();
 
+	// handle motion
 	if (actorDocument.HasMember("vel_x"))
 		actor.velocity.x = actorDocument["vel_x"].GetFloat();
 	if (actorDocument.HasMember("vel_y"))
@@ -83,11 +93,13 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 		actor.movementBounce = actorDocument["movement_bounce_enabled"].GetBool();
 	}
 
+	// handle dialogue
 	if (actorDocument.HasMember("nearby_dialogue"))
 		actor.nearbyDialogue = actorDocument["nearby_dialogue"].GetString();
 	if (actorDocument.HasMember("contact_dialogue"))
 		actor.contactDialogue = actorDocument["contact_dialogue"].GetString();
 
+	// handle rendering
 	if (actorDocument.HasMember("render_order"))
 		actor.renderOrder = actorDocument["render_order"].GetInt();
 }
