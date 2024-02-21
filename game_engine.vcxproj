@@ -153,6 +153,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\gamedata\GameState.h" />
     <ClInclude Include="src\utils\config\RenderingConfig.h" />
     <ClInclude Include="src\utils\config\JsonUtils.h" />
     <ClInclude Include="src\utils\config\SceneConfig.h" />

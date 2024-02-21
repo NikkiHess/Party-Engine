@@ -6,10 +6,12 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <vector>
+#include <map>
 
 // my code
 #include "Actor.h"
 #include "../utils/config/RenderingConfig.h"
+#include "../gamedata/GameState.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -43,14 +45,17 @@ public:
 	void instantiateActor(Actor& actor);
 
 	// move all NPC actors in the scene
-	void moveAllActors(bool flipping);
+	GameState moveAllActors(bool flipping, GameState& currentState);
 
 	// move an actor according to its velocity
 	// and update its render order
-	void moveActor(Actor* actor, bool flipping);
+	std::map<std::string, Actor*> moveActor(Actor* actor, bool flipping);
 
 	// check if an actor would collide if it moved (given velocity)
 	void checkCollisions(Actor* actor);
+
+	// execute commands from the given dialogue
+	GameState executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState);
 
 	~Scene() {
 		locToActors.clear();

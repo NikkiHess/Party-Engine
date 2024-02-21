@@ -1,13 +1,21 @@
-#include "Actor.h"
-#include "Scene.h"
-
 // std library
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <map>
 
+// my code
+#include "GameState.h"
+#include "Actor.h"
+#include "Scene.h"
+#include "../utils/StringUtils.h"
+#include "../errors/Error.h"
+#include "../utils/ResourceManager.h"
+
+// dependencies
 #include "Helper.h"
+
 
 void Scene::instantiateActor(Actor& actor) {
 	glm::vec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);
@@ -33,20 +41,39 @@ void Scene::instantiateActor(Actor& actor) {
 	locToActors[actorPos].emplace(&actors.back());
 }
 
-void Scene::moveAllActors(bool flipping) {
+GameState Scene::moveAllActors(bool flipping, GameState& currentState) {
+	GameState outState = currentState;
+	std::map<std::string, Actor*> dialogue;
+
+	Actor* player = nullptr;
+
 	for (Actor* actor : motionActors) {
 		// possibly rendundant check, leaving it here just in case :)
 		if (std::abs(actor->velocity.x) > 0 || std::abs(actor->velocity.y) > 0) {
-			moveActor(actor, flipping);
+			std::map<std::string, Actor*> newDialogue = moveActor(actor, flipping);
+			for (auto& it : newDialogue) {
+				dialogue[it.first] = it.second;
+			}
 
 			if (actor->name == "player") {
+				player = actor;
 				actor->velocity = glm::vec2(0);
 			}
 		}
 	}
+
+	if (player) {
+		for (auto& it : dialogue) {
+			outState = executeCommands(player, it.second, it.first, player->health, currentState);
+		}
+	}
+
+	return outState;
 }
 
-void Scene::moveActor(Actor* actor, bool flipping) {
+std::map<std::string, Actor*> Scene::moveActor(Actor* actor, bool flipping) {
+	std::map<std::string, Actor*> outDialogue;
+
 	// check collisions
 	checkCollisions(actor);
 	// NPCS: if collision, reverse velocity + move next turn
@@ -75,6 +102,9 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 		// players stand still
 		if (actor->name == "player") {
 			actor->velocity = glm::vec2(0);
+
+			for (Actor* colliding : actor->collidingActorsThisFrame)
+				outDialogue[colliding->contactDialogue] = colliding;
 		}
 		// NPCs reverse velocity
 		else {
@@ -83,6 +113,8 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 	}
 
 	actor->collidingActorsThisFrame.clear();
+
+	return outDialogue;
 }
 
 void Scene::checkCollisions(Actor* actor) {
@@ -101,8 +133,39 @@ void Scene::checkCollisions(Actor* actor) {
 		if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
 			actor->collidingActorsThisFrame.emplace(other);
 			other->collidingActorsThisFrame.emplace(actor);
-			// can an actor collide with multiple in one frame?
-			//return;
 		}
 	}
+}
+
+GameState Scene::executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState) {
+	// if the player can take damage/game over, execute these commands
+	int cooldownOver = player->lastHealthDownFrame + player->healthDownCooldown;
+	if (Helper::GetFrameNumber() >= cooldownOver) {
+		if (dialogue.find("health down") != std::string::npos) {
+			// if decreasing the player's health makes it <= 0, return a lose state
+			--player->health;
+			// set this frame as the last time health was taken away
+			player->lastHealthDownFrame = Helper::GetFrameNumber();
+			if (player->health <= 0) {
+				return LOSE;
+			}
+		}
+		if (dialogue.find("game over") != std::string::npos) {
+			return LOSE;
+		}
+	}
+	if (dialogue.find("score up") != std::string::npos) {
+		// an NPC Actor may only trigger a score increase once
+		if (!trigger->triggeredScoreUp) {
+			++player->score;
+			trigger->triggeredScoreUp = true;
+		}
+	}
+	if (dialogue.find("you win") != std::string::npos) {
+		return WIN;
+	}
+	if (dialogue.find("proceed to") != std::string::npos) {
+		return PROCEED;
+	}
+	return currentState;
 }

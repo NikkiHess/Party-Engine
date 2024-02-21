@@ -2,6 +2,7 @@
 
 // std stuff
 #include <vector>
+#include <string>
 
 // my code
 #include "../gamedata/GameInfo.h"
@@ -55,9 +56,5 @@ public:
 
 	// render any dialogue from nearby Actors, returns the current GameState
 	// as a result of any dialogue commands executed via executeCommands
-	void renderDialogue(GameInfo& gameInfo);
-private:
-	// execute the commands contained in the dialogue string with the given
-	// Actor as a trigger
-	GameState executeCommands(Actor& trigger, const std::string& dialogue, GameInfo& gameInfo);
+	std::string renderNearbyDialogue(GameInfo& gameInfo);
 };

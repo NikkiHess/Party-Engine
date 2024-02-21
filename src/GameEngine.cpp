@@ -13,6 +13,7 @@
 #include "visuals/Renderer.h"
 #include "gamedata/Input.h"
 #include "gamedata/Direction.h"
+#include "utils/StringUtils.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -147,8 +148,10 @@ void Engine::start() {
                 gameplayMusicPlaying = true;
             }
 
+            int frame = Helper::GetFrameNumber();
+
             // move all actors according to their velocity
-            gameInfo.scene.moveAllActors(renderConfig.actorFlipping);
+            gameInfo.state = gameInfo.scene.moveAllActors(renderConfig.actorFlipping, gameInfo.state);
 
             // update the camera position to match where the player is (because all actors have moved by now)
             camera.update(gameInfo.player, renderConfig.easeFactor);
@@ -158,7 +161,7 @@ void Engine::start() {
 
             if (player) {
                 // render dialogue on top of the game
-                renderer.renderDialogue(gameInfo);
+                std::string dialogue = renderer.renderNearbyDialogue(gameInfo);
 
                 switch (state) {
                     case WIN:
@@ -179,9 +182,27 @@ void Engine::start() {
                             gameOver = true;
                         }
                         continue;
-                    case PROCEED:
+                    case PROCEED: {
+                        std::string sceneName = StringUtils::getWordAfterPhrase(dialogue, "proceed to");
+                        if (sceneName != "") {
+                            std::string scenePath = "resources/scenes/" + sceneName + ".scene";
+
+                            if (!resourceManager.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
+
+                            gameInfo.scene = Scene();
+                            gameInfo.scene.name = sceneName;
+                            // initialize the new scene immediately
+                            configManager.sceneConfig.parse(configManager.document, resourceManager, gameInfo.scene, configManager.gameConfig.hpImage);
+
+                            auto playerIt = std::find_if(gameInfo.scene.actors.begin(), gameInfo.scene.actors.end(), [](Actor actor) { return actor.name == "player"; });
+
+                            if (playerIt != gameInfo.scene.actors.end()) {
+                                gameInfo.player = &*playerIt;
+                            }
+                        }
                         state = NORMAL;
                         continue;
+                }
                     default:
                         break;
                 }

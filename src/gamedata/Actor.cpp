@@ -1,3 +1,7 @@
+// std library
+#include <cmath>
+
+// my code
 #include "Actor.h"
 
 void Actor::handleFlipping(bool flipping) {
@@ -83,8 +87,8 @@ glm::vec2 Actor::getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos
 void Actor::calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot) {
 	if (!boxColliderCalc) {
 		// pixel w and h
-		boxCollider->w *= renderConfig.pixelsPerUnit;
-		boxCollider->h *= renderConfig.pixelsPerUnit;
+		boxCollider->w = boxCollider->w * renderConfig.pixelsPerUnit * std::abs(transform.scale.x);
+		boxCollider->h = boxCollider->h * renderConfig.pixelsPerUnit * std::abs(transform.scale.y);
 	}
 
 	boxCollider->x = screenPos.x - boxCollider->w / 2.0f + pivot.x;

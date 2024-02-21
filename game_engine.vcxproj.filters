@@ -1272,6 +1272,9 @@
     <ClInclude Include="src\utils\OptionalVec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gamedata\GameState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp">
