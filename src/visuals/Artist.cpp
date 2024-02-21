@@ -4,6 +4,7 @@
 // my code
 #include "Artist.h"
 #include "Helper.h"
+#include "../gamedata/Actor.h"
 #include "../gamedata/GameInfo.h"
 
 #define COLLIDER_DEBUG 0
@@ -40,47 +41,12 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	SDL_Point pivot{
-		static_cast<int>(std::round(actor.view.pivot.x.value_or(frontSize.x * 0.5))),
-		static_cast<int>(std::round(actor.view.pivot.y.value_or(frontSize.y * 0.5)))
+		static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
+		static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
 	};
 
-	// camera center in pixel coordinates
-	glm::vec2 cameraCenter(
-		(renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor,
-		(renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor
-	);
-
-	// actor world position in pixel coordinates
-	glm::vec2 actorWorldPos(
-		(actor.transform.pos.x * renderConfig.pixelsPerUnit) - pivot.x,
-		(actor.transform.pos.y * renderConfig.pixelsPerUnit) - pivot.y
-	);
-
-	// actor position relative to the camera
-	glm::vec2 actorCameraRelativePos = actorWorldPos - glm::vec2(std::round(camera.pos.x), std::round(camera.pos.y));
-
-	// actor screen position, accounting for rendering at screen center
-	glm::vec2 actorScreenPos = cameraCenter + actorCameraRelativePos;
-
-#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
-	// Calculate the screen position of the actor's bounding box
-	glm::vec2 actorBoundingBoxPos = actorScreenPos - glm::vec2(extents.left, extents.top);
-
-	// Calculate the size of the bounding box
-	glm::ivec2 boundingBoxSize(extents.right - extents.left, extents.bottom - extents.top);
-
-	// Create an SDL_Rect for the bounding box
-	SDL_Rect boundingBoxRect = {
-		static_cast<int>(std::round(actorBoundingBoxPos.x)),
-		static_cast<int>(std::round(actorBoundingBoxPos.y)),
-		boundingBoxSize.x,
-		boundingBoxSize.y
-	};
-
-	// Draw the bounding box
-	SDL_SetRenderDrawColor(sdlRenderer, 255, 0, 0, 255); // Red color
-	SDL_RenderDrawRect(sdlRenderer, &boundingBoxRect);
-#endif
+	glm::vec2 actorWorldPos = actor.getWorldPos(renderConfig, pivot);
+	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, actorWorldPos, camera.pos);
 
 	// bounce :)
 	if (actor.movementBounce && actor.transform.bounce) {
@@ -112,6 +78,27 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 			&imageRect, actor.transform.rotationDegrees,
 			&pivot, flip
 		);
+	}
+
+#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
+	drawBoxCollider(actor, actorScreenPos, pivot);
+#endif
+}
+
+void Artist::drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, SDL_Point& pivot) {
+	RenderingConfig& renderConfig = configManager.renderingConfig;
+	if (actor.boxCollider.hasExtents()) {
+		// Create an SDL_Rect for the bounding box, based on the extents from pivot and the screen position
+		SDL_Rect boundingBoxRect = {
+			static_cast<int>(std::round(actorScreenPos.x + actor.boxCollider.extents.left.value())),
+			static_cast<int>(std::round(actorScreenPos.y - actor.boxCollider.extents.top.value())),
+			static_cast<int>(actor.boxCollider.size.x * renderConfig.pixelsPerUnit),
+			static_cast<int>(actor.boxCollider.size.y * renderConfig.pixelsPerUnit)
+		};
+
+		// Draw the bounding box
+		SDL_SetRenderDrawColor(sdlRenderer, 255, 0, 0, 255); // red
+		SDL_RenderDrawRect(sdlRenderer, &boundingBoxRect);
 	}
 }
 

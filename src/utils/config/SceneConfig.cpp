@@ -53,6 +53,8 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 		actor.view.imageFront.name = actorDocument["view_image"].GetString();
 	if (actorDocument.HasMember("view_image_back"))
 		actor.view.imageBack.name = actorDocument["view_image_back"].GetString();
+
+	// pivot is in pixels
 	if (actorDocument.HasMember("view_pivot_offset_x")) {
 		if (!actor.view.pivot.x.has_value())
 			actor.view.pivot.x = std::make_optional<float>();

@@ -52,6 +52,14 @@ void Actor::loadTextures(ResourceManager& resourceManager) {
 	}
 }
 
+glm::vec2 Actor::getWorldPos(RenderingConfig& renderConfig, SDL_Point& pivot) {
+	// actor world position in pixel coordinates
+	return {
+		(transform.pos.x * renderConfig.pixelsPerUnit) - pivot.x,
+		(transform.pos.y * renderConfig.pixelsPerUnit) - pivot.y
+	};
+}
+
 bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {
 	return actor1->id < actor2->id;
 }

@@ -3,15 +3,20 @@
 
 // my code
 #include "BoxCollider.h"
+#include "../utils/config/RenderingConfig.h"
 
-void BoxCollider::calculateExtents(OptionalVec2& pivot, glm::ivec2 actorFrontSize) {
-	// the center, determined by the pivot or the center of the actor's front
-	glm::vec2 center(pivot.x.value_or(actorFrontSize.x * 0.5f), pivot.y.value_or(actorFrontSize.y * 0.5f));
+void BoxCollider::calculateExtents(OptionalVec2& pivot, glm::ivec2 actorFrontSize, RenderingConfig& rc) {
+    glm::vec2 center = {
+        static_cast<int>(pivot.x.value_or(actorFrontSize.x / 2.0f)),
+        static_cast<int>(pivot.y.value_or(actorFrontSize.y / 2.0f))
+    };
 
-	extents.top = center.y - (size.y / 2);
-	extents.bottom = center.y + (size.y / 2);
-	extents.left = center.x - (size.x / 2);
-	extents.right = center.x + (size.x / 2);
+    // calculate the extents based on pivot and collider size
+    // the actor's pivot should act as the center of the box collider
+    extents.left = (size.x * rc.pixelsPerUnit / 2.0f) - center.x;
+    extents.right =  (size.x * rc.pixelsPerUnit / 2.0f) + center.x;
+    extents.top = (size.y * rc.pixelsPerUnit / 2.0f) - center.y;
+    extents.bottom = (size.y * rc.pixelsPerUnit / 2.0f) + center.y;
 }
 
 bool BoxCollider::hasExtents() {

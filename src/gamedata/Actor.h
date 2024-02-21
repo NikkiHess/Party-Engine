@@ -76,6 +76,22 @@ public:
 	void handleVerticalFacing();
 
 	void loadTextures(ResourceManager& resourceManager);
+
+	glm::vec2 getWorldPos(RenderingConfig& renderConfig, SDL_Point& pivot);
+
+	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 worldPos, glm::vec2 cameraPos) {
+		// camera center in pixel coordinates
+		glm::vec2 cameraCenter(
+			(renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor,
+			(renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor
+		);
+
+		// actor position relative to the camera
+		glm::vec2 actorCameraRelativePos = worldPos - glm::vec2(std::round(cameraPos.x), std::round(cameraPos.y));
+
+		// actor screen position, accounting for rendering at screen center
+		return cameraCenter + actorCameraRelativePos;
+	}
 };
 
 class ActorComparator {

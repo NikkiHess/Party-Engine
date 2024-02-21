@@ -32,6 +32,8 @@ public:
 	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder;
 	// actors that move, sorted by id
 	std::set<Actor*, ActorComparator> motionActors;
+	// actors that collide, sorted by id
+	std::set<Actor*, ActorComparator> collisionActors;
 	// location to actors map, actors at location sorted by id
 	std::unordered_map<glm::vec2, std::set<Actor*, ActorComparator>, HashLoc, HashLoc> locToActors;
 	std::string name;

@@ -5,10 +5,12 @@
 
 // my code
 #include "../utils/OptionalVec2.h"
+#include "../utils/config/RenderingConfig.h"
 
 // dependencies
 #include "glm/glm.hpp"
 
+// top, bottom, left, right
 struct Extents {
 	std::optional<float> top, bottom, left, right;
 };
@@ -27,7 +29,7 @@ public:
 	bool canCollide = false;
 
 	// calculates extents given actor pivot and box collider size
-	void calculateExtents(OptionalVec2& pivot, glm::ivec2 actorFrontSize);
+	void calculateExtents(OptionalVec2& pivot, glm::ivec2 actorFrontSize, RenderingConfig& rc);
 
 	// returns whether the collider has extents defined
 	// only returns true if all sides of the extents are defined

@@ -42,6 +42,18 @@ void Engine::start() {
         introMusicPlaying = true;
     }
 
+    for (Actor* actor : gameInfo.scene.collisionActors) {
+        // load actor's images early to calculate extents for collision
+        actor->loadTextures(resourceManager);
+
+        // if the actor can collide and the boxCollider has no extents, configure them
+        if (actor->boxCollider.canCollide && !actor->boxCollider.hasExtents()) {
+            actor->boxCollider.calculateExtents(actor->view.pivot, actor->view.imageFront.size, renderConfig);
+        }
+    }
+
+   
+
     // main game loop
     // see function declaration/docs for order of events
     while (isGameRunning) {

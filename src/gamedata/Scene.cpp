@@ -24,6 +24,11 @@ void Scene::instantiateActor(Actor& actor) {
 		}
 	}
 
+	// all actors that can collide need to be kept track of as well
+	if (actor.boxCollider.canCollide) {
+		collisionActors.emplace(&actors.back());
+	}
+
 	// insert the (location, actors) pair into the unordered map
 	locToActors[actorPos].emplace(&actors.back());
 }
@@ -66,15 +71,33 @@ void Scene::moveActor(Actor* actor, bool flipping, ResourceManager& resourceMana
 }
 
 bool Scene::wouldCollide(Actor* actor, ResourceManager& resourceManager) {
-	// load actor's images early to calculate extents if necessary
-	actor->loadTextures(resourceManager);
-
 	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
 
-	// if the actor can collide and the boxCollider has no extents, configure them
-	if (actor->boxCollider.canCollide && !actor->boxCollider.hasExtents()) {
-		actor->boxCollider.calculateExtents(actor->view.pivot, actor->view.imageFront.size);
-	}
+	/*Extents& acExtents = actor->boxCollider.extents;
+	Extents acPhysical = {
+		actor->transform.pos.y + acExtents.top.value(),
+		actor->transform.pos.y + acExtents.bottom.value(),
+		actor->transform.pos.x + acExtents.left.value(),
+		actor->transform.pos.x + acExtents.right.value()
+	};
+	for (Actor* other : collisionActors) {
+		if (other == actor) continue;
+
+		Extents& ocExtents = other->boxCollider.extents;
+		Extents ocPhysical = {
+			other->transform.pos.y + ocExtents.top.value(),
+			other->transform.pos.y + ocExtents.bottom.value(),
+			other->transform.pos.x + ocExtents.left.value(),
+			other->transform.pos.x + ocExtents.right.value()
+		};
+
+		if (acPhysical.right > ocPhysical.left && acPhysical.left < ocPhysical.right) {
+			if (acPhysical.bottom > ocPhysical.top && acPhysical.top < ocPhysical.bottom) {
+				std::cout << "coll " << actor->name << " and " << other->name << "\n";
+				return true;
+			}
+		}
+	}*/
 
 	return false;
 }

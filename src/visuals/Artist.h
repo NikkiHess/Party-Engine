@@ -31,6 +31,9 @@ public:
 
 	// draw an unchanging image on the screen
 	void drawActor(Actor& actor, Camera& camera);
+	
+	// draw an Actor's box collider on the screen
+	void drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, SDL_Point& pivot);
 
 	// draw text on the screen
 	void drawUIText(std::string& text, SDL_Color fontColor, glm::ivec2 pos);
