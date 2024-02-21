@@ -182,8 +182,10 @@ GameState Scene::executeCommands(Actor* player, Actor* trigger, const std::strin
 			trigger->lastAttackFrame = Helper::GetFrameNumber();
 
 			// show damage on player and attack on 
-			player->showDamage = true;
-			trigger->showAttack = true;
+			if(player->view.imageDamage.image)
+				player->showDamage = true;
+			if (trigger->view.imageAttack.image)
+				trigger->showAttack = true;
 
 			if (player->health <= 0) {
 				return LOSE;
