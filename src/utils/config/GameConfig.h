@@ -23,6 +23,8 @@ public:
 	std::string gameOverBadImage = "", gameOverBadAudio = "",
 		gameOverGoodImage = "", gameOverGoodAudio = "";
 
+	std::string damageSfx = "", scoreSfx = "";
+
 	float playerSpeed = 0.02f;
 
 	// initializes from game.config

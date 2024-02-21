@@ -12,6 +12,8 @@
 #include "Actor.h"
 #include "../utils/config/RenderingConfig.h"
 #include "../gamedata/GameState.h"
+#include "../utils/config/GameConfig.h"
+#include "../audio/AudioPlayer.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -49,7 +51,7 @@ public:
 	void instantiateActor(Actor& actor);
 
 	// move all NPC actors in the scene
-	GameState moveAllActors(bool flipping, GameState& currentState);
+	GameState moveAllActors(bool flipping, GameState& currentState, GameConfig& gameConfig, AudioPlayer& audioPlayer);
 
 	// move an actor according to its velocity
 	// and update its render order
@@ -62,6 +64,6 @@ public:
 	void checkTriggers(Actor* actor);
 
 	// execute commands from the given dialogue
-	GameState executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState);
+	GameState executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState, GameConfig& gameConfig, AudioPlayer& audioPlayer);
 };
 

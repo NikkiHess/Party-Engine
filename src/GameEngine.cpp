@@ -147,6 +147,12 @@ void Engine::start() {
             if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
                 // start by normalizing and multiplying by speed
                 player->velocity = glm::normalize(player->velocity) * player->speed;
+
+                // play step sfx every 20 frames
+                // maybe this works?
+                if (player->stepSfx != "" && Helper::GetFrameNumber() % 20 == 0) {
+                    audioPlayer.play(player->stepSfx, 0, Helper::GetFrameNumber() % 48 + 2);
+                }
             }
         }
 
@@ -174,7 +180,7 @@ void Engine::start() {
             int frame = Helper::GetFrameNumber();
 
             // move all actors according to their velocity
-            gameInfo.state = gameInfo.scene.moveAllActors(renderConfig.actorFlipping, gameInfo.state);
+            gameInfo.state = gameInfo.scene.moveAllActors(renderConfig.actorFlipping, gameInfo.state, gameConfig, audioPlayer);
 
             // update the camera position to match where the player is (because all actors have moved by now)
             camera.update(gameInfo.player, renderConfig.easeFactor);
@@ -282,6 +288,9 @@ int main(int argc, char* argv[]) {
 
 	// Initialize SDL_mixer
 	Mix_Init(MIX_INIT_OGG);
+
+    AudioHelper::Mix_AllocateChannels498(50);
+
 	// Open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 

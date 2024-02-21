@@ -109,6 +109,17 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 		actor.movementBounce = actorDocument["movement_bounce_enabled"].GetBool();
 	}
 
+	// sfx
+	if (actorDocument.HasMember("damage_sfx")) {
+		actor.damageSfx = actorDocument["damage_sfx"].GetString();
+	}
+	if (actorDocument.HasMember("step_sfx")) {
+		actor.stepSfx = actorDocument["step_sfx"].GetString();
+	}
+	if (actorDocument.HasMember("nearby_dialogue_sfx")) {
+		actor.nearbySfx = actorDocument["nearby_dialogue_sfx"].GetString();
+	}
+
 	// handle dialogue
 	if (actorDocument.HasMember("nearby_dialogue"))
 		actor.nearbyDialogue = actorDocument["nearby_dialogue"].GetString();

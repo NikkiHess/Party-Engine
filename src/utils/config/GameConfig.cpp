@@ -52,6 +52,11 @@ void GameConfig::parse(rapidjson::Document& document, ResourceManager& resourceM
 		gameplayMusic = document["gameplay_audio"].GetString();
 	}
 
+	// handle sfx
+	if (document.HasMember("score_sfx")) {
+		scoreSfx = document["score_sfx"].GetString();
+	}
+
 	// HUD
 	if (document.HasMember("hp_image")) {
 		std::string hpImageName = document["hp_image"].GetString();

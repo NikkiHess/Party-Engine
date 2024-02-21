@@ -83,6 +83,8 @@ public:
 	float speed = 0.02f;
 	bool showDamage = false;
 	bool showAttack = false;
+
+	std::string damageSfx = "", stepSfx = "", nearbySfx = "";
     
     Actor() : velocity(0, 0) {}
 

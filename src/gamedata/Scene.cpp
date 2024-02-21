@@ -43,7 +43,7 @@ void Scene::instantiateActor(Actor& actor) {
 	}
 }
 
-GameState Scene::moveAllActors(bool flipping, GameState& currentState) {
+GameState Scene::moveAllActors(bool flipping, GameState& currentState, GameConfig& gameConfig, AudioPlayer& audioPlayer) {
 	GameState outState = currentState;
 	std::map<std::string, Actor*> dialogue;
 
@@ -66,10 +66,13 @@ GameState Scene::moveAllActors(bool flipping, GameState& currentState) {
 
 	if (player) {
 		for (auto& it : dialogue) {
-			outState = executeCommands(player, it.second, it.first, player->health, currentState);
+			outState = executeCommands(player, it.second, it.first, player->health, currentState, gameConfig, audioPlayer);
 			// triggers print dialogue
 			if (it.second->nearbyDialogue == it.first) {
 				dialogueToRender.emplace(it.first);
+				if (it.second->nearbySfx != "") {
+					audioPlayer.play(it.second->nearbySfx, 0, Helper::GetFrameNumber() % 48 + 2);
+				}
 			}
 		}
 	}
@@ -170,13 +173,17 @@ void Scene::checkTriggers(Actor* actor) {
 	}
 }
 
-GameState Scene::executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState) {
+GameState Scene::executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState, GameConfig& gameConfig, AudioPlayer& audioPlayer) {
 	// if the player can take damage/game over, execute these commands
 	int cooldownOver = player->lastHealthDownFrame + player->healthDownCooldown;
 	if (Helper::GetFrameNumber() >= cooldownOver) {
 		if (dialogue.find("health down") != std::string::npos) {
 			// if decreasing the player's health makes it <= 0, return a lose state
 			--player->health;
+
+			if (player->damageSfx != "") {
+				audioPlayer.play(player->damageSfx, 0, Helper::GetFrameNumber() % 48 / 2);
+			}
 			// set this frame as the last time health was taken away
 			player->lastHealthDownFrame = Helper::GetFrameNumber();
 			trigger->lastAttackFrame = Helper::GetFrameNumber();
@@ -198,6 +205,9 @@ GameState Scene::executeCommands(Actor* player, Actor* trigger, const std::strin
 	if (dialogue.find("score up") != std::string::npos) {
 		// an NPC Actor may only trigger a score increase once
 		if (!trigger->triggeredScoreUp) {
+			if (gameConfig.scoreSfx != "") {
+				audioPlayer.play(gameConfig.scoreSfx, 0, 1);
+			}
 			++player->score;
 			trigger->triggeredScoreUp = true;
 		}
