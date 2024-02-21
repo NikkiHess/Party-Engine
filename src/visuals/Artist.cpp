@@ -46,14 +46,11 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	};
 
 	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, camera.pos);
-
-#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
-	drawBoxCollider(actor, actorScreenPos, pivot);
-#endif
+	glm::vec2 bouncePos = actorScreenPos;
 
 	// bounce :)
 	if (actor.movementBounce && actor.transform.bounce) {
-		actorScreenPos += glm::vec2(0, -glm::abs(glm::sin(Helper::GetFrameNumber() * 0.15f)) * 10.0f);
+		bouncePos += glm::vec2(0, -glm::abs(glm::sin(Helper::GetFrameNumber() * 0.15f)) * 10.0f);
 	}
 
 	// if actor is not within visible area, skip rendering (cull)
@@ -68,8 +65,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// center position around the pivot point
 	// offset by scaledSize if we flip either one
 	SDL_Rect imageRect = {
-		static_cast<int>(std::round(actorScreenPos.x)),
-		static_cast<int>(std::round(actorScreenPos.y)),
+		static_cast<int>(std::round(bouncePos.x)),
+		static_cast<int>(std::round(bouncePos.y)),
 		static_cast<int>(std::abs(scaledSize.x)),
 		static_cast<int>(std::abs(scaledSize.y))
 	};
@@ -77,12 +74,16 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	if (actor.view.imageFront.image) {
 		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
 		// render the actor image
-		SDL_RenderCopyEx(
+		Helper::SDL_RenderCopyEx498(actor.id, actor.name,
 			sdlRenderer, renderImage, nullptr,
 			&imageRect, actor.transform.rotationDegrees,
 			&pivotPoint, flip
 		);
 	}
+
+#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
+	drawBoxCollider(actor, actorScreenPos, pivot);
+#endif
 }
 
 void Artist::drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, glm::vec2& pivot) {

@@ -29,6 +29,7 @@
 #include "SDL2/SDL.h"
 
 enum InputStatus { NOT_INITIALIZED, INPUT_FILE_MISSING, INPUT_FILE_PRESENT };
+enum RenderLoggerStatus { RL_NOT_INITIALIZED, RL_NOT_ENABLED, RL_ENABLED };
 
 /* The Helper class contains mostly static functions / data, and doesn't need to be instanced. */
 /* Call the public static functions below via Helper::<function>() */
@@ -56,14 +57,19 @@ public:
 		if (IsAutograderMode())
 			flags &= ~SDL_RENDERER_PRESENTVSYNC; // VSync is disabled to let frames render faster in the autograder.
 
-		return ::SDL_CreateRenderer(window, index, flags);
+		SDL_Renderer* renderer = SDL_CreateRenderer(window, index, flags);
+
+		if (renderer == nullptr)
+			std::cerr << "Failed to create renderer : " << SDL_GetError() << std::endl;
+
+		return renderer;
 	}
 
 	/* Wrapper that will inject input events into the SDL Event Queue if a user input file is found */
 	/* This is what enables playback of inputs and game session replay. */
 	static int SDL_PollEvent498(SDL_Event* e) {
 		SDL_ConsiderInputFile();
-		return ::SDL_PollEvent(e);
+		return SDL_PollEvent(e);
 	}
 
 	/* Wrapper that renders to screen while also persisting to a .BMP file */
@@ -117,6 +123,50 @@ public:
 			::SDL_RenderPresent(renderer); // The autograder doesn't need to render to window.
 		SDL_Delay();
 		frame_number++;
+	}
+
+	/* FEATURE : Render Logger */
+	/* Create a "RENDERLOGGER" environmental variable, run your engine, and check render_logger.txt. */
+	/* Use to compare to test case render_logger.txt files to see what goes wrong in your render. */
+	static inline RenderLoggerStatus render_logger_mode = RL_NOT_INITIALIZED;
+	static inline std::ofstream render_logging_file;
+	static void CheckForRenderLoggerInit() {
+		/* Check environmental variable on first call. */
+		if (render_logger_mode == RL_NOT_INITIALIZED) {
+			if (IsLoggingMode()) {
+				render_logger_mode = RL_ENABLED;
+				std::ofstream file("render_logger.txt", std::ios::out); // delete the file if it exists.
+				render_logging_file.open("render_logger.txt", std::ios::app);
+
+				if (!render_logging_file.is_open()) {
+					std::cerr << "Error : Failed to open render_logger.txt for writing." << std::endl;
+				}
+
+				render_logging_file << "== RENDER LOGGER ==" << std::endl;
+				render_logging_file << "Study the following SDL_RenderCopyEx498() calls to debug render-related issues." << std::endl;
+				render_logging_file << "Enable render logger mode on your computer by setting the RENDERLOGGER environmental variable." << std::endl;
+				render_logging_file << "frame:actor_id:actor_name" << std::endl << std::endl;
+			}
+			else {
+				render_logger_mode = RL_NOT_ENABLED;
+			}
+		}
+	}
+
+	static void SDL_RenderCopyEx498(int actor_id, const std::string& actor_name, SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_Rect* dstrect, const double angle, const SDL_Point* center, const SDL_RendererFlip flip) {
+		/* Perform the render like normal. */
+		SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center, flip);
+
+		CheckForRenderLoggerInit();
+
+		/* Log render operation to file if necessary */
+		if (render_logger_mode == RL_ENABLED) {
+			float x_scale = 1;
+			float y_scale = 1;
+			SDL_RenderGetScale(renderer, &x_scale, &y_scale);
+
+			render_logging_file << GetFrameNumber() << ":" << actor_id << ":" << actor_name << " dstrect " << dstrect->x << " " << dstrect->y << " " << dstrect->w << " " << dstrect->h << " angle " << angle << " center " << center->x << " " << center->y << " flip " << flip << " renderscale " << x_scale << " " << y_scale << std::endl;
+		}
 	}
 
 private:
@@ -208,12 +258,12 @@ private:
 		}
 	}
 
-	static bool IsAutograderMode() {
+	static bool IsEnvVariableSet(const char* env_variable_name) {
 		/* Visual C++ does not like std::getenv */
 #ifdef _WIN32
 		char* val = nullptr;
 		size_t length = 0;
-		_dupenv_s(&val, &length, "AUTOGRADER");
+		_dupenv_s(&val, &length, env_variable_name);
 		if (val) {
 			free(val);
 			return true;
@@ -222,7 +272,7 @@ private:
 			return false;
 		}
 #else
-		const char* autograder_mode_env_variable = std::getenv("AUTOGRADER");
+		const char* autograder_mode_env_variable = std::getenv(env_variable_name);
 		if (autograder_mode_env_variable)
 			return true;
 		else
@@ -230,6 +280,14 @@ private:
 #endif
 
 		return false;
+	}
+
+	static bool IsAutograderMode() {
+		return IsEnvVariableSet("AUTOGRADER");
+	}
+
+	static bool IsLoggingMode() {
+		return IsEnvVariableSet("RENDERLOGGER");
 	}
 
 	/* The engine will aim for 60fps (16ms per frame) during a normal play session. */
@@ -348,5 +406,6 @@ private:
 #define SDL_CreateRenderer DO_NOT_USE_VANILLA_SDL_CreateRenderer_USE_HELPER_SDL_CreateRenderer498_INSTEAD
 #define SDL_PollEvent DO_NOT_USE_SDL_PollEvent_DIRECTLY_USE_HELPER_SDL_PollEvent498_INSTEAD
 #define SDL_RenderPresent DO_NOT_USE_VANILLA_SDL_RenderPresent_USE_HELPER_SDL_RenderPresent498_INSTEAD
+#define SDL_RenderCopyEx DO_NOT_USE_VANILLA_SDL_RenderCopyEx_USE_HELPER_SDL_RenderCopyEx498_INSTEAD
 
 #endif

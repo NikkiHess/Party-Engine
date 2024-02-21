@@ -3,6 +3,7 @@
 // std library
 #include <optional>
 #include <string>
+#include <unordered_set>
 
 // my code
 #include "../utils/ResourceManager.h"
@@ -57,11 +58,9 @@ public:
 	// the actor's location in the render order
 	int renderOrder = 0;
 
-	// the actor's collider properties
-	//BoxCollider boxCollider;
-
 	std::optional<SDL_FRect> boxCollider;
 	bool boxColliderCalc = false;
+	std::unordered_set<Actor*> collidingActorsThisFrame;
 
 	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise
@@ -82,33 +81,9 @@ public:
 
 	glm::vec2 getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos);
 
-	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos) {
-		glm::vec2 worldPos = getWorldPos(renderConfig, transform.pos);
-		// camera center in pixel coordinates
-		glm::vec2 cameraCenter(
-			(renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor,
-			(renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor
-		);
+	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos);
 
-		// actor position relative to the camera
-		glm::vec2 actorCameraRelativePos = worldPos - glm::vec2(std::round(cameraPos.x), std::round(cameraPos.y));
-
-		// actor screen position, accounting for rendering at screen center
-		return cameraCenter + actorCameraRelativePos;
-	}
-
-	void calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot) {
-		if (!boxColliderCalc) {
-			// pixel w and h
-			boxCollider->w *= renderConfig.pixelsPerUnit;
-			boxCollider->h *= renderConfig.pixelsPerUnit;
-		}
-
-		boxCollider->x = screenPos.x - boxCollider->w / 2.0f + pivot.x;
-		boxCollider->y = screenPos.y - boxCollider->h / 2.0f + pivot.y;
-
-		boxColliderCalc = true;
-	}
+	void calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot);
 };
 
 class ActorComparator {

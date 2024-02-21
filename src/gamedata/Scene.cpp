@@ -47,10 +47,12 @@ void Scene::moveAllActors(bool flipping) {
 }
 
 void Scene::moveActor(Actor* actor, bool flipping) {
+	// check collisions
+	checkCollisions(actor);
 	// NPCS: if collision, reverse velocity + move next turn
 	// PLAYER: if collision, don't move
 	// if no collision, keep moving
-	if (!wouldCollide(actor)) {
+	if (actor->collidingActorsThisFrame.size() == 0) {
 		// remove the old position of the actor from the unordered_map
 		locToActors[actor->transform.pos].erase(actor);
 		actorsByRenderOrder.erase(actor);
@@ -69,17 +71,26 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 		locToActors[actor->transform.pos].emplace(actor);
 		actorsByRenderOrder.emplace(actor);
 	}
-	else if (actor->name != "player") {
-		actor->velocity = -actor->velocity;
+	else {
+		// players stand still
+		if (actor->name == "player") {
+			actor->velocity = glm::vec2(0);
+		}
+		// NPCs reverse velocity
+		else {
+			actor->velocity = -actor->velocity;
+		}
 	}
+
+	actor->collidingActorsThisFrame.clear();
 }
 
-bool Scene::wouldCollide(Actor* actor) {
+void Scene::checkCollisions(Actor* actor) {
 	if (!actor->boxCollider)
-		return false;
+		return;
 
 	SDL_FRect future = *actor->boxCollider;
-	// multiply by pixels-per-unit
+	// multiply by pixels-per-unit because velocity is in scene units
 	future.x += actor->velocity.x * 100;
 	future.y += actor->velocity.y * 100;
 
@@ -88,9 +99,10 @@ bool Scene::wouldCollide(Actor* actor) {
 		if (!other->boxCollider || actor == other) continue;
 
 		if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
-			return true;
+			actor->collidingActorsThisFrame.emplace(other);
+			other->collidingActorsThisFrame.emplace(actor);
+			// can an actor collide with multiple in one frame?
+			//return;
 		}
 	}
-
-	return false;
 }

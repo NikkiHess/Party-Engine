@@ -50,7 +50,7 @@ public:
 	void moveActor(Actor* actor, bool flipping);
 
 	// check if an actor would collide if it moved (given velocity)
-	bool wouldCollide(Actor* actor);
+	void checkCollisions(Actor* actor);
 
 	~Scene() {
 		locToActors.clear();

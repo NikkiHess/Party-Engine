@@ -108,7 +108,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 	std::vector<std::string> dialogue; // the dialogue to be printed
 	std::vector<Actor*> nearby;
 
-	// loop over nearby locations and see if there are actors there, if so, play their dialogue
+	/*// loop over nearby locations and see if there are actors there, if so, play their dialogue
 	// these actors SHOULD already be in order considering locToActors uses a set of actors in order of id
 	for (int y = -1; y <= 1; ++y) {
 		for (int x = -1; x <= 1; ++x) {
@@ -156,7 +156,7 @@ void Renderer::renderDialogue(GameInfo& gameInfo) {
 				}
 			}
 		}
-	}
+	}*/
 
 	for (size_t i = 0; i < dialogue.size(); ++i) {
 		artist.drawUIText(
