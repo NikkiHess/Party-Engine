@@ -83,6 +83,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 
 #if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
 	drawBoxCollider(actor, actorScreenPos, pivot);
+	drawBoxTrigger(actor, actorScreenPos, pivot);
 #endif
 }
 
@@ -106,7 +107,29 @@ void Artist::drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, glm::vec2&
 
 		SDL_SetRenderDrawColor(sdlRenderer, 255, 0, 0, 255); // red
 		SDL_RenderDrawRect(sdlRenderer, &iRect);
+	}
+}
 
+void Artist::drawBoxTrigger(Actor& actor, glm::vec2& actorScreenPos, glm::vec2& pivot) {
+	if (actor.boxTrigger.has_value()) {
+		RenderingConfig& renderConfig = configManager.renderingConfig;
+
+		glm::vec2 center{
+			static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
+			static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
+		};
+
+		actor.calculateBoxTrigger(renderConfig, actorScreenPos, center);
+
+		SDL_Rect iRect = {
+			static_cast<int>(actor.boxTrigger->x),
+			static_cast<int>(actor.boxTrigger->y),
+			static_cast<int>(actor.boxTrigger->w),
+			static_cast<int>(actor.boxTrigger->h),
+		};
+
+		SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 255, 255); // blue
+		SDL_RenderDrawRect(sdlRenderer, &iRect);
 	}
 }
 

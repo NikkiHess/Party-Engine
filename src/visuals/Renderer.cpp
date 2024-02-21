@@ -105,10 +105,14 @@ void Renderer::renderHUD(GameInfo& gameInfo) {
 	}
 }
 
-std::string Renderer::renderNearbyDialogue(GameInfo& gameInfo) {
+std::string Renderer::renderDialogue(GameInfo& gameInfo) {
 	std::vector<std::string> dialogue; // the dialogue to be printed
 	std::stringstream dialogueStream;
 
+	for (std::string line : gameInfo.scene.dialogueToRender) {
+		dialogue.push_back(line);
+		dialogueStream << line << "\n";
+	}
 
 	for (size_t i = 0; i < dialogue.size(); ++i) {
 		artist.drawUIText(

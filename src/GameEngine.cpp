@@ -57,6 +57,20 @@ void Engine::start() {
         }
     }
 
+    for (Actor* actor : gameInfo.scene.triggerActors) {
+        // load actor's images early to calculate extents for triggers
+        actor->loadTextures(resourceManager);
+
+        // if the actor can collide and the boxTrigger has no extents, configure them
+        if (actor->boxCollider) {
+            glm::vec2 center{
+                actor->view.pivot.x.value_or(actor->view.imageFront.size.x * 0.5),
+                actor->view.pivot.y.value_or(actor->view.imageFront.size.y * 0.5)
+            };
+            actor->calculateBoxTrigger(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
+        }
+    }
+
    
 
     // main game loop
@@ -87,6 +101,15 @@ void Engine::start() {
             };
 
             actor->calculateBoxCollider(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
+        }
+
+        for (Actor* actor : gameInfo.scene.triggerActors) {
+            glm::vec2 center{
+            static_cast<int>(std::round(actor->view.pivot.x.value_or(actor->view.imageFront.size.x * 0.5))),
+            static_cast<int>(std::round(actor->view.pivot.y.value_or(actor->view.imageFront.size.y * 0.5)))
+            };
+
+            actor->calculateBoxTrigger(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
         }
 
         // intro button handling handling
@@ -161,7 +184,7 @@ void Engine::start() {
 
             if (player) {
                 // render dialogue on top of the game
-                std::string dialogue = renderer.renderNearbyDialogue(gameInfo);
+                std::string dialogue = renderer.renderDialogue(gameInfo);
 
                 switch (state) {
                     case WIN:

@@ -37,6 +37,12 @@ public:
 	std::set<Actor*, ActorComparator> motionActors;
 	// actors that collide, sorted by id
 	std::set<Actor*, ActorComparator> collisionActors;
+
+	// actors that collide, sorted by id
+	std::set<Actor*, ActorComparator> triggerActors;
+	// dialogue we need to render
+	std::unordered_set<std::string> dialogueToRender;
+
 	// location to actors map, actors at location sorted by id
 	std::unordered_map<glm::vec2, std::set<Actor*, ActorComparator>, HashLoc, HashLoc> locToActors;
 	std::string name;
@@ -53,6 +59,9 @@ public:
 
 	// check if an actor would collide if it moved (given velocity)
 	void checkCollisions(Actor* actor);
+
+	// check if an actor would trigger if it moved (given velocity)
+	void checkTriggers(Actor* actor);
 
 	// execute commands from the given dialogue
 	GameState executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState);

@@ -75,6 +75,13 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 		actor.boxCollider->w = actorDocument["box_collider_width"].GetFloat();
 		actor.boxCollider->h = actorDocument["box_collider_height"].GetFloat();
 	}
+	// handle trigger
+	// BOTH of these must be defined for collisions to happen
+	if (actorDocument.HasMember("box_trigger_width") && actorDocument.HasMember("box_trigger_height")) {
+		actor.boxTrigger = std::make_optional<SDL_FRect>();
+		actor.boxTrigger->w = actorDocument["box_trigger_width"].GetFloat();
+		actor.boxTrigger->h = actorDocument["box_trigger_height"].GetFloat();
+	}
 
 	// handle transform
 	if (actorDocument.HasMember("transform_position_x"))

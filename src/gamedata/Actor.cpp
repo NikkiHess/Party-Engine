@@ -97,6 +97,19 @@ void Actor::calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screen
 	boxColliderCalc = true;
 }
 
+void Actor::calculateBoxTrigger(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot) {
+	if (!boxTriggerCalc) {
+		// pixel w and h
+		boxTrigger->w = boxTrigger->w * renderConfig.pixelsPerUnit * std::abs(transform.scale.x);
+		boxTrigger->h = boxTrigger->h * renderConfig.pixelsPerUnit * std::abs(transform.scale.y);
+	}
+
+	boxTrigger->x = screenPos.x - boxTrigger->w / 2.0f + pivot.x;
+	boxTrigger->y = screenPos.y - boxTrigger->h / 2.0f + pivot.y;
+
+	boxTriggerCalc = true;
+}
+
 bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {
 	return actor1->id < actor2->id;
 }

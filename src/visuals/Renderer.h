@@ -56,5 +56,5 @@ public:
 
 	// render any dialogue from nearby Actors, returns the current GameState
 	// as a result of any dialogue commands executed via executeCommands
-	std::string renderNearbyDialogue(GameInfo& gameInfo);
+	std::string renderDialogue(GameInfo& gameInfo);
 };

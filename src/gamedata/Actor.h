@@ -62,6 +62,10 @@ public:
 	bool boxColliderCalc = false;
 	std::unordered_set<Actor*> collidingActorsThisFrame;
 
+	std::optional<SDL_FRect> boxTrigger;
+	bool boxTriggerCalc = false;
+	std::unordered_set<Actor*> triggeringActorsThisFrame;
+
 	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise
 	int health = 3, score = 0;
@@ -84,6 +88,8 @@ public:
 	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos);
 
 	void calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot);
+
+	void calculateBoxTrigger(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot);
 };
 
 class ActorComparator {

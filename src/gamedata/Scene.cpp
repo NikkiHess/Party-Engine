@@ -37,6 +37,11 @@ void Scene::instantiateActor(Actor& actor) {
 		collisionActors.emplace(&actors.back());
 	}
 
+	// all actors that can trigger need to be kept track of as well
+	if (actor.boxTrigger) {
+		triggerActors.emplace(&actors.back());
+	}
+
 	// insert the (location, actors) pair into the unordered map
 	locToActors[actorPos].emplace(&actors.back());
 }
@@ -65,6 +70,10 @@ GameState Scene::moveAllActors(bool flipping, GameState& currentState) {
 	if (player) {
 		for (auto& it : dialogue) {
 			outState = executeCommands(player, it.second, it.first, player->health, currentState);
+			// triggers print dialogue
+			if (it.second->nearbyDialogue == it.first) {
+				dialogueToRender.emplace(it.first);
+			}
 		}
 	}
 
@@ -76,6 +85,10 @@ std::map<std::string, Actor*> Scene::moveActor(Actor* actor, bool flipping) {
 
 	// check collisions
 	checkCollisions(actor);
+
+	// check triggers
+	checkTriggers(actor);
+
 	// NPCS: if collision, reverse velocity + move next turn
 	// PLAYER: if collision, don't move
 	// if no collision, keep moving
@@ -112,6 +125,11 @@ std::map<std::string, Actor*> Scene::moveActor(Actor* actor, bool flipping) {
 		}
 	}
 
+	if (actor->triggeringActorsThisFrame.size() != 0) {
+		for (Actor* triggering : actor->triggeringActorsThisFrame)
+			outDialogue[triggering->nearbyDialogue] = triggering;
+	}
+
 	actor->collidingActorsThisFrame.clear();
 
 	return outDialogue;
@@ -133,6 +151,26 @@ void Scene::checkCollisions(Actor* actor) {
 		if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
 			actor->collidingActorsThisFrame.emplace(other);
 			other->collidingActorsThisFrame.emplace(actor);
+		}
+	}
+}
+
+void Scene::checkTriggers(Actor* actor) {
+	if (!actor->boxTrigger)
+		return;
+
+	SDL_FRect future = *actor->boxTrigger;
+	// multiply by pixels-per-unit because velocity is in scene units
+	future.x += actor->velocity.x * 100;
+	future.y += actor->velocity.y * 100;
+
+	for (Actor* other : triggerActors) {
+		// make sure we don't check an actor against itself
+		if (!other->boxTrigger || actor == other) continue;
+
+		if (SDL_HasIntersectionF(&future, &*other->boxTrigger)) {
+			actor->triggeringActorsThisFrame.emplace(other);
+			other->triggeringActorsThisFrame.emplace(actor);
 		}
 	}
 }
