@@ -198,13 +198,13 @@ void Scene::checkTriggers(Actor* actor) {
 		if (!other->boxTrigger || actor == other) continue;
 
 #ifndef __linux__
-		if (SDL_HasIntersectionF(&future, &*other->boxTrigger)) {
+		if (SDL_HasIntersectionF(&future, &*other->boxCollider)) {
 			actor->collidingActorsThisFrame.emplace(other);
 			other->collidingActorsThisFrame.emplace(actor);
 		}
 #endif
 #ifdef __linux__
-		if (hasInterSectionForLinux(&future, &*other->boxTrigger)) {
+		if (hasInterSectionForLinux(&future, &*other->boxCollider)) {
 			actor->collidingActorsThisFrame.emplace(other);
 			other->collidingActorsThisFrame.emplace(actor);
 		}
