@@ -22,7 +22,6 @@ public:
 
 	// whether the actor is currently flipped (attempting move west)
 	bool flipped = false;
-	bool showBack = false;
 	bool bounce = false;
 };
 
@@ -34,8 +33,12 @@ public:
 };
 
 struct View {
+	// the various images used
 	TextureImage imageFront;
 	TextureImage imageBack;
+	TextureImage imageDamage;
+	TextureImage imageAttack;
+
 	// the pivot offset, in pixels
 	OptionalVec2 pivot;
 };
@@ -51,6 +54,7 @@ public:
 	// the actor's x and y velocity
 	glm::vec2 velocity;
 	bool movementBounce = false;
+	bool showBack = false;
 
 	// the actor's dialogue
 	std::string nearbyDialogue = "", contactDialogue = "";
@@ -66,15 +70,19 @@ public:
 	bool boxTriggerCalc = false;
 	std::unordered_set<Actor*> triggeringActorsThisFrame;
 
+	int lastAttackFrame = -30;
+
+	int id = 0;
+	bool triggeredScoreUp = false;
+
 	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise
 	int health = 3, score = 0;
 	int lastHealthDownFrame = -180;
 	int healthDownCooldown = 180;
 	float speed = 0.02f;
-
-	int id = 0;
-	bool triggeredScoreUp = false;
+	bool showDamage = false;
+	bool showAttack = false;
     
     Actor() : velocity(0, 0) {}
 

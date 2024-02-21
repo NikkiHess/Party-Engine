@@ -43,8 +43,6 @@ public:
 	// dialogue we need to render
 	std::unordered_set<std::string> dialogueToRender;
 
-	// location to actors map, actors at location sorted by id
-	std::unordered_map<glm::vec2, std::set<Actor*, ActorComparator>, HashLoc, HashLoc> locToActors;
 	std::string name;
 
 	// instantiate an actor in the scene
@@ -65,9 +63,5 @@ public:
 
 	// execute commands from the given dialogue
 	GameState executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState);
-
-	~Scene() {
-		locToActors.clear();
-	}
 };
 

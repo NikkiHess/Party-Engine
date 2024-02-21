@@ -15,12 +15,34 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// if the actor's textures haven't been loaded, do so
 	actor.loadTextures(resourceManager);
 
-	// get the actor's image front/back size
-	glm::ivec2 size = actor.transform.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
-	glm::ivec2 frontSize(actor.view.imageFront.size);
+	// get the actor's image front/back/attack/damage size
+	glm::ivec2 size = actor.view.imageFront.size;
+	SDL_Texture* renderImage = actor.view.imageFront.image;
 
-	// get the renderImage AFTER we load it in...
-	SDL_Texture* renderImage = actor.transform.showBack ? actor.view.imageBack.image : actor.view.imageFront.image;
+	if (actor.showAttack) {
+		if (Helper::GetFrameNumber() < actor.lastAttackFrame + 30) {
+			size = actor.view.imageAttack.size;
+			renderImage = actor.view.imageAttack.image;
+		}
+		else {
+			actor.showAttack = false;
+		}
+	}
+	else if (actor.showDamage) {
+		if (Helper::GetFrameNumber() < actor.lastHealthDownFrame + 30) {
+			size = actor.view.imageDamage.size;
+			renderImage = actor.view.imageDamage.image;
+		}
+		else {
+			actor.showDamage = false;
+		}
+	}
+	else if (actor.showBack) {
+		size = actor.view.imageBack.size;
+		renderImage = actor.view.imageBack.image;
+	}
+
+	glm::ivec2 frontSize(actor.view.imageFront.size);
 
 	// scale size using actor.transform.scale
 	// also flip on x if the actor is flipped at the moment
@@ -41,8 +63,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	glm::vec2 pivot{
-		static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
-		static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
+		static_cast<int>(std::round(actor.view.pivot.x.value_or(frontSize.x * 0.5))),
+		static_cast<int>(std::round(actor.view.pivot.y.value_or(frontSize.y * 0.5)))
 	};
 
 	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, camera.pos);
@@ -71,6 +93,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 		static_cast<int>(std::abs(scaledSize.y))
 	};
 
+	// only render the player if they have an imageFront, because they have to
 	if (actor.view.imageFront.image) {
 		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
 		// render the actor image

@@ -5,7 +5,6 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
 		scene.actors.reserve(docActors.Size());
-		scene.locToActors.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
 			Actor actor;
 
@@ -67,6 +66,12 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 
 		actor.view.pivot.y = actorDocument["view_pivot_offset_y"].GetFloat();
 	}
+
+	// images for attack and damage
+	if (actorDocument.HasMember("view_image_damage"))
+		actor.view.imageDamage.name = actorDocument["view_image_damage"].GetString();
+	if (actorDocument.HasMember("view_image_attack"))
+		actor.view.imageAttack.name = actorDocument["view_image_attack"].GetString();
 
 	// handle collisions
 	// BOTH of these must be defined for collisions to happen

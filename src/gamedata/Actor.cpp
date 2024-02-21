@@ -25,10 +25,10 @@ void Actor::handleVerticalFacing() {
 	if (view.imageBack.image) {
 		// velocity y is NEGATIVE if you go up
 		if (velocity.y < 0) {
-			transform.showBack = true;
+			showBack = true;
 		}
 		if (velocity.y > 0) {
-			transform.showBack = false;
+			showBack = false;
 		}
 	}
 }
@@ -42,6 +42,13 @@ void Actor::loadTextures(ResourceManager& resourceManager) {
 		view.imageBack.image = resourceManager.loadImageTexture(view.imageBack.name);
 	}
 
+	if (!view.imageDamage.image && view.imageDamage.name != "") {
+		view.imageDamage.image = resourceManager.loadImageTexture(view.imageDamage.name);
+	}
+	if (!view.imageAttack.image && view.imageAttack.name != "") {
+		view.imageAttack.image = resourceManager.loadImageTexture(view.imageAttack.name);
+	}
+
 	// get the actor's image front/back size
 	glm::ivec2 size(0);
 
@@ -53,6 +60,14 @@ void Actor::loadTextures(ResourceManager& resourceManager) {
 	if (view.imageBack.size == glm::ivec2(0)) {
 		SDL_QueryTexture(view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
 		view.imageBack.size = size;
+	}
+	if (view.imageDamage.size == glm::ivec2(0)) {
+		SDL_QueryTexture(view.imageDamage.image, nullptr, nullptr, &size.x, &size.y);
+		view.imageDamage.size = size;
+	}
+	if (view.imageAttack.size == glm::ivec2(0)) {
+		SDL_QueryTexture(view.imageAttack.image, nullptr, nullptr, &size.x, &size.y);
+		view.imageAttack.size = size;
 	}
 }
 

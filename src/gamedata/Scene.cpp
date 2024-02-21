@@ -41,9 +41,6 @@ void Scene::instantiateActor(Actor& actor) {
 	if (actor.boxTrigger) {
 		triggerActors.emplace(&actors.back());
 	}
-
-	// insert the (location, actors) pair into the unordered map
-	locToActors[actorPos].emplace(&actors.back());
 }
 
 GameState Scene::moveAllActors(bool flipping, GameState& currentState) {
@@ -94,7 +91,6 @@ std::map<std::string, Actor*> Scene::moveActor(Actor* actor, bool flipping) {
 	// if no collision, keep moving
 	if (actor->collidingActorsThisFrame.size() == 0) {
 		// remove the old position of the actor from the unordered_map
-		locToActors[actor->transform.pos].erase(actor);
 		actorsByRenderOrder.erase(actor);
 
 		// update the instanced actor's position if they wouldn't6 collide
@@ -108,7 +104,6 @@ std::map<std::string, Actor*> Scene::moveActor(Actor* actor, bool flipping) {
 		}
 
 		// add the updated position of the actor to the unordered_map
-		locToActors[actor->transform.pos].emplace(actor);
 		actorsByRenderOrder.emplace(actor);
 	}
 	else {
@@ -184,6 +179,12 @@ GameState Scene::executeCommands(Actor* player, Actor* trigger, const std::strin
 			--player->health;
 			// set this frame as the last time health was taken away
 			player->lastHealthDownFrame = Helper::GetFrameNumber();
+			trigger->lastAttackFrame = Helper::GetFrameNumber();
+
+			// show damage on player and attack on 
+			player->showDamage = true;
+			trigger->showAttack = true;
+
 			if (player->health <= 0) {
 				return LOSE;
 			}
