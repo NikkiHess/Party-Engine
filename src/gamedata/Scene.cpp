@@ -33,25 +33,25 @@ void Scene::instantiateActor(Actor& actor) {
 	locToActors[actorPos].emplace(&actors.back());
 }
 
-void Scene::moveNPCActors(bool flipping, ResourceManager& resourceManager) {
+void Scene::moveNPCActors(bool flipping, RenderingConfig& renderConfig, glm::vec2 cameraPos) {
 	for (Actor* actor : motionActors) {
 		// possibly rendundant check, leaving it here just in case :)
 		if (std::abs(actor->velocity.x) > 0 || std::abs(actor->velocity.y) > 0) {
-			moveActor(actor, flipping, resourceManager);
+			moveActor(actor, flipping, renderConfig, cameraPos);
 		}
 	}
 }
 
-void Scene::moveActor(Actor* actor, bool flipping, ResourceManager& resourceManager) {
+void Scene::moveActor(Actor* actor, bool flipping, RenderingConfig& renderConfig, glm::vec2 cameraPos) {
 	// NPCS: if collision, reverse velocity + move next turn
 	// PLAYER: if collision, don't move
 	// if no collision, keep moving
-	if (!wouldCollide(actor, resourceManager)) {
+	if (!wouldCollide(actor, renderConfig, cameraPos)) {
 		// remove the old position of the actor from the unordered_map
 		locToActors[actor->transform.pos].erase(actor);
 		actorsByRenderOrder.erase(actor);
 
-		// update the instanced actor's position if they wouldn't collide
+		// update the instanced actor's position if they wouldn't6 collide
 		actor->transform.pos += actor->velocity;
 
 		actor->handleFlipping(flipping);
@@ -70,34 +70,21 @@ void Scene::moveActor(Actor* actor, bool flipping, ResourceManager& resourceMana
 	}
 }
 
-bool Scene::wouldCollide(Actor* actor, ResourceManager& resourceManager) {
+bool Scene::wouldCollide(Actor* actor, RenderingConfig& renderConfig, glm::vec2 cameraPos) {
 	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
+	
+	Extents aBox = actor->boxCollider.getScreenExtents(renderConfig, actor->getScreenPos(renderConfig, actor->getWorldPos(renderConfig, futurePosition), cameraPos));
+	Actor* other = *collisionActors.begin();
+	//for (Actor* other : collisionActors) {
+		Extents oBox = other->boxCollider.getScreenExtents(renderConfig, other->getScreenPos(renderConfig, other->getWorldPos(renderConfig, other->transform.pos), cameraPos));
 
-	/*Extents& acExtents = actor->boxCollider.extents;
-	Extents acPhysical = {
-		actor->transform.pos.y + acExtents.top.value(),
-		actor->transform.pos.y + acExtents.bottom.value(),
-		actor->transform.pos.x + acExtents.left.value(),
-		actor->transform.pos.x + acExtents.right.value()
-	};
-	for (Actor* other : collisionActors) {
-		if (other == actor) continue;
-
-		Extents& ocExtents = other->boxCollider.extents;
-		Extents ocPhysical = {
-			other->transform.pos.y + ocExtents.top.value(),
-			other->transform.pos.y + ocExtents.bottom.value(),
-			other->transform.pos.x + ocExtents.left.value(),
-			other->transform.pos.x + ocExtents.right.value()
-		};
-
-		if (acPhysical.right > ocPhysical.left && acPhysical.left < ocPhysical.right) {
-			if (acPhysical.bottom > ocPhysical.top && acPhysical.top < ocPhysical.bottom) {
-				std::cout << "coll " << actor->name << " and " << other->name << "\n";
+		if (aBox.right > oBox.left && aBox.left < oBox.right) {
+			if (aBox.bottom > oBox.top && aBox.top < oBox.bottom) {
+				std::cout << "collision\n";
 				return true;
 			}
 		}
-	}*/
+	//}
 
 	return false;
 }

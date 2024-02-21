@@ -77,7 +77,7 @@ public:
 
 	void loadTextures(ResourceManager& resourceManager);
 
-	glm::vec2 getWorldPos(RenderingConfig& renderConfig, SDL_Point& pivot);
+	glm::vec2 getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos);
 
 	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 worldPos, glm::vec2 cameraPos) {
 		// camera center in pixel coordinates

@@ -34,4 +34,6 @@ public:
 	// returns whether the collider has extents defined
 	// only returns true if all sides of the extents are defined
 	bool hasExtents();
+
+	Extents getScreenExtents(RenderingConfig& rc, glm::vec2 actorScreenPos);
 };

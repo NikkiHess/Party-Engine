@@ -9,6 +9,7 @@
 
 // my code
 #include "Actor.h"
+#include "../utils/config/RenderingConfig.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -42,14 +43,14 @@ public:
 	void instantiateActor(Actor& actor);
 
 	// move all NPC actors in the scene
-	void moveNPCActors(bool flipping, ResourceManager& resourceManager);
+	void moveNPCActors(bool flipping, RenderingConfig& renderConfig, glm::vec2 cameraPos);
 
 	// move an actor according to its velocity
 	// and update its render order
-	void moveActor(Actor* actor, bool flipping, ResourceManager& resourceManager);
+	void moveActor(Actor* actor, bool flipping, RenderingConfig& renderConfig, glm::vec2 cameraPos);
 
 	// check if an actor would collide if it moved (given velocity)
-	bool wouldCollide(Actor* actor, ResourceManager& resourceManager);
+	bool wouldCollide(Actor* actor, RenderingConfig& renderConfig, glm::vec2 cameraPos);
 
 	~Scene() {
 		locToActors.clear();

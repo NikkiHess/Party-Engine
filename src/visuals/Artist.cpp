@@ -40,13 +40,17 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
-	SDL_Point pivot{
+	glm::vec2 pivot{
 		static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
 		static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
 	};
 
-	glm::vec2 actorWorldPos = actor.getWorldPos(renderConfig, pivot);
+	glm::vec2 actorWorldPos = actor.getWorldPos(renderConfig, actor.transform.pos);
 	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, actorWorldPos, camera.pos);
+
+#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
+	drawBoxCollider(actor, actorScreenPos, pivot);
+#endif
 
 	// bounce :)
 	if (actor.movementBounce && actor.transform.bounce) {
@@ -72,28 +76,25 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	};
 
 	if (actor.view.imageFront.image) {
+		SDL_Point pivotPoint = { pivot.x, pivot.y };
 		// render the actor image
 		SDL_RenderCopyEx(
 			sdlRenderer, renderImage, nullptr,
 			&imageRect, actor.transform.rotationDegrees,
-			&pivot, flip
+			&pivotPoint, flip
 		);
 	}
-
-#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
-	drawBoxCollider(actor, actorScreenPos, pivot);
-#endif
 }
 
-void Artist::drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, SDL_Point& pivot) {
+void Artist::drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, glm::vec2& pivot) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 	if (actor.boxCollider.hasExtents()) {
 		// Create an SDL_Rect for the bounding box, based on the extents from pivot and the screen position
 		SDL_Rect boundingBoxRect = {
-			static_cast<int>(std::round(actorScreenPos.x + actor.boxCollider.extents.left.value())),
-			static_cast<int>(std::round(actorScreenPos.y - actor.boxCollider.extents.top.value())),
-			static_cast<int>(actor.boxCollider.size.x * renderConfig.pixelsPerUnit),
-			static_cast<int>(actor.boxCollider.size.y * renderConfig.pixelsPerUnit)
+			static_cast<int>(std::round(actor.boxCollider.getScreenExtents(renderConfig, actorScreenPos).left.value())),
+			static_cast<int>(std::round(actor.boxCollider.getScreenExtents(renderConfig, actorScreenPos).top.value())),
+			static_cast<int>(std::round(actor.boxCollider.size.x * renderConfig.pixelsPerUnit)),
+			static_cast<int>(std::round(actor.boxCollider.size.y * renderConfig.pixelsPerUnit))
 		};
 
 		// Draw the bounding box

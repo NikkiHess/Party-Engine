@@ -52,11 +52,16 @@ void Actor::loadTextures(ResourceManager& resourceManager) {
 	}
 }
 
-glm::vec2 Actor::getWorldPos(RenderingConfig& renderConfig, SDL_Point& pivot) {
+glm::vec2 Actor::getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos) {
+	glm::vec2 pivot{
+		static_cast<int>(std::round(view.pivot.x.value_or(view.imageFront.size.x * 0.5))),
+		static_cast<int>(std::round(view.pivot.y.value_or(view.imageFront.size.y * 0.5)))
+	};
+
 	// actor world position in pixel coordinates
 	return {
-		(transform.pos.x * renderConfig.pixelsPerUnit) - pivot.x,
-		(transform.pos.y * renderConfig.pixelsPerUnit) - pivot.y
+		(pos.x * renderConfig.pixelsPerUnit) - pivot.x,
+		(pos.y * renderConfig.pixelsPerUnit) - pivot.y
 	};
 }
 
