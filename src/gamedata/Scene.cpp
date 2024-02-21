@@ -15,7 +15,7 @@
 
 // dependencies
 #include "Helper.h"
-
+#include "SDL2/SDL.h"
 
 void Scene::instantiateActor(Actor& actor) {
 	glm::vec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);

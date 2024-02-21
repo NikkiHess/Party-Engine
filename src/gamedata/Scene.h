@@ -17,6 +17,7 @@
 
 // dependencies
 #include "glm/glm.hpp"
+#include "SDL2/SDL.h"
 
 class Scene
 {
