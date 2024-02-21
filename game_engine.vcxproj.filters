@@ -1269,10 +1269,10 @@
     <ClInclude Include="src\visuals\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\OptionalVec2.h">
+    <ClInclude Include="src\gamedata\BoxCollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamedata\BoxCollider.h">
+    <ClInclude Include="src\utils\OptionalVec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

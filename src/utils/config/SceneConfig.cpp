@@ -67,10 +67,13 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
 	}
 
 	// handle collisions
-	if (actorDocument.HasMember("box_collider_width"))
+	// BOTH of these must be defined for collisions to happen
+	if (actorDocument.HasMember("box_collider_width") && actorDocument.HasMember("box_collider_height")) {
 		actor.boxCollider.size.x = actorDocument["box_collider_width"].GetFloat();
-	if (actorDocument.HasMember("box_collider_height"))
 		actor.boxCollider.size.y = actorDocument["box_collider_height"].GetFloat();
+
+		actor.boxCollider.canCollide = true;
+	}
 
 	// handle transform
 	if (actorDocument.HasMember("transform_position_x"))

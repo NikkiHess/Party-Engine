@@ -67,8 +67,9 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 bool Scene::wouldCollide(Actor* actor) {
 	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
 
-	if (!actor->boxCollider.hasExtents() && actor->boxCollider.size != glm::vec2(0)) {
-		actor->boxCollider.calculateExtents(actor->view.pivot);
+	// if the actor can collide and the boxCollider has no extents, configure them
+	if (actor->boxCollider.canCollide && !actor->boxCollider.hasExtents()) {
+		actor->boxCollider.calculateExtents(actor->view.pivot, actor->view.imageFront.size);
 	}
 
 	return false;

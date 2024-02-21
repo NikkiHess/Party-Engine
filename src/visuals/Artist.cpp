@@ -9,9 +9,6 @@
 void Artist::drawActor(Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
-	// get the actor's image front/back size
-	glm::ivec2 size(0);
-
 	// check if the actor's images need to be loaded
 	if (!actor.view.imageFront.image && actor.view.imageFront.name != "") {
 		actor.view.imageFront.image = resourceManager.loadImageTexture(actor.view.imageFront.name);
@@ -19,6 +16,9 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	if (!actor.view.imageBack.image && actor.view.imageBack.name != "") {
 		actor.view.imageBack.image = resourceManager.loadImageTexture(actor.view.imageBack.name);
 	}
+
+	// get the actor's image front/back size
+	glm::ivec2 size(0);
 
 	// load in the images' sizes if they haven't been already
 	if (actor.view.imageFront.size == glm::ivec2(0)) {
@@ -29,6 +29,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 		SDL_QueryTexture(actor.view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
 		actor.view.imageBack.size = size;
 	}
+	
 	size = actor.transform.showBack ? actor.view.imageBack.size : actor.view.imageFront.size;
 	glm::ivec2 frontSize(actor.view.imageFront.size);
 

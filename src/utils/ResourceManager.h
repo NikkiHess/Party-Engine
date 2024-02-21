@@ -5,9 +5,6 @@
 #include <filesystem>
 #include <unordered_map>
 
-// my code
-#include "../gamedata/Actor.h"
-
 // dependencies
 #include "glm/glm.hpp"
 #include "SDL2/SDL_mixer.h"
