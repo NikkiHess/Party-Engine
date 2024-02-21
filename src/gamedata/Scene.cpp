@@ -28,19 +28,20 @@ void Scene::instantiateActor(Actor& actor) {
 	locToActors[actorPos].emplace(&actors.back());
 }
 
-void Scene::moveNPCActors(bool flipping) {
+void Scene::moveNPCActors(bool flipping, ResourceManager& resourceManager) {
 	for (Actor* actor : motionActors) {
+		// possibly rendundant check, leaving it here just in case :)
 		if (std::abs(actor->velocity.x) > 0 || std::abs(actor->velocity.y) > 0) {
-			moveActor(actor, flipping);
+			moveActor(actor, flipping, resourceManager);
 		}
 	}
 }
 
-void Scene::moveActor(Actor* actor, bool flipping) {
+void Scene::moveActor(Actor* actor, bool flipping, ResourceManager& resourceManager) {
 	// NPCS: if collision, reverse velocity + move next turn
 	// PLAYER: if collision, don't move
 	// if no collision, keep moving
-	if (!wouldCollide(actor)) {
+	if (!wouldCollide(actor, resourceManager)) {
 		// remove the old position of the actor from the unordered_map
 		locToActors[actor->transform.pos].erase(actor);
 		actorsByRenderOrder.erase(actor);
@@ -64,7 +65,10 @@ void Scene::moveActor(Actor* actor, bool flipping) {
 	}
 }
 
-bool Scene::wouldCollide(Actor* actor) {
+bool Scene::wouldCollide(Actor* actor, ResourceManager& resourceManager) {
+	// load actor's images early to calculate extents if necessary
+	actor->loadTextures(resourceManager);
+
 	glm::ivec2 futurePosition = actor->transform.pos + actor->velocity;
 
 	// if the actor can collide and the boxCollider has no extents, configure them

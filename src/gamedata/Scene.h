@@ -40,14 +40,14 @@ public:
 	void instantiateActor(Actor& actor);
 
 	// move all NPC actors in the scene
-	void moveNPCActors(bool flipping);
+	void moveNPCActors(bool flipping, ResourceManager& resourceManager);
 
 	// move an actor according to its velocity
 	// and update its render order
-	void moveActor(Actor* actor, bool flipping);
+	void moveActor(Actor* actor, bool flipping, ResourceManager& resourceManager);
 
 	// check if an actor would collide if it moved (given velocity)
-	bool wouldCollide(Actor* actor);
+	bool wouldCollide(Actor* actor, ResourceManager& resourceManager);
 
 	~Scene() {
 		locToActors.clear();

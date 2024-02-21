@@ -23,6 +23,7 @@ public:
 	AudioPlayer& audioPlayer;
 	Input& input;
 	Camera& camera;
+	ResourceManager& resourceManager;
 
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
@@ -39,7 +40,7 @@ public:
 	};
 
 	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input, Camera& camera, ResourceManager& resourceManager) 
-		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input), camera(camera) {
+		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input), camera(camera), resourceManager(resourceManager) {
 		
 		std::vector<Actor>& actors = configManager.sceneConfig.initialScene.actors;
 		// this finds the player in the actors map
