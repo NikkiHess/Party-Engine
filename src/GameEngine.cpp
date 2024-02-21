@@ -47,8 +47,12 @@ void Engine::start() {
         actor->loadTextures(resourceManager);
 
         // if the actor can collide and the boxCollider has no extents, configure them
-        if (actor->boxCollider.canCollide && !actor->boxCollider.hasExtents()) {
-            actor->boxCollider.calculateExtents(actor->view.pivot, actor->view.imageFront.size, renderConfig);
+        if (actor->boxCollider) {
+            glm::vec2 center{
+                static_cast<int>(std::round(actor->view.pivot.x.value_or(actor->view.imageFront.size.x * 0.5))),
+                static_cast<int>(std::round(actor->view.pivot.y.value_or(actor->view.imageFront.size.y * 0.5)))
+            };
+            actor->calculateBoxCollider(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
         }
     }
 
@@ -110,7 +114,7 @@ void Engine::start() {
             if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
                 // start by normalizing and multiplying by speed
                 player->velocity = glm::normalize(player->velocity) * player->speed;
-                gameInfo.scene.moveActor(player, renderConfig.actorFlipping, renderConfig, camera.pos);
+                gameInfo.scene.moveActor(player, renderConfig.actorFlipping);
             }
             player->velocity = glm::vec2(0);
         }
@@ -137,7 +141,7 @@ void Engine::start() {
             }
 
             // move all npc actors according to their velocity
-            gameInfo.scene.moveNPCActors(renderConfig.actorFlipping, renderConfig, camera.pos);
+            gameInfo.scene.moveNPCActors(renderConfig.actorFlipping);
 
             // update the camera position to match where the player is (because all actors have moved by now)
             camera.update(gameInfo.player, renderConfig.easeFactor);

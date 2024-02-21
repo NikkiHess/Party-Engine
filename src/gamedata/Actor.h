@@ -58,7 +58,10 @@ public:
 	int renderOrder = 0;
 
 	// the actor's collider properties
-	BoxCollider boxCollider;
+	//BoxCollider boxCollider;
+
+	std::optional<SDL_FRect> boxCollider;
+	bool boxColliderCalc = false;
 
 	// PLAYER ONLY PROPERTIES!!!
 	// should be unused otherwise
@@ -79,7 +82,8 @@ public:
 
 	glm::vec2 getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos);
 
-	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 worldPos, glm::vec2 cameraPos) {
+	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos) {
+		glm::vec2 worldPos = getWorldPos(renderConfig, transform.pos);
 		// camera center in pixel coordinates
 		glm::vec2 cameraCenter(
 			(renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor,
@@ -91,6 +95,19 @@ public:
 
 		// actor screen position, accounting for rendering at screen center
 		return cameraCenter + actorCameraRelativePos;
+	}
+
+	void calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot) {
+		if (!boxColliderCalc) {
+			// pixel w and h
+			boxCollider->w *= renderConfig.pixelsPerUnit;
+			boxCollider->h *= renderConfig.pixelsPerUnit;
+		}
+
+		boxCollider->x = screenPos.x - boxCollider->w / 2.0f + pivot.x;
+		boxCollider->y = screenPos.y - boxCollider->h / 2.0f + pivot.y;
+
+		boxColliderCalc = true;
 	}
 };
 

@@ -43,14 +43,14 @@ public:
 	void instantiateActor(Actor& actor);
 
 	// move all NPC actors in the scene
-	void moveNPCActors(bool flipping, RenderingConfig& renderConfig, glm::vec2 cameraPos);
+	void moveNPCActors(bool flipping);
 
 	// move an actor according to its velocity
 	// and update its render order
-	void moveActor(Actor* actor, bool flipping, RenderingConfig& renderConfig, glm::vec2 cameraPos);
+	void moveActor(Actor* actor, bool flipping);
 
 	// check if an actor would collide if it moved (given velocity)
-	bool wouldCollide(Actor* actor, RenderingConfig& renderConfig, glm::vec2 cameraPos);
+	bool wouldCollide(Actor* actor);
 
 	~Scene() {
 		locToActors.clear();
