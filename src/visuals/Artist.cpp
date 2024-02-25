@@ -7,47 +7,21 @@
 #include "../gamedata/Actor.h"
 #include "../gamedata/GameInfo.h"
 
-#define COLLIDER_DEBUG 0
-
 void Artist::drawActor(Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
 	// if the actor's textures haven't been loaded, do so
 	actor.loadTextures(resourceManager);
 
+	// get the render image to be used
+	SDL_Texture* renderImage = actor.view.image.image;
 	// get the actor's image front/back/attack/damage size
-	glm::ivec2 size = actor.view.imageFront.size;
-	SDL_Texture* renderImage = actor.view.imageFront.image;
-
-	if (actor.showAttack) {
-		if (Helper::GetFrameNumber() < actor.lastAttackFrame + 30) {
-			size = actor.view.imageAttack.size;
-			renderImage = actor.view.imageAttack.image;
-		}
-		else {
-			actor.showAttack = false;
-		}
-	}
-	else if (actor.showDamage) {
-		if (Helper::GetFrameNumber() < actor.lastHealthDownFrame + 30) {
-			size = actor.view.imageDamage.size;
-			renderImage = actor.view.imageDamage.image;
-		}
-		else {
-			actor.showDamage = false;
-		}
-	}
-	else if (actor.showBack) {
-		size = actor.view.imageBack.size;
-		renderImage = actor.view.imageBack.image;
-	}
-
-	glm::ivec2 frontSize(actor.view.imageFront.size);
+	glm::ivec2 size = actor.view.image.size;
 
 	// scale size using actor.transform.scale
 	// also flip on x if the actor is flipped at the moment
 	glm::vec2 scaledSize(
-		size.x * actor.transform.scale.x * (actor.transform.flipped ? -1 : 1),
+		size.x * actor.transform.scale.x,
 		size.y * actor.transform.scale.y
 	);
 
@@ -63,17 +37,12 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	glm::vec2 pivot{
-		static_cast<int>(std::round(actor.view.pivot.x.value_or(frontSize.x * 0.5))),
-		static_cast<int>(std::round(actor.view.pivot.y.value_or(frontSize.y * 0.5)))
+		static_cast<int>(std::round(actor.view.pivot.x.value_or(size.x * 0.5))),
+		static_cast<int>(std::round(actor.view.pivot.y.value_or(size.y * 0.5)))
 	};
 
 	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, camera.pos);
 	glm::vec2 bouncePos = actorScreenPos;
-
-	// bounce :)
-	if (actor.movementBounce && actor.transform.bounce) {
-		bouncePos += glm::vec2(0, -glm::abs(glm::sin(Helper::GetFrameNumber() * 0.15f)) * 10.0f);
-	}
 
 	// if actor is not within visible area, skip rendering (cull)
 	// include a little buffer so as not to cull too early
@@ -94,7 +63,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	};
 
 	// only render the player if they have an imageFront, because they have to
-	if (actor.view.imageFront.image) {
+	if (renderImage) {
 		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
 		// render the actor image
 		Helper::SDL_RenderCopyEx498(actor.id, actor.name,
@@ -102,57 +71,6 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 			&imageRect, actor.transform.rotationDegrees,
 			&pivotPoint, flip
 		);
-	}
-
-#if defined(COLLIDER_DEBUG) && COLLIDER_DEBUG == 1
-	drawBoxCollider(actor, actorScreenPos, pivot);
-	drawBoxTrigger(actor, actorScreenPos, pivot);
-#endif
-}
-
-void Artist::drawBoxCollider(Actor& actor, glm::vec2& actorScreenPos, glm::vec2& pivot) {
-	if (actor.boxCollider.has_value()) {
-		RenderingConfig& renderConfig = configManager.renderingConfig;
-
-		glm::vec2 center{
-			static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
-			static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
-		};
-
-		actor.calculateBoxCollider(renderConfig, actorScreenPos, center);
-
-		SDL_Rect iRect = {
-			static_cast<int>(actor.boxCollider->x),
-			static_cast<int>(actor.boxCollider->y),
-			static_cast<int>(actor.boxCollider->w),
-			static_cast<int>(actor.boxCollider->h),
-		};
-
-		SDL_SetRenderDrawColor(sdlRenderer, 255, 0, 0, 255); // red
-		SDL_RenderDrawRect(sdlRenderer, &iRect);
-	}
-}
-
-void Artist::drawBoxTrigger(Actor& actor, glm::vec2& actorScreenPos, glm::vec2& pivot) {
-	if (actor.boxTrigger.has_value()) {
-		RenderingConfig& renderConfig = configManager.renderingConfig;
-
-		glm::vec2 center{
-			static_cast<int>(std::round(actor.view.pivot.x.value_or(actor.view.imageFront.size.x * 0.5))),
-			static_cast<int>(std::round(actor.view.pivot.y.value_or(actor.view.imageFront.size.y * 0.5)))
-		};
-
-		actor.calculateBoxTrigger(renderConfig, actorScreenPos, center);
-
-		SDL_Rect iRect = {
-			static_cast<int>(actor.boxTrigger->x),
-			static_cast<int>(actor.boxTrigger->y),
-			static_cast<int>(actor.boxTrigger->w),
-			static_cast<int>(actor.boxTrigger->h),
-		};
-
-		SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 255, 255); // blue
-		SDL_RenderDrawRect(sdlRenderer, &iRect);
 	}
 }
 

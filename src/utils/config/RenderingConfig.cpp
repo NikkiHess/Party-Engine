@@ -14,8 +14,6 @@ void RenderingConfig::parse(rapidjson::Document& renderingDocument) {
 		easeFactor = renderingDocument["cam_ease_factor"].GetFloat();
 	if (renderingDocument.HasMember("cam_offset_x"))
 		cameraOffset.x = renderingDocument["cam_offset_x"].GetFloat() * zoomFactor;
-	if (renderingDocument.HasMember("cam_offset_y"))
-		cameraOffset.y = renderingDocument["cam_offset_y"].GetFloat() * zoomFactor;
 
 	// handle bg color
 	if (renderingDocument.HasMember("clear_color_r"))
@@ -24,8 +22,4 @@ void RenderingConfig::parse(rapidjson::Document& renderingDocument) {
 		clearColor.g = renderingDocument["clear_color_g"].GetInt();
 	if (renderingDocument.HasMember("clear_color_b"))
 		clearColor.b = renderingDocument["clear_color_b"].GetInt();
-
-	// handle actor animations
-	if (renderingDocument.HasMember("x_scale_actor_flipping_on_movement"))
-		actorFlipping = renderingDocument["x_scale_actor_flipping_on_movement"].GetBool();
 }

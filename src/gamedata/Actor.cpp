@@ -4,77 +4,26 @@
 // my code
 #include "Actor.h"
 
-void Actor::handleFlipping(bool flipping) {
-	// if we don't do flipping, don't bother
-	if (!flipping)
-		return;
-
-	// if move west, flip actor
-	// if move east, unflip actor
-	// do NOT handle 0 velocity, keep flip the same in that case
-	if (velocity.x < 0) {
-		transform.flipped = true;
-	}
-	else if (velocity.x > 0) {
-		transform.flipped = false;
-	}
-}
-
-void Actor::handleVerticalFacing() {
-	// if we have a view_image_back
-	if (view.imageBack.image) {
-		// velocity y is NEGATIVE if you go up
-		if (velocity.y < 0) {
-			showBack = true;
-		}
-		if (velocity.y > 0) {
-			showBack = false;
-		}
-	}
-}
-
 void Actor::loadTextures(ResourceManager& resourceManager) {
 	// check if the actor's images need to be loaded
-	if (!view.imageFront.image && view.imageFront.name != "") {
-		view.imageFront.image = resourceManager.loadImageTexture(view.imageFront.name);
-	}
-	if (!view.imageBack.image && view.imageBack.name != "") {
-		view.imageBack.image = resourceManager.loadImageTexture(view.imageBack.name);
-	}
-
-	if (!view.imageDamage.image && view.imageDamage.name != "") {
-		view.imageDamage.image = resourceManager.loadImageTexture(view.imageDamage.name);
-	}
-	if (!view.imageAttack.image && view.imageAttack.name != "") {
-		view.imageAttack.image = resourceManager.loadImageTexture(view.imageAttack.name);
+	if (!view.image.image && view.image.name != "") {
+		view.image.image = resourceManager.loadImageTexture(view.image.name);
 	}
 
 	// get the actor's image front/back size
 	glm::ivec2 size(0);
 
 	// load in the images' sizes if they haven't been already
-	if (view.imageFront.size == glm::ivec2(0)) {
-		SDL_QueryTexture(view.imageFront.image, nullptr, nullptr, &size.x, &size.y);
-		view.imageFront.size = size;
-	}
-	if (view.imageBack.size == glm::ivec2(0)) {
-		SDL_QueryTexture(view.imageBack.image, nullptr, nullptr, &size.x, &size.y);
-		view.imageBack.size = size;
-	}
-	if (view.imageDamage.size == glm::ivec2(0)) {
-		SDL_QueryTexture(view.imageDamage.image, nullptr, nullptr, &size.x, &size.y);
-		view.imageDamage.size = size;
-	}
-	if (view.imageAttack.size == glm::ivec2(0)) {
-		SDL_QueryTexture(view.imageAttack.image, nullptr, nullptr, &size.x, &size.y);
-		view.imageAttack.size = size;
+	if (view.image.size == glm::ivec2(0)) {
+		SDL_QueryTexture(view.image.image, nullptr, nullptr, &size.x, &size.y);
+		view.image.size = size;
 	}
 }
 
 glm::vec2 Actor::getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos) {
 	glm::vec2 pivot{
-		static_cast<int>(std::round(view.pivot.x.value_or(view.imageFront.size.x * 0.5))),
-		static_cast<int>(std::round(view.pivot.y.value_or(view.imageFront.size.y * 0.5)))
+		static_cast<int>(std::round(view.pivot.x.value_or(view.image.size.x * 0.5))),
+		static_cast<int>(std::round(view.pivot.y.value_or(view.image.size.y * 0.5)))
 	};
 
 	// actor world position in pixel coordinates
@@ -97,32 +46,6 @@ glm::vec2 Actor::getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos
 
 	// actor screen position, accounting for rendering at screen center
 	return cameraCenter + actorCameraRelativePos;
-}
-
-void Actor::calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot) {
-	if (!boxColliderCalc) {
-		// pixel w and h
-		boxCollider->w = boxCollider->w * renderConfig.pixelsPerUnit * std::abs(transform.scale.x);
-		boxCollider->h = boxCollider->h * renderConfig.pixelsPerUnit * std::abs(transform.scale.y);
-	}
-
-	boxCollider->x = screenPos.x - boxCollider->w / 2.0f + pivot.x;
-	boxCollider->y = screenPos.y - boxCollider->h / 2.0f + pivot.y;
-
-	boxColliderCalc = true;
-}
-
-void Actor::calculateBoxTrigger(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot) {
-	if (!boxTriggerCalc) {
-		// pixel w and h
-		boxTrigger->w = boxTrigger->w * renderConfig.pixelsPerUnit * std::abs(transform.scale.x);
-		boxTrigger->h = boxTrigger->h * renderConfig.pixelsPerUnit * std::abs(transform.scale.y);
-	}
-
-	boxTrigger->x = screenPos.x - boxTrigger->w / 2.0f + pivot.x;
-	boxTrigger->y = screenPos.y - boxTrigger->h / 2.0f + pivot.y;
-
-	boxTriggerCalc = true;
 }
 
 bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {

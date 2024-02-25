@@ -45,16 +45,6 @@ public:
 		artist.resourceManager.sdlRenderer = sdlRenderer;
 	}
 
-	// render the intro images one by one, proceed when enter has been pressed
-	void renderIntro(size_t& index);
-
 	// render the current view, returns the current GameState
 	void render(GameInfo& gameInfo);
-
-	// render the HUD
-	void renderHUD(GameInfo& gameInfo);
-
-	// render any dialogue from nearby Actors, returns the current GameState
-	// as a result of any dialogue commands executed via executeCommands
-	std::string renderDialogue(GameInfo& gameInfo);
 };

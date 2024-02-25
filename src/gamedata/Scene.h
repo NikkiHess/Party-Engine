@@ -57,14 +57,5 @@ public:
 	// move an actor according to its velocity
 	// and update its render order
 	std::map<std::string, Actor*> moveActor(Actor* actor, bool flipping);
-
-	// check if an actor would collide if it moved (given velocity)
-	void checkCollisions(Actor* actor);
-
-	// check if an actor would trigger if it moved (given velocity)
-	void checkTriggers(Actor* actor);
-
-	// execute commands from the given dialogue
-	GameState executeCommands(Actor* player, Actor* trigger, const std::string& dialogue, int& health, GameState& currentState, GameConfig& gameConfig, AudioPlayer& audioPlayer);
 };
 

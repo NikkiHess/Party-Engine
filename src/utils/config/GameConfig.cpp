@@ -46,42 +46,4 @@ void GameConfig::parse(rapidjson::Document& document, ResourceManager& resourceM
 	if (document.HasMember("intro_bgm")) {
 		introMusic = document["intro_bgm"].GetString();
 	}
-
-	// handle the gameplay
-	if (document.HasMember("gameplay_audio")) {
-		gameplayMusic = document["gameplay_audio"].GetString();
-	}
-
-	// handle sfx
-	if (document.HasMember("score_sfx")) {
-		scoreSfx = document["score_sfx"].GetString();
-	}
-
-	// HUD
-	if (document.HasMember("hp_image")) {
-		std::string hpImageName = document["hp_image"].GetString();
-		std::string hpImagePath = "resources/images/" + hpImageName + ".png";
-
-		if (!resourceManager.fileExists(hpImagePath)) Error::error(hpImageName + " missing");
-
-		hpImage = hpImageName;
-	}
-
-	// handle the game over sequence
-	if (document.HasMember("game_over_bad_image")) {
-		gameOverBadImage = document["game_over_bad_image"].GetString();
-	}
-	if (document.HasMember("game_over_bad_audio")) {
-		gameOverBadAudio = document["game_over_bad_audio"].GetString();
-	}
-	if (document.HasMember("game_over_good_image")) {
-		gameOverGoodImage = document["game_over_good_image"].GetString();
-	}
-	if (document.HasMember("game_over_good_audio")) {
-		gameOverGoodAudio = document["game_over_good_audio"].GetString();
-	}
-
-	if (document.HasMember("player_movement_speed")) {
-		playerSpeed = document["player_movement_speed"].GetFloat();
-	}
 }

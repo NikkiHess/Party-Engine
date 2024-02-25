@@ -43,35 +43,10 @@ void Engine::start() {
         introMusicPlaying = true;
     }
 
-    for (Actor* actor : gameInfo.scene.collisionActors) {
+    for (Actor& actor : gameInfo.scene.actors) {
         // load actor's images early to calculate extents for collision
-        actor->loadTextures(resourceManager);
-
-        // if the actor can collide and the boxCollider has no extents, configure them
-        if (actor->boxCollider) {
-            glm::vec2 center{
-                actor->view.pivot.x.value_or(actor->view.imageFront.size.x * 0.5),
-                actor->view.pivot.y.value_or(actor->view.imageFront.size.y * 0.5)
-            };
-            actor->calculateBoxCollider(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
-        }
+        actor.loadTextures(resourceManager);
     }
-
-    for (Actor* actor : gameInfo.scene.triggerActors) {
-        // load actor's images early to calculate extents for triggers
-        actor->loadTextures(resourceManager);
-
-        // if the actor can collide and the boxTrigger has no extents, configure them
-        if (actor->boxCollider) {
-            glm::vec2 center{
-                actor->view.pivot.x.value_or(actor->view.imageFront.size.x * 0.5),
-                actor->view.pivot.y.value_or(actor->view.imageFront.size.y * 0.5)
-            };
-            actor->calculateBoxTrigger(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
-        }
-    }
-
-   
 
     // main game loop
     // see function declaration/docs for order of events
@@ -92,24 +67,6 @@ void Engine::start() {
                     ++currentIntroIndex;
                 }
             }
-        }
-
-        for (Actor* actor : gameInfo.scene.collisionActors) {
-            glm::vec2 center{
-            static_cast<int>(std::round(actor->view.pivot.x.value_or(actor->view.imageFront.size.x * 0.5))),
-            static_cast<int>(std::round(actor->view.pivot.y.value_or(actor->view.imageFront.size.y * 0.5)))
-            };
-
-            actor->calculateBoxCollider(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
-        }
-
-        for (Actor* actor : gameInfo.scene.triggerActors) {
-            glm::vec2 center{
-            static_cast<int>(std::round(actor->view.pivot.x.value_or(actor->view.imageFront.size.x * 0.5))),
-            static_cast<int>(std::round(actor->view.pivot.y.value_or(actor->view.imageFront.size.y * 0.5)))
-            };
-
-            actor->calculateBoxTrigger(renderConfig, actor->getScreenPos(renderConfig, camera.pos), center);
         }
 
         // intro button handling handling
@@ -139,32 +96,18 @@ void Engine::start() {
                 player->velocity += Direction::RIGHT;
             }
 
-            if (player->velocity == glm::vec2(0)) {
-                player->transform.bounce = false;
-            }
-
             // if the player has velocity, move them and reset their velocity
             if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
                 // start by normalizing and multiplying by speed
-                player->velocity = glm::normalize(player->velocity) * player->speed;
+                player->velocity = glm::normalize(player->velocity);
 
-                // play step sfx every 20 frames
-                // maybe this works?
-                if (player->stepSfx != "" && Helper::GetFrameNumber() % 20 == 0) {
-                    audioPlayer.play(player->stepSfx, 0, Helper::GetFrameNumber() % 48 + 2);
-                }
             }
         }
 
         // make the input not "newly down" or "newly up" anymore
         input.lateUpdate();
-
-        // if there's an intro, render it
-        if (currentIntroIndex < gameConfig.introImages.size() || currentIntroIndex < gameConfig.introText.size()) {
-            renderer.renderIntro(currentIntroIndex);
-        }
         // handle and render gameplay
-        else if (!gameOver) {
+        if (!gameOver) {
             // halt the intro music if it's playing
             if (introMusicPlaying) {
                 AudioHelper::Mix_HaltChannel498(0);
@@ -188,78 +131,8 @@ void Engine::start() {
             // render the game first
             renderer.render(gameInfo);
 
-            if (player) {
-                // render dialogue on top of the game
-                std::string dialogue = renderer.renderDialogue(gameInfo);
-
-                switch (state) {
-                    case WIN:
-                        if (!gameOverMusicPlaying &&
-                            gameConfig.gameOverGoodAudio != "") {
-                            AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(gameConfig.gameOverGoodAudio, 0, 0);
-                            gameOverMusicPlaying = true;
-                            gameOver = true;
-                        }
-                        continue;
-                    case LOSE:
-                        if (!gameOverMusicPlaying &&
-                            gameConfig.gameOverBadAudio != "") {
-                            AudioHelper::Mix_HaltChannel498(0);
-                            audioPlayer.play(gameConfig.gameOverBadAudio, 0, 0);
-                            gameOverMusicPlaying = true;
-                            gameOver = true;
-                        }
-                        continue;
-                    case PROCEED: {
-                        std::string sceneName = StringUtils::getWordAfterPhrase(dialogue, "proceed to");
-                        if (sceneName != "") {
-                            std::string scenePath = "resources/scenes/" + sceneName + ".scene";
-
-                            if (!resourceManager.fileExists(scenePath)) Error::error("scene " + sceneName + " is missing");
-
-                            gameInfo.scene = Scene();
-                            gameInfo.scene.name = sceneName;
-                            // initialize the new scene immediately
-                            configManager.sceneConfig.parse(configManager.document, resourceManager, gameInfo.scene, configManager.gameConfig.hpImage);
-
-                            auto playerIt = std::find_if(gameInfo.scene.actors.begin(), gameInfo.scene.actors.end(), [](Actor actor) { return actor.name == "player"; });
-
-                            if (playerIt != gameInfo.scene.actors.end()) {
-                                gameInfo.player = &*playerIt;
-                            }
-                        }
-                        state = NORMAL;
-                        continue;
-                }
-                    default:
-                        break;
-                }
-
-                // render HUD on top of the game
-                renderer.renderHUD(gameInfo);
-            }
-        }
-        // game over
-        else {
-            if (gameInfo.state == WIN) {
-                if (gameConfig.gameOverGoodImage != "") {
-                    renderer.artist.drawUIImage(
-                        gameConfig.gameOverGoodImage,
-                        { 0, 0 },
-                        { renderConfig.renderSize.x, renderConfig.renderSize.y }
-                    );
-                }
-            }
-            else if (gameInfo.state == LOSE) {
-                if (gameConfig.gameOverBadImage != "") {
-                    renderer.artist.drawUIImage(
-                        gameConfig.gameOverBadImage,
-                        { 0, 0 },
-                        { renderConfig.renderSize.x, renderConfig.renderSize.y }
-                    );
-                }
-            }
+            // set the scale back to normal
+            SDL_RenderSetScale(renderer.sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
         }
 
         // Present the render AND DELAY, apparently it does that for us

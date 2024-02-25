@@ -19,10 +19,6 @@ public:
 	glm::vec2 pos = { 0.0, 0.0 };
 	glm::vec2 scale = { 1.0, 1.0 };
 	float rotationDegrees = 0.0;
-
-	// whether the actor is currently flipped (attempting move west)
-	bool flipped = false;
-	bool bounce = false;
 };
 
 class TextureImage {
@@ -34,10 +30,7 @@ public:
 
 struct View {
 	// the various images used
-	TextureImage imageFront;
-	TextureImage imageBack;
-	TextureImage imageDamage;
-	TextureImage imageAttack;
+	TextureImage image;
 
 	// the pivot offset, in pixels
 	OptionalVec2 pivot;
@@ -45,61 +38,26 @@ struct View {
 
 class Actor {
 public:
-	// the actor's name
 	std::string name = "";
-	// the actor's transform
+	int id = 0;
+
+	// the actor's transform (pos, scale, rotation)
 	Transform transform;
 	// the actor's view (imageFront, imageBack, and pivot)
 	View view;
 	// the actor's x and y velocity
 	glm::vec2 velocity;
-	bool movementBounce = false;
-	bool showBack = false;
-
-	// the actor's dialogue
-	std::string nearbyDialogue = "", contactDialogue = "";
 
 	// the actor's location in the render order
 	int renderOrder = 0;
-
-	std::optional<SDL_FRect> boxCollider;
-	bool boxColliderCalc = false;
-	std::unordered_set<Actor*> collidingActorsThisFrame;
-
-	std::optional<SDL_FRect> boxTrigger;
-	bool boxTriggerCalc = false;
-	std::unordered_set<Actor*> triggeringActorsThisFrame;
-
-	int lastAttackFrame = -30;
-
-	int id = 0;
-	bool triggeredScoreUp = false;
-
-	// PLAYER ONLY PROPERTIES!!!
-	// should be unused otherwise
-	int health = 3, score = 0;
-	int lastHealthDownFrame = -180;
-	int healthDownCooldown = 180;
-	float speed = 0.02f;
-	bool showDamage = false;
-	bool showAttack = false;
-
-	std::string damageSfx = "", stepSfx = "", nearbySfx = "";
     
     Actor() : velocity(0, 0) {}
-
-	void handleFlipping(bool flipping);
-	void handleVerticalFacing();
 
 	void loadTextures(ResourceManager& resourceManager);
 
 	glm::vec2 getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos);
 
 	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos);
-
-	void calculateBoxCollider(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot);
-
-	void calculateBoxTrigger(RenderingConfig& renderConfig, glm::vec2 screenPos, glm::vec2 pivot);
 };
 
 class ActorComparator {

@@ -20,7 +20,7 @@ public:
 		// with camera offset and zoom correction
 		// we divide by the zoom factor here because that will center things correctly
 		int w, h;
-		SDL_QueryTexture(player->view.imageFront.image, nullptr, nullptr, &w, &h);
+		SDL_QueryTexture(player->view.image.image, nullptr, nullptr, &w, &h);
 
 		// the player's position
 		return glm::vec2(

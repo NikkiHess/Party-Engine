@@ -50,14 +50,10 @@ public:
 		if (playerIt != actors.end()) {
 			player = &*playerIt;
 			// set the player's speed from the config
-			player->speed = configManager.gameConfig.playerSpeed;
 			gameInfo.player = player;
 
 			// preload the player view to calculate the position
-			player->view.imageFront.image = resourceManager.loadImageTexture(player->view.imageFront.name);
-			if (player->view.imageBack.name != "") {
-				player->view.imageBack.image = resourceManager.loadImageTexture(player->view.imageBack.name);
-			}
+			player->view.image.image = resourceManager.loadImageTexture(player->view.image.name);
 
 			camera.jump(player);
 		}
