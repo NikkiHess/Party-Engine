@@ -55,44 +55,14 @@ void Engine::start() {
             }
         }
 
-        // gameplay handling
-        if (player) {
-            // upward movement (up/w)
-            if (input.getKey(SDL_SCANCODE_UP) || input.getKey(SDL_SCANCODE_W)) {
-                player->velocity += Direction::UP;
-            }
-            // downward movement (down/s)
-            if (input.getKey(SDL_SCANCODE_DOWN) || input.getKey(SDL_SCANCODE_S)) {
-                player->velocity += Direction::DOWN;
-            }
-            // leftward movement (left/a)
-            if (input.getKey(SDL_SCANCODE_LEFT) || input.getKey(SDL_SCANCODE_A)) {
-                player->velocity += Direction::LEFT;
-            }
-            // rightward movement (right/d)
-            if (input.getKey(SDL_SCANCODE_RIGHT) || input.getKey(SDL_SCANCODE_D)) {
-                player->velocity += Direction::RIGHT;
-            }
-
-            // if the player has velocity, move them and reset their velocity
-            if (std::abs(player->velocity.x) > 0 || std::abs(player->velocity.y) > 0) {
-                // start by normalizing and multiplying by speed
-                player->velocity = glm::normalize(player->velocity);
-
-            }
-        }
-
         // make the input not "newly down" or "newly up" anymore
         input.lateUpdate();
         // handle and render gameplay
         if (!gameOver) {
             int frame = Helper::GetFrameNumber();
+            //gameInfo.state = gameInfo.scene.moveAllActors(renderConfig.actorFlipping, gameInfo.state, gameConfig, audioPlayer);
 
-            // move all actors according to their velocity
-            gameInfo.state = gameInfo.scene.moveAllActors(renderConfig.actorFlipping, gameInfo.state, gameConfig, audioPlayer);
-
-            // update the camera position to match where the player is (because all actors have moved by now)
-            camera.update(gameInfo.player, renderConfig.easeFactor);
+            //camera.update(gameInfo.player, renderConfig.easeFactor);
 
             // render the game first
             renderer.render(gameInfo);

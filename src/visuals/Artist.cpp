@@ -62,7 +62,6 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 		static_cast<int>(std::abs(scaledSize.y))
 	};
 
-	// only render the player if they have an imageFront, because they have to
 	if (renderImage) {
 		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
 		// render the actor image

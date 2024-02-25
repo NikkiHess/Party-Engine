@@ -15,25 +15,5 @@ public:
 
 	Camera(const ConfigManager& configManager) : renderConfig(configManager.renderingConfig) {}
 
-	glm::vec2 getPlayerPos(Actor* player) {
-		// calculate the center of the screen
-		// with camera offset and zoom correction
-		// we divide by the zoom factor here because that will center things correctly
-		int w, h;
-		SDL_QueryTexture(player->view.image.image, nullptr, nullptr, &w, &h);
-
-		// the player's position
-		return glm::vec2(
-			player->transform.pos.x * renderConfig.pixelsPerUnit,
-			player->transform.pos.y * renderConfig.pixelsPerUnit
-		);
-	}
-
-	void jump(Actor* player) {
-		pos = getPlayerPos(player);
-	}
-
-	void update(Actor* player, float easeFactor) {
-		pos = glm::mix(pos, getPlayerPos(player), easeFactor);
-	}
+	
 };

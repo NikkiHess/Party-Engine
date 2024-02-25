@@ -30,11 +30,9 @@ public:
 	GameState state = NORMAL;
 	bool gameOver = false;
 	bool gameOverMusicPlaying = false;
-	Actor* player = nullptr; // the player
 
 	// load the game info after everything else has been loaded
-	GameInfo gameInfo { 
-		player,
+	GameInfo gameInfo {
 		state,
 		configManager.sceneConfig.initialScene,
 		camera
@@ -42,21 +40,6 @@ public:
 
 	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input, Camera& camera, ResourceManager& resourceManager) 
 		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input), camera(camera), resourceManager(resourceManager) {
-		
-		std::vector<Actor>& actors = configManager.sceneConfig.initialScene.actors;
-		// this finds the player in the actors map
-		auto playerIt = std::find_if(actors.begin(), actors.end(), [](Actor actor) { return actor.name == "player"; });
-
-		if (playerIt != actors.end()) {
-			player = &*playerIt;
-			// set the player's speed from the config
-			gameInfo.player = player;
-
-			// preload the player view to calculate the position
-			player->view.image.image = resourceManager.loadImageTexture(player->view.image.name);
-
-			camera.jump(player);
-		}
 	}
 
 	// start the main game loop

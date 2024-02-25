@@ -36,26 +36,10 @@ public:
 	std::vector<Actor> actors;
 	// actors sorted by render order -> y pos -> id
 	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder;
-	// actors that move, sorted by id
-	std::set<Actor*, ActorComparator> motionActors;
-	// actors that collide, sorted by id
-	std::set<Actor*, ActorComparator> collisionActors;
-
-	// actors that collide, sorted by id
-	std::set<Actor*, ActorComparator> triggerActors;
-	// dialogue we need to render
-	std::unordered_set<std::string> dialogueToRender;
 
 	std::string name;
 
 	// instantiate an actor in the scene
 	void instantiateActor(Actor& actor);
-
-	// move all NPC actors in the scene
-	GameState moveAllActors(bool flipping, GameState& currentState, GameConfig& gameConfig, AudioPlayer& audioPlayer);
-
-	// move an actor according to its velocity
-	// and update its render order
-	std::map<std::string, Actor*> moveActor(Actor* actor, bool flipping);
 };
 

@@ -13,7 +13,6 @@ class Camera;
 // information about the game, which can be shared between classes
 class GameInfo {
 public:
-	Actor* player;
 	GameState& state;
 
 	Scene& scene;
