@@ -28,6 +28,9 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
+// lua
+#include "lua/lua.hpp"
+
 #define OSX_DEBUGPATH 0
 
 void Engine::start() {
@@ -88,20 +91,18 @@ int main(int argc, char* argv[]) {
     
 	// Initialize SDL
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-
-	// Initialize SDL_image to handle PNGs
 	IMG_Init(IMG_INIT_PNG);
-
-	// Initialize SDL_ttf
 	TTF_Init();
-
-	// Initialize SDL_mixer
 	Mix_Init(MIX_INIT_OGG);
 
     AudioHelper::Mix_AllocateChannels498(50);
 
 	// Open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
+
+    // open a new state for the lua and open some default libraries
+    lua_State* L = luaL_newstate();
+    luaL_openlibs(L);
 
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager);

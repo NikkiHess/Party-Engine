@@ -155,6 +155,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\lua\lua.hpp" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\utils\config\RenderingConfig.h" />
     <ClInclude Include="src\utils\config\JsonUtils.h" />
@@ -577,6 +578,38 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dependencies\lua\lapi.c" />
+    <ClCompile Include="dependencies\lua\lauxlib.c" />
+    <ClCompile Include="dependencies\lua\lbaselib.c" />
+    <ClCompile Include="dependencies\lua\lcode.c" />
+    <ClCompile Include="dependencies\lua\lcorolib.c" />
+    <ClCompile Include="dependencies\lua\lctype.c" />
+    <ClCompile Include="dependencies\lua\ldblib.c" />
+    <ClCompile Include="dependencies\lua\ldebug.c" />
+    <ClCompile Include="dependencies\lua\ldo.c" />
+    <ClCompile Include="dependencies\lua\ldump.c" />
+    <ClCompile Include="dependencies\lua\lfunc.c" />
+    <ClCompile Include="dependencies\lua\lgc.c" />
+    <ClCompile Include="dependencies\lua\linit.c" />
+    <ClCompile Include="dependencies\lua\liolib.c" />
+    <ClCompile Include="dependencies\lua\llex.c" />
+    <ClCompile Include="dependencies\lua\lmathlib.c" />
+    <ClCompile Include="dependencies\lua\lmem.c" />
+    <ClCompile Include="dependencies\lua\loadlib.c" />
+    <ClCompile Include="dependencies\lua\lobject.c" />
+    <ClCompile Include="dependencies\lua\lopcodes.c" />
+    <ClCompile Include="dependencies\lua\loslib.c" />
+    <ClCompile Include="dependencies\lua\lparser.c" />
+    <ClCompile Include="dependencies\lua\lstate.c" />
+    <ClCompile Include="dependencies\lua\lstring.c" />
+    <ClCompile Include="dependencies\lua\lstrlib.c" />
+    <ClCompile Include="dependencies\lua\ltable.c" />
+    <ClCompile Include="dependencies\lua\ltablib.c" />
+    <ClCompile Include="dependencies\lua\ltm.c" />
+    <ClCompile Include="dependencies\lua\lundump.c" />
+    <ClCompile Include="dependencies\lua\lutf8lib.c" />
+    <ClCompile Include="dependencies\lua\lvm.c" />
+    <ClCompile Include="dependencies\lua\lzio.c" />
     <ClCompile Include="src\world\Actor.cpp" />
     <ClCompile Include="src\utils\config\RenderingConfig.cpp" />
     <ClCompile Include="src\utils\config\SceneConfig.cpp" />
