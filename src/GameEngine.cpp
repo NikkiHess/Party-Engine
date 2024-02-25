@@ -11,8 +11,8 @@
 #include "utils/config/GameConfig.h"
 #include "utils/config/RenderingConfig.h"
 #include "visuals/Renderer.h"
-#include "gamedata/Input.h"
-#include "gamedata/Direction.h"
+#include "input/Input.h"
+#include "input/Direction.h"
 #include "utils/StringUtils.h"
 
 // dependencies

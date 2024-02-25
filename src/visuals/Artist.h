@@ -5,9 +5,9 @@
 
 // my code
 #include "Camera.h"
-#include "../gamedata/Actor.h"
+#include "../world/Actor.h"
 #include "../utils/config/ConfigManager.h"
-#include "../gamedata/GameInfo.h"
+#include "../GameInfo.h"
 #include "../utils/ResourceManager.h"
 
 // dependencies

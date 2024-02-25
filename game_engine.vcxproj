@@ -153,15 +153,15 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\gamedata\GameState.h" />
+    <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\utils\config\RenderingConfig.h" />
     <ClInclude Include="src\utils\config\JsonUtils.h" />
     <ClInclude Include="src\utils\config\SceneConfig.h" />
     <ClInclude Include="src\utils\config\GameConfig.h" />
     <ClInclude Include="src\utils\OptionalVec2.h" />
     <ClInclude Include="src\utils\ResourceManager.h" />
-    <ClInclude Include="src\gamedata\Direction.h" />
-    <ClInclude Include="src\gamedata\Input.h" />
+    <ClInclude Include="src\input\Direction.h" />
+    <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\errors\Error.h" />
     <ClInclude Include="src\audio\AudioPlayer.h" />
     <ClInclude Include="src\visuals\Artist.h" />
@@ -248,7 +248,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="dependencies\SDL2\SDL_version.h" />
     <ClInclude Include="dependencies\SDL2\SDL_video.h" />
     <ClInclude Include="dependencies\SDL2\SDL_vulkan.h" />
-    <ClInclude Include="src\gamedata\Actor.h" />
+    <ClInclude Include="src\world\Actor.h" />
     <ClInclude Include="dependencies\glm\common.hpp" />
     <ClInclude Include="dependencies\glm\detail\compute_common.hpp" />
     <ClInclude Include="dependencies\glm\detail\compute_vector_relational.hpp" />
@@ -566,25 +566,25 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="dependencies\rapidjson\stream.h" />
     <ClInclude Include="dependencies\rapidjson\stringbuffer.h" />
     <ClInclude Include="dependencies\rapidjson\writer.h" />
-    <ClInclude Include="src\gamedata\Scene.h" />
+    <ClInclude Include="src\world\Scene.h" />
     <ClInclude Include="src\utils\config\ConfigManager.h" />
-    <ClInclude Include="src\gamedata\GameInfo.h" />
+    <ClInclude Include="src\GameInfo.h" />
     <ClInclude Include="src\visuals\Camera.h" />
     <ClInclude Include="src\visuals\Renderer.h" />
     <ClInclude Include="src\GameEngine.h" />
     <ClInclude Include="src\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\gamedata\Actor.cpp" />
+    <ClCompile Include="src\world\Actor.cpp" />
     <ClCompile Include="src\utils\config\RenderingConfig.cpp" />
     <ClCompile Include="src\utils\config\SceneConfig.cpp" />
     <ClCompile Include="src\utils\config\GameConfig.cpp" />
     <ClCompile Include="src\utils\ResourceManager.cpp" />
-    <ClCompile Include="src\gamedata\Input.cpp" />
+    <ClCompile Include="src\input\Input.cpp" />
     <ClCompile Include="src\audio\AudioPlayer.cpp" />
     <ClCompile Include="src\visuals\Artist.cpp" />
     <ClCompile Include="dependencies\glm\detail\glm.cpp" />
-    <ClCompile Include="src\gamedata\Scene.cpp" />
+    <ClCompile Include="src\world\Scene.cpp" />
     <ClCompile Include="src\visuals\Renderer.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
   </ItemGroup>

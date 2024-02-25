@@ -5,7 +5,7 @@
 #include <string>
 
 // my code
-#include "../gamedata/GameInfo.h"
+#include "../GameInfo.h"
 #include "../utils/config/ConfigManager.h"
 #include "../utils/config/GameConfig.h"
 #include "../utils/ResourceManager.h"

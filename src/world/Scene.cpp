@@ -6,7 +6,7 @@
 #include <map>
 
 // my code
-#include "GameState.h"
+#include "../GameState.h"
 #include "Actor.h"
 #include "Scene.h"
 #include "../utils/StringUtils.h"

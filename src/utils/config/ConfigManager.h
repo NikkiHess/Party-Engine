@@ -10,8 +10,8 @@
 
 // my code
 #include "../../errors/Error.h"
-#include "../../gamedata/Actor.h"
-#include "../../gamedata/Scene.h"
+#include "../../world/Actor.h"
+#include "../../world/Scene.h"
 #include "GameConfig.h"
 #include "SceneConfig.h"
 #include "RenderingConfig.h"

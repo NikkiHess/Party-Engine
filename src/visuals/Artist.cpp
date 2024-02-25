@@ -4,8 +4,8 @@
 // my code
 #include "Artist.h"
 #include "Helper.h"
-#include "../gamedata/Actor.h"
-#include "../gamedata/GameInfo.h"
+#include "Actor.h"
+#include "GameInfo.h"
 
 void Artist::drawActor(Actor& actor, Camera& camera) {
 	RenderingConfig& renderConfig = configManager.renderingConfig;

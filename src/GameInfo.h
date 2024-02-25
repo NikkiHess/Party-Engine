@@ -4,8 +4,8 @@
 #include <string>
 
 // my code
-#include "Actor.h"
-#include "Scene.h"
+#include "world/Actor.h"
+#include "world/Scene.h"
 #include "GameState.h"
 
 class Camera;

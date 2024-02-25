@@ -7,7 +7,7 @@
 // my code
 #include "../../errors/Error.h"
 #include "../ResourceManager.h"
-#include "../../gamedata/Scene.h"
+#include "../../world/Scene.h"
 #include "JsonUtils.h"
 
 // dependencies

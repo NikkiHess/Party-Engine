@@ -7,12 +7,12 @@
 
 // my code
 #include "audio/AudioPlayer.h"
-#include "gamedata/Actor.h"
-#include "gamedata/GameInfo.h"
-#include "gamedata/GameState.h"
+#include "world/Actor.h"
+#include "GameInfo.h"
+#include "GameState.h"
 #include "utils/config/ConfigManager.h"
 #include "visuals/Renderer.h"
-#include "gamedata/Input.h"
+#include "input/Input.h"
 
 // dependencies
 #include "glm/glm.hpp"

@@ -11,7 +11,7 @@
 // my code
 #include "Actor.h"
 #include "../utils/config/RenderingConfig.h"
-#include "../gamedata/GameState.h"
+#include "../GameState.h"
 #include "../utils/config/GameConfig.h"
 #include "../audio/AudioPlayer.h"
 

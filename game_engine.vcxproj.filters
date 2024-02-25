@@ -972,16 +972,16 @@
     <ClInclude Include="src\visuals\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamedata\GameInfo.h">
+    <ClInclude Include="src\GameInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\config\ConfigManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamedata\Scene.h">
+    <ClInclude Include="src\world\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamedata\Actor.h">
+    <ClInclude Include="src\world\Actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\StringUtils.h">
@@ -1245,10 +1245,10 @@
     <ClInclude Include="src\errors\Error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamedata\Direction.h">
+    <ClInclude Include="src\input\Direction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamedata\Input.h">
+    <ClInclude Include="src\input\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\ResourceManager.h">
@@ -1272,7 +1272,7 @@
     <ClInclude Include="src\utils\OptionalVec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamedata\GameState.h">
+    <ClInclude Include="src\GameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1286,7 +1286,7 @@
     <ClCompile Include="src\visuals\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gamedata\Scene.cpp">
+    <ClCompile Include="src\world\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\visuals\Artist.cpp">
@@ -1295,7 +1295,7 @@
     <ClCompile Include="src\audio\AudioPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gamedata\Input.cpp">
+    <ClCompile Include="src\input\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\ResourceManager.cpp">
@@ -1310,7 +1310,7 @@
     <ClCompile Include="src\utils\config\RenderingConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gamedata\Actor.cpp">
+    <ClCompile Include="src\world\Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

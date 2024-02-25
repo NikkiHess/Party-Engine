@@ -2,7 +2,7 @@
 
 // my code
 #include "../utils/config/ConfigManager.h"
-#include "../gamedata/Actor.h"
+#include "../world/Actor.h"
 
 // dependencies
 #include "glm/glm.hpp"
