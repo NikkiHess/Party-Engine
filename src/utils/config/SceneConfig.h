@@ -24,7 +24,7 @@ public:
 	// initializes the scene from its scene file
 	// utilizes Scene class
 	// called at the start of the game and when we proceed to a new scene
-	void parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene, std::string hpImage);
+	void parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene);
 
 	// set Actor props from a document
 	void setActorProps(Actor& actor, rapidjson::Value& actorDocument);

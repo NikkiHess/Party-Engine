@@ -7,8 +7,8 @@
 #include <string>
 
 // include my code
-#include "../gamedata/Actor.h"
-#include "../gamedata/GameInfo.h"
+#include "../world/Actor.h"
+#include "../GameInfo.h"
 #include "../GameEngine.h"
 #include "../utils/StringUtils.h"
 #include "Renderer.h"

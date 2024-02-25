@@ -1,6 +1,6 @@
 #include "SceneConfig.h"
 
-void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene, std::string hpImage) {
+void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene) {
 	if (document.HasMember("actors")) {
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 

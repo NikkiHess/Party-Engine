@@ -58,7 +58,7 @@ public:
 			Error::error("scene " + sceneName + " is missing");
 		}
 		JsonUtils::readJsonFile("resources/scenes/" + sceneName + ".scene", document);
-		sceneConfig.parse(document, resourceManager, sceneConfig.initialScene, gameConfig.hpImage);
+		sceneConfig.parse(document, resourceManager, sceneConfig.initialScene);
 
 		// handle rendering.config, which may or may not exist
 		if (resourceManager.fileExists("resources/rendering.config")) {

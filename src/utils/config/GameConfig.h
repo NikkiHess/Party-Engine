@@ -15,21 +15,8 @@
 class GameConfig {
 public:
 	std::string gameTitle = "";
-	std::vector<std::string> introImages;
-	std::vector<std::string> introText;
-	std::string introMusic = "";
-	std::string gameplayMusic = "";
-	std::string hpImage = "";
-	std::string gameOverBadImage = "", gameOverBadAudio = "",
-		gameOverGoodImage = "", gameOverGoodAudio = "";
-
-	std::string damageSfx = "", scoreSfx = "";
-
-	float playerSpeed = 0.02f;
 
 	// initializes from game.config
 	void parse(rapidjson::Document& document, ResourceManager& resourceManager);
-
-
 };
 

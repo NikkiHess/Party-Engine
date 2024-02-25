@@ -33,15 +33,9 @@
 void Engine::start() {
     size_t currentIntroIndex = 0;
     isGameRunning = true;
-    bool introMusicPlaying = false, gameplayMusicPlaying = false;
 
     GameConfig& gameConfig = configManager.gameConfig;
     RenderingConfig& renderConfig = configManager.renderingConfig;
-
-    if (gameConfig.introMusic != "" && !introMusicPlaying) {
-        audioPlayer.play(gameConfig.introMusic, -1, 0);
-        introMusicPlaying = true;
-    }
 
     for (Actor& actor : gameInfo.scene.actors) {
         // load actor's images early to calculate extents for collision
@@ -59,26 +53,10 @@ void Engine::start() {
             if (sdlEvent.type == SDL_QUIT) {
                 queueStop();
             }
-
-            // intro click handlinga
-            if (currentIntroIndex < gameConfig.introImages.size() || currentIntroIndex < gameConfig.introText.size()) {
-                // buttons to proceed are: space, return, left click
-                if (sdlEvent.type == SDL_MOUSEBUTTONDOWN) {
-                    ++currentIntroIndex;
-                }
-            }
-        }
-
-        // intro button handling handling
-        if (currentIntroIndex < gameConfig.introImages.size() || currentIntroIndex < gameConfig.introText.size()) {
-            // buttons to proceed are: space, return, left click
-            if (input.getKeyDown(SDL_SCANCODE_SPACE) || input.getKeyDown(SDL_SCANCODE_RETURN)) {
-                ++currentIntroIndex;
-            }
         }
 
         // gameplay handling
-        else if (player) {
+        if (player) {
             // upward movement (up/w)
             if (input.getKey(SDL_SCANCODE_UP) || input.getKey(SDL_SCANCODE_W)) {
                 player->velocity += Direction::UP;
@@ -108,18 +86,6 @@ void Engine::start() {
         input.lateUpdate();
         // handle and render gameplay
         if (!gameOver) {
-            // halt the intro music if it's playing
-            if (introMusicPlaying) {
-                AudioHelper::Mix_HaltChannel498(0);
-                introMusicPlaying = false;
-            }
-
-            // start the gameplay music if there is any
-            if (!gameplayMusicPlaying && gameConfig.gameplayMusic != "") {
-                audioPlayer.play(gameConfig.gameplayMusic, -1, 0);
-                gameplayMusicPlaying = true;
-            }
-
             int frame = Helper::GetFrameNumber();
 
             // move all actors according to their velocity
