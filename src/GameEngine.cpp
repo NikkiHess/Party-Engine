@@ -31,8 +31,6 @@
 // lua
 #include "lua/lua.hpp"
 
-#define OSX_DEBUGPATH 0
-
 void Engine::start() {
     size_t currentIntroIndex = 0;
     isGameRunning = true;
@@ -84,11 +82,6 @@ void Engine::queueStop() {
 }
 
 int main(int argc, char* argv[]) {
-#if defined(OSX_DEBUGPATH) && OSX_DEBUGPATH == 1
-    // for MacOS local runs
-    std::filesystem::current_path("/Users/lindsaygreig/Desktop/game_engine_nkhess");
-#endif
-    
 	// Initialize SDL
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 	IMG_Init(IMG_INIT_PNG);
