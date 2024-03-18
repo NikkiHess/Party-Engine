@@ -25,6 +25,14 @@ public:
 	}
 
 	void onStart(luabridge::LuaRef& instanceTable);
+
+	static void log(const std::string& message) {
+		std::cout << message << "\n";
+	}
+
+	static void logError(const std::string& message) {
+		std::cerr << message << "\n";
+	}
 private:
 	void establishBaseTable();
 

@@ -100,6 +100,14 @@ int main(int argc, char* argv[]) {
     lua_State* luaState = luaL_newstate();
     luaL_openlibs(luaState);
 
+    // establish lua Debug namespace
+    // Debug.Log and Debug.LogError
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Debug")
+        .addFunction("Log", Component::log)
+        .addFunction("LogError", Component::logError)
+        .endNamespace();
+
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager, luaState);
 	Renderer renderer(configManager, resourceManager);

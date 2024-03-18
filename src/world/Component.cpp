@@ -1,6 +1,5 @@
-#include "Component.h"
-
 // my code
+#include "Component.h"
 #include "../errors/Error.h"
 
 void Component::establishBaseTable() {
@@ -31,7 +30,10 @@ void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge
 
 void Component::onStart(luabridge::LuaRef& instanceTable) {
 	try {
-		instanceTable["OnStart"](instanceTable);
+		luabridge::LuaRef onStartFunction = instanceTable["OnStart"];
+		if (onStartFunction.isFunction()) {
+			instanceTable["OnStart"](instanceTable);
+		}
 	}
 	catch (luabridge::LuaException const& e) {
 		Error::error(e.what());
