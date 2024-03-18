@@ -81,6 +81,23 @@ void Engine::queueStop() {
 	isGameRunning = false;
 }
 
+// establish our lua_State* and all namespaces
+lua_State* setupLua() {
+    // open a new state for the lua and open some default libraries
+    lua_State* luaState = luaL_newstate();
+    luaL_openlibs(luaState);
+
+    // establish lua Debug namespace
+    // Debug.Log and Debug.LogError
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Debug")
+        .addFunction("Log", Component::log)
+        .addFunction("LogError", Component::logError)
+        .endNamespace();
+
+    return luaState;
+}
+
 int main(int argc, char* argv[]) {
 	// Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -96,17 +113,7 @@ int main(int argc, char* argv[]) {
 	// Open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 
-    // open a new state for the lua and open some default libraries
-    lua_State* luaState = luaL_newstate();
-    luaL_openlibs(luaState);
-
-    // establish lua Debug namespace
-    // Debug.Log and Debug.LogError
-    luabridge::getGlobalNamespace(luaState)
-        .beginNamespace("Debug")
-        .addFunction("Log", Component::log)
-        .addFunction("LogError", Component::logError)
-        .endNamespace();
+    lua_State* luaState = setupLua();
 
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager, luaState);
