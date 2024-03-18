@@ -5,6 +5,12 @@
 #include "Component.h"
 #include "../errors/Error.h"
 
+// rapidjson
+#include "rapidjson/document.h"
+
+// I hate this but I have to do it apparently
+std::map<std::string, Component> Component::components;
+
 void Component::establishBaseTable() {
 	const std::string& path = "resources/component_types/" + name + ".lua";
 
@@ -38,10 +44,32 @@ void Component::onStart(luabridge::LuaRef& instanceTable) {
 	try {
 		luabridge::LuaRef onStartFunction = instanceTable["OnStart"];
 		if (onStartFunction.isFunction()) {
-			instanceTable["OnStart"](instanceTable);
+			onStartFunction(instanceTable);
 		}
 	}
-	catch (luabridge::LuaException const& e) {
+	catch (const luabridge::LuaException& e) {
 		Error::error(e.what());
+	}
+}
+
+void Component::loadProperties(rapidjson::Value& properties) {
+	if (properties.IsObject()) {
+		// loop over properties
+		for (auto& data : properties.GetObject()) {
+			const std::string& name = data.name.GetString();
+
+			// make sure we don't add "type" to our properties
+			// we already used it to get the Lua file we needed
+			if (name != "type") {
+				if (data.value.IsString())
+					instanceTable[name] = data.value.GetString();
+				if (data.value.IsFloat())
+					instanceTable[name] = data.value.GetFloat();
+				if (data.value.IsInt())
+					instanceTable[name] = data.value.GetInt();
+				if (data.value.IsBool())
+					instanceTable[name] = data.value.GetBool();
+			}
+		}
 	}
 }

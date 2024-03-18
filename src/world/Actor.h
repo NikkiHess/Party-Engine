@@ -53,7 +53,8 @@ public:
 	int renderOrder = 0;
 
 	// maps component key to component
-	std::map<std::string, Component> components;
+	std::map<std::string, Component*> components;
+	std::map<std::string, Component*> componentsWithOnStart;
     
     Actor() : velocity(0, 0) {}
 

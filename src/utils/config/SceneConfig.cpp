@@ -41,7 +41,8 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 	if (actorDocument.HasMember("name") && actorDocument["name"].IsString())
 		actor.name = actorDocument["name"].GetString();
 
-	if (actorDocument.HasMember("components")) {
+	// verify that we have components
+	if (actorDocument.HasMember("components") && actorDocument["components"].IsObject()) {
 		// loop over component strings
 		// match component keys to component types
 		for (auto& componentObject : actorDocument["components"].GetObject()) {
@@ -55,10 +56,24 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 					Error::error("failed to locate component " + type);
 				}
 
-				// get the component and match the key to it
-				Component component = Component(key, type, luaState);
-				actor.components[key] = component;
+				// if the component is not cached already, we need to cache it
+				if(Component::components.find(key) == Component::components.end()) {
+					// get the component and match the key to it
+					Component component = Component(key, type, luaState);
+
+					// cache our component
+					Component::components[key] = component;
+				}
+
+				// regardless, load it to the actor
+				actor.components[key] = &Component::components[key];
+				// if we have OnStart, make sure the actor knows that
+				if (!Component::components[key].instanceTable["OnStart"].isNil()) {
+					actor.componentsWithOnStart[key] = &Component::components[key];
+				}
 			}
+			Component* componentPtr = &Component::components[key];
+			componentPtr->loadProperties(componentObject.value);
 		}
 	}
 }
