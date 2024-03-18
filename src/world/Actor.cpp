@@ -22,8 +22,8 @@ void Actor::loadTextures(ResourceManager& resourceManager) {
 
 glm::vec2 Actor::getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos) {
 	glm::vec2 pivot{
-		static_cast<int>(std::round(view.pivot.x.value_or(view.image.size.x * 0.5))),
-		static_cast<int>(std::round(view.pivot.y.value_or(view.image.size.y * 0.5)))
+		static_cast<int>(view.pivot.x.value_or(view.image.size.x * 0.5)),
+		static_cast<int>(view.pivot.y.value_or(view.image.size.y * 0.5))
 	};
 
 	// actor world position in pixel coordinates

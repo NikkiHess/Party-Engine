@@ -37,8 +37,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	glm::vec2 pivot{
-		static_cast<int>(std::round(actor.view.pivot.x.value_or(size.x * 0.5))),
-		static_cast<int>(std::round(actor.view.pivot.y.value_or(size.y * 0.5)))
+		static_cast<int>(actor.view.pivot.x.value_or(size.x * 0.5)),
+		static_cast<int>(actor.view.pivot.y.value_or(size.y * 0.5))
 	};
 
 	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, camera.pos);
@@ -56,8 +56,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// center position around the pivot point
 	// offset by scaledSize if we flip either one
 	SDL_Rect imageRect = {
-		static_cast<int>(std::round(bouncePos.x)),
-		static_cast<int>(std::round(bouncePos.y)),
+		static_cast<int>(bouncePos.x),
+		static_cast<int>(bouncePos.y),
 		static_cast<int>(std::abs(scaledSize.x)),
 		static_cast<int>(std::abs(scaledSize.y))
 	};
