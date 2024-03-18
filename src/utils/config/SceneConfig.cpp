@@ -44,20 +44,20 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 	if (actorDocument.HasMember("components")) {
 		// loop over component strings
 		// match component keys to component types
-		for (auto& component : actorDocument["components"].GetObject()) {
+		for (auto& componentObject : actorDocument["components"].GetObject()) {
 			// get the string name/key of the component
-			const std::string& name = component.name.GetString();
-			if (component.value.HasMember("type") && component.value["type"].IsString()) {
+			const std::string& key = componentObject.name.GetString();
+			if (componentObject.value.HasMember("type") && componentObject.value["type"].IsString()) {
 				// get the type of the component
-				const std::string& type = component.value["type"].GetString();
+				const std::string& type = componentObject.value["type"].GetString();
 
 				if (!resourceManager.fileExists("resources/component_types/" + type + ".lua")) {
 					Error::error("failed to locate component " + type);
 				}
 
 				// get the component and match the key to it
-				Component component = Component(type, luaState);
-				actor.components[name] = component;
+				Component component = Component(key, type, luaState);
+				actor.components[key] = component;
 			}
 		}
 	}

@@ -1,3 +1,6 @@
+// std library
+#include <iostream>
+
 // my code
 #include "Component.h"
 #include "../errors/Error.h"
@@ -9,7 +12,10 @@ void Component::establishBaseTable() {
 	if (luaL_dofile(luaState, path.c_str()) != LUA_OK) {
 		const std::string& errorMessage = lua_tostring(luaState, -1);
 
-		Error::error("problem with lua file " + name);
+		// TODO: return to Error::error once the semester is over
+		// this is necessary for now
+		std::cout << "problem with lua file " << name << "\n";
+		exit(0);
 	}
 
 	// retrieve global base table

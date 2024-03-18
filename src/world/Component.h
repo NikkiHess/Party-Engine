@@ -9,6 +9,7 @@
 
 class Component {
 public:
+	std::string key;
 	std::string name;
 	lua_State* luaState;
 
@@ -18,10 +19,13 @@ public:
 	Component() {}
 
 	// construct with our name and lua_State
-	Component(std::string name, lua_State* luaState) : name(name), luaState(luaState) {
+	Component(const std::string& key, const std::string& name, lua_State* luaState) : key(key), name(name), luaState(luaState) {
 		establishBaseTable();
 		instanceTable = luabridge::getGlobal(luaState, name.c_str());
 		establishInheritance(instanceTable, baseTable);
+
+		// set the instance's key to be referenced in scripts
+		instanceTable["key"] = key;
 	}
 
 	void onStart(luabridge::LuaRef& instanceTable);
