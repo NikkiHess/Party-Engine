@@ -18,11 +18,11 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 				}
 
 				JsonUtils::readJsonFile(templatePath, document);
-				setActorProps(actor, document);
+				setActorProps(actor, document, resourceManager);
 			}
 
 			// override any template properties redefined by the scene document
-			setActorProps(actor, docActors[i]);
+			setActorProps(actor, docActors[i], resourceManager);
 
 			// instantiate the actor in the scene
 			scene.instantiateActor(actor);
@@ -34,8 +34,28 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 }
 
 // initializes an actor from its configuration
-void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument) {
+void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, ResourceManager& resourceManager) {
 	// handle name
-	if (actorDocument.HasMember("name"))
+	if (actorDocument.HasMember("name") && actorDocument["name"].IsString())
 		actor.name = actorDocument["name"].GetString();
+
+	if (actorDocument.HasMember("components")) {
+		// loop over component strings
+		// match component keys to component types
+		for (auto& component : actorDocument["components"].GetObject()) {
+			// get the string name/key of the component
+			const std::string& name = component.name.GetString();
+			if (component.value.HasMember("type") && component.value["type"].IsString()) {
+				// get the type of the component
+				const std::string& type = component.value["type"].GetString();
+
+				if (!resourceManager.fileExists("resources/component_types/" + type + ".lua")) {
+					Error::error("failed to locate component " + type);
+				}
+
+				// match the key to the type
+				actor.components[name] = type;
+			}
+		}
+	}
 }

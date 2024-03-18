@@ -50,6 +50,9 @@ public:
 
 	// the actor's location in the render order
 	int renderOrder = 0;
+
+	// maps component key to component type
+	std::unordered_map<std::string, std::string> components;
     
     Actor() : velocity(0, 0) {}
 

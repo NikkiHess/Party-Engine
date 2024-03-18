@@ -27,6 +27,6 @@ public:
 	void parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene);
 
 	// set Actor props from a document
-	void setActorProps(Actor& actor, rapidjson::Value& actorDocument);
+	void setActorProps(Actor& actor, rapidjson::Value& actorDocument, ResourceManager& resourceManager);
 };
 

@@ -30,7 +30,7 @@ public:
 		RenderingConfig& renderConfig = configManager.renderingConfig;
 
 		// a window with proprties as defined by configManager
-		SDL_Window* window = SDL_CreateWindow(
+		SDL_Window* window = Helper::SDL_CreateWindow498(
 			gameConfig.gameTitle.c_str(),	// window title
 			SDL_WINDOWPOS_CENTERED,			// initial x
 			SDL_WINDOWPOS_CENTERED,			// iniital y
