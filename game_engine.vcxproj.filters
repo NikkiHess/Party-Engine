@@ -1278,6 +1278,9 @@
     <ClInclude Include="dependencies\lua\lua.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\world\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp">
@@ -1410,6 +1413,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dependencies\lua\lzio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

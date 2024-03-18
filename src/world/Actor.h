@@ -9,6 +9,7 @@
 #include "../utils/ResourceManager.h"
 #include "../utils/OptionalVec2.h"
 #include "../utils/config/RenderingConfig.h"
+#include "Component.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -51,8 +52,8 @@ public:
 	// the actor's location in the render order
 	int renderOrder = 0;
 
-	// maps component key to component type
-	std::unordered_map<std::string, std::string> components;
+	// maps component key to component
+	std::unordered_map<std::string, Component> components;
     
     Actor() : velocity(0, 0) {}
 

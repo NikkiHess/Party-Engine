@@ -1,4 +1,6 @@
+// my code
 #include "SceneConfig.h"
+#include "../../world/Component.h"
 
 void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene) {
 	if (document.HasMember("actors")) {
@@ -54,7 +56,7 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				}
 
 				// match the key to the type
-				actor.components[name] = type;
+				actor.components[name] = Component(type, luaState);
 			}
 		}
 	}

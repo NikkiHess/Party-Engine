@@ -155,6 +155,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\world\Component.h" />
     <ClInclude Include="dependencies\lua\lua.hpp" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\utils\config\RenderingConfig.h" />
@@ -578,6 +579,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\world\Component.cpp" />
     <ClCompile Include="dependencies\lua\lapi.c" />
     <ClCompile Include="dependencies\lua\lauxlib.c" />
     <ClCompile Include="dependencies\lua\lbaselib.c" />

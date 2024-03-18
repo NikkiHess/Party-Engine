@@ -25,6 +25,9 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
+// lua
+#include "lua/lua.h"
+
 class ConfigManager {
 public:
 	GameConfig gameConfig;
@@ -33,10 +36,11 @@ public:
 
 	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
+	lua_State* luaState;
 
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
-	ConfigManager(ResourceManager& resourceManager) {
+	ConfigManager(ResourceManager& resourceManager, lua_State* luaState) : luaState(luaState) {
 		if (!resourceManager.fileExists("resources/")) {
 			Error::error("resources/ missing");
 		}

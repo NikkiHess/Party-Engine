@@ -94,8 +94,8 @@ int main(int argc, char* argv[]) {
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 
     // open a new state for the lua and open some default libraries
-    lua_State* L = luaL_newstate();
-    luaL_openlibs(L);
+    lua_State* luaState = luaL_newstate();
+    luaL_openlibs(luaState);
 
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager);

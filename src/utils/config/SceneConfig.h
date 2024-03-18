@@ -14,12 +14,19 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 
+// lua
+#include "lua/lua.h"
+
 class SceneConfig {
 public:
 	// The initial scene from game.config
 	Scene initialScene;
 	// Actor templates from the scene
 	std::vector<Actor*> templates;
+
+	lua_State* luaState;
+
+	SceneConfig(lua_State* luaState) : luaState(luaState) {}
 
 	// initializes the scene from its scene file
 	// utilizes Scene class

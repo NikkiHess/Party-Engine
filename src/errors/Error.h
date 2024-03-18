@@ -9,7 +9,7 @@ class Error
 {
 public:
 	static void error(const std::string message) {
-		std::cout << "error: " + message;
+		std::cerr << "error: " + message;
 		exit(0);
 	}
 };
