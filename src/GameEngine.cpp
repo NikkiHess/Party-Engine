@@ -83,7 +83,10 @@ void Engine::queueStop() {
 
 int main(int argc, char* argv[]) {
 	// Initialize SDL
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+        const std::string& sdlError = SDL_GetError();
+        Error::error("SDL could not initialize. SDL error: " + sdlError);
+    }
 	IMG_Init(IMG_INIT_PNG);
 	TTF_Init();
 	Mix_Init(MIX_INIT_OGG);
@@ -98,7 +101,7 @@ int main(int argc, char* argv[]) {
     luaL_openlibs(luaState);
 
     ResourceManager resourceManager;
-	ConfigManager configManager(resourceManager);
+	ConfigManager configManager(resourceManager, luaState);
 	Renderer renderer(configManager, resourceManager);
 	AudioPlayer audioPlayer(resourceManager);
     Input input;
@@ -106,12 +109,6 @@ int main(int argc, char* argv[]) {
 
 	Engine engine(renderer, configManager, audioPlayer, input, camera, resourceManager);
 	engine.start();
-
-	// quit SDL at the very end
-	SDL_Quit();
-	IMG_Quit();
-	TTF_Quit();
-	Mix_Quit();
 
 	return 0;
 }

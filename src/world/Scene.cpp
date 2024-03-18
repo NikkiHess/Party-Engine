@@ -27,4 +27,8 @@ void Scene::instantiateActor(Actor& actor) {
 
 	// insert the actor into the "sorted-by-render-order" list
 	actorsByRenderOrder.emplace(&actors.back());
+
+	for (auto& [name, component] : actor.components) {
+		component.onStart(component.instanceTable);
+	}
 }

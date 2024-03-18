@@ -12,14 +12,21 @@ public:
 	std::string name;
 	lua_State* luaState;
 
-	luabridge::LuaRef* baseTable = nullptr;
+	luabridge::LuaRef baseTable = nullptr;
+	luabridge::LuaRef instanceTable = nullptr;
+
+	Component() {}
 
 	// construct with our name and lua_State
-	Component(std::string name, lua_State* luaState) : name(name), luaState(luaState), baseTable(establishBaseTable()) {
-		establishInheritance(baseTable);
+	Component(std::string name, lua_State* luaState) : name(name), luaState(luaState) {
+		establishBaseTable();
+		instanceTable = luabridge::getGlobal(luaState, name.c_str());
+		establishInheritance(instanceTable, baseTable);
 	}
 
-	luabridge::LuaRef establishBaseTable();
+	void onStart(luabridge::LuaRef& instanceTable);
+private:
+	void establishBaseTable();
 
-	void establishInheritance(luabridge::LuaRef* instanceTable);
+	void establishInheritance(luabridge::LuaRef& instanceTable, luabridge::LuaRef& parentTable);
 };

@@ -53,7 +53,7 @@ public:
 	int renderOrder = 0;
 
 	// maps component key to component
-	std::unordered_map<std::string, Component> components;
+	std::map<std::string, Component> components;
     
     Actor() : velocity(0, 0) {}
 

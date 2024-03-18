@@ -55,8 +55,9 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 					Error::error("failed to locate component " + type);
 				}
 
-				// match the key to the type
-				actor.components[name] = Component(type, luaState);
+				// get the component and match the key to it
+				Component component = Component(type, luaState);
+				actor.components[name] = component;
 			}
 		}
 	}
