@@ -39,9 +39,6 @@ struct View {
 
 class Actor {
 public:
-	std::string name = "";
-	int id = 0;
-
 	// the actor's transform (pos, scale, rotation)
 	Transform transform;
 	// the actor's view (imageFront, imageBack, and pivot)
@@ -58,11 +55,31 @@ public:
     
     Actor() : velocity(0, 0) {}
 
+	const std::string& getName() const {
+		return name;
+	}
+
+	void setName(const std::string& name) {
+		this->name = name;
+	}
+
+	int getID() const {
+		return id;
+	}
+
+	void setID(int id) {
+		this->id = id;
+	}
+
+	// load relevant view texture
 	void loadTextures(ResourceManager& resourceManager);
 
 	glm::vec2 getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos);
 
 	glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos);
+private:
+	std::string name = "";
+	int id = 0;
 };
 
 class ActorComparator {

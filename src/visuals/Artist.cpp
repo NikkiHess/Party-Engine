@@ -49,7 +49,6 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// make sure to divide upper bound by zoom factor, because otherwise stuff gets unrendered at zoomFactor < 1
 	if (actorScreenPos.x < -std::abs(scaledSize.x * 1.2f) || actorScreenPos.x > renderConfig.renderSize.x * 1.1f / renderConfig.zoomFactor ||
 		actorScreenPos.y < -std::abs(scaledSize.y * 1.2f) || actorScreenPos.y > renderConfig.renderSize.y * 1.1f / renderConfig.zoomFactor) {
-		// std::cout << actor.name << " culled\n";
 		return;
 	}
 
@@ -65,7 +64,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	if (renderImage) {
 		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
 		// render the actor image
-		Helper::SDL_RenderCopyEx498(actor.id, actor.name,
+		Helper::SDL_RenderCopyEx498(actor.getID(), actor.getName(),
 			sdlRenderer, renderImage, nullptr,
 			&imageRect, actor.transform.rotationDegrees,
 			&pivotPoint, flip

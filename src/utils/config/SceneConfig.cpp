@@ -38,8 +38,10 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 // initializes an actor from its configuration
 void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, ResourceManager& resourceManager) {
 	// handle name
-	if (actorDocument.HasMember("name") && actorDocument["name"].IsString())
-		actor.name = actorDocument["name"].GetString();
+	if (actorDocument.HasMember("name") && actorDocument["name"].IsString()) {
+		const std::string& name = actorDocument["name"].GetString();
+		actor.setName(name);
+	}
 
 	// verify that we have components
 	if (actorDocument.HasMember("components") && actorDocument["components"].IsObject()) {
@@ -74,6 +76,7 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 			}
 			Component* componentPtr = &Component::components[key];
 			componentPtr->loadProperties(componentObject.value);
+			componentPtr->instanceTable["actor"] = actor;
 		}
 	}
 }

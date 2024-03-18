@@ -49,7 +49,7 @@ glm::vec2 Actor::getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos
 }
 
 bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {
-	return actor1->id < actor2->id;
+	return actor1->getID() < actor2->getID();
 }
 
 bool RenderOrderComparator::operator()(const Actor* actor1, const Actor* actor2) const {
@@ -57,7 +57,7 @@ bool RenderOrderComparator::operator()(const Actor* actor1, const Actor* actor2)
 	if (actor1->renderOrder == actor2->renderOrder) {
 		// y pos equal? render by id
 		if (actor1->transform.pos.y == actor2->transform.pos.y) {
-			return actor1->id < actor2->id;
+			return actor1->getID() < actor2->getID();
 		}
 
 		// y pos not equal? compare

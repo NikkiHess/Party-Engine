@@ -91,9 +91,16 @@ lua_State* setupLua() {
     // Debug.Log and Debug.LogError
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Debug")
-        .addFunction("Log", Component::log)
-        .addFunction("LogError", Component::logError)
+            .addFunction("Log", Component::log)
+            .addFunction("LogError", Component::logError)
         .endNamespace();
+
+    // establish lua Actor class
+    luabridge::getGlobalNamespace(luaState)
+        .beginClass<Actor>("Actor")
+            .addFunction("GetName", &Actor::getName)
+            .addFunction("GetID", &Actor::getID)
+        .endClass();
 
     return luaState;
 }
