@@ -42,7 +42,7 @@ glm::vec2 Actor::getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos
 	);
 
 	// actor position relative to the camera
-	glm::vec2 actorCameraRelativePos = worldPos - glm::vec2(std::round(cameraPos.x), std::round(cameraPos.y));
+	glm::vec2 actorCameraRelativePos = worldPos - glm::vec2(cameraPos.x, cameraPos.y);
 
 	// actor screen position, accounting for rendering at screen center
 	return cameraCenter + actorCameraRelativePos;

@@ -14,7 +14,7 @@ void Component::establishBaseTable() {
 
 		// TODO: return to Error::error once the semester is over
 		// this is necessary for now
-		std::cout << "problem with lua file " << name << "\n";
+		std::cout << "problem with lua file " << name;
 		exit(0);
 	}
 
