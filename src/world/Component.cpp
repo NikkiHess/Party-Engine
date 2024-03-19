@@ -40,7 +40,7 @@ void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge
 	lua_pop(luaState, 1);
 }
 
-void Component::onStart(luabridge::LuaRef& instanceTable) {
+void Component::onStart() {
 	try {
 		luabridge::LuaRef onStartFunction = instanceTable["OnStart"];
 		if (onStartFunction.isFunction()) {

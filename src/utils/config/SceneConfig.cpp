@@ -8,7 +8,7 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 
 		scene.actors.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
-			Actor actor;
+			Actor actor(luaState);
 
 			// initialize the ActorProps based on a template, if there is one
 			if (docActors[i].HasMember("template")) {
@@ -68,15 +68,17 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				}
 
 				// regardless, load it to the actor
-				actor.components[key] = &Component::components[key];
+				Component* componentPtr = &Component::components[key];
+
+				actor.componentsByKey[key] = componentPtr;
+				actor.componentsByType[type].emplace(componentPtr);
 				// if we have OnStart, make sure the actor knows that
 				if (!Component::components[key].instanceTable["OnStart"].isNil()) {
-					actor.componentsWithOnStart[key] = &Component::components[key];
+					actor.componentsWithOnStart[key] = componentPtr;
 				}
 			}
 			Component* componentPtr = &Component::components[key];
 			componentPtr->loadProperties(componentObject.value);
-			componentPtr->instanceTable["actor"] = actor;
 		}
 	}
 }

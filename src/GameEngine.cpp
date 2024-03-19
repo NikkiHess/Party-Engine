@@ -41,6 +41,16 @@ void Engine::start() {
     for (Actor& actor : gameInfo.scene.actors) {
         // load actor's images early to calculate extents for collision
         actor.loadTextures(resourceManager);
+
+        // This is bad BUT it makes sure that the latest actor is in the component
+        // will PROBABLY break later, but I can't get it to work with a ptr ("this" in Actor)
+        for (auto& [key, component] : actor.componentsByKey) {
+            component->instanceTable["actor"] = actor;
+        }
+
+        for (auto& [key, component] : actor.componentsWithOnStart) {
+            component->onStart();
+        }
     }
 
     // main game loop
@@ -100,6 +110,9 @@ lua_State* setupLua() {
         .beginClass<Actor>("Actor")
             .addFunction("GetName", &Actor::getName)
             .addFunction("GetID", &Actor::getID)
+            .addFunction("GetComponentByKey", &Actor::getComponentByKey)
+            .addFunction("GetComponent", &Actor::getComponent)
+            .addFunction("GetComponents", &Actor::getComponents)
         .endClass();
 
     return luaState;

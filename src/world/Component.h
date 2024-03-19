@@ -36,7 +36,7 @@ public:
 	}
 
 	// run the OnStart function from Lua, if there is one
-	void onStart(luabridge::LuaRef& instanceTable);
+	void onStart();
 
 	// load the Components properties, if there are any
 	void loadProperties(rapidjson::Value& data);

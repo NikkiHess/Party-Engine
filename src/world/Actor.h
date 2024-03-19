@@ -3,7 +3,7 @@
 // std library
 #include <optional>
 #include <string>
-#include <unordered_set>
+#include <set>
 
 // my code
 #include "../utils/ResourceManager.h"
@@ -52,11 +52,14 @@ public:
 	// the actor's location in the render order
 	int renderOrder = 0;
 
+	lua_State* luaState;
+
 	// maps component key to component
-	std::map<std::string, Component*> components;
+	std::map<std::string, Component*> componentsByKey;
+	std::map<std::string, std::set<Component*>> componentsByType;
 	std::map<std::string, Component*> componentsWithOnStart;
     
-    Actor() : velocity(0, 0) {}
+    Actor(lua_State* luaState) : luaState(luaState), velocity(0, 0) {}
 
 	// for lua
 	const std::string& getName() const {
@@ -66,6 +69,40 @@ public:
 	// for lua
 	int getID() const {
 		return id;
+	}
+
+	// by key
+	// returns nil if not found
+	luabridge::LuaRef getComponentByKey(const std::string& key) {
+		luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
+
+		if (componentsByKey.find(key) != componentsByKey.end()) {
+			outRef = componentsByKey["key"];
+		}
+
+		return outRef;
+	}
+
+	// by type
+	// returns nil if not found
+	luabridge::LuaRef getComponent(const std::string& type) {
+		luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
+
+		auto it = componentsByType.find(type);
+		if (it != componentsByType.end()) {
+			Component* comp = *(it->second.begin());
+			outRef = comp->instanceTable;
+		}
+
+		return outRef;
+	}
+
+	// TABLE by type
+	// returns empty table if not found
+	luabridge::LuaRef getComponents(const std::string& type) {
+		luabridge::LuaRef outRef = luabridge::newTable(luaState);
+
+		return outRef;
 	}
 
 	// load relevant view texture
