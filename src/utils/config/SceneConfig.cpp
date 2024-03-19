@@ -40,7 +40,7 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 	// handle name
 	if (actorDocument.HasMember("name") && actorDocument["name"].IsString()) {
 		const std::string& name = actorDocument["name"].GetString();
-		actor.setName(name);
+		actor.name = name;
 	}
 
 	// verify that we have components

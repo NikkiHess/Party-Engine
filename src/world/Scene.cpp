@@ -20,7 +20,7 @@
 
 void Scene::instantiateActor(Actor& actor) {
 	glm::vec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);
-	actor.setID(static_cast<int>(actors.size()));
+	actor.id = static_cast<int>(actors.size());
 	
 	// insert the actor into the list of actors
 	actors.emplace_back(actor);

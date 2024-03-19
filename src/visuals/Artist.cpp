@@ -64,7 +64,7 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	if (renderImage) {
 		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
 		// render the actor image
-		Helper::SDL_RenderCopyEx498(actor.getID(), actor.getName(),
+		Helper::SDL_RenderCopyEx498(actor.id, actor.name,
 			sdlRenderer, renderImage, nullptr,
 			&imageRect, actor.transform.rotationDegrees,
 			&pivotPoint, flip
