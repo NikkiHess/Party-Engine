@@ -89,7 +89,23 @@ public:
 	}
 
 	// for lua, finds all actors by name
-	static void findAllActors(const std::string& name) {
+	static luabridge::LuaRef findAllActors(const std::string& name) {
+		luabridge::LuaRef foundActors = luabridge::LuaRef(luaState);
 
+		if (currentScene.actorsByName.find(name) != currentScene.actorsByName.end()) {
+			std::set<Actor*> setOfActors = currentScene.actorsByName[name];
+
+			// push the actor
+			luabridge::push(luaState, setOfActors);
+
+			// create a LuaRef to return
+			luabridge::LuaRef setRef = luabridge::LuaRef::fromStack(luaState, -1);
+
+			lua_pop(luaState, 1);
+
+			foundActors = setRef;
+		}
+
+		return foundActors;
 	}
 };

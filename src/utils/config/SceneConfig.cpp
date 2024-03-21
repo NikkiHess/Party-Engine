@@ -64,16 +64,16 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				}
 
 				// if the component is not cached already, we need to cache it
-				if(Component::components.find(key) == Component::components.end()) {
+				if(Component::components.find(type) == Component::components.end()) {
 					// get the component and match the key to it
 					Component component = Component(key, type, luaState);
 
 					// cache our component
-					Component::components[key] = component;
+					Component::components[type] = component;
 				}
 
 				// regardless, load it to the actor
-				Component component = Component::components[key];
+				Component component = Component::components[type];
 
 				// make a copy from the component list
 				actor.componentsByKey[key] = component;

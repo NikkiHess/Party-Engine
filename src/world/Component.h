@@ -14,7 +14,8 @@
 
 class Component {
 public:
-	// store by component key
+	// store by component TYPE, not key
+	// if you store by key, bad things happen since keys are only unique to actors, not globally
 	static std::map<std::string, Component> components;
 
 	std::string key;
