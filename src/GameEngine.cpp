@@ -52,6 +52,7 @@ void Engine::start() {
             component.instanceTable["actor"] = actor;
         }
 
+        // autograder
         for (auto& [key, component] : actor.componentsWithOnStart) {
             component->onStart();
         }
