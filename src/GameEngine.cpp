@@ -30,6 +30,10 @@
 
 // lua
 #include "lua/lua.hpp"
+#include "LuaBridge/LuaBridge.h"
+
+Scene Engine::currentScene;
+lua_State* Engine::luaState;
 
 void Engine::start() {
     size_t currentIntroIndex = 0;
@@ -92,11 +96,7 @@ void Engine::queueStop() {
 }
 
 // establish our lua_State* and all namespaces
-lua_State* setupLua() {
-    // open a new state for the lua and open some default libraries
-    lua_State* luaState = luaL_newstate();
-    luaL_openlibs(luaState);
-
+lua_State* Engine::setupLua(lua_State* luaState) {
     // establish lua Debug namespace
     // Debug.Log and Debug.LogError
     luabridge::getGlobalNamespace(luaState)
@@ -114,6 +114,13 @@ lua_State* setupLua() {
             .addFunction("GetComponent", &Actor::getComponent)
             .addFunction("GetComponents", &Actor::getComponents)
         .endClass();
+
+    // establish lua Actor namespace (Find and FindAll)
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Actor")
+            .addFunction("Find", &Engine::findActor)
+            .addFunction("FindAll", &Engine::findAllActors)
+        .endNamespace();
 
     return luaState;
 }
@@ -133,7 +140,9 @@ int main(int argc, char* argv[]) {
 	// Open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 
-    lua_State* luaState = setupLua();
+    // open a new state for the lua and open some default libraries
+    lua_State* luaState = luaL_newstate();
+    luaL_openlibs(luaState);
 
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager, luaState);
@@ -142,7 +151,8 @@ int main(int argc, char* argv[]) {
     Input input;
     Camera camera(configManager);
 
-	Engine engine(renderer, configManager, audioPlayer, input, camera, resourceManager);
+	Engine engine(renderer, configManager, audioPlayer, input, camera, resourceManager, luaState);
+    engine.setupLua(luaState);
 	engine.start();
 
 	return 0;

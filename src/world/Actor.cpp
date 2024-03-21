@@ -48,6 +48,53 @@ glm::vec2 Actor::getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos
 	return cameraCenter + actorCameraRelativePos;
 }
 
+const std::string& Actor::getName() const {
+	return name;
+}
+
+int Actor::getID() const {
+	return id;
+}
+
+luabridge::LuaRef Actor::getComponentByKey(const std::string& key) {
+	luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
+
+	if (componentsByKey.find(key) != componentsByKey.end()) {
+		outRef = componentsByKey[key].instanceTable;
+	}
+
+	return outRef;
+}
+
+luabridge::LuaRef Actor::getComponent(const std::string& type) {
+	luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
+
+	auto it = componentsByType.find(type);
+	if (it != componentsByType.end()) {
+		std::shared_ptr comp = *(it->second.begin());
+		outRef = comp->instanceTable;
+	}
+
+	return outRef;
+}
+
+luabridge::LuaRef Actor::getComponents(const std::string& type) {
+	luabridge::LuaRef outRef = luabridge::newTable(luaState);
+
+	auto it = componentsByType.find(type);
+	if (it != componentsByType.end()) {
+		int index = 1; // lua tables are 1-indexed :(
+
+		// add each component to the table and increment the index
+		for (const auto& component : it->second) {
+			outRef[index] = component->instanceTable;
+			++index;
+		}
+	}
+
+	return outRef;
+}
+
 bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {
 	return actor1->id < actor2->id;
 }

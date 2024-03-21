@@ -63,59 +63,22 @@ public:
     Actor(lua_State* luaState) : luaState(luaState), velocity(0, 0) {}
 
 	// for lua
-	const std::string& getName() const {
-		return name;
-	}
+	const std::string& getName() const;
 
 	// for lua
-	int getID() const {
-		return id;
-	}
+	int getID() const;
 
 	// by key
 	// returns nil if not found
-	luabridge::LuaRef getComponentByKey(const std::string& key) {
-		luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
-
-		if (componentsByKey.find(key) != componentsByKey.end()) {
-			outRef = componentsByKey[key].instanceTable;
-		}
-
-		return outRef;
-	}
+	luabridge::LuaRef getComponentByKey(const std::string& key);
 
 	// by type
 	// returns nil if not found
-	luabridge::LuaRef getComponent(const std::string& type) {
-		luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
-
-		auto it = componentsByType.find(type);
-		if (it != componentsByType.end()) {
-			std::shared_ptr comp = *(it->second.begin());
-			outRef = comp->instanceTable;
-		}
-
-		return outRef;
-	}
+	luabridge::LuaRef getComponent(const std::string& type);
 
 	// TABLE by type
 	// returns empty table if not found
-	luabridge::LuaRef getComponents(const std::string& type) {
-		luabridge::LuaRef outRef = luabridge::newTable(luaState);
-
-		auto it = componentsByType.find(type);
-		if (it != componentsByType.end()) {
-			int index = 1; // lua tables are 1-indexed :(
-
-			// add each component to the table and increment the index
-			for (const auto& component : it->second) {
-				outRef[index] = component->instanceTable;
-				++index;
-			}
-		}
-
-		return outRef;
-	}
+	luabridge::LuaRef getComponents(const std::string& type);
 
 	// load relevant view texture
 	void loadTextures(ResourceManager& resourceManager);

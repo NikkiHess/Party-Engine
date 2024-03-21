@@ -34,6 +34,8 @@ private:
 	};
 public:
 	std::vector<Actor> actors;
+	std::map<std::string, std::set<Actor*>> actorsByName;
+
 	// actors sorted by render order -> y pos -> id
 	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder;
 
