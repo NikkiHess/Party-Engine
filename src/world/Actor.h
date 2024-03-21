@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <set>
+#include <memory>
 
 // my code
 #include "../utils/ResourceManager.h"
@@ -55,9 +56,9 @@ public:
 	lua_State* luaState;
 
 	// maps component key to component
-	std::map<std::string, Component*> componentsByKey;
-	std::map<std::string, std::set<Component*>> componentsByType;
-	std::map<std::string, Component*> componentsWithOnStart;
+	std::map<std::string, Component> componentsByKey;
+	std::map<std::string, std::set<std::shared_ptr<Component>, KeyComparator>> componentsByType;
+	std::map<std::string, std::shared_ptr<Component>> componentsWithOnStart;
     
     Actor(lua_State* luaState) : luaState(luaState), velocity(0, 0) {}
 
@@ -77,7 +78,7 @@ public:
 		luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
 
 		if (componentsByKey.find(key) != componentsByKey.end()) {
-			outRef = componentsByKey["key"];
+			outRef = componentsByKey[key].instanceTable;
 		}
 
 		return outRef;
@@ -90,7 +91,7 @@ public:
 
 		auto it = componentsByType.find(type);
 		if (it != componentsByType.end()) {
-			Component* comp = *(it->second.begin());
+			std::shared_ptr comp = *(it->second.begin());
 			outRef = comp->instanceTable;
 		}
 
@@ -101,6 +102,17 @@ public:
 	// returns empty table if not found
 	luabridge::LuaRef getComponents(const std::string& type) {
 		luabridge::LuaRef outRef = luabridge::newTable(luaState);
+
+		auto it = componentsByType.find(type);
+		if (it != componentsByType.end()) {
+			int index = 1; // lua tables are 1-indexed :(
+
+			// add each component to the table and increment the index
+			for (const auto& component : it->second) {
+				outRef[index] = component->instanceTable;
+				++index;
+			}
+		}
 
 		return outRef;
 	}

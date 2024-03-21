@@ -45,7 +45,7 @@ void Engine::start() {
         // This is bad BUT it makes sure that the latest actor is in the component
         // will PROBABLY break later, but I can't get it to work with a ptr ("this" in Actor)
         for (auto& [key, component] : actor.componentsByKey) {
-            component->instanceTable["actor"] = actor;
+            component.instanceTable["actor"] = actor;
         }
 
         for (auto& [key, component] : actor.componentsWithOnStart) {

@@ -1,3 +1,6 @@
+// std library
+#include <memory>
+
 // my code
 #include "SceneConfig.h"
 #include "../../world/Component.h"
@@ -50,6 +53,8 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 		for (auto& componentObject : actorDocument["components"].GetObject()) {
 			// get the string name/key of the component
 			const std::string& key = componentObject.name.GetString();
+
+			// if there is a type, we're not coming from a template
 			if (componentObject.value.HasMember("type") && componentObject.value["type"].IsString()) {
 				// get the type of the component
 				const std::string& type = componentObject.value["type"].GetString();
@@ -68,17 +73,30 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				}
 
 				// regardless, load it to the actor
-				Component* componentPtr = &Component::components[key];
+				Component component = Component::components[key];
 
-				actor.componentsByKey[key] = componentPtr;
-				actor.componentsByType[type].emplace(componentPtr);
+				// make a copy from the component list
+				actor.componentsByKey[key] = component;
+				// update the key to match from config
+				actor.componentsByKey[key].key = key;
+				// load properties from the config
+				actor.componentsByKey[key].loadProperties(componentObject.value);
+
+				// get the address of the copy we made
+				std::shared_ptr ptr = std::make_shared<Component>(actor.componentsByKey[key]);
+				// put it in componentsByType
+				actor.componentsByType[type].emplace(ptr);
+
 				// if we have OnStart, make sure the actor knows that
-				if (!Component::components[key].instanceTable["OnStart"].isNil()) {
-					actor.componentsWithOnStart[key] = componentPtr;
+				if (!actor.componentsByKey[key].instanceTable["OnStart"].isNil()) {
+					actor.componentsWithOnStart[key] = ptr;
 				}
 			}
-			Component* componentPtr = &Component::components[key];
-			componentPtr->loadProperties(componentObject.value);
+			// else, we need to update with new values
+			else if (actor.componentsByKey.find(key) != actor.componentsByKey.end()) {
+				// just load the properties, nothing else :)
+				actor.componentsByKey[key].loadProperties(componentObject.value);
+			}
 		}
 	}
 }

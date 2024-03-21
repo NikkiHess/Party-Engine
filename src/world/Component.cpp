@@ -12,7 +12,7 @@
 std::map<std::string, Component> Component::components;
 
 void Component::establishBaseTable() {
-	const std::string& path = "resources/component_types/" + name + ".lua";
+	const std::string& path = "resources/component_types/" + type + ".lua";
 
 	// load the Lua script, verify no errors
 	if (luaL_dofile(luaState, path.c_str()) != LUA_OK) {
@@ -20,7 +20,7 @@ void Component::establishBaseTable() {
 
 		// TODO: return to Error::error once the semester is over
 		// this is necessary for now
-		std::cout << "problem with lua file " << name;
+		std::cout << "problem with lua file " << type;
 		exit(0);
 	}
 

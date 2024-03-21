@@ -14,10 +14,11 @@
 
 class Component {
 public:
+	// store by component key
 	static std::map<std::string, Component> components;
 
 	std::string key;
-	std::string name;
+	std::string type;
 	lua_State* luaState;
 
 	luabridge::LuaRef baseTable = nullptr;
@@ -25,14 +26,36 @@ public:
 
 	Component() {}
 
-	// construct with our name and lua_State
-	Component(const std::string& key, const std::string& name, lua_State* luaState) : key(key), name(name), luaState(luaState) {
+	// constructs with:
+	// key - from config
+	// type - the .lua file to use
+	// luaState - the shared lua state throughout the engine
+	Component(const std::string& key, const std::string& type, lua_State* luaState) : key(key), type(type), luaState(luaState) {
 		establishBaseTable();
-		instanceTable = luabridge::getGlobal(luaState, name.c_str());
+
+		instanceTable = luabridge::getGlobal(luaState, type.c_str());
+
 		establishInheritance(instanceTable, baseTable);
 
 		// set the instance's key to be referenced in scripts
 		instanceTable["key"] = key;
+	}
+
+	// for copied components, we basically have to reconstruct again
+	Component& operator=(const Component& other) {
+		type = other.type;
+		key = other.key;
+		luaState = other.luaState;
+
+		establishBaseTable();
+
+		instanceTable = luabridge::getGlobal(luaState, type.c_str());
+		
+		establishInheritance(instanceTable, baseTable);
+
+		instanceTable["key"] = key;
+
+		return *this;
 	}
 
 	// run the OnStart function from Lua, if there is one
@@ -52,4 +75,11 @@ private:
 	void establishBaseTable();
 
 	void establishInheritance(luabridge::LuaRef& instanceTable, luabridge::LuaRef& parentTable);
+};
+
+class KeyComparator {
+public:
+	bool operator()(const std::shared_ptr<Component> component1, const std::shared_ptr<Component> component2) const {
+		return component1->key < component2->key;
+	}
 };
