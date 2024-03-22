@@ -130,7 +130,19 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("GetKey", &Input::getKey)
             .addFunction("GetKeyDown", &Input::getKeyDown)
             .addFunction("GetKeyUp", &Input::getKeyUp)
+            .addFunction("GetMousePosition", &Input::getMousePosition)
+            .addFunction("GetMouseButton", &Input::getMouseButton)
+            .addFunction("GetMouseButtonDown", &Input::getMouseButtonDown)
+            .addFunction("GetMouseButtonUp", &Input::getMouseButtonUp)
+            .addFunction("GetMouseScrollDelta", &Input::getMouseScrollDelta)
         .endNamespace();
+
+    // expose vec2 to Lua
+    luabridge::getGlobalNamespace(luaState)
+        .beginClass<glm::vec2>("vec2")
+            .addProperty("x", &glm::vec2::x)
+            .addProperty("y", &glm::vec2::y)
+        .endClass();
 
     return luaState;
 }

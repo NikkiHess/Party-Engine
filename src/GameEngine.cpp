@@ -75,6 +75,7 @@ void Engine::start() {
                 component->callLuaFunction("OnUpdate", actor->name);
             }
         }
+
         // do OnLateUpdate for all actors
         for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
             for (auto& [key, component] : actor->componentsWithOnLateUpdate) {

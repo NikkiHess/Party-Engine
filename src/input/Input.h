@@ -7,6 +7,7 @@
 
 // dependencies
 #include "SDL2/SDL.h"
+#include "glm/glm.hpp"
 
 enum InputState {
 	UP,
@@ -17,7 +18,6 @@ enum InputState {
 
 class Input {
 public:
-
 	static void init();
 
 	// call every frame at the start of event loop
@@ -34,10 +34,34 @@ public:
 
 	// returns whether the key is newly down
 	static bool getKeyDown(const std::string& keycode);
+
+	// returns the mouse position relative to the window
+	static glm::vec2 getMousePosition();
+
+	// check whether a mouse button is down
+	// 1 = left, 2 = middle, 3 = right
+	static bool getMouseButton(int button);
+
+	// check whether a mouse button is newly down
+	// 1 = left, 2 = middle, 3 = right
+	static bool getMouseButtonDown(int button);
+
+	// check whether a mouse button is newly up
+	// 1 = left, 2 = middle, 3 = right
+	static bool getMouseButtonUp(int button);
+
+	// check how far the mouse has scrolled this frame
+	static float getMouseScrollDelta();
 private:
 	static inline std::unordered_map<SDL_Scancode, InputState> keyboardStates;
 	static inline std::unordered_set<SDL_Scancode> newlyUpKeycodes;
 	static inline std::unordered_set<SDL_Scancode> newlyDownKeycodes;
+
+	static inline glm::vec2 mousePos;
+	static inline float mouseScrollDelta;
+	static inline std::unordered_map<int, InputState> buttonStates;
+	static inline std::unordered_set<int> newlyUpButtons;
+	static inline std::unordered_set<int> newlyDownButtons;
 
 	static const inline std::unordered_map<std::string, SDL_Scancode> keycodeToScancode = {
 		// Directional (arrow) Keys
