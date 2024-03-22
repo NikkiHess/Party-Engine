@@ -88,22 +88,19 @@ public:
 		return foundActor;
 	}
 
-	// for lua, finds all actors by name
+	// for lua, finds all actors by name (TABLE)
 	static luabridge::LuaRef findAllActors(const std::string& name) {
 		luabridge::LuaRef foundActors = luabridge::LuaRef(luaState);
 
 		if (currentScene.actorsByName.find(name) != currentScene.actorsByName.end()) {
 			std::set<Actor*> setOfActors = currentScene.actorsByName[name];
 
-			// push the actor
-			luabridge::push(luaState, setOfActors);
-
-			// create a LuaRef to return
-			luabridge::LuaRef setRef = luabridge::LuaRef::fromStack(luaState, -1);
-
-			lua_pop(luaState, 1);
-
-			foundActors = setRef;
+			int index = 1; // lua tables are 1 indexed :(
+			// push the actors one by one to our foundActors table
+			for (Actor* actor : setOfActors) {
+				foundActors[index] = actor;
+				++index;
+			}
 		}
 
 		return foundActors;

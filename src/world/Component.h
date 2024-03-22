@@ -46,17 +46,12 @@ public:
 	// for copied components, we basically have to reconstruct again
 	Component& operator=(const Component& other) {
 		type = other.type;
-		key = other.key;
 		luaState = other.luaState;
 
 		establishBaseTable();
 
 		instanceTable = luabridge::getGlobal(luaState, type.c_str());
 		
-		//establishInheritance(instanceTable, baseTable);
-
-		instanceTable["key"] = key;
-
 		return *this;
 	}
 

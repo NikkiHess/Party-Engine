@@ -79,6 +79,7 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				actor.componentsByKey[key] = component;
 				// update the key to match from config
 				actor.componentsByKey[key].key = key;
+				actor.componentsByKey[key].instanceTable["key"] = key;
 				// load properties from the config
 				actor.componentsByKey[key].loadProperties(componentObject.value);
 

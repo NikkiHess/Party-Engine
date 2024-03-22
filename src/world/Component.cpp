@@ -43,9 +43,9 @@ void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge
 
 void Component::callLuaFunction(const std::string& name, const std::string& actorName) {
 	try {
-		luabridge::LuaRef onStartFunction = instanceTable[name];
-		if (onStartFunction.isFunction()) {
-			onStartFunction(instanceTable);
+		luabridge::LuaRef luaFunction = instanceTable[name];
+		if (luaFunction.isFunction()) {
+			luaFunction(instanceTable);
 		}
 	}
 	catch (const luabridge::LuaException& e) {
