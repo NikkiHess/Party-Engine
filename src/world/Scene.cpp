@@ -28,6 +28,13 @@ void Scene::instantiateActor(Actor& actor) {
 	// insert the actor's ptr into the actors by name list
 	actorsByName[actor.name].emplace(&actors.back());
 
+	if (actor.hasOnStart)
+		actorsWithOnStart.emplace_back(&actors.back());
+	if (actor.hasOnUpdate)
+		actorsWithOnUpdate.emplace_back(&actors.back());
+	if (actor.hasOnLateUpdate)
+		actorsWithOnLateUpdate.emplace_back(&actors.back());
+
 	// insert the actor's ptr into the "sorted-by-render-order" list
 	actorsByRenderOrder.emplace(&actors.back());
 }

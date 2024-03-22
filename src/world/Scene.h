@@ -34,6 +34,11 @@ private:
 	};
 public:
 	std::vector<Actor> actors;
+
+	std::vector<Actor*> actorsWithOnStart;
+	std::vector<Actor*> actorsWithOnUpdate;
+	std::vector<Actor*> actorsWithOnLateUpdate;
+
 	std::map<std::string, std::set<Actor*>> actorsByName;
 
 	// actors sorted by render order -> y pos -> id

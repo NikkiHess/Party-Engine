@@ -91,16 +91,19 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				// if we have OnStart, make sure the actor knows that
 				if (!actor.componentsByKey[key].instanceTable["OnStart"].isNil()) {
 					actor.componentsWithOnStart[key] = ptr;
+					actor.hasOnStart = true;
 				}
 
 				// if we have OnUpdate, make sure the actor knows that
 				if (!actor.componentsByKey[key].instanceTable["OnUpdate"].isNil()) {
 					actor.componentsWithOnUpdate[key] = ptr;
+					actor.hasOnUpdate = true;
 				}
 
 				// if we have OnLateUpdate, make sure the actor knows that
 				if (!actor.componentsByKey[key].instanceTable["OnLateUpdate"].isNil()) {
 					actor.componentsWithOnLateUpdate[key] = ptr;
+					actor.hasOnLateUpdate = true;
 				}
 			}
 			// else, we need to update with new values

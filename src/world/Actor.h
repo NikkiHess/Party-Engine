@@ -61,9 +61,13 @@ public:
 	// maps component type to a list of components of that type
 	std::map<std::string, std::set<std::shared_ptr<Component>, KeyComparator>> componentsByType;
 	
+	// component sorting maps
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnStart;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
+
+	// whether we have onStart, onUpdate, or onLateUpdate functions to worry about
+	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false;
     
     Actor(lua_State* luaState) : luaState(luaState), velocity(0, 0) {}
 

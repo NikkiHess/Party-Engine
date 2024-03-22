@@ -44,14 +44,15 @@ void Engine::start() {
         // load actor's images early to calculate extents for collision
         actor.loadTextures(resourceManager);
 
-        // This is bad BUT it makes sure that the latest actor is in the component
-        // will PROBABLY break later, but I can't get it to work with a ptr ("this" in Actor)
+        // store the actor as a convenience reference in the component
         for (auto& [key, component] : actor.componentsByKey) {
             component.instanceTable["actor"] = actor;
         }
+    }
 
-        for (auto& [key, component] : actor.componentsWithOnStart) {
-            component->callLuaFunction("OnStart", actor.name);
+    for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
+        for (auto& [key, component] : actor->componentsWithOnStart) {
+            component->callLuaFunction("OnStart", actor->name);
         }
     }
 
@@ -59,14 +60,15 @@ void Engine::start() {
     // see function declaration/docs for order of events
     while (isGameRunning) {
         // do OnUpdate for all actors
-        for (Actor& actor : gameInfo.scene.actors) {
-            for (auto& [key, component] : actor.componentsWithOnUpdate) {
-                component->callLuaFunction("OnUpdate", actor.name);
+        for (Actor* actor : gameInfo.scene.actorsWithOnUpdate) {
+            for (auto& [key, component] : actor->componentsWithOnUpdate) {
+                component->callLuaFunction("OnUpdate", actor->name);
             }
         }
-        for (Actor& actor : gameInfo.scene.actors) {
-            for (auto& [key, component] : actor.componentsWithOnLateUpdate) {
-                component->callLuaFunction("OnLateUpdate", actor.name);
+        // do OnLateUpdate for all actors
+        for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
+            for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
+                component->callLuaFunction("OnLateUpdate", actor->name);
             }
         }
 
