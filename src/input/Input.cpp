@@ -48,16 +48,28 @@ void Input::lateUpdate() {
 }
 
 bool Input::getKey(const std::string& code) {
-	SDL_Scancode scancode = keycodeToScancode[code];
-	return keyboardStates[scancode] == InputState::DOWN || keyboardStates[scancode] == InputState::NEWLY_DOWN;
+	auto it = keycodeToScancode.find(code);
+	if (it != keycodeToScancode.end()) {
+		SDL_Scancode scancode = it->second;
+		return keyboardStates[scancode] == InputState::DOWN || keyboardStates[scancode] == InputState::NEWLY_DOWN || getKeyDown(code);
+	}
+	return false;
 }
 
 bool Input::getKeyDown(const std::string& code) {
-	SDL_Scancode scancode = keycodeToScancode[code];
-	return newlyDownKeycodes.find(scancode) != newlyDownKeycodes.end();
+	auto it = keycodeToScancode.find(code);
+	if (it != keycodeToScancode.end()) {
+		SDL_Scancode scancode = it->second;
+		return newlyDownKeycodes.find(scancode) != newlyDownKeycodes.end();
+	}
+	return false;
 }
 
 bool Input::getKeyUp(const std::string& code) {
-	SDL_Scancode scancode = keycodeToScancode[code];
-	return newlyUpKeycodes.find(scancode) != newlyUpKeycodes.end();
+	auto it = keycodeToScancode.find(code);
+	if (it != keycodeToScancode.end()) {
+		SDL_Scancode scancode = it->second;
+		return newlyUpKeycodes.find(scancode) != newlyUpKeycodes.end();
+	}
+	return false;
 }

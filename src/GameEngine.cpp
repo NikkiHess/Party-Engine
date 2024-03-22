@@ -59,6 +59,16 @@ void Engine::start() {
     // main game loop
     // see function declaration/docs for order of events
     while (isGameRunning) {
+        // Process events
+        SDL_Event sdlEvent;
+        while (Helper::SDL_PollEvent498(&sdlEvent)) {
+            Input::processEvent(sdlEvent);
+            // handle a quit event
+            if (sdlEvent.type == SDL_QUIT) {
+                queueStop();
+            }
+        }
+
         // do OnUpdate for all actors
         for (Actor* actor : gameInfo.scene.actorsWithOnUpdate) {
             for (auto& [key, component] : actor->componentsWithOnUpdate) {
@@ -69,16 +79,6 @@ void Engine::start() {
         for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
             for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
                 component->callLuaFunction("OnLateUpdate", actor->name);
-            }
-        }
-
-        // Process events
-        SDL_Event sdlEvent;
-        while (Helper::SDL_PollEvent498(&sdlEvent)) {
-            Input::processEvent(sdlEvent);
-            // handle a quit event
-            if (sdlEvent.type == SDL_QUIT) {
-                queueStop();
             }
         }
 

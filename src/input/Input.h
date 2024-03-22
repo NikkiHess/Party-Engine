@@ -39,7 +39,7 @@ private:
 	static inline std::unordered_set<SDL_Scancode> newlyUpKeycodes;
 	static inline std::unordered_set<SDL_Scancode> newlyDownKeycodes;
 
-	static inline std::unordered_map<std::string, SDL_Scancode> keycodeToScancode = {
+	static const inline std::unordered_map<std::string, SDL_Scancode> keycodeToScancode = {
 		// Directional (arrow) Keys
 		{"up", SDL_SCANCODE_UP},
 		{"down", SDL_SCANCODE_DOWN},
