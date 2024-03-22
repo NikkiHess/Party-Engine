@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <memory>
 
 // rapidjson
 #include "rapidjson/document.h"
@@ -52,7 +53,7 @@ public:
 
 		instanceTable = luabridge::getGlobal(luaState, type.c_str());
 		
-		establishInheritance(instanceTable, baseTable);
+		//establishInheritance(instanceTable, baseTable);
 
 		instanceTable["key"] = key;
 
