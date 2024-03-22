@@ -127,6 +127,7 @@ int main(int argc, char* argv[]) {
     luaL_openlibs(luaState);
 
     LuaUtils::luaState = luaState;
+    Input::init();
 
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager, luaState);
