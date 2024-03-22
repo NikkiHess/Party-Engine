@@ -30,10 +30,6 @@ public:
 	Camera& camera;
 	ResourceManager& resourceManager;
 
-	// singleton for findActor and findAllActors
-	static Scene currentScene;
-	static lua_State* luaState;
-
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 	bool gameOver = false;
@@ -47,10 +43,7 @@ public:
 	};
 
 	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input, Camera& camera, ResourceManager& resourceManager, lua_State* luaState)
-		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input), camera(camera), resourceManager(resourceManager) {
-		currentScene = gameInfo.scene;
-		this->luaState = luaState;
-	}
+		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input), camera(camera), resourceManager(resourceManager) {}
 
 	// start the main game loop
 	// LOOP ORDER OF EVENTS:
@@ -63,46 +56,4 @@ public:
 
 	// shut down the main game loop
 	void queueStop();
-
-	// sets up lua to begin with
-	lua_State* setupLua(lua_State* luaState);
-
-	// for lua, finds an actor by name
-	static luabridge::LuaRef findActor(const std::string& name) {
-		luabridge::LuaRef foundActor = luabridge::LuaRef(luaState);
-
-		if (currentScene.actorsByName.find(name) != currentScene.actorsByName.end()) {
-			Actor actor = **(currentScene.actorsByName[name].begin());
-
-			// push the actor
-			luabridge::push(luaState, actor);
-
-			// create a LuaRef to return
-			luabridge::LuaRef actorRef = luabridge::LuaRef::fromStack(luaState, -1);
-
-			lua_pop(luaState, 1);
-
-			foundActor = actorRef;
-		}
-
-		return foundActor;
-	}
-
-	// for lua, finds all actors by name (TABLE)
-	static luabridge::LuaRef findAllActors(const std::string& name) {
-		luabridge::LuaRef foundActors = luabridge::LuaRef(luaState);
-
-		if (currentScene.actorsByName.find(name) != currentScene.actorsByName.end()) {
-			std::set<Actor*> setOfActors = currentScene.actorsByName[name];
-
-			int index = 1; // lua tables are 1 indexed :(
-			// push the actors one by one to our foundActors table
-			for (Actor* actor : setOfActors) {
-				foundActors[index] = actor;
-				++index;
-			}
-		}
-
-		return foundActors;
-	}
 };

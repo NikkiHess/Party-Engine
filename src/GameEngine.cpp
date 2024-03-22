@@ -14,6 +14,7 @@
 #include "input/Input.h"
 #include "input/Direction.h"
 #include "utils/StringUtils.h"
+#include "utils/LuaUtils.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -31,9 +32,6 @@
 // lua
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
-
-Scene Engine::currentScene;
-lua_State* Engine::luaState;
 
 void Engine::start() {
     size_t currentIntroIndex = 0;
@@ -107,36 +105,6 @@ void Engine::queueStop() {
 	isGameRunning = false;
 }
 
-// establish our lua_State* and all namespaces
-lua_State* Engine::setupLua(lua_State* luaState) {
-    // establish lua Debug namespace
-    // Debug.Log and Debug.LogError
-    luabridge::getGlobalNamespace(luaState)
-        .beginNamespace("Debug")
-            .addFunction("Log", Component::log)
-            .addFunction("LogError", Component::logError)
-        .endNamespace();
-
-    // establish lua Actor class
-    luabridge::getGlobalNamespace(luaState)
-        .beginClass<Actor>("Actor")
-            .addFunction("GetName", &Actor::getName)
-            .addFunction("GetID", &Actor::getID)
-            .addFunction("GetComponentByKey", &Actor::getComponentByKey)
-            .addFunction("GetComponent", &Actor::getComponent)
-            .addFunction("GetComponents", &Actor::getComponents)
-        .endClass();
-
-    // establish lua Actor namespace (Find and FindAll)
-    luabridge::getGlobalNamespace(luaState)
-        .beginNamespace("Actor")
-            .addFunction("Find", &Engine::findActor)
-            .addFunction("FindAll", &Engine::findAllActors)
-        .endNamespace();
-
-    return luaState;
-}
-
 int main(int argc, char* argv[]) {
 	// Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -156,6 +124,8 @@ int main(int argc, char* argv[]) {
     lua_State* luaState = luaL_newstate();
     luaL_openlibs(luaState);
 
+    LuaUtils::luaState = luaState;
+
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager, luaState);
 	Renderer renderer(configManager, resourceManager);
@@ -164,7 +134,9 @@ int main(int argc, char* argv[]) {
     Camera camera(configManager);
 
 	Engine engine(renderer, configManager, audioPlayer, input, camera, resourceManager, luaState);
-    engine.setupLua(luaState);
+    LuaUtils::setupLua(luaState);
+    LuaUtils::currentScene = engine.gameInfo.scene;
+
 	engine.start();
 
 	return 0;

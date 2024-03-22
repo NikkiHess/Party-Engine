@@ -63,14 +63,6 @@ public:
 
 	// load the Components properties, if there are any
 	void loadProperties(rapidjson::Value& data);
-
-	static void log(const std::string& message) {
-		std::cout << message << "\n";
-	}
-
-	static void logError(const std::string& message) {
-		std::cerr << message << "\n";
-	}
 private:
 	void establishBaseTable();
 
