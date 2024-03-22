@@ -16,16 +16,31 @@ public:
 	static Scene currentScene;
 	static lua_State* luaState;
 
-	// shut down the whole application right away
-	static void immediatelyStop();
-
 	// sets up lua to begin with
 	static lua_State* setupLua(lua_State* luaState);
 
-	// for lua, finds an actor by name
+
+	/* APPLICATION NAMESPACE */
+
+	// Application.Quit(), shut down the whole application right away
+	static void quit();
+
+	// Application.Sleep(ms), sleep for the given ms
+	static void sleep(const int ms);
+
+	// Application.GetFrame(), get the current frame
+	static int getFrame();
+
+	// Application.OpenURL(url), opens the URL in user's default browser
+	static void openURL(const std::string& url);
+
+
+	/* ACTOR NAMESPACE */
+
+	// Actor.Find(name), finds an actor by name
 	static luabridge::LuaRef findActor(const std::string& name);
 
-	// for lua, finds all actors by name (TABLE)
+	// Actor.FindAll(name), finds all actors by name (TABLE)
 	static luabridge::LuaRef findAllActors(const std::string& name);
 
 	// Debug.Log(message), prints to cout

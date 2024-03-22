@@ -1,10 +1,14 @@
 // std library
 #include <string>
+#include <thread>
 
 // my code
 #include "LuaUtils.h"
 #include "../world/Actor.h"
 #include "../world/Scene.h"
+
+// dependencies
+#include "Helper.h"
 
 // lua
 #include "lua/lua.hpp"
@@ -13,8 +17,30 @@
 Scene LuaUtils::currentScene;
 lua_State* LuaUtils::luaState;
 
-void LuaUtils::immediatelyStop() {
+void LuaUtils::quit() {
     exit(0);
+}
+
+void LuaUtils::sleep(const int ms) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
+
+int LuaUtils::getFrame() {
+    return Helper::GetFrameNumber();
+}
+
+void LuaUtils::openURL(const std::string& url) {
+    const std::string windows = "start " + url;
+    const std::string osx = "open " + url;
+    const std::string linux = "xdg-open " + url;
+
+#if defined(_WIN32)
+    std::system(windows.c_str());
+#elif defined(_OSX)
+    std::system(osx.c_str());
+#else
+    std::system(linux.c_str());
+#endif
 }
 
 void LuaUtils::log(const std::string& message) {
@@ -68,31 +94,33 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
     // Debug.Log and Debug.LogError
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Debug")
-        .addFunction("Log", LuaUtils::log)
-        .addFunction("LogError", LuaUtils::logError)
+            .addFunction("Log", LuaUtils::log)
+            .addFunction("LogError", LuaUtils::logError)
         .endNamespace();
 
     // establish lua Actor class
     luabridge::getGlobalNamespace(luaState)
         .beginClass<Actor>("Actor")
-        .addFunction("GetName", &Actor::getName)
-        .addFunction("GetID", &Actor::getID)
-        .addFunction("GetComponentByKey", &Actor::getComponentByKey)
-        .addFunction("GetComponent", &Actor::getComponent)
-        .addFunction("GetComponents", &Actor::getComponents)
+            .addFunction("GetName", &Actor::getName)
+            .addFunction("GetID", &Actor::getID)
+            .addFunction("GetComponentByKey", &Actor::getComponentByKey)
+            .addFunction("GetComponent", &Actor::getComponent)
+            .addFunction("GetComponents", &Actor::getComponents)
         .endClass();
 
     // establish lua Actor namespace (Find and FindAll)
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Actor")
-        .addFunction("Find", &LuaUtils::findActor)
-        .addFunction("FindAll", &LuaUtils::findAllActors)
+            .addFunction("Find", &LuaUtils::findActor)
+            .addFunction("FindAll", &LuaUtils::findAllActors)
         .endNamespace();
 
     // establish lua Application namespace (Find and FindAll)
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Application")
-        .addFunction("Quit", &LuaUtils::immediatelyStop)
+            .addFunction("Quit", &LuaUtils::quit)
+            .addFunction("Sleep", &LuaUtils::sleep)
+            .addFunction("GetFrame", &LuaUtils::getFrame)
         .endNamespace();
 
     return luaState;
