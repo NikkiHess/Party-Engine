@@ -1,5 +1,6 @@
 // std library
 #include <iostream>
+#include <algorithm>
 
 // my code
 #include "Component.h"
@@ -40,15 +41,21 @@ void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge
 	lua_pop(luaState, 1);
 }
 
-void Component::onStart() {
+void Component::callLuaFunction(const std::string& name, const std::string& actorName) {
 	try {
-		luabridge::LuaRef onStartFunction = instanceTable["OnStart"];
+		luabridge::LuaRef onStartFunction = instanceTable[name];
 		if (onStartFunction.isFunction()) {
 			onStartFunction(instanceTable);
 		}
 	}
 	catch (const luabridge::LuaException& e) {
-		Error::error(e.what());
+		std::string errorMessage = e.what();
+
+		// normalize file paths across platforms
+		std::replace(errorMessage.begin(), errorMessage.end(), '\\', '/');
+
+		// display (with color codes)
+		std::cout << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
 	}
 }
 

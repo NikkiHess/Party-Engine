@@ -59,8 +59,11 @@ public:
 		return *this;
 	}
 
-	// run the OnStart function from Lua, if there is one
-	void onStart();
+	// call a Lua function (OnStart, OnUpdate, OnLateUpate)
+	// checking for errors along the way
+	// name - the lua function to call
+	// actorName - the actor that holds this component
+	void callLuaFunction(const std::string& name, const std::string& actorName);
 
 	// load the Components properties, if there are any
 	void loadProperties(rapidjson::Value& data);

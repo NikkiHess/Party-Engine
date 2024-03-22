@@ -57,8 +57,13 @@ public:
 
 	// maps component key to component
 	std::map<std::string, Component> componentsByKey;
+
+	// maps component type to a list of components of that type
 	std::map<std::string, std::set<std::shared_ptr<Component>, KeyComparator>> componentsByType;
+	
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnStart;
+	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
+	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
     
     Actor(lua_State* luaState) : luaState(luaState), velocity(0, 0) {}
 

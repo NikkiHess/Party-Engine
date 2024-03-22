@@ -52,15 +52,24 @@ void Engine::start() {
             component.instanceTable["actor"] = actor;
         }
 
-        // autograder
         for (auto& [key, component] : actor.componentsWithOnStart) {
-            component->onStart();
+            component->callLuaFunction("OnStart", actor.name);
         }
     }
 
     // main game loop
     // see function declaration/docs for order of events
     while (isGameRunning) {
+        // do OnUpdate for all actors
+        for (Actor& actor : gameInfo.scene.actors) {
+            for (auto& [key, component] : actor.componentsWithOnUpdate) {
+                component->callLuaFunction("OnUpdate", actor.name);
+            }
+            for (auto& [key, component] : actor.componentsWithOnLateUpdate) {
+                component->callLuaFunction("OnLateUpdate", actor.name);
+            }
+        }
+
         // Process events
         SDL_Event sdlEvent;
         while (Helper::SDL_PollEvent498(&sdlEvent)) {
