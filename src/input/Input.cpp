@@ -51,7 +51,7 @@ bool Input::getKey(const std::string& code) {
 	auto it = keycodeToScancode.find(code);
 	if (it != keycodeToScancode.end()) {
 		SDL_Scancode scancode = it->second;
-		return keyboardStates[scancode] == InputState::DOWN || keyboardStates[scancode] == InputState::NEWLY_DOWN || getKeyDown(code);
+		return keyboardStates[scancode] == InputState::DOWN || keyboardStates[scancode] == InputState::NEWLY_DOWN;
 	}
 	return false;
 }
