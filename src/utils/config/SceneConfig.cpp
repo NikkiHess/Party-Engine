@@ -4,14 +4,18 @@
 // my code
 #include "SceneConfig.h"
 #include "../../world/Component.h"
+#include "../LuaUtils.h"
 
 void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene) {
 	if (document.HasMember("actors")) {
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
 		scene.actors.reserve(docActors.Size());
+		scene.actorsWithOnStart.reserve(docActors.Size());
+		scene.actorsWithOnUpdate.reserve(docActors.Size());
+		scene.actorsWithOnLateUpdate.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
-			Actor actor(luaState);
+			Actor actor(LuaUtils::luaState);
 
 			// initialize the ActorProps based on a template, if there is one
 			if (docActors[i].HasMember("template")) {
@@ -66,7 +70,7 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				// if the component is not cached already, we need to cache it
 				if(Component::components.find(type) == Component::components.end()) {
 					// get the component and match the key to it
-					Component component = Component(key, type, luaState);
+					Component component = Component(key, type, LuaUtils::luaState);
 
 					// cache our component
 					Component::components[type] = component;
