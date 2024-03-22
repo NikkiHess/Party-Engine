@@ -75,7 +75,7 @@ void Engine::start() {
         // Process events
         SDL_Event sdlEvent;
         while (Helper::SDL_PollEvent498(&sdlEvent)) {
-            input.processEvent(sdlEvent);
+            Input::processEvent(sdlEvent);
             // handle a quit event
             if (sdlEvent.type == SDL_QUIT) {
                 queueStop();
@@ -83,7 +83,7 @@ void Engine::start() {
         }
 
         // make the input not "newly down" or "newly up" anymore
-        input.lateUpdate();
+        Input::lateUpdate();
         // handle and render gameplay
         if (!gameOver) {
             int frame = Helper::GetFrameNumber();
@@ -132,10 +132,9 @@ int main(int argc, char* argv[]) {
 	ConfigManager configManager(resourceManager, luaState);
 	Renderer renderer(configManager, resourceManager);
 	AudioPlayer audioPlayer(resourceManager);
-    Input input;
     Camera camera(configManager);
 
-	Engine engine(renderer, configManager, audioPlayer, input, camera, resourceManager, luaState);
+	Engine engine(renderer, configManager, audioPlayer, camera, resourceManager, luaState);
     LuaUtils::setupLua(luaState);
     LuaUtils::currentScene = engine.gameInfo.scene;
 

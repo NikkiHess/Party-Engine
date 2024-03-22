@@ -6,6 +6,7 @@
 #include "LuaUtils.h"
 #include "../world/Actor.h"
 #include "../world/Scene.h"
+#include "../input/Input.h"
 
 // dependencies
 #include "Helper.h"
@@ -115,12 +116,20 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("FindAll", &LuaUtils::findAllActors)
         .endNamespace();
 
-    // establish lua Application namespace (Find and FindAll)
+    // establish lua Application namespace (Quit, Sleep, GetFrame)
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Application")
-            .addFunction("Quit", &LuaUtils::quit)
-            .addFunction("Sleep", &LuaUtils::sleep)
-            .addFunction("GetFrame", &LuaUtils::getFrame)
+        .addFunction("Quit", &LuaUtils::quit)
+        .addFunction("Sleep", &LuaUtils::sleep)
+        .addFunction("GetFrame", &LuaUtils::getFrame)
+        .endNamespace();
+
+    // establish lua Input namespace (GetKey, GetKeyDown, GetKeyUp)
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Input")
+            .addFunction("GetKey", &Input::getKey)
+            .addFunction("GetKeyDown", &Input::getKeyDown)
+            .addFunction("GetKeyUp", &Input::getKeyUp)
         .endNamespace();
 
     return luaState;

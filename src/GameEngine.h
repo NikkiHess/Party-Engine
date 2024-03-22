@@ -26,7 +26,6 @@ public:
 	Renderer& renderer;
 	ConfigManager& configManager;
 	AudioPlayer& audioPlayer;
-	Input& input;
 	Camera& camera;
 	ResourceManager& resourceManager;
 
@@ -42,8 +41,8 @@ public:
 		camera
 	};
 
-	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Input& input, Camera& camera, ResourceManager& resourceManager, lua_State* luaState)
-		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), input(input), camera(camera), resourceManager(resourceManager) {}
+	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Camera& camera, ResourceManager& resourceManager, lua_State* luaState)
+		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), camera(camera), resourceManager(resourceManager) {}
 
 	// start the main game loop
 	// LOOP ORDER OF EVENTS:
