@@ -109,7 +109,8 @@ glm::vec2 Input::getMousePosition() {
 // check whether a mouse button is down
 // 1 = left, 2 = middle, 3 = right
 bool Input::getMouseButton(int button) {
-	return buttonStates.find(button) != buttonStates.end() && buttonStates[button] == InputState::DOWN;
+	return buttonStates.find(button) != buttonStates.end() && 
+		(buttonStates[button] == InputState::DOWN || buttonStates[button] == InputState::NEWLY_DOWN);
 }
 
 // check whether a mouse button is newly down

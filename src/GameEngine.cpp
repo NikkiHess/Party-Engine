@@ -85,6 +85,7 @@ void Engine::start() {
 
         // make the input not "newly down" or "newly up" anymore
         Input::lateUpdate();
+
         // handle and render gameplay
         if (!gameOver) {
             int frame = Helper::GetFrameNumber();
