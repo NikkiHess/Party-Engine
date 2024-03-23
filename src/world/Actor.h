@@ -98,9 +98,6 @@ public:
 	// add a component to this actor with its type and key (used at engine start)
 	std::shared_ptr<Component> addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
 
-	// allows lifecycle functions to execute
-	void updateLifecycleFunctions(std::shared_ptr<Component> ptr);
-
 	// load relevant view texture
 	void loadTextures(ResourceManager& resourceManager);
 
