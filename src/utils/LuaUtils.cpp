@@ -15,7 +15,7 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
-Scene LuaUtils::currentScene;
+Scene* LuaUtils::currentScene;
 lua_State* LuaUtils::luaState;
 
 void LuaUtils::quit() {
@@ -55,8 +55,8 @@ void LuaUtils::logError(const std::string& message) {
 luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
     luabridge::LuaRef foundActor = luabridge::LuaRef(luaState);
 
-    if (currentScene.actorsByName.find(name) != currentScene.actorsByName.end()) {
-        Actor actor = **(currentScene.actorsByName[name].begin());
+    if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
+        Actor actor = **(currentScene->actorsByName[name].begin());
 
         // push the actor
         luabridge::push(luaState, actor);
@@ -75,8 +75,8 @@ luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
 luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
     luabridge::LuaRef foundActors = luabridge::LuaRef(luaState);
 
-    if (currentScene.actorsByName.find(name) != currentScene.actorsByName.end()) {
-        std::set<Actor*> setOfActors = currentScene.actorsByName[name];
+    if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
+        std::set<Actor*> setOfActors = currentScene->actorsByName[name];
 
         int index = 1; // lua tables are 1 indexed :(
         // push the actors one by one to our foundActors table
@@ -107,6 +107,7 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("GetComponentByKey", &Actor::getComponentByKey)
             .addFunction("GetComponent", &Actor::getComponent)
             .addFunction("GetComponents", &Actor::getComponents)
+            .addFunction("AddComponent", &Actor::addComponent)
         .endClass();
 
     // establish lua Actor namespace (Find and FindAll)

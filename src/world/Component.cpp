@@ -5,6 +5,7 @@
 // my code
 #include "Component.h"
 #include "../errors/Error.h"
+#include "../utils/LuaUtils.h"
 
 // rapidjson
 #include "rapidjson/document.h"
@@ -43,8 +44,10 @@ void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge
 
 void Component::callLuaFunction(const std::string& name, const std::string& actorName) {
 	bool enabled = instanceTable["enabled"].cast<bool>();
-	// only call Lua functions if this component is enabled
+	// only call Lua functions if this component is enabled and not new this frame
 	if (enabled) {
+		// if this is OnStart and we've already called that, don't
+		if (name == "OnStart" && onStartCalled) return;
 		try {
 			luabridge::LuaRef luaFunction = instanceTable[name];
 			if (luaFunction.isFunction()) {
@@ -60,6 +63,8 @@ void Component::callLuaFunction(const std::string& name, const std::string& acto
 			// display (with color codes)
 			std::cout << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
 		}
+		// if this is OnStart and we've made it this far, mark so we don't do it again
+		if (name == "OnStart") onStartCalled = true;
 	}
 }
 
@@ -82,5 +87,11 @@ void Component::loadProperties(rapidjson::Value& properties) {
 					instanceTable[name] = data.value.GetBool();
 			}
 		}
+	}
+}
+
+void Component::copyProperties(std::shared_ptr<Component> componentPtr) {
+	if (!componentPtr->instanceTable.isNil()) {
+		instanceTable = componentPtr->instanceTable;
 	}
 }

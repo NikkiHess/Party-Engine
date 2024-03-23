@@ -50,11 +50,14 @@ void Engine::start() {
         }
     }
 
+    // do OnStart for all actors, then CLEAR actorsWithOnStart to allow for new
+    // OnStarts to be added in the middle of the game
     for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
             component->callLuaFunction("OnStart", actor->name);
         }
     }
+    gameInfo.scene.actorsWithOnStart.clear();
 
     // main game loop
     // see function declaration/docs for order of events
@@ -67,6 +70,21 @@ void Engine::start() {
             if (sdlEvent.type == SDL_QUIT) {
                 queueStop();
             }
+        }
+
+        // do OnStart for all actors with NEW OnStart components
+        for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
+            for (auto& [key, component] : actor->componentsWithOnStart) {
+                component->callLuaFunction("OnStart", actor->name);
+                if (component->onStartCalled) {
+                    actor->componentsToRemoveFromOnStart[component->key] = component;
+                }
+            }
+
+            for (auto& [key, component] : actor->componentsToRemoveFromOnStart) {
+                actor->componentsWithOnStart.erase(key);
+            }
+            actor->componentsToRemoveFromOnStart.clear();
         }
 
         // do OnUpdate for all actors
@@ -139,7 +157,7 @@ int main(int argc, char* argv[]) {
 
 	Engine engine(renderer, configManager, audioPlayer, camera, resourceManager, luaState);
     LuaUtils::setupLua(luaState);
-    LuaUtils::currentScene = engine.gameInfo.scene;
+    LuaUtils::currentScene = &engine.gameInfo.scene;
 
 	engine.start();
 

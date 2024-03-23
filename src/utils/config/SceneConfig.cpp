@@ -1,10 +1,14 @@
 // std library
 #include <memory>
+#include <optional>
 
 // my code
 #include "SceneConfig.h"
 #include "../../world/Component.h"
 #include "../LuaUtils.h"
+
+// dependencies
+#include "rapidjson/rapidjson.h"
 
 void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene) {
 	if (document.HasMember("actors")) {
@@ -67,48 +71,8 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 					Error::error("failed to locate component " + type);
 				}
 
-				// if the component is not cached already, we need to cache it
-				if(Component::components.find(type) == Component::components.end()) {
-					// get the component and match the key to it
-					Component component = Component(key, type, LuaUtils::luaState);
-
-					// cache our component
-					Component::components[type] = component;
-				}
-
-				// regardless, load it to the actor
-				Component component = Component::components[type];
-
-				// make a copy from the component list
-				actor.componentsByKey[key] = component;
-				// update the key to match from config
-				actor.componentsByKey[key].key = key;
-				actor.componentsByKey[key].instanceTable["key"] = key;
-				// load properties from the config
-				actor.componentsByKey[key].loadProperties(componentObject.value);
-
-				// get the address of the copy we made
-				std::shared_ptr ptr = std::make_shared<Component>(actor.componentsByKey[key]);
-				// put it in componentsByType
-				actor.componentsByType[type].emplace(ptr);
-
-				// if we have OnStart, make sure the actor knows that
-				if (!actor.componentsByKey[key].instanceTable["OnStart"].isNil()) {
-					actor.componentsWithOnStart[key] = ptr;
-					actor.hasOnStart = true;
-				}
-
-				// if we have OnUpdate, make sure the actor knows that
-				if (!actor.componentsByKey[key].instanceTable["OnUpdate"].isNil()) {
-					actor.componentsWithOnUpdate[key] = ptr;
-					actor.hasOnUpdate = true;
-				}
-
-				// if we have OnLateUpdate, make sure the actor knows that
-				if (!actor.componentsByKey[key].instanceTable["OnLateUpdate"].isNil()) {
-					actor.componentsWithOnLateUpdate[key] = ptr;
-					actor.hasOnLateUpdate = true;
-				}
+				std::optional<rapidjson::Value*> obj = std::make_optional<rapidjson::Value*>(&componentObject.value);
+				actor.addComponentBase(type, key, obj);
 			}
 			// else, we need to update with new values
 			else if (actor.componentsByKey.find(key) != actor.componentsByKey.end()) {

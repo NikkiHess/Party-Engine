@@ -13,8 +13,10 @@
 class LuaUtils {
 public:
 	// singleton for findActor and findAllActors
-	static Scene currentScene;
+	static Scene* currentScene;
 	static lua_State* luaState;
+
+	static inline int componentsAdded = 0;
 
 	// sets up lua to begin with
 	static lua_State* setupLua(lua_State* luaState);

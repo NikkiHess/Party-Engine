@@ -63,6 +63,8 @@ public:
 	
 	// component sorting maps
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnStart;
+	std::map<std::string, std::shared_ptr<Component>> componentsToRemoveFromOnStart;
+
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
 
@@ -88,6 +90,13 @@ public:
 	// TABLE by type
 	// returns empty table if not found
 	luabridge::LuaRef getComponents(const std::string& type);
+
+	// add a component to this actor by its type
+	// key is calculated by r + # calls to addComponent
+	luabridge::LuaRef addComponent(const std::string& type);
+
+	// add a component to this actor with its type and key (used at engine start)
+	std::shared_ptr<Component> addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
 
 	// load relevant view texture
 	void loadTextures(ResourceManager& resourceManager);

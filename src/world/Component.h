@@ -23,6 +23,8 @@ public:
 	std::string type;
 	lua_State* luaState;
 
+	bool onStartCalled = false;
+
 	luabridge::LuaRef baseTable = nullptr;
 	luabridge::LuaRef instanceTable = nullptr;
 
@@ -66,8 +68,11 @@ public:
 	// actorName - the actor that holds this component
 	void callLuaFunction(const std::string& name, const std::string& actorName);
 
-	// load the Components properties, if there are any
+	// load the Component's properties, if there are any
 	void loadProperties(rapidjson::Value& data);
+
+	// Copy properties from another component's ptr
+	void copyProperties(std::shared_ptr<Component> componentPtr);
 private:
 	void establishBaseTable();
 

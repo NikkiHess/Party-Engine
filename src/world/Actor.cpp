@@ -1,8 +1,10 @@
 // std library
 #include <cmath>
+#include <memory>
 
 // my code
 #include "Actor.h"
+#include "../utils/LuaUtils.h"
 
 void Actor::loadTextures(ResourceManager& resourceManager) {
 	// check if the actor's images need to be loaded
@@ -93,6 +95,71 @@ luabridge::LuaRef Actor::getComponents(const std::string& type) {
 	}
 
 	return outRef;
+}
+
+luabridge::LuaRef Actor::addComponent(const std::string& type) {
+	// key is r + # of times addComponent has been called globally
+	std::string key = "r" + std::to_string(LuaUtils::componentsAdded);
+	++LuaUtils::componentsAdded;
+
+	std::optional<rapidjson::Value*> properties = std::nullopt;
+
+	std::shared_ptr<Component> ptr = addComponentBase(type, key, properties);
+	ptr->copyProperties(ptr);
+
+	// make sure we execute the OnStart function of this actor
+	LuaUtils::currentScene->actorsWithOnStart.emplace_back(this);
+
+	return ptr->instanceTable;
+}
+
+std::shared_ptr<Component> Actor::addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties) {
+	// if the component is not cached already, we need to cache it
+	if (Component::components.find(type) == Component::components.end()) {
+		// get the component and match the key to it
+		Component component = Component(key, type, LuaUtils::luaState);
+
+		// cache our component
+		Component::components[type] = component;
+	}
+
+	// regardless, load it to the actor
+	Component component = Component::components[type];
+
+	// make a copy from the component list
+	componentsByKey[key] = component;
+	// update the key to match from config
+	componentsByKey[key].key = key;
+	componentsByKey[key].instanceTable["key"] = key;
+	// load properties from the config
+	if (properties.has_value()) {
+		componentsByKey[key].loadProperties(*properties.value());
+	}
+
+	// get the address of the copy we made
+	std::shared_ptr<Component> ptr = std::make_shared<Component>(componentsByKey[key]);
+	// put it in componentsByType
+	componentsByType[type].emplace(ptr);
+
+	// if we have OnStart, make sure the actor knows that
+	if (!componentsByKey[key].instanceTable["OnStart"].isNil()) {
+		componentsWithOnStart[key] = ptr;
+		hasOnStart = true;
+	}
+
+	// if we have OnUpdate, make sure the actor knows that
+	if (!componentsByKey[key].instanceTable["OnUpdate"].isNil()) {
+		componentsWithOnUpdate[key] = ptr;
+		hasOnUpdate = true;
+	}
+
+	// if we have OnLateUpdate, make sure the actor knows that
+	if (!componentsByKey[key].instanceTable["OnLateUpdate"].isNil()) {
+		componentsWithOnLateUpdate[key] = ptr;
+		hasOnLateUpdate = true;
+	}
+
+	return ptr;
 }
 
 bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {
