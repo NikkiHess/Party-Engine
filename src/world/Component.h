@@ -41,6 +41,7 @@ public:
 
 		// set the instance's key to be referenced in scripts
 		instanceTable["key"] = key;
+		instanceTable["enabled"] = true;
 	}
 
 	// for copied components, we basically have to reconstruct again
@@ -51,6 +52,10 @@ public:
 		establishBaseTable();
 
 		instanceTable = luabridge::getGlobal(luaState, type.c_str());
+
+		// transfer the enabled property from the template
+		bool enabled = other.instanceTable["enabled"].cast<bool>();
+		instanceTable["enabled"] = enabled;
 		
 		return *this;
 	}

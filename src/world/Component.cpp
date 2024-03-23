@@ -42,20 +42,24 @@ void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge
 }
 
 void Component::callLuaFunction(const std::string& name, const std::string& actorName) {
-	try {
-		luabridge::LuaRef luaFunction = instanceTable[name];
-		if (luaFunction.isFunction()) {
-			luaFunction(instanceTable);
+	bool enabled = instanceTable["enabled"].cast<bool>();
+	// only call Lua functions if this component is enabled
+	if (enabled) {
+		try {
+			luabridge::LuaRef luaFunction = instanceTable[name];
+			if (luaFunction.isFunction()) {
+				luaFunction(instanceTable);
+			}
 		}
-	}
-	catch (const luabridge::LuaException& e) {
-		std::string errorMessage = e.what();
+		catch (const luabridge::LuaException& e) {
+			std::string errorMessage = e.what();
 
-		// normalize file paths across platforms
-		std::replace(errorMessage.begin(), errorMessage.end(), '\\', '/');
+			// normalize file paths across platforms
+			std::replace(errorMessage.begin(), errorMessage.end(), '\\', '/');
 
-		// display (with color codes)
-		std::cout << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
+			// display (with color codes)
+			std::cout << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
+		}
 	}
 }
 
