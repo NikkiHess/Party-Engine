@@ -26,7 +26,8 @@ public:
 	std::string type;
 	lua_State* luaState;
 
-	int frameCreated;
+	// used in addComponent
+	int frameCreated = -1;
 	bool onStartCalled = false;
 
 	luabridge::LuaRef baseTable = nullptr;
@@ -48,8 +49,6 @@ public:
 		// set the instance's key to be referenced in scripts
 		instanceTable["key"] = key;
 		instanceTable["enabled"] = true;
-
-		frameCreated = Helper::GetFrameNumber();
 	}
 
 	// for copied components, we basically have to reconstruct again
@@ -64,8 +63,6 @@ public:
 		// transfer the enabled property from the template
 		bool enabled = other.instanceTable["enabled"].cast<bool>();
 		instanceTable["enabled"] = enabled;
-
-		frameCreated = Helper::GetFrameNumber();
 		
 		return *this;
 	}

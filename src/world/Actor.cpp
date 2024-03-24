@@ -110,6 +110,8 @@ luabridge::LuaRef Actor::addComponent(const std::string& type) {
 
 	updateLifecycleFunctions(ptr);
 
+	ptr->frameCreated = Helper::GetFrameNumber();
+
 	return ptr->instanceTable;
 }
 
