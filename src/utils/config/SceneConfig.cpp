@@ -15,9 +15,9 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
 		scene.actors.reserve(docActors.Size());
-		scene.actorsWithOnStart.reserve(docActors.Size());
-		scene.actorsWithOnUpdate.reserve(docActors.Size());
-		scene.actorsWithOnLateUpdate.reserve(docActors.Size());
+		//scene.actorsWithOnStart.reserve(docActors.Size());
+		//scene.actorsWithOnUpdate.reserve(docActors.Size());
+		//scene.actorsWithOnLateUpdate.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
 			Actor actor(LuaUtils::luaState);
 

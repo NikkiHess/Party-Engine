@@ -46,7 +46,7 @@ void Engine::start() {
 
         // store the actor as a convenience reference in the component
         for (auto& [key, component] : actor.componentsByKey) {
-            component.instanceTable["actor"] = actor;
+            component.instanceTable["actor"] = &actor;
         }
     }
 
@@ -75,9 +75,12 @@ void Engine::start() {
         // do OnStart for all actors with NEW OnStart components
         for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
             for (auto& [key, component] : actor->componentsWithOnStart) {
-                component->callLuaFunction("OnStart", actor->name);
-                if (component->onStartCalled) {
-                    actor->componentsToRemoveFromOnStart[component->key] = component;
+                // run created components NEXT frame
+                if (component->frameCreated < Helper::GetFrameNumber()) {
+                    component->callLuaFunction("OnStart", actor->name);
+                    if (component->onStartCalled) {
+                        actor->componentsToRemoveFromOnStart[component->key] = component;
+                    }
                 }
             }
 
@@ -90,14 +93,20 @@ void Engine::start() {
         // do OnUpdate for all actors
         for (Actor* actor : gameInfo.scene.actorsWithOnUpdate) {
             for (auto& [key, component] : actor->componentsWithOnUpdate) {
-                component->callLuaFunction("OnUpdate", actor->name);
+                // run created components NEXT frame
+                if (component->frameCreated < Helper::GetFrameNumber()) {
+                    component->callLuaFunction("OnUpdate", actor->name);
+                }
             }
         }
 
         // do OnLateUpdate for all actors
         for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
             for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
-                component->callLuaFunction("OnLateUpdate", actor->name);
+                // run created components NEXT frame
+                if (component->frameCreated < Helper::GetFrameNumber()) {
+                    component->callLuaFunction("OnLateUpdate", actor->name);
+                }
             }
         }
 

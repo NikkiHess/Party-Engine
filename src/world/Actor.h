@@ -98,6 +98,8 @@ public:
 	// add a component to this actor with its type and key (used at engine start)
 	std::shared_ptr<Component> addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
 
+	void updateLifecycleFunctions(const std::shared_ptr<Component> ptr);
+
 	// load relevant view texture
 	void loadTextures(ResourceManager& resourceManager);
 
@@ -108,7 +110,7 @@ public:
 
 class ActorComparator {
 public:
-	bool operator()(Actor* actor1, Actor* actor2) const;
+	bool operator()(const Actor* actor1, const Actor* actor2) const;
 };
 
 class RenderOrderComparator {

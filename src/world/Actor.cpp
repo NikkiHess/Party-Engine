@@ -97,6 +97,7 @@ luabridge::LuaRef Actor::getComponents(const std::string& type) {
 	return outRef;
 }
 
+// the actor here somehow isn't the same as the actor in the actor sets in our scene
 luabridge::LuaRef Actor::addComponent(const std::string& type) {
 	// key is r + # of times addComponent has been called globally
 	std::string key = "r" + std::to_string(LuaUtils::componentsAdded);
@@ -107,8 +108,7 @@ luabridge::LuaRef Actor::addComponent(const std::string& type) {
 	std::shared_ptr<Component> ptr = addComponentBase(type, key, properties);
 	ptr->copyProperties(ptr);
 
-	// make sure we execute the OnStart function of this actor
-	LuaUtils::currentScene->actorsWithOnStart.emplace_back(this);
+	updateLifecycleFunctions(ptr);
 
 	return ptr->instanceTable;
 }
@@ -141,28 +141,40 @@ std::shared_ptr<Component> Actor::addComponentBase(const std::string& type, cons
 	// put it in componentsByType
 	componentsByType[type].emplace(ptr);
 
+	updateLifecycleFunctions(ptr);
+
+	return ptr;
+}
+
+void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
+	std::string& key = ptr->key;
+
 	// if we have OnStart, make sure the actor knows that
 	if (!componentsByKey[key].instanceTable["OnStart"].isNil()) {
+		if(LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnStart.emplace(this);
 		componentsWithOnStart[key] = ptr;
 		hasOnStart = true;
 	}
 
 	// if we have OnUpdate, make sure the actor knows that
 	if (!componentsByKey[key].instanceTable["OnUpdate"].isNil()) {
+		if (LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnUpdate.emplace(this);
 		componentsWithOnUpdate[key] = ptr;
 		hasOnUpdate = true;
 	}
 
 	// if we have OnLateUpdate, make sure the actor knows that
 	if (!componentsByKey[key].instanceTable["OnLateUpdate"].isNil()) {
+		if (LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnLateUpdate.emplace(this);
 		componentsWithOnLateUpdate[key] = ptr;
 		hasOnLateUpdate = true;
 	}
-
-	return ptr;
 }
 
-bool ActorComparator::operator()(Actor* actor1, Actor* actor2) const {
+bool ActorComparator::operator()(const Actor* actor1, const Actor* actor2) const {
 	return actor1->id < actor2->id;
 }
 

@@ -15,9 +15,6 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
-Scene* LuaUtils::currentScene;
-lua_State* LuaUtils::luaState;
-
 void LuaUtils::quit() {
     exit(0);
 }

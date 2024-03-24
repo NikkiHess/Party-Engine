@@ -35,9 +35,9 @@ private:
 public:
 	std::vector<Actor> actors;
 
-	std::vector<Actor*> actorsWithOnStart;
-	std::vector<Actor*> actorsWithOnUpdate;
-	std::vector<Actor*> actorsWithOnLateUpdate;
+	std::set<Actor*, ActorComparator> actorsWithOnStart;
+	std::set<Actor*, ActorComparator> actorsWithOnUpdate;
+	std::set<Actor*, ActorComparator> actorsWithOnLateUpdate;
 
 	std::map<std::string, std::set<Actor*>> actorsByName;
 
