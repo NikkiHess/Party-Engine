@@ -112,7 +112,6 @@ luabridge::LuaRef Actor::addComponent(const std::string& type) {
 	LuaUtils::currentScene->actorsWithNewComponents.emplace(this);
 	componentsToAdd.emplace_back(ptr);
 
-
 	return ptr->instanceTable;
 }
 
@@ -149,8 +148,10 @@ void Actor::addComponentBase(const std::string& type, const std::string& key, st
 
 	// make a copy from the component list
 	componentsByKey[key] = component;
-	// copy its instance table
-	componentsByKey[key].instanceTable = Component::components[type].instanceTable;
+	// copy to its instance table if we don't have properties to load
+	if (!properties.has_value()) {
+		componentsByKey[key].instanceTable = Component::components[type].instanceTable;
+	}
 	// update the key to match from config
 	componentsByKey[key].key = key;
 	componentsByKey[key].instanceTable["key"] = key;
