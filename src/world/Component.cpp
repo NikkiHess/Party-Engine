@@ -55,13 +55,7 @@ void Component::callLuaFunction(const std::string& name, const std::string& acto
 			}
 		}
 		catch (const luabridge::LuaException& e) {
-			std::string errorMessage = e.what();
-
-			// normalize file paths across platforms
-			std::replace(errorMessage.begin(), errorMessage.end(), '\\', '/');
-
-			// display (with color codes)
-			std::cout << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
+			LuaUtils::printLuaException(e, actorName);
 		}
 		// if this is OnStart and we've made it this far, mark so we don't do it again
 		if (name == "OnStart") onStartCalled = true;

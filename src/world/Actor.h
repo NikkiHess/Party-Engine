@@ -57,18 +57,20 @@ public:
 
 	// maps component key to component
 	std::map<std::string, Component> componentsByKey;
+	std::map<std::string, std::shared_ptr<Component>> componentPtrsByKey;
 
 	// maps component type to a list of components of that type
 	std::map<std::string, std::set<std::shared_ptr<Component>, KeyComparator>> componentsByType;
 	
-	// component sorting maps
+	// component sorting maps, by key
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnStart;
 	std::map<std::string, std::shared_ptr<Component>> componentsToRemoveFromOnStart;
 
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
 
-	std::vector<std::shared_ptr<Component>> componentsToAdd;
+	std::set<std::shared_ptr<Component>> componentsToAdd;
+	std::set<std::shared_ptr<Component>> componentsToRemove;
 
 	// whether we have onStart, onUpdate, or onLateUpdate functions to worry about
 	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false;
@@ -93,16 +95,22 @@ public:
 	// returns empty table if not found
 	luabridge::LuaRef getComponents(const std::string& type);
 
-	// add a component to this actor by its type
+	// queues adding a component to this actor by its type
 	// key is calculated by r + # calls to addComponent
-	luabridge::LuaRef addComponent(const std::string& type);
+	luabridge::LuaRef queueAddComponent(const std::string& type);
 
-	std::shared_ptr<Component> createComponent(const std::string& type, const std::string& key);
+	std::shared_ptr<Component> createComponentWithoutProperties(const std::string& type, const std::string& key);
 
 	// add a component to this actor with its type and key (used at engine start)
-	void addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
+	void addComponent(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
 
 	void updateLifecycleFunctions(const std::shared_ptr<Component> ptr);
+
+	// queues removing a component by LuaRef (for Lua only)
+	void queueRemoveComponent(const luabridge::LuaRef& componentRef);
+
+	// actually remove the component
+	void removeComponent(const std::shared_ptr<Component>& compPtr);
 
 	// load relevant view texture
 	void loadTextures(ResourceManager& resourceManager);

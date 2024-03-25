@@ -21,6 +21,16 @@ public:
 	// sets up lua to begin with
 	static lua_State* setupLua(lua_State* luaState);
 
+	// prints a formatted lua error message
+	static void printLuaException(const luabridge::LuaException& e, const std::string& actorName) {
+		std::string errorMessage = e.what();
+
+		// normalize file paths across platforms
+		std::replace(errorMessage.begin(), errorMessage.end(), '\\', '/');
+
+		// display (with color codes)
+		std::cout << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
+	}
 
 	/* APPLICATION NAMESPACE */
 

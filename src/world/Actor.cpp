@@ -62,7 +62,11 @@ luabridge::LuaRef Actor::getComponentByKey(const std::string& key) {
 	luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
 
 	if (componentsByKey.find(key) != componentsByKey.end()) {
-		outRef = componentsByKey[key].instanceTable;
+		std::shared_ptr comp = std::make_shared<Component>(componentsByKey[key]);
+		// if the component isn't queued for removal, we can use it
+		if (componentsToRemove.find(comp) == componentsToRemove.end()) {
+			outRef = comp->instanceTable;
+		}
 	}
 
 	return outRef;
@@ -74,7 +78,10 @@ luabridge::LuaRef Actor::getComponent(const std::string& type) {
 	auto it = componentsByType.find(type);
 	if (it != componentsByType.end()) {
 		std::shared_ptr comp = *(it->second.begin());
-		outRef = comp->instanceTable;
+		// if the component isn't queued for removal, we can use it
+		if (componentsToRemove.find(comp) == componentsToRemove.end()) {
+			outRef = comp->instanceTable;
+		}
 	}
 
 	return outRef;
@@ -89,8 +96,11 @@ luabridge::LuaRef Actor::getComponents(const std::string& type) {
 
 		// add each component to the table and increment the index
 		for (const auto& component : it->second) {
-			outRef[index] = component->instanceTable;
-			++index;
+		// if the component isn't queued for removal, we can use it
+			if (componentsToRemove.find(component) == componentsToRemove.end()) {
+				outRef[index] = component->instanceTable;
+				++index;
+			}
 		}
 	}
 
@@ -98,24 +108,24 @@ luabridge::LuaRef Actor::getComponents(const std::string& type) {
 }
 
 // the actor here somehow isn't the same as the actor in the actor sets in our scene
-luabridge::LuaRef Actor::addComponent(const std::string& type) {
+luabridge::LuaRef Actor::queueAddComponent(const std::string& type) {
 	// key is r + # of times addComponent has been called globally
 	std::string key = "r" + std::to_string(LuaUtils::componentsAdded);
 	++LuaUtils::componentsAdded;
 
 	std::optional<rapidjson::Value*> properties = std::nullopt;
 
-	std::shared_ptr<Component> ptr = createComponent(type, key);
+	std::shared_ptr<Component> ptr = createComponentWithoutProperties(type, key);
 
 	ptr->key = key;
 
 	LuaUtils::currentScene->actorsWithNewComponents.emplace(this);
-	componentsToAdd.emplace_back(ptr);
+	componentsToAdd.emplace(ptr);
 
 	return ptr->instanceTable;
 }
 
-std::shared_ptr<Component> Actor::createComponent(const std::string& type, const std::string& key) {
+std::shared_ptr<Component> Actor::createComponentWithoutProperties(const std::string& type, const std::string& key) {
 	// if the component is not cached already, we need to cache it
 	if (Component::components.find(type) == Component::components.end()) {
 		// get the component and match the key to it
@@ -133,7 +143,7 @@ std::shared_ptr<Component> Actor::createComponent(const std::string& type, const
 	return ptr;
 }
 
-void Actor::addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties) {
+void Actor::addComponent(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties) {
 	// if the component is not cached already, we need to cache it
 	if (Component::components.find(type) == Component::components.end()) {
 		// get the component and match the key to it
@@ -164,6 +174,7 @@ void Actor::addComponentBase(const std::string& type, const std::string& key, st
 	std::shared_ptr<Component> ptr = std::make_shared<Component>(componentsByKey[key]);
 	// put it in componentsByType
 	componentsByType[type].emplace(ptr);
+	componentPtrsByKey[key] = ptr;
 
 	updateLifecycleFunctions(ptr);
 }
@@ -194,6 +205,30 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
 		componentsWithOnLateUpdate[key] = ptr;
 		hasOnLateUpdate = true;
 	}
+}
+
+void Actor::queueRemoveComponent(const luabridge::LuaRef& componentRef) {
+	std::string key = componentRef["key"];
+	if (componentsByKey.find(key) != componentsByKey.end()) {
+		Component& comp = componentsByKey[key];
+		comp.instanceTable["enabled"] = false;
+
+		componentsToRemove.emplace(componentPtrsByKey[key]);
+		comp.instanceTable = luabridge::LuaRef(luaState);
+		LuaUtils::currentScene->actorsWithComponentsToRemove.emplace(this);
+	}
+}
+
+void Actor::removeComponent(const std::shared_ptr<Component>& compPtr) {
+	// remove Component
+	componentsByKey.erase(compPtr->key);
+	
+	// remove Component pointers
+	componentPtrsByKey.erase(compPtr->key);
+	componentsByType.erase(compPtr->type);
+	componentsWithOnStart.erase(compPtr->key);
+	componentsWithOnUpdate.erase(compPtr->key);
+	componentsWithOnLateUpdate.erase(compPtr->key);
 }
 
 bool ActorComparator::operator()(const Actor* actor1, const Actor* actor2) const {

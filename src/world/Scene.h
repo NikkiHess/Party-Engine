@@ -40,6 +40,7 @@ public:
 	std::set<Actor*, ActorComparator> actorsWithOnLateUpdate;
 
 	std::set<Actor*, ActorComparator> actorsWithNewComponents;
+	std::set<Actor*, ActorComparator> actorsWithComponentsToRemove;
 
 
 	std::map<std::string, std::set<Actor*>> actorsByName;

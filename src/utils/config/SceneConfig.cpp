@@ -72,7 +72,7 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				}
 
 				std::optional<rapidjson::Value*> obj = std::make_optional<rapidjson::Value*>(&componentObject.value);
-				actor.addComponentBase(type, key, obj);
+				actor.addComponent(type, key, obj);
 			}
 			// else, we need to update with new values
 			else if (actor.componentsByKey.find(key) != actor.componentsByKey.end()) {

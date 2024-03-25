@@ -68,11 +68,19 @@ void Engine::runtimeAlterations() {
     for (Actor* actor : gameInfo.scene.actorsWithNewComponents) {
         for (std::shared_ptr<Component> component : actor->componentsToAdd) {
             std::optional<rapidjson::Value*> opt = std::nullopt;
-            actor->addComponentBase(component->type, component->key, opt);
+            actor->addComponent(component->type, component->key, opt);
         }
         actor->componentsToAdd.clear();
     }
     gameInfo.scene.actorsWithNewComponents.clear();
+
+    for (Actor* actor : gameInfo.scene.actorsWithComponentsToRemove) {
+        for (std::shared_ptr<Component> component : actor->componentsToRemove) {
+            actor->removeComponent(component);
+        }
+        actor->componentsToRemove.clear();
+    }
+    gameInfo.scene.actorsWithComponentsToRemove.clear();
 }
 
 void Engine::start() {

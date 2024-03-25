@@ -104,7 +104,8 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("GetComponentByKey", &Actor::getComponentByKey)
             .addFunction("GetComponent", &Actor::getComponent)
             .addFunction("GetComponents", &Actor::getComponents)
-            .addFunction("AddComponent", &Actor::addComponent)
+            .addFunction("AddComponent", &Actor::queueAddComponent)
+            .addFunction("RemoveComponent", &Actor::queueRemoveComponent)
         .endClass();
 
     // establish lua Actor namespace (Find and FindAll)
