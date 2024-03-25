@@ -75,12 +75,9 @@ void Engine::start() {
         // do OnStart for all actors with NEW OnStart components
         for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
             for (auto& [key, component] : actor->componentsWithOnStart) {
-                // run created components NEXT frame
-                if (component->frameCreated < Helper::GetFrameNumber()) {
-                    component->callLuaFunction("OnStart", actor->name);
-                    if (component->onStartCalled) {
-                        actor->componentsToRemoveFromOnStart[component->key] = component;
-                    }
+                component->callLuaFunction("OnStart", actor->name);
+                if (component->onStartCalled) {
+                    actor->componentsToRemoveFromOnStart[component->key] = component;
                 }
             }
 
@@ -93,22 +90,25 @@ void Engine::start() {
         // do OnUpdate for all actors
         for (Actor* actor : gameInfo.scene.actorsWithOnUpdate) {
             for (auto& [key, component] : actor->componentsWithOnUpdate) {
-                // run created components NEXT frame
-                if (component->frameCreated < Helper::GetFrameNumber()) {
-                    component->callLuaFunction("OnUpdate", actor->name);
-                }
+                component->callLuaFunction("OnUpdate", actor->name);
             }
         }
 
         // do OnLateUpdate for all actors
         for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
             for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
-                // run created components NEXT frame
-                if (component->frameCreated < Helper::GetFrameNumber()) {
-                    component->callLuaFunction("OnLateUpdate", actor->name);
-                }
+                component->callLuaFunction("OnLateUpdate", actor->name);
             }
         }
+
+        for (Actor* actor : gameInfo.scene.actorsWithNewComponents) {
+            for (std::shared_ptr<Component> component : actor->componentsToAdd) {
+                std::optional<rapidjson::Value*> opt = std::nullopt;
+                actor->addComponentBase(component->type, component->key, opt);
+            }
+            actor->componentsToAdd.clear();
+        }
+        gameInfo.scene.actorsWithNewComponents.clear();
 
         // make the input not "newly down" or "newly up" anymore
         Input::lateUpdate();

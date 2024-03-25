@@ -68,6 +68,8 @@ public:
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
 
+	std::vector<std::shared_ptr<Component>> componentsToAdd;
+
 	// whether we have onStart, onUpdate, or onLateUpdate functions to worry about
 	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false;
     
@@ -95,8 +97,10 @@ public:
 	// key is calculated by r + # calls to addComponent
 	luabridge::LuaRef addComponent(const std::string& type);
 
+	std::shared_ptr<Component> createComponent(const std::string& type, const std::string& key);
+
 	// add a component to this actor with its type and key (used at engine start)
-	std::shared_ptr<Component> addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
+	void addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
 
 	void updateLifecycleFunctions(const std::shared_ptr<Component> ptr);
 

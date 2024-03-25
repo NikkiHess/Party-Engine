@@ -39,6 +39,9 @@ public:
 	std::set<Actor*, ActorComparator> actorsWithOnUpdate;
 	std::set<Actor*, ActorComparator> actorsWithOnLateUpdate;
 
+	std::set<Actor*, ActorComparator> actorsWithNewComponents;
+
+
 	std::map<std::string, std::set<Actor*>> actorsByName;
 
 	// actors sorted by render order -> y pos -> id

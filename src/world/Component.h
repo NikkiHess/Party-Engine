@@ -26,8 +26,6 @@ public:
 	std::string type;
 	lua_State* luaState;
 
-	// used in addComponent
-	int frameCreated = -1;
 	bool onStartCalled = false;
 
 	luabridge::LuaRef baseTable = nullptr;

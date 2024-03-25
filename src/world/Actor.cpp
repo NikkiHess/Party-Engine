@@ -105,17 +105,34 @@ luabridge::LuaRef Actor::addComponent(const std::string& type) {
 
 	std::optional<rapidjson::Value*> properties = std::nullopt;
 
-	std::shared_ptr<Component> ptr = addComponentBase(type, key, properties);
+	std::shared_ptr<Component> ptr = createComponent(type, key);
 	ptr->copyProperties(ptr);
 
-	updateLifecycleFunctions(ptr);
-
-	ptr->frameCreated = Helper::GetFrameNumber();
+	LuaUtils::currentScene->actorsWithNewComponents.emplace(this);
+	componentsToAdd.emplace_back(ptr);
 
 	return ptr->instanceTable;
 }
 
-std::shared_ptr<Component> Actor::addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties) {
+std::shared_ptr<Component> Actor::createComponent(const std::string& type, const std::string& key) {
+	// if the component is not cached already, we need to cache it
+	if (Component::components.find(type) == Component::components.end()) {
+		// get the component and match the key to it
+		Component component = Component(key, type, LuaUtils::luaState);
+
+		// cache our component
+		Component::components[type] = component;
+	}
+
+	// regardless, load it to the actor
+	Component component = Component::components[type];
+
+	std::shared_ptr<Component> ptr = std::make_shared<Component>(component);
+
+	return ptr;
+}
+
+void Actor::addComponentBase(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties) {
 	// if the component is not cached already, we need to cache it
 	if (Component::components.find(type) == Component::components.end()) {
 		// get the component and match the key to it
@@ -144,8 +161,6 @@ std::shared_ptr<Component> Actor::addComponentBase(const std::string& type, cons
 	componentsByType[type].emplace(ptr);
 
 	updateLifecycleFunctions(ptr);
-
-	return ptr;
 }
 
 void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
