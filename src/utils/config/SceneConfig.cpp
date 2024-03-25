@@ -38,7 +38,7 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 			setActorProps(actor, docActors[i], resourceManager);
 
 			// instantiate the actor in the scene
-			scene.instantiateActor(actor);
+			scene.instantiateActor(actor, true);
 		}
 	}
 	else {

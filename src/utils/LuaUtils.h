@@ -4,6 +4,7 @@
 // my code
 #include "../world/Actor.h"
 #include "../world/Scene.h"
+#include "../utils/config/SceneConfig.h"
 
 // lua
 #include "lua/lua.hpp"
@@ -15,6 +16,8 @@ public:
 	// singleton for findActor and findAllActors
 	static inline Scene* currentScene;
 	static inline lua_State* luaState;
+	static inline SceneConfig* sceneConfig;
+	static inline ResourceManager* resourceManager;
 
 	static inline int componentsAdded = 0;
 
@@ -60,6 +63,10 @@ public:
 
 	// Debug.LogError(message), prints to cerr
 	static void logError(const std::string& message);
+
+	static luabridge::LuaRef queueInstantiateActor(const std::string& templateName);
+
+	static void instantiateActor(std::shared_ptr<Actor> actorPtr);
 
 };
 

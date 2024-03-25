@@ -122,10 +122,10 @@ public:
 
 class ActorComparator {
 public:
-	bool operator()(const Actor* actor1, const Actor* actor2) const;
+	bool operator()(const std::shared_ptr<Actor> actor1, const std::shared_ptr<Actor> actor2) const;
 };
 
 class RenderOrderComparator {
 public:
-	bool operator()(const Actor* actor1, const Actor* actor2) const;
+	bool operator()(const std::shared_ptr<Actor> actor1, const std::shared_ptr<Actor> actor2) const;
 };

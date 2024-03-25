@@ -119,7 +119,7 @@ luabridge::LuaRef Actor::queueAddComponent(const std::string& type) {
 
 	ptr->key = key;
 
-	LuaUtils::currentScene->actorsWithNewComponents.emplace(this);
+	LuaUtils::currentScene->actorsWithNewComponents.emplace(LuaUtils::currentScene->actorsById[this->id]);
 	componentsToAdd.emplace(ptr);
 
 	return ptr->instanceTable;
@@ -185,7 +185,7 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
 	// if we have OnStart, make sure the actor knows that
 	if (!componentsByKey[key].instanceTable["OnStart"].isNil()) {
 		if(LuaUtils::currentScene != nullptr)
-			LuaUtils::currentScene->actorsWithOnStart.emplace(this);
+			LuaUtils::currentScene->actorsWithOnStart.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnStart[key] = ptr;
 		hasOnStart = true;
 	}
@@ -193,7 +193,7 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
 	// if we have OnUpdate, make sure the actor knows that
 	if (!componentsByKey[key].instanceTable["OnUpdate"].isNil()) {
 		if (LuaUtils::currentScene != nullptr)
-			LuaUtils::currentScene->actorsWithOnUpdate.emplace(this);
+			LuaUtils::currentScene->actorsWithOnUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnUpdate[key] = ptr;
 		hasOnUpdate = true;
 	}
@@ -201,7 +201,7 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
 	// if we have OnLateUpdate, make sure the actor knows that
 	if (!componentsByKey[key].instanceTable["OnLateUpdate"].isNil()) {
 		if (LuaUtils::currentScene != nullptr)
-			LuaUtils::currentScene->actorsWithOnLateUpdate.emplace(this);
+			LuaUtils::currentScene->actorsWithOnLateUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnLateUpdate[key] = ptr;
 		hasOnLateUpdate = true;
 	}
@@ -215,7 +215,7 @@ void Actor::queueRemoveComponent(const luabridge::LuaRef& componentRef) {
 
 		componentsToRemove.emplace(componentPtrsByKey[key]);
 		comp.instanceTable = luabridge::LuaRef(luaState);
-		LuaUtils::currentScene->actorsWithComponentsToRemove.emplace(this);
+		LuaUtils::currentScene->actorsWithComponentsToRemove.emplace(LuaUtils::currentScene->actorsById[this->id]);
 	}
 }
 
@@ -231,11 +231,11 @@ void Actor::removeComponent(const std::shared_ptr<Component>& compPtr) {
 	componentsWithOnLateUpdate.erase(compPtr->key);
 }
 
-bool ActorComparator::operator()(const Actor* actor1, const Actor* actor2) const {
+bool ActorComparator::operator()(const std::shared_ptr<Actor> actor1, const std::shared_ptr<Actor> actor2) const {
 	return actor1->id < actor2->id;
 }
 
-bool RenderOrderComparator::operator()(const Actor* actor1, const Actor* actor2) const {
+bool RenderOrderComparator::operator()(const std::shared_ptr<Actor> actor1, const std::shared_ptr<Actor>actor2) const {
 	// render orders equal? render by y pos
 	if (actor1->renderOrder == actor2->renderOrder) {
 		// y pos equal? render by id

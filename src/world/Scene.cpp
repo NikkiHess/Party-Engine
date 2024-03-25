@@ -19,7 +19,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_rect.h"
 
-void Scene::instantiateActor(Actor& actor) {
+void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 	glm::vec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);
 	actor.id = static_cast<int>(actors.size());
 
@@ -28,18 +28,23 @@ void Scene::instantiateActor(Actor& actor) {
 	// insert the actor into the list of actors
 	actors.emplace_back(actorShared);
 
-	Actor* ptr = &*actorShared;
-
 	// insert the actor's ptr into the actors by name list
-	actorsByName[actor.name].emplace(ptr);
+	actorsByName[actorShared->name].emplace(actorShared);
+	actorsById[actorShared->id] = actorShared;
 
-	if (actor.hasOnStart)
-		actorsWithOnStart.emplace(ptr);
-	if (actor.hasOnUpdate)
-		actorsWithOnUpdate.emplace(ptr);
-	if (actor.hasOnLateUpdate)
-		actorsWithOnLateUpdate.emplace(ptr);
+	if (doLifecycle) {
+		instantiateActorLifecycle(actorShared);
+	}
 
 	// insert the actor's ptr into the "sorted-by-render-order" list
-	actorsByRenderOrder.emplace(ptr);
+	actorsByRenderOrder.emplace(actorShared);
+}
+
+void Scene::instantiateActorLifecycle(std::shared_ptr<Actor> actorShared) {
+	if (actorShared->hasOnStart)
+		actorsWithOnStart.emplace(actorShared);
+	if (actorShared->hasOnUpdate)
+		actorsWithOnUpdate.emplace(actorShared);
+	if (actorShared->hasOnLateUpdate)
+		actorsWithOnLateUpdate.emplace(actorShared);
 }

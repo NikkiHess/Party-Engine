@@ -36,22 +36,27 @@ private:
 public:
 	std::vector<std::shared_ptr<Actor>> actors;
 
-	std::set<Actor*, ActorComparator> actorsWithOnStart;
-	std::set<Actor*, ActorComparator> actorsWithOnUpdate;
-	std::set<Actor*, ActorComparator> actorsWithOnLateUpdate;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnStart;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnUpdate;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnLateUpdate;
 
-	std::set<Actor*, ActorComparator> actorsWithNewComponents;
-	std::set<Actor*, ActorComparator> actorsWithComponentsToRemove;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithNewComponents;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithComponentsToRemove;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsToAdd;
 
-
-	std::map<std::string, std::set<Actor*>> actorsByName;
+	std::map<std::string, std::set<std::shared_ptr<Actor>>> actorsByName;
+	std::map<int, std::shared_ptr<Actor>> actorsById;
 
 	// actors sorted by render order -> y pos -> id
-	std::set<Actor*, RenderOrderComparator> actorsByRenderOrder;
+	std::set<std::shared_ptr<Actor>, RenderOrderComparator> actorsByRenderOrder;
 
 	std::string name;
 
 	// instantiate an actor in the scene
-	void instantiateActor(Actor& actor);
+	// actor - the actor to be instantiated
+	// doLifecycle - whether to populate lists for lua lifecycle functions
+	void instantiateActor(Actor& actor, bool doPtr);
+
+	void instantiateActorLifecycle(std::shared_ptr<Actor> actorShared);
 };
 

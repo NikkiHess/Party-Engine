@@ -7,6 +7,7 @@
 #include "../world/Actor.h"
 #include "../world/Scene.h"
 #include "../input/Input.h"
+#include "../utils/config/SceneConfig.h"
 
 // dependencies
 #include "Helper.h"
@@ -49,21 +50,25 @@ void LuaUtils::logError(const std::string& message) {
     std::cerr << message << "\n";
 }
 
+luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor, lua_State* luaState) {
+    // push the actor
+    luabridge::push(luaState, &*actor);
+
+    // create a LuaRef to return
+    luabridge::LuaRef actorRef = luabridge::LuaRef::fromStack(luaState, -1);
+
+    lua_pop(luaState, 1);
+
+    return actorRef;
+}
+
 luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
     luabridge::LuaRef foundActor = luabridge::LuaRef(luaState);
 
     if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
-        Actor actor = **(currentScene->actorsByName[name].begin());
+        std::shared_ptr<Actor> actor = *(currentScene->actorsByName[name].begin());
 
-        // push the actor
-        luabridge::push(luaState, actor);
-
-        // create a LuaRef to return
-        luabridge::LuaRef actorRef = luabridge::LuaRef::fromStack(luaState, -1);
-
-        lua_pop(luaState, 1);
-
-        foundActor = actorRef;
+        foundActor = actorToLuaRef(actor, luaState);
     }
 
     return foundActor;
@@ -73,17 +78,41 @@ luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
     luabridge::LuaRef foundActors = luabridge::LuaRef(luaState);
 
     if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
-        std::set<Actor*> setOfActors = currentScene->actorsByName[name];
+        std::set<std::shared_ptr<Actor>> setOfActors = currentScene->actorsByName[name];
 
         int index = 1; // lua tables are 1 indexed :(
         // push the actors one by one to our foundActors table
-        for (Actor* actor : setOfActors) {
-            foundActors[index] = actor;
+        for (std::shared_ptr<Actor> actor : setOfActors) {
+            // TODO: This causes a Lua error... why?
+            foundActors[index] = &*actor;
             ++index;
         }
     }
 
     return foundActors;
+}
+
+luabridge::LuaRef LuaUtils::queueInstantiateActor(const std::string& templateName) {
+    Actor actor(luaState);
+    SceneConfig* sceneConfig = LuaUtils::sceneConfig;
+
+    std::string templatePath = "resources/actor_templates/" + templateName + ".template";
+
+    if (!resourceManager->fileExists(templatePath)) {
+        Error::error("template " + templateName + " is missing");
+    }
+    rapidjson::Document document = nullptr;
+    JsonUtils::readJsonFile(templatePath, document);
+    sceneConfig->setActorProps(actor, document, *resourceManager);
+
+    currentScene->instantiateActor(actor, false);
+    currentScene->actorsToAdd.emplace(currentScene->actorsById[actor.id]);
+
+    return actorToLuaRef(currentScene->actorsById[actor.id], luaState);
+}
+
+void LuaUtils::instantiateActor(std::shared_ptr<Actor> actorPtr) {
+    currentScene->instantiateActorLifecycle(actorPtr);
 }
 
 // establish our lua_State* and all namespaces
@@ -113,6 +142,7 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
         .beginNamespace("Actor")
             .addFunction("Find", &LuaUtils::findActor)
             .addFunction("FindAll", &LuaUtils::findAllActors)
+            .addFunction("Instantiate", &LuaUtils::queueInstantiateActor)
         .endNamespace();
 
     // establish lua Application namespace (Quit, Sleep, GetFrame)

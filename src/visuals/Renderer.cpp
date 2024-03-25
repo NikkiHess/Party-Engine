@@ -40,7 +40,7 @@ void Renderer::render(GameInfo& gameInfo) {
 	SDL_RenderSetScale(sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
 
 	// draw all actors in order of transform_position_y
-	for (Actor* actor : gameInfo.scene.actorsByRenderOrder) {
+	for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsByRenderOrder) {
 		artist.drawActor(*actor, gameInfo.camera);
 	}
 }

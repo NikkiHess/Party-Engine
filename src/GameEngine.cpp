@@ -36,7 +36,7 @@
 
 void Engine::runLifecycleFunctions() {
     // do OnStart for all actors with NEW OnStart components
-    for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
             component->callLuaFunction("OnStart", actor->name);
             if (component->onStartCalled) {
@@ -51,14 +51,14 @@ void Engine::runLifecycleFunctions() {
     }
 
     // do OnUpdate for all actors
-    for (Actor* actor : gameInfo.scene.actorsWithOnUpdate) {
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnUpdate) {
         for (auto& [key, component] : actor->componentsWithOnUpdate) {
             component->callLuaFunction("OnUpdate", actor->name);
         }
     }
 
     // do OnLateUpdate for all actors
-    for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnLateUpdate) {
         for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
             component->callLuaFunction("OnLateUpdate", actor->name);
         }
@@ -66,7 +66,12 @@ void Engine::runLifecycleFunctions() {
 }
 
 void Engine::runtimeAlterations() {
-    for (Actor* actor : gameInfo.scene.actorsWithNewComponents) {
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsToAdd) {
+        LuaUtils::instantiateActor(actor);
+    }
+    gameInfo.scene.actorsToAdd.clear();
+
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithNewComponents) {
         for (std::shared_ptr<Component> component : actor->componentsToAdd) {
             std::optional<rapidjson::Value*> opt = std::nullopt;
             actor->addComponent(component->type, component->key, opt);
@@ -75,7 +80,7 @@ void Engine::runtimeAlterations() {
     }
     gameInfo.scene.actorsWithNewComponents.clear();
 
-    for (Actor* actor : gameInfo.scene.actorsWithComponentsToRemove) {
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithComponentsToRemove) {
         for (std::shared_ptr<Component> component : actor->componentsToRemove) {
             actor->removeComponent(component);
         }
@@ -91,19 +96,19 @@ void Engine::start() {
     GameConfig& gameConfig = configManager.gameConfig;
     RenderingConfig& renderConfig = configManager.renderingConfig;
 
-    for (std::shared_ptr<Actor>& actorPtr : gameInfo.scene.actors) {
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actors) {
         // load actor's images early to calculate extents for collision
-        actorPtr->loadTextures(resourceManager);
+        actor->loadTextures(resourceManager);
 
         // store the actor as a convenience reference in the component
-        for (auto& [key, component] : actorPtr->componentsByKey) {
-            component.instanceTable["actor"] = &*actorPtr;
+        for (auto& [key, component] : actor->componentsByKey) {
+            component.instanceTable["actor"] = &*actor;
         }
     }
 
     // do OnStart for all actors, then CLEAR actorsWithOnStart to allow for new
     // OnStarts to be added in the middle of the game
-    for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
+    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
             component->callLuaFunction("OnStart", actor->name);
         }
@@ -184,6 +189,8 @@ int main(int argc, char* argv[]) {
 	Engine engine(renderer, configManager, audioPlayer, camera, resourceManager, luaState);
     LuaUtils::setupLua(luaState);
     LuaUtils::currentScene = &engine.gameInfo.scene;
+    LuaUtils::sceneConfig = &configManager.sceneConfig;
+    LuaUtils::resourceManager = &resourceManager;
 
 	engine.start();
 
