@@ -223,7 +223,7 @@ void Actor::removeComponent(const std::shared_ptr<Component>& compPtr) {
 	// remove Component
 	componentsByKey.erase(compPtr->key);
 	
-	// remove Component pointers
+	// remove Component pointers (there has to be a better way!)
 	componentPtrsByKey.erase(compPtr->key);
 	componentsByType.erase(compPtr->type);
 	componentsWithOnStart.erase(compPtr->key);

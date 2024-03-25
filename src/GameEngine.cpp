@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <filesystem>
+#include <memory>
 
 // include my code
 #include "GameEngine.h"
@@ -90,13 +91,13 @@ void Engine::start() {
     GameConfig& gameConfig = configManager.gameConfig;
     RenderingConfig& renderConfig = configManager.renderingConfig;
 
-    for (Actor& actor : gameInfo.scene.actors) {
+    for (std::shared_ptr<Actor>& actorPtr : gameInfo.scene.actors) {
         // load actor's images early to calculate extents for collision
-        actor.loadTextures(resourceManager);
+        actorPtr->loadTextures(resourceManager);
 
         // store the actor as a convenience reference in the component
-        for (auto& [key, component] : actor.componentsByKey) {
-            component.instanceTable["actor"] = &actor;
+        for (auto& [key, component] : actorPtr->componentsByKey) {
+            component.instanceTable["actor"] = &*actorPtr;
         }
     }
 

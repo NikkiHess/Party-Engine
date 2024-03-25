@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 #include <map>
+#include <memory>
 
 // my code
 #include "Actor.h"
@@ -33,7 +34,7 @@ private:
 		}
 	};
 public:
-	std::vector<Actor> actors;
+	std::vector<std::shared_ptr<Actor>> actors;
 
 	std::set<Actor*, ActorComparator> actorsWithOnStart;
 	std::set<Actor*, ActorComparator> actorsWithOnUpdate;
