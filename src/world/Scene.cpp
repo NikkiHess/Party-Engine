@@ -40,7 +40,7 @@ void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 	actorsByRenderOrder.emplace(actorShared);
 }
 
-void Scene::instantiateActorLifecycle(std::shared_ptr<Actor> actorShared) {
+void Scene::instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared) {
 	if (actorShared->hasOnStart)
 		actorsWithOnStart.emplace(actorShared);
 	if (actorShared->hasOnUpdate)

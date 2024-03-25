@@ -1,6 +1,7 @@
 // std library
 #include <string>
 #include <thread>
+#include <algorithm>
 
 // my code
 #include "LuaUtils.h"
@@ -52,7 +53,7 @@ void LuaUtils::logError(const std::string& message) {
 
 luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor, lua_State* luaState) {
     // push the actor
-    luabridge::push(luaState, &*actor);
+    luabridge::push(luaState, actor.get());
 
     // create a LuaRef to return
     luabridge::LuaRef actorRef = luabridge::LuaRef::fromStack(luaState, -1);
@@ -78,13 +79,13 @@ luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
     luabridge::LuaRef foundActors = luabridge::LuaRef(luaState);
 
     if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
-        std::set<std::shared_ptr<Actor>> setOfActors = currentScene->actorsByName[name];
+        const std::set<std::shared_ptr<Actor>>& setOfActors = currentScene->actorsByName[name];
 
         int index = 1; // lua tables are 1 indexed :(
         // push the actors one by one to our foundActors table
-        for (std::shared_ptr<Actor> actor : setOfActors) {
+        for (const std::shared_ptr<Actor>& actor : setOfActors) {
             // TODO: This causes a Lua error... why?
-            foundActors[index] = &*actor;
+            foundActors[index] = actorToLuaRef(actor, luaState);
             ++index;
         }
     }
@@ -115,6 +116,31 @@ void LuaUtils::instantiateActor(std::shared_ptr<Actor> actorPtr) {
     currentScene->instantiateActorLifecycle(actorPtr);
 }
 
+
+void LuaUtils::queueDestroyActor(const luabridge::LuaRef& actorRef) {
+    std::shared_ptr actorShared = currentScene->actorsById[actorRef.cast<Actor*>()->id];
+
+    for (auto& [key, componentPtr] : actorShared->componentPtrsByKey) {
+        componentPtr->instanceTable["enabled"] = false;
+    }
+
+    currentScene->actorsToRemove.emplace(actorShared);
+}
+
+void LuaUtils::destroyActor(std::shared_ptr<Actor> actorPtr) {
+    auto& actors = currentScene->actors;
+    actors.erase(std::remove(actors.begin(), actors.end(), actorPtr));
+
+    currentScene->actorsById.erase(actorPtr->id);
+    currentScene->actorsByName[actorPtr->name].erase(actorPtr);
+    currentScene->actorsByRenderOrder.erase(actorPtr);
+    currentScene->actorsWithComponentsToRemove.erase(actorPtr);
+    currentScene->actorsWithNewComponents.erase(actorPtr);
+    currentScene->actorsWithOnLateUpdate.erase(actorPtr);
+    currentScene->actorsWithOnStart.erase(actorPtr);
+    currentScene->actorsWithOnUpdate.erase(actorPtr);
+}
+
 // establish our lua_State* and all namespaces
 lua_State* LuaUtils::setupLua(lua_State* luaState) {
     // establish lua Debug namespace
@@ -143,6 +169,7 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("Find", &LuaUtils::findActor)
             .addFunction("FindAll", &LuaUtils::findAllActors)
             .addFunction("Instantiate", &LuaUtils::queueInstantiateActor)
+            .addFunction("Destroy", &LuaUtils::queueDestroyActor)
         .endNamespace();
 
     // establish lua Application namespace (Quit, Sleep, GetFrame)
