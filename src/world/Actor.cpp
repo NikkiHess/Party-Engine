@@ -108,8 +108,11 @@ luabridge::LuaRef Actor::addComponent(const std::string& type) {
 	std::shared_ptr<Component> ptr = createComponent(type, key);
 	ptr->copyProperties(ptr);
 
+	ptr->key = key;
+
 	LuaUtils::currentScene->actorsWithNewComponents.emplace(this);
 	componentsToAdd.emplace_back(ptr);
+
 
 	return ptr->instanceTable;
 }
