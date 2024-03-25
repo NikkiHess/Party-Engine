@@ -66,10 +66,17 @@ luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor, lua_State* luaStat
 luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
     luabridge::LuaRef foundActor = luabridge::LuaRef(luaState);
 
+    // make sure the actor exists
     if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
-        std::shared_ptr<Actor> actor = *(currentScene->actorsByName[name].begin());
+        // can't get begin() of an empty set
+        if (currentScene->actorsByName.size() != 0) {
+            std::shared_ptr<Actor> actor = *(currentScene->actorsByName[name].begin());
 
-        foundActor = actorToLuaRef(actor, luaState);
+            // if we're gonna remove the actor, don't return it
+            if (currentScene->actorsToRemove.find(actor) == currentScene->actorsToRemove.end()) {
+                foundActor = actorToLuaRef(actor, luaState);
+            }
+        }
     }
 
     return foundActor;
@@ -133,6 +140,12 @@ void LuaUtils::destroyActor(std::shared_ptr<Actor> actorPtr) {
 
     currentScene->actorsById.erase(actorPtr->id);
     currentScene->actorsByName[actorPtr->name].erase(actorPtr);
+    // if, after removing the actor, no more actors exist with that name
+    // erase the entry with the actor's name
+    if (currentScene->actorsByName[actorPtr->name].empty()) {
+        currentScene->actorsByName.erase(actorPtr->name);
+    }
+
     currentScene->actorsByRenderOrder.erase(actorPtr);
     currentScene->actorsWithComponentsToRemove.erase(actorPtr);
     currentScene->actorsWithNewComponents.erase(actorPtr);
