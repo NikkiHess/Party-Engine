@@ -33,6 +33,48 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
+void Engine::runLifecycleFunctions() {
+    // do OnStart for all actors with NEW OnStart components
+    for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
+        for (auto& [key, component] : actor->componentsWithOnStart) {
+            component->callLuaFunction("OnStart", actor->name);
+            if (component->onStartCalled) {
+                actor->componentsToRemoveFromOnStart[component->key] = component;
+            }
+        }
+
+        for (auto& [key, component] : actor->componentsToRemoveFromOnStart) {
+            actor->componentsWithOnStart.erase(key);
+        }
+        actor->componentsToRemoveFromOnStart.clear();
+    }
+
+    // do OnUpdate for all actors
+    for (Actor* actor : gameInfo.scene.actorsWithOnUpdate) {
+        for (auto& [key, component] : actor->componentsWithOnUpdate) {
+            component->callLuaFunction("OnUpdate", actor->name);
+        }
+    }
+
+    // do OnLateUpdate for all actors
+    for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
+        for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
+            component->callLuaFunction("OnLateUpdate", actor->name);
+        }
+    }
+}
+
+void Engine::runtimeAlterations() {
+    for (Actor* actor : gameInfo.scene.actorsWithNewComponents) {
+        for (std::shared_ptr<Component> component : actor->componentsToAdd) {
+            std::optional<rapidjson::Value*> opt = std::nullopt;
+            actor->addComponentBase(component->type, component->key, opt);
+        }
+        actor->componentsToAdd.clear();
+    }
+    gameInfo.scene.actorsWithNewComponents.clear();
+}
+
 void Engine::start() {
     size_t currentIntroIndex = 0;
     isGameRunning = true;
@@ -72,43 +114,9 @@ void Engine::start() {
             }
         }
 
-        // do OnStart for all actors with NEW OnStart components
-        for (Actor* actor : gameInfo.scene.actorsWithOnStart) {
-            for (auto& [key, component] : actor->componentsWithOnStart) {
-                component->callLuaFunction("OnStart", actor->name);
-                if (component->onStartCalled) {
-                    actor->componentsToRemoveFromOnStart[component->key] = component;
-                }
-            }
+        runLifecycleFunctions();
 
-            for (auto& [key, component] : actor->componentsToRemoveFromOnStart) {
-                actor->componentsWithOnStart.erase(key);
-            }
-            actor->componentsToRemoveFromOnStart.clear();
-        }
-
-        // do OnUpdate for all actors
-        for (Actor* actor : gameInfo.scene.actorsWithOnUpdate) {
-            for (auto& [key, component] : actor->componentsWithOnUpdate) {
-                component->callLuaFunction("OnUpdate", actor->name);
-            }
-        }
-
-        // do OnLateUpdate for all actors
-        for (Actor* actor : gameInfo.scene.actorsWithOnLateUpdate) {
-            for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
-                component->callLuaFunction("OnLateUpdate", actor->name);
-            }
-        }
-
-        for (Actor* actor : gameInfo.scene.actorsWithNewComponents) {
-            for (std::shared_ptr<Component> component : actor->componentsToAdd) {
-                std::optional<rapidjson::Value*> opt = std::nullopt;
-                actor->addComponentBase(component->type, component->key, opt);
-            }
-            actor->componentsToAdd.clear();
-        }
-        gameInfo.scene.actorsWithNewComponents.clear();
+        runtimeAlterations();
 
         // make the input not "newly down" or "newly up" anymore
         Input::lateUpdate();

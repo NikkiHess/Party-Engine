@@ -89,9 +89,3 @@ void Component::loadProperties(rapidjson::Value& properties) {
 		}
 	}
 }
-
-void Component::copyProperties(std::shared_ptr<Component> componentPtr) {
-	if (!componentPtr->instanceTable.isNil()) {
-		instanceTable = componentPtr->instanceTable;
-	}
-}

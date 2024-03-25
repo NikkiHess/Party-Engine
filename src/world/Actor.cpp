@@ -106,7 +106,6 @@ luabridge::LuaRef Actor::addComponent(const std::string& type) {
 	std::optional<rapidjson::Value*> properties = std::nullopt;
 
 	std::shared_ptr<Component> ptr = createComponent(type, key);
-	ptr->copyProperties(ptr);
 
 	ptr->key = key;
 
@@ -150,6 +149,8 @@ void Actor::addComponentBase(const std::string& type, const std::string& key, st
 
 	// make a copy from the component list
 	componentsByKey[key] = component;
+	// copy its instance table
+	componentsByKey[key].instanceTable = Component::components[type].instanceTable;
 	// update the key to match from config
 	componentsByKey[key].key = key;
 	componentsByKey[key].instanceTable["key"] = key;

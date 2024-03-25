@@ -73,9 +73,6 @@ public:
 
 	// load the Component's properties, if there are any
 	void loadProperties(rapidjson::Value& data);
-
-	// Copy properties from another component's ptr
-	void copyProperties(std::shared_ptr<Component> componentPtr);
 private:
 	void establishBaseTable();
 

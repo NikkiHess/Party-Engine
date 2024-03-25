@@ -44,6 +44,13 @@ public:
 	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Camera& camera, ResourceManager& resourceManager, lua_State* luaState)
 		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), camera(camera), resourceManager(resourceManager) {}
 
+
+	// run OnStart, OnUpdate, OnLateUpdate
+	void runLifecycleFunctions();
+
+	// the "alter" part of collect-then-alter
+    void runtimeAlterations();
+
 	// start the main game loop
 	// LOOP ORDER OF EVENTS:
 	// 1.) Input
