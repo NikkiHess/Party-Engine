@@ -41,6 +41,11 @@ void Renderer::render(GameInfo& gameInfo) {
 
 	// draw all actors in order of transform_position_y
 	for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsByRenderOrder) {
-		artist.drawActor(*actor, gameInfo.camera);
+		Artist::drawActor(*actor, gameInfo.camera);
 	}
+
+	for (const TextObject& textObject : resourceManager.textToDraw) {
+		Artist::drawUIText(textObject);
+	}
+	resourceManager.textToDraw.clear();
 }

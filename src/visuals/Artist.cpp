@@ -8,7 +8,7 @@
 #include "../GameInfo.h"
 
 void Artist::drawActor(Actor& actor, Camera& camera) {
-	RenderingConfig& renderConfig = configManager.renderingConfig;
+	RenderingConfig& renderConfig = configManager->renderingConfig;
 
 	// if the actor's textures haven't been loaded, do so
 	actor.loadTextures(resourceManager);
@@ -73,31 +73,60 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 }
 
 void Artist::drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {
-	SDL_Texture* imageTexture = resourceManager.loadImageTexture(imageName);
+	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
 
 	// Set the rendering position and size (center, full size)
 	SDL_Rect imageRect = { pos.x, pos.y, size.x, size.y };
 
 	// UI images should always be unscaled
+	// need to set this to reset scale
 	SDL_RenderSetScale(sdlRenderer, 1, 1);
 
 	// Copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
 }
 
-void Artist::drawUIText(std::string& text, SDL_Color fontColor, glm::ivec2 pos) {
-	SDL_Texture* textTexture = resourceManager.loadTextTexture(text, fontColor);
+void Artist::queueDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
+						   const float fontSize, const float r, const float g, const float b, const float a) {
+	const int fontSizeInt = static_cast<int>(fontSize);
+
+	// if the font doesn't exist, create it
+	const auto& fontMapIt = resourceManager->fonts.find(fontName);
+	if (fontMapIt == resourceManager->fonts.end()) {
+		// initialize the unordered_map
+		resourceManager->fonts[fontName] = {};
+	}
+	// if the font size doesn't exist, create it
+	const auto& fontIt = resourceManager->fonts[fontName].find(fontSizeInt);
+	if (fontIt == resourceManager->fonts[fontName].end()) {
+		// open the font and add it to the map
+		const std::string fontPath = "resources/fonts/" + fontName + ".ttf";
+		resourceManager->fonts[fontName][fontSizeInt] = TTF_OpenFont(fontPath.c_str(), fontSizeInt);
+	}
+
+	TTF_Font* font = resourceManager->fonts[fontName][fontSizeInt];
+	SDL_Color fontColor = { r, g, b, a };
+
+	// creates the TextObject that will be iterated over in the main loop
+	resourceManager->loadTextTexture(text, font, { x, y }, fontColor);
+}
+
+void Artist::drawUIText(const TextObject& textObject) {
+	//TTF_Font* font = resourceManager.fonts[textObject.fontName][textObject.fontSize];
+	// this is guaranteed to exist at this point
+	//SDL_Texture* textTexture = resourceManager.textTextures[font][text];
 
 	int width = 0, height = 0;
 
-	SDL_QueryTexture(textTexture, nullptr, nullptr, &width, &height);
+	SDL_QueryTexture(textObject.texture, nullptr, nullptr, &width, &height);
 
 	// create a rect to render the text in
-	SDL_Rect textRect = { pos.x, pos.y, width, height };
+	SDL_Rect textRect = {textObject.pos.x, textObject.pos.y, width, height };
 
 	// UI text should always be unscaled
+	// need to set this to reset scale
 	SDL_RenderSetScale(sdlRenderer, 1, 1);
 
 	// copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, textTexture, nullptr, &textRect);
+	SDL_RenderCopy(sdlRenderer, textObject.texture, nullptr, &textRect);
 }

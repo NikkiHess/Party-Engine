@@ -103,7 +103,7 @@ void Engine::start() {
 
     for (std::shared_ptr<Actor>& actor : gameInfo.scene.actors) {
         // load actor's images early to calculate extents for collision
-        actor->loadTextures(resourceManager);
+        actor->loadTextures(&resourceManager);
 
         // store the actor as a convenience reference in the component
         for (auto& [key, component] : actor->componentsByKey) {

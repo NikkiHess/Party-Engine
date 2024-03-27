@@ -17,6 +17,7 @@
 #include "RenderingConfig.h"
 #include "../ResourceManager.h"
 #include "JsonUtils.h"
+#include "../LuaUtils.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -33,13 +34,16 @@ public:
 	GameConfig gameConfig;
 	SceneConfig sceneConfig;
 	RenderingConfig renderingConfig;
+	ResourceManager& resourceManager;
 
 	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
 
+	ConfigManager() : resourceManager(resourceManager), sceneConfig(LuaUtils::luaState) {}
+
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
-	ConfigManager(ResourceManager& resourceManager, lua_State* luaState) : sceneConfig(luaState) {
+	ConfigManager(ResourceManager& resourceManager, lua_State* luaState) : resourceManager(resourceManager), sceneConfig(luaState) {
 		if (!resourceManager.fileExists("resources/")) {
 			Error::error("resources/ missing");
 		}
@@ -49,17 +53,8 @@ public:
 			Error::error("resources/game.config missing");
 		}
 		JsonUtils::readJsonFile("resources/game.config", document);
-		gameConfig.parse(document, resourceManager);
+		const std::string& sceneName = gameConfig.parse(document, resourceManager);
 
-		// handle initial scene's .scene file
-		if (!document.HasMember("initial_scene")) {
-			Error::error("initial_scene unspecified");
-		}
-		// the name of the initial scene
-		std::string sceneName = document["initial_scene"].GetString();
-		if (!resourceManager.fileExists("resources/scenes/" + sceneName + ".scene")) {
-			Error::error("scene " + sceneName + " is missing");
-		}
 		JsonUtils::readJsonFile("resources/scenes/" + sceneName + ".scene", document);
 		sceneConfig.parse(document, resourceManager, sceneConfig.initialScene);
 
@@ -69,4 +64,14 @@ public:
 			renderingConfig.parse(document);
 		}
 	}
+
+	//ConfigManager& operator=(const ConfigManager& other) {
+	//	if (this != &other) {
+	//		this->gameConfig = other.gameConfig;
+	//		this->sceneConfig = other.sceneConfig;
+	//		this->renderingConfig = other.renderingConfig;
+	//		this->resourceManager = other.resourceManager;
+	//	}
+	//	return *this;
+	//}
 };

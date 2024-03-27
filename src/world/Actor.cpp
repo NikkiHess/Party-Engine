@@ -6,10 +6,10 @@
 #include "Actor.h"
 #include "../utils/LuaUtils.h"
 
-void Actor::loadTextures(ResourceManager& resourceManager) {
+void Actor::loadTextures(ResourceManager* resourceManager) {
 	// check if the actor's images need to be loaded
 	if (!view.image.image && view.image.name != "") {
-		view.image.image = resourceManager.loadImageTexture(view.image.name);
+		view.image.image = resourceManager->loadImageTexture(view.image.name);
 	}
 
 	// get the actor's image front/back size

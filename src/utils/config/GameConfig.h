@@ -17,6 +17,7 @@ public:
 	std::string gameTitle = "";
 
 	// initializes from game.config
-	void parse(rapidjson::Document& document, ResourceManager& resourceManager);
+	// returns the name of the initial_scene
+	std::string parse(rapidjson::Document& document, ResourceManager& resourceManager);
 };
 

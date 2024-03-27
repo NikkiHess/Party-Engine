@@ -22,10 +22,8 @@ public:
 	ConfigManager& configManager;
 	ResourceManager& resourceManager;
 
-	Artist artist; // responsible for drawing stuff
-
 	Renderer(ConfigManager& configManager, ResourceManager& resourceManager) 
-		: configManager(configManager), resourceManager(resourceManager), artist(configManager, resourceManager) {
+		: configManager(configManager), resourceManager(resourceManager) {
 		GameConfig& gameConfig = configManager.gameConfig;
 		RenderingConfig& renderConfig = configManager.renderingConfig;
 
@@ -41,8 +39,11 @@ public:
 
 		// Create our Renderer using our window, -1 (go find a display), and VSYNC/GPU rendering enabled
 		sdlRenderer = Helper::SDL_CreateRenderer498(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
-		artist.sdlRenderer = sdlRenderer;
-		artist.resourceManager.sdlRenderer = sdlRenderer;
+
+		Artist::configManager = &configManager;
+		Artist::resourceManager = &resourceManager;
+		Artist::resourceManager->sdlRenderer = sdlRenderer;
+		Artist::sdlRenderer = sdlRenderer;
 	}
 
 	// render the current view, returns the current GameState

@@ -9,6 +9,7 @@
 #include "../world/Scene.h"
 #include "../input/Input.h"
 #include "../utils/config/SceneConfig.h"
+#include "../visuals/Artist.h"
 
 // dependencies
 #include "Helper.h"
@@ -212,6 +213,13 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addProperty("x", &glm::vec2::x)
             .addProperty("y", &glm::vec2::y)
         .endClass();
+
+    // establish lua Text namespace
+
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Text")
+            .addFunction("Draw", &Artist::queueDrawText)
+        .endNamespace();
 
     return luaState;
 }

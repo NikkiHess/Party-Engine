@@ -113,7 +113,7 @@ public:
 	void removeComponent(const std::shared_ptr<Component>& compPtr);
 
 	// load relevant view texture
-	void loadTextures(ResourceManager& resourceManager);
+	void loadTextures(ResourceManager* resourceManager);
 
 	glm::vec2 getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos);
 
