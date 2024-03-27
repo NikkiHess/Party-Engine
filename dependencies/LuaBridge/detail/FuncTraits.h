@@ -250,8 +250,6 @@ struct Caller<ReturnType, 9>
     }
 };
 
-// support 10 parameters
-// added by nkhess
 template<class ReturnType>
 struct Caller<ReturnType, 10> {
     template<class Fn, class Params>
