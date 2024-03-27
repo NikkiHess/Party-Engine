@@ -39,6 +39,12 @@ void Renderer::render(GameInfo& gameInfo) {
 	// set the render scale according to the configured zoom factor
 	SDL_RenderSetScale(sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
 
+	// RENDER ORDER:
+	// 1. screen-space images
+	// 2. UI images
+	// 3. text
+	// 4. pixels
+
 	// draw all actors in order of transform_position_y
 	for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsByRenderOrder) {
 		Artist::drawActor(*actor, gameInfo.camera);
