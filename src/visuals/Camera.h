@@ -10,10 +10,6 @@
 
 class Camera {
 public:
-	glm::vec2 pos = { 0, 0 };
-	const RenderingConfig& renderConfig;
-
-	Camera(const ConfigManager& configManager) : renderConfig(configManager.renderingConfig) {}
-
-	
+	static inline glm::vec2 pos = { 0, 0 };
+	static inline const RenderingConfig* renderConfig;
 };

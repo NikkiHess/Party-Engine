@@ -7,83 +7,72 @@
 #include "../world/Actor.h"
 #include "../GameInfo.h"
 
-void Artist::drawActor(Actor& actor, Camera& camera) {
-	RenderingConfig& renderConfig = configManager->renderingConfig;
-
-	// if the actor's textures haven't been loaded, do so
-	actor.loadTextures(resourceManager);
-
-	// get the render image to be used
-	SDL_Texture* renderImage = actor.view.image.image;
-	// get the actor's image front/back/attack/damage size
-	glm::ivec2 size = actor.view.image.size;
-
-	// scale size using actor.transform.scale
-	// also flip on x if the actor is flipped at the moment
-	glm::vec2 scaledSize(
-		size.x * actor.transform.scale.x,
-		size.y * actor.transform.scale.y
-	);
-
-	// determine the flip state
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
-	if (scaledSize.x < 0 || scaledSize.y < 0) {
-		flip = SDL_RendererFlip(
-			flip | (scaledSize.x < 0 ? SDL_FLIP_HORIZONTAL : 0) |
-			(scaledSize.y < 0 ? SDL_FLIP_VERTICAL : 0)
-		);
-	}
-
-	// x and y either from config or (width or height) * 0.5 * scale
-	// NOTE TO SELF: the pivot point should always use size, not scaledSize
-	glm::vec2 pivot{
-		static_cast<int>(actor.view.pivot.x.value_or(size.x * 0.5f)),
-		static_cast<int>(actor.view.pivot.y.value_or(size.y * 0.5f))
-	};
-
-	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, camera.pos);
-	glm::vec2 bouncePos = actorScreenPos;
-
-	// if actor is not within visible area, skip rendering (cull)
-	// include a little buffer so as not to cull too early
-	// make sure to divide upper bound by zoom factor, because otherwise stuff gets unrendered at zoomFactor < 1
-	if (actorScreenPos.x < -std::abs(scaledSize.x * 1.2f) || actorScreenPos.x > renderConfig.renderSize.x * 1.1f / renderConfig.zoomFactor ||
-		actorScreenPos.y < -std::abs(scaledSize.y * 1.2f) || actorScreenPos.y > renderConfig.renderSize.y * 1.1f / renderConfig.zoomFactor) {
-		return;
-	}
-
-	// center position around the pivot point
-	// offset by scaledSize if we flip either one
-	SDL_Rect imageRect = {
-		static_cast<int>(bouncePos.x),
-		static_cast<int>(bouncePos.y),
-		static_cast<int>(std::abs(scaledSize.x)),
-		static_cast<int>(std::abs(scaledSize.y))
-	};
-
-	if (renderImage) {
-		SDL_Point pivotPoint = { static_cast<int>(pivot.x), static_cast<int>(pivot.y) };
-		// render the actor image
-		Helper::SDL_RenderCopyEx498(actor.id, actor.name,
-			sdlRenderer, renderImage, nullptr,
-			&imageRect, actor.transform.rotationDegrees,
-			&pivotPoint, flip
-		);
-	}
-}
-
-void Artist::drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size) {
+void Artist::requestDrawUI(const std::string& imageName, const float x, const float y) {
 	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
 
-	// Set the rendering position and size (center, full size)
-	SDL_Rect imageRect = { pos.x, pos.y, size.x, size.y };
+	glm::ivec2 pos = {
+		static_cast<int>(x),
+		static_cast<int>(y)
+	};
 
-	// UI images should always be unscaled
-	// need to set this to reset scale
-	SDL_RenderSetScale(sdlRenderer, 1, 1);
+	resourceManager->createUIImageDrawRequest(imageName, pos, imageTexture);
+}
 
-	// Copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
+void Artist::draw(const ImageDrawRequest& request) {
+	RenderingConfig& renderConfig = configManager->renderingConfig;
+
+	const int pixelsPerMeter = 100;
+	glm::vec2 finalRenderPos = glm::vec2(request.pos.x, request.pos.y) - Camera::pos;
+
+	SDL_Texture* texture = request.texture;
+	SDL_Rect textureRect;
+	SDL_QueryTexture(texture, nullptr, nullptr, &textureRect.w, &textureRect.h);
+
+	// apply scale and flip
+	int flipMode = SDL_FLIP_NONE;
+	if (request.scale.x < 0) {
+		flipMode |= SDL_FLIP_HORIZONTAL;
+	}
+	if (request.scale.y < 0) {
+		flipMode |= SDL_FLIP_VERTICAL;
+	}
+
+	float xScale = std::abs(request.scale.x);
+	float yScale = std::abs(request.scale.x);
+
+	textureRect.w *= xScale;
+	textureRect.h *= yScale;
+
+	SDL_Point pivotPoint = { 
+		static_cast<int>(request.pivot.x * textureRect.w), 
+		static_cast<int>(request.pivot.y * textureRect.h) 
+	};
+
+	glm::ivec2 cameraDimensions = { 
+		renderConfig.renderSize.x, 
+		renderConfig.renderSize.y 
+	};
+
+	float zoomFactor = request.type == renderConfig.zoomFactor;
+	if (request.type == SCENE_SPACE) {
+		textureRect.x = static_cast<int>(finalRenderPos.x * pixelsPerMeter + cameraDimensions.x * 0.5f * (1.0f / zoomFactor) - pivotPoint.x);
+		textureRect.y = static_cast<int>(finalRenderPos.y * pixelsPerMeter + cameraDimensions.y * 0.5f * (1.0f / zoomFactor) - pivotPoint.y);
+	}
+	else {
+		textureRect.x = static_cast<int>(finalRenderPos.x);
+		textureRect.y = static_cast<int>(finalRenderPos.y);
+	}
+
+	// apply tint/alpha to texture
+	SDL_SetTextureColorMod(texture, request.color.r, request.color.g, request.color.b);
+	SDL_SetTextureAlphaMod(texture, request.color.a);
+
+	// draw the texture
+	Helper::SDL_RenderCopyEx498(0, "", sdlRenderer, texture, nullptr, &textureRect, request.rotationDegrees, &pivotPoint, static_cast<SDL_RendererFlip>(flipMode));
+
+	// remove tint/alpha from texture
+	SDL_SetTextureColorMod(texture, 255, 255, 255);
+	SDL_SetTextureAlphaMod(texture, 255);
 }
 
 void Artist::requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
@@ -105,13 +94,23 @@ void Artist::requestDrawText(const std::string& text, const float x, const float
 	}
 
 	TTF_Font* font = resourceManager->fonts[fontName][fontSizeInt];
-	SDL_Color fontColor = { r, g, b, a };
+	SDL_Color fontColor = { 
+		static_cast<int>(r), 
+		static_cast<int>(g),
+		static_cast<int>(b),
+		static_cast<int>(a)
+	};
+
+	glm::ivec2 pos = { 
+		static_cast<int>(x), 
+		static_cast<int>(y)
+	};
 
 	// creates the TextDrawRequest that will be iterated over in the main loop
-	resourceManager->createTextDrawRequest(text, font, { x, y }, fontColor);
+	resourceManager->createTextDrawRequest(text, font, pos, fontColor);
 }
 
-void Artist::drawUIText(const TextDrawRequest& textDrawRequest) {
+void Artist::drawText(const TextDrawRequest& textDrawRequest) {
 	//TTF_Font* font = resourceManager.fonts[textObject.fontName][textObject.fontSize];
 	// this is guaranteed to exist at this point
 	//SDL_Texture* textTexture = resourceManager.textTextures[font][text];

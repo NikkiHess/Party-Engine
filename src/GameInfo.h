@@ -12,13 +12,10 @@
 #include "lua/lua.h"
 #include "LuaBridge/LuaBridge.h"
 
-class Camera;
-
 // information about the game, which can be shared between classes
 class GameInfo {
 public:
 	GameState& state;
 
 	Scene& scene;
-	Camera& camera;
 };

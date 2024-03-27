@@ -31,7 +31,7 @@ public:
 	luabridge::LuaRef baseTable = nullptr;
 	luabridge::LuaRef instanceTable = nullptr;
 
-	Component() {}
+	Component() : luaState(nullptr) {}
 
 	// constructs with:
 	// key - from config

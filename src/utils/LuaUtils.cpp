@@ -219,13 +219,19 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
         .beginNamespace("Text")
             .addFunction("Draw", &Artist::requestDrawText)
         .endNamespace();
-
+    
     // establish lua Audio namespace
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Audio")
             .addFunction("Play", &AudioPlayer::play)
             .addFunction("Halt", &AudioPlayer::halt)
             .addFunction("SetVolume", &AudioPlayer::setVolume)
+        .endNamespace();
+
+    // establish lua Image namespace
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Image")
+            .addFunction("DrawUI", &Artist::requestDrawUI)
         .endNamespace();
 
     return luaState;

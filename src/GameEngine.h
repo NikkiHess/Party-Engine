@@ -25,7 +25,6 @@ class Engine {
 public:
 	Renderer& renderer;
 	ConfigManager& configManager;
-	Camera& camera;
 	ResourceManager& resourceManager;
 
 	bool isGameRunning = false; // is the game running? drives the start loop
@@ -36,12 +35,11 @@ public:
 	// load the game info after everything else has been loaded
 	GameInfo gameInfo{
 		state,
-		configManager.sceneConfig.initialScene,
-		camera
+		configManager.sceneConfig.initialScene
 	};
 
-	Engine(Renderer& renderer, ConfigManager& configManager, Camera& camera, ResourceManager& resourceManager, lua_State* luaState)
-		: renderer(renderer), configManager(configManager), camera(camera), resourceManager(resourceManager) {}
+	Engine(Renderer& renderer, ConfigManager& configManager, ResourceManager& resourceManager, lua_State* luaState)
+		: renderer(renderer), configManager(configManager), resourceManager(resourceManager) {}
 
 
 	// run OnStart, OnUpdate, OnLateUpdate

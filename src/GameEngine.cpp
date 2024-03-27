@@ -188,9 +188,8 @@ int main(int argc, char* argv[]) {
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager, luaState);
 	Renderer renderer(configManager, resourceManager);
-    Camera camera(configManager);
 
-	Engine engine(renderer, configManager, camera, resourceManager, luaState);
+	Engine engine(renderer, configManager, resourceManager, luaState);
     LuaUtils::setupLua(luaState);
     LuaUtils::currentScene = &engine.gameInfo.scene;
     LuaUtils::sceneConfig = &configManager.sceneConfig;

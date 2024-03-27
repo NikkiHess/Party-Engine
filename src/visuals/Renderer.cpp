@@ -36,22 +36,35 @@ void Renderer::render(GameInfo& gameInfo) {
 	);
 	SDL_RenderClear(sdlRenderer);
 
+	ImageDrawRequestComparator imgComp;
+
+
+	// RENDER ORDER:
+	// 1. screen-space images (Image.Draw/Image.DrawEx)
 	// set the render scale according to the configured zoom factor
 	SDL_RenderSetScale(sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
 
-	// RENDER ORDER:
-	// 1. screen-space images
-	// 2. UI images
-	// 3. text
-	// 4. pixels
 
-	// draw all actors in order of transform_position_y
-	for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsByRenderOrder) {
-		Artist::drawActor(*actor, gameInfo.camera);
+
+	// 2. UI images (Image.DrawUI/Image.DrawUIEx)
+	// set the render scale to 1
+	SDL_RenderSetScale(sdlRenderer, 1, 1);
+	std::stable_sort(resourceManager.uiImageDrawRequests.begin(), resourceManager.uiImageDrawRequests.end(), imgComp);
+	for (const ImageDrawRequest& image : resourceManager.uiImageDrawRequests) {
+		Artist::draw(image);
 	}
+	resourceManager.uiImageDrawRequests.clear();
 
-	for (const TextDrawRequest& textObject : resourceManager.textDrawRequests) {
-		Artist::drawUIText(textObject);
+	// 3. text (Text.Draw)
+	for (const TextDrawRequest& text : resourceManager.textDrawRequests) {
+		Artist::drawText(text);
 	}
 	resourceManager.textDrawRequests.clear();
+	
+	// 4. pixels (Image.DrawPixel)
+
+
+
+
+
 }

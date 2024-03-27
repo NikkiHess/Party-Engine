@@ -24,11 +24,10 @@ public:
 	static inline SDL_Renderer* sdlRenderer;
 	static inline ResourceManager* resourceManager;
 
-	// draw an unchanging image on the screen
-	static void drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size);
+	// request to draw an image on the screen
+	static void requestDrawUI(const std::string& imageName, const float x, const float y);
 
-	// draw an unchanging image on the screen
-	static void drawActor(Actor& actor, Camera& camera);
+	static void draw(const ImageDrawRequest& uiImageDrawRequest);
 
 	// request text to be drawn on the screen
 	// text - the text to be drawn
@@ -44,6 +43,6 @@ public:
 		const float fontSize, const float r, const float g, const float b, const float a);
 
 	// actually draw the text
-	static void drawUIText(const TextDrawRequest& textDrawRequest);
+	static void drawText(const TextDrawRequest& textDrawRequest);
 };
 
