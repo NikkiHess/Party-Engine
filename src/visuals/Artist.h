@@ -30,7 +30,7 @@ public:
 	// draw an unchanging image on the screen
 	static void drawActor(Actor& actor, Camera& camera);
 
-	// queue text to draw on the screen
+	// request text to be drawn on the screen
 	// text - the text to be drawn
 	// x - the (screen) x coordinate to draw at
 	// y - the (screen) y coordinate to draw at
@@ -40,10 +40,10 @@ public:
 	// g - the blue value of the text color
 	// b - the green value of the text color
 	// a - the alpha value of the text color (transparency)
-	static void queueDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
+	static void requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
 		const float fontSize, const float r, const float g, const float b, const float a);
 
 	// actually draw the text
-	static void drawUIText(const TextObject& textObject);
+	static void drawUIText(const TextDrawRequest& textDrawRequest);
 };
 

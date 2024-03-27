@@ -13,7 +13,7 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
-class TextObject {
+class TextDrawRequest {
 public:
 	std::string text;
 	glm::ivec2 pos;
@@ -21,13 +21,13 @@ public:
 	SDL_Color color;
 	SDL_Texture* texture;
 
-	TextObject() : text(""), pos(0, 0), font(nullptr), color(), texture(nullptr) {}
+	TextDrawRequest() : text(""), pos(0, 0), font(nullptr), color(), texture(nullptr) {}
 
-	TextObject(const std::string& text, glm::ivec2& pos, TTF_Font* font, SDL_Color color, SDL_Texture* texture)
+	TextDrawRequest(const std::string& text, glm::ivec2& pos, TTF_Font* font, SDL_Color color, SDL_Texture* texture)
 		: text(text), pos(pos), font(font), color(color), texture(texture) {
 	}
 
-	TextObject& operator=(const TextObject& other) {
+	TextDrawRequest& operator=(const TextDrawRequest& other) {
 		text = other.text;
 		pos = other.pos;
 		font = other.font;
@@ -38,9 +38,9 @@ public:
 	}
 };
 
-class TextObjectComparator {
+class TextDrawRequestComparator {
 public:
-	bool operator()(const TextObject& text1, const TextObject& text2) const {
+	bool operator()(const TextDrawRequest& text1, const TextDrawRequest& text2) const {
 		return text1.text < text2.text;
 	}
 };
@@ -52,7 +52,7 @@ public:
 	// data cache
 	std::unordered_map<std::string, SDL_Texture*> imageTextures;
 
-	std::set<TextObject, TextObjectComparator> textToDraw;
+	std::set<TextDrawRequest, TextDrawRequestComparator> textDrawRequests;
 
 	// stored as {font, {text, texture}}
 	//std::unordered_map<TTF_Font*, std::unordered_map<SDL_Color, std::unordered_map<std::string, SDL_Texture*>>> textTextures;
@@ -69,7 +69,7 @@ public:
 	SDL_Texture* loadImageTexture(std::string& imageName);
 
 	// load an text texture from its content
-	TextObject& loadTextTexture(const std::string& text, TTF_Font* font, glm::ivec2 pos, SDL_Color& fontColor);
+	TextDrawRequest& createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2 pos, SDL_Color& fontColor);
 
 	// returns whether a file exists (from cache or otherwise)
 	bool fileExists(const std::string& path);

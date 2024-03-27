@@ -44,8 +44,8 @@ void Renderer::render(GameInfo& gameInfo) {
 		Artist::drawActor(*actor, gameInfo.camera);
 	}
 
-	for (const TextObject& textObject : resourceManager.textToDraw) {
+	for (const TextDrawRequest& textObject : resourceManager.textDrawRequests) {
 		Artist::drawUIText(textObject);
 	}
-	resourceManager.textToDraw.clear();
+	resourceManager.textDrawRequests.clear();
 }

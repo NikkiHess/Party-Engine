@@ -59,14 +59,14 @@ public:
 	static luabridge::LuaRef findAllActors(const std::string& name);
 
 	// Actor.Instantiate(templateName), prepare to instantiate an Actor
-	static luabridge::LuaRef queueInstantiateActor(const std::string& templateName);
+	static luabridge::LuaRef requestInstantiateActor(const std::string& templateName);
 
 	// actually instantiate the actor (helper)
 	static void instantiateActor(std::shared_ptr<Actor> actorPtr);
 
 	// Actor.Destroy(actor), prepare to destroy an actor
-	// by disabling its components and queueing it for destruction
-	static void queueDestroyActor(const luabridge::LuaRef& actorRef);
+	// by disabling its components and requesting its destruction
+	static void requestDestroyActor(const luabridge::LuaRef& actorRef);
 
 	// actually complete the destruction
 	static void destroyActor(std::shared_ptr<Actor> actorPtr);

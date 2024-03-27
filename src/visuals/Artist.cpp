@@ -37,8 +37,8 @@ void Artist::drawActor(Actor& actor, Camera& camera) {
 	// x and y either from config or (width or height) * 0.5 * scale
 	// NOTE TO SELF: the pivot point should always use size, not scaledSize
 	glm::vec2 pivot{
-		static_cast<int>(actor.view.pivot.x.value_or(size.x * 0.5)),
-		static_cast<int>(actor.view.pivot.y.value_or(size.y * 0.5))
+		static_cast<int>(actor.view.pivot.x.value_or(size.x * 0.5f)),
+		static_cast<int>(actor.view.pivot.y.value_or(size.y * 0.5f))
 	};
 
 	glm::vec2 actorScreenPos = actor.getScreenPos(renderConfig, camera.pos);
@@ -86,7 +86,7 @@ void Artist::drawUIImage(std::string& imageName, glm::ivec2 pos, glm::ivec2 size
 	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
 }
 
-void Artist::queueDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
+void Artist::requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
 						   const float fontSize, const float r, const float g, const float b, const float a) {
 	const int fontSizeInt = static_cast<int>(fontSize);
 
@@ -107,26 +107,26 @@ void Artist::queueDrawText(const std::string& text, const float x, const float y
 	TTF_Font* font = resourceManager->fonts[fontName][fontSizeInt];
 	SDL_Color fontColor = { r, g, b, a };
 
-	// creates the TextObject that will be iterated over in the main loop
-	resourceManager->loadTextTexture(text, font, { x, y }, fontColor);
+	// creates the TextDrawRequest that will be iterated over in the main loop
+	resourceManager->createTextDrawRequest(text, font, { x, y }, fontColor);
 }
 
-void Artist::drawUIText(const TextObject& textObject) {
+void Artist::drawUIText(const TextDrawRequest& textDrawRequest) {
 	//TTF_Font* font = resourceManager.fonts[textObject.fontName][textObject.fontSize];
 	// this is guaranteed to exist at this point
 	//SDL_Texture* textTexture = resourceManager.textTextures[font][text];
 
 	int width = 0, height = 0;
 
-	SDL_QueryTexture(textObject.texture, nullptr, nullptr, &width, &height);
+	SDL_QueryTexture(textDrawRequest.texture, nullptr, nullptr, &width, &height);
 
 	// create a rect to render the text in
-	SDL_Rect textRect = {textObject.pos.x, textObject.pos.y, width, height };
+	SDL_Rect textRect = { textDrawRequest.pos.x, textDrawRequest.pos.y, width, height };
 
 	// UI text should always be unscaled
 	// need to set this to reset scale
 	SDL_RenderSetScale(sdlRenderer, 1, 1);
 
 	// copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, textObject.texture, nullptr, &textRect);
+	SDL_RenderCopy(sdlRenderer, textDrawRequest.texture, nullptr, &textRect);
 }

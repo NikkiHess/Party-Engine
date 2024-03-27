@@ -129,7 +129,7 @@ void Engine::start() {
             Input::processEvent(sdlEvent);
             // handle a quit event
             if (sdlEvent.type == SDL_QUIT) {
-                queueStop();
+                requestStop();
             }
         }
 
@@ -159,7 +159,7 @@ void Engine::start() {
     }
 }
 
-void Engine::queueStop() {
+void Engine::requestStop() {
 	isGameRunning = false;
 }
 

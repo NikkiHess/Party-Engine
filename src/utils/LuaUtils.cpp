@@ -101,7 +101,7 @@ luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
     return foundActors;
 }
 
-luabridge::LuaRef LuaUtils::queueInstantiateActor(const std::string& templateName) {
+luabridge::LuaRef LuaUtils::requestInstantiateActor(const std::string& templateName) {
     Actor actor(luaState);
     SceneConfig* sceneConfig = LuaUtils::sceneConfig;
 
@@ -125,7 +125,7 @@ void LuaUtils::instantiateActor(std::shared_ptr<Actor> actorPtr) {
 }
 
 
-void LuaUtils::queueDestroyActor(const luabridge::LuaRef& actorRef) {
+void LuaUtils::requestDestroyActor(const luabridge::LuaRef& actorRef) {
     std::shared_ptr actorShared = currentScene->actorsById[actorRef.cast<Actor*>()->id];
 
     for (auto& [key, componentPtr] : actorShared->componentPtrsByKey) {
@@ -173,8 +173,8 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("GetComponentByKey", &Actor::getComponentByKey)
             .addFunction("GetComponent", &Actor::getComponent)
             .addFunction("GetComponents", &Actor::getComponents)
-            .addFunction("AddComponent", &Actor::queueAddComponent)
-            .addFunction("RemoveComponent", &Actor::queueRemoveComponent)
+            .addFunction("AddComponent", &Actor::requestAddComponent)
+            .addFunction("RemoveComponent", &Actor::requestRemoveComponent)
         .endClass();
 
     // establish lua Actor namespace (Find and FindAll)
@@ -182,8 +182,8 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
         .beginNamespace("Actor")
             .addFunction("Find", &LuaUtils::findActor)
             .addFunction("FindAll", &LuaUtils::findAllActors)
-            .addFunction("Instantiate", &LuaUtils::queueInstantiateActor)
-            .addFunction("Destroy", &LuaUtils::queueDestroyActor)
+            .addFunction("Instantiate", &LuaUtils::requestInstantiateActor)
+            .addFunction("Destroy", &LuaUtils::requestDestroyActor)
         .endNamespace();
 
     // establish lua Application namespace (Quit, Sleep, GetFrame)
@@ -218,7 +218,7 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
 
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Text")
-            .addFunction("Draw", &Artist::queueDrawText)
+            .addFunction("Draw", &Artist::requestDrawText)
         .endNamespace();
 
     return luaState;

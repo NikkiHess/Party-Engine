@@ -24,8 +24,8 @@ void Actor::loadTextures(ResourceManager* resourceManager) {
 
 glm::vec2 Actor::getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos) {
 	glm::vec2 pivot{
-		static_cast<int>(view.pivot.x.value_or(view.image.size.x * 0.5)),
-		static_cast<int>(view.pivot.y.value_or(view.image.size.y * 0.5))
+		static_cast<int>(view.pivot.x.value_or(view.image.size.x * 0.5f)),
+		static_cast<int>(view.pivot.y.value_or(view.image.size.y * 0.5f))
 	};
 
 	// actor world position in pixel coordinates
@@ -63,7 +63,7 @@ luabridge::LuaRef Actor::getComponentByKey(const std::string& key) {
 
 	if (componentsByKey.find(key) != componentsByKey.end()) {
 		std::shared_ptr comp = std::make_shared<Component>(componentsByKey[key]);
-		// if the component isn't queued for removal, we can use it
+		// if the component isn't requested for removal, we can use it
 		if (componentsToRemove.find(comp) == componentsToRemove.end()) {
 			outRef = comp->instanceTable;
 		}
@@ -78,7 +78,7 @@ luabridge::LuaRef Actor::getComponent(const std::string& type) {
 	auto it = componentsByType.find(type);
 	if (it != componentsByType.end()) {
 		std::shared_ptr comp = *(it->second.begin());
-		// if the component isn't queued for removal, we can use it
+		// if the component isn't requested for removal, we can use it
 		if (componentsToRemove.find(comp) == componentsToRemove.end()) {
 			outRef = comp->instanceTable;
 		}
@@ -96,7 +96,7 @@ luabridge::LuaRef Actor::getComponents(const std::string& type) {
 
 		// add each component to the table and increment the index
 		for (const auto& component : it->second) {
-		// if the component isn't queued for removal, we can use it
+		// if the component isn't requested for removal, we can use it
 			if (componentsToRemove.find(component) == componentsToRemove.end()) {
 				outRef[index] = component->instanceTable;
 				++index;
@@ -108,7 +108,7 @@ luabridge::LuaRef Actor::getComponents(const std::string& type) {
 }
 
 // the actor here somehow isn't the same as the actor in the actor sets in our scene
-luabridge::LuaRef Actor::queueAddComponent(const std::string& type) {
+luabridge::LuaRef Actor::requestAddComponent(const std::string& type) {
 	// key is r + # of times addComponent has been called globally
 	std::string key = "r" + std::to_string(LuaUtils::componentsAdded);
 	++LuaUtils::componentsAdded;
@@ -207,7 +207,7 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
 	}
 }
 
-void Actor::queueRemoveComponent(const luabridge::LuaRef& componentRef) {
+void Actor::requestRemoveComponent(const luabridge::LuaRef& componentRef) {
 	std::string key = componentRef["key"];
 	if (componentsByKey.find(key) != componentsByKey.end()) {
 		Component& comp = componentsByKey[key];

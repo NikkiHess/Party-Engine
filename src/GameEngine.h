@@ -60,6 +60,6 @@ public:
 	// 5.) Present render (flip)
 	void start();
 
-	// shut down the main game loop
-	void queueStop();
+	// request to shut down the main game loop at the end of the frame
+	void requestStop();
 };

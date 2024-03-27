@@ -18,8 +18,8 @@
 
 class Transform {
 public:
-	glm::vec2 pos = { 0.0, 0.0 };
-	glm::vec2 scale = { 1.0, 1.0 };
+	glm::vec2 pos = { 0.0f, 0.0f };
+	glm::vec2 scale = { 1.0f, 1.0f };
 	float rotationDegrees = 0.0;
 };
 
@@ -95,9 +95,9 @@ public:
 	// returns empty table if not found
 	luabridge::LuaRef getComponents(const std::string& type);
 
-	// queues adding a component to this actor by its type
+	// requests adding a component to this actor by its type
 	// key is calculated by r + # calls to addComponent
-	luabridge::LuaRef queueAddComponent(const std::string& type);
+	luabridge::LuaRef requestAddComponent(const std::string& type);
 
 	std::shared_ptr<Component> createComponentWithoutProperties(const std::string& type, const std::string& key);
 
@@ -106,8 +106,8 @@ public:
 
 	void updateLifecycleFunctions(const std::shared_ptr<Component> ptr);
 
-	// queues removing a component by LuaRef (for Lua only)
-	void queueRemoveComponent(const luabridge::LuaRef& componentRef);
+	// requests removal of a component by LuaRef (for Lua only)
+	void requestRemoveComponent(const luabridge::LuaRef& componentRef);
 
 	// actually remove the component
 	void removeComponent(const std::shared_ptr<Component>& compPtr);
