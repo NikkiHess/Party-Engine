@@ -25,7 +25,6 @@ class Engine {
 public:
 	Renderer& renderer;
 	ConfigManager& configManager;
-	AudioPlayer& audioPlayer;
 	Camera& camera;
 	ResourceManager& resourceManager;
 
@@ -41,8 +40,8 @@ public:
 		camera
 	};
 
-	Engine(Renderer& renderer, ConfigManager& configManager, AudioPlayer& audioPlayer, Camera& camera, ResourceManager& resourceManager, lua_State* luaState)
-		: renderer(renderer), configManager(configManager), audioPlayer(audioPlayer), camera(camera), resourceManager(resourceManager) {}
+	Engine(Renderer& renderer, ConfigManager& configManager, Camera& camera, ResourceManager& resourceManager, lua_State* luaState)
+		: renderer(renderer), configManager(configManager), camera(camera), resourceManager(resourceManager) {}
 
 
 	// run OnStart, OnUpdate, OnLateUpdate

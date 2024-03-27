@@ -9,10 +9,14 @@
 class AudioPlayer
 {
 public:
-	ResourceManager& resourceManager;
+	static inline ResourceManager* resourceManager;
 
-	AudioPlayer(ResourceManager& resourceManager) : resourceManager(resourceManager) {}
+	// play a sound on the specified channel, looping if doesLoop is true
+	static void play(const int channel, const std::string& soundName, const bool doesLoop);
 
-	// play a sound "loops" times
-	void play(std::string& soundName, int loops, int channel);
+	// halts all audio on the specified channel
+	static void halt(const int channel);
+
+	// sets the volume (volume->int)
+	static void setVolume(const int channel, const float volume);
 };

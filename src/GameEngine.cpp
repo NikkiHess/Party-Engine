@@ -188,14 +188,15 @@ int main(int argc, char* argv[]) {
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager, luaState);
 	Renderer renderer(configManager, resourceManager);
-	AudioPlayer audioPlayer(resourceManager);
     Camera camera(configManager);
 
-	Engine engine(renderer, configManager, audioPlayer, camera, resourceManager, luaState);
+	Engine engine(renderer, configManager, camera, resourceManager, luaState);
     LuaUtils::setupLua(luaState);
     LuaUtils::currentScene = &engine.gameInfo.scene;
     LuaUtils::sceneConfig = &configManager.sceneConfig;
     LuaUtils::resourceManager = &resourceManager;
+
+    AudioPlayer::resourceManager = &resourceManager;
 
 	engine.start();
 
