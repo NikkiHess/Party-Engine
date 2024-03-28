@@ -27,6 +27,10 @@ public:
 	// request to draw an image on the screen
 	static void requestDrawUI(const std::string& imageName, const float x, const float y);
 
+	// request to draw an image on the screen (extended, more params)
+	static void requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r, 
+								const float g, const float b, const float a, float sortingOrder);
+
 	static void draw(const ImageDrawRequest& uiImageDrawRequest);
 
 	// request text to be drawn on the screen

@@ -58,14 +58,9 @@ public:
 
 	ImageDrawRequest() {}
 
-	// for UI images
-	ImageDrawRequest(const std::string& name, glm::ivec2& pos, SDL_Texture* texture, int callOrder) : name(name), pos(pos), texture(texture), callOrder(callOrder) {
-		type = SCREEN_SPACE;
-	}
-
-	ImageDrawRequest(const std::string& name, glm::ivec2& pos, SDL_Texture* texture, int rotationDegrees, glm::vec2& scale, glm::vec2& pivot,
-					 SDL_Color& color, int sortingOrder, int callOrder)
-					: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder) {}
+	ImageDrawRequest(const std::string& name, glm::ivec2 pos, SDL_Texture* texture, int rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
+					 SDL_Color& color, int sortingOrder, int callOrder, ImageType type)
+					: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {}
 };
 
 class ImageDrawRequestComparator {
@@ -103,10 +98,12 @@ public:
 	SDL_Texture* loadImageTexture(const std::string& imageName);
 
 	// create a UI image draw request, to be drawn at the end of the frame
-	ImageDrawRequest createUIImageDrawRequest(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture);
+	void createUIImageDrawRequest(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture);
+
+	void createUIImageDrawRequestEx(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture, SDL_Color color, int sortingOrder);
 
 	// create a text draw request, to be drawn at the end of the frame
-	TextDrawRequest createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor);
+	void createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor);
 
 	// returns whether a file exists (from cache or otherwise)
 	bool fileExists(const std::string& path);

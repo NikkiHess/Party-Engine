@@ -18,6 +18,25 @@ void Artist::requestDrawUI(const std::string& imageName, const float x, const fl
 	resourceManager->createUIImageDrawRequest(imageName, pos, imageTexture);
 }
 
+void Artist::requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
+	const float g, const float b, const float a, float sortingOrder) {
+	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
+
+	glm::ivec2 pos = {
+		static_cast<int>(x),
+		static_cast<int>(y)
+	};
+
+	SDL_Color color = {
+		static_cast<int>(r),
+		static_cast<int>(g),
+		static_cast<int>(b),
+		static_cast<int>(a)
+	};
+
+	resourceManager->createUIImageDrawRequestEx(imageName, pos, imageTexture, color, sortingOrder);
+}
+
 void Artist::draw(const ImageDrawRequest& request) {
 	RenderingConfig& renderConfig = configManager->renderingConfig;
 

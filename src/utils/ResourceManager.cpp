@@ -21,7 +21,7 @@ SDL_Texture* ResourceManager::loadImageTexture(const std::string& imageName) {
 	return imageTexture;
 }
 
-TextDrawRequest ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor) {
+void ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor) {
 	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), fontColor);
 
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
@@ -30,29 +30,22 @@ TextDrawRequest ResourceManager::createTextDrawRequest(const std::string& text, 
 
 	TextDrawRequest request = TextDrawRequest(text, pos, font, fontColor, texture);
 	textDrawRequests.emplace_back(request);
-
-	return request;
 }
 
-ImageDrawRequest ResourceManager::createUIImageDrawRequest(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture) {
+void ResourceManager::createUIImageDrawRequest(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture) {
+	createUIImageDrawRequestEx(imageName, pos, imageTexture, {255, 255, 255, 255}, 0);
+}
+
+void ResourceManager::createUIImageDrawRequestEx(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture, SDL_Color color, int sortingOrder) {
 	int width = 0, height = 0;
 
 	SDL_QueryTexture(imageTexture, nullptr, nullptr, &width, &height);
 
-	// Set the rendering position and size (center, full size)
+	// set the rendering position and size (center, full size)
 	SDL_Rect imageRect = { pos.x, pos.y, width, height };
 
-	// UI images should always be unscaled
-	// need to set this to reset scale
-	SDL_RenderSetScale(sdlRenderer, 1, 1);
-
-	// Copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, imageTexture, nullptr, &imageRect);
-
-	ImageDrawRequest request = ImageDrawRequest(imageName, pos, imageTexture, uiImageDrawRequests.size());
+	ImageDrawRequest request = ImageDrawRequest(imageName, pos, imageTexture, 0, glm::vec2(1, 1), glm::vec2(0.5f, 0.5f), color, sortingOrder, uiImageDrawRequests.size(), SCREEN_SPACE);
 	uiImageDrawRequests.emplace_back(request);
-
-	return request;
 }
 
 bool ResourceManager::fileExists(const std::string& path) {

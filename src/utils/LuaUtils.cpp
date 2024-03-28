@@ -232,6 +232,7 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Image")
             .addFunction("DrawUI", &Artist::requestDrawUI)
+            .addFunction("DrawUIEx", &Artist::requestDrawUIEx)
         .endNamespace();
 
     return luaState;
