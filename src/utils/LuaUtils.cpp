@@ -227,7 +227,7 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("Halt", &AudioPlayer::halt)
             .addFunction("SetVolume", &AudioPlayer::setVolume)
         .endNamespace();
-
+    
     // establish lua Image namespace
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Image")
@@ -236,6 +236,15 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("Draw", &Artist::requestDrawImage)
             .addFunction("DrawEx", &Artist::requestDrawImageEx)
             .addFunction("DrawPixel", &Artist::requestDrawPixel)
+        .endNamespace();
+
+
+    // establish lua Camera namespace
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Camera")
+            .addFunction("SetPosition", &Camera::setPosition)
+            .addFunction("GetPositionX", &Camera::getPositionX)
+            .addFunction("GetPositionY", &Camera::getPositionY)
         .endNamespace();
 
     return luaState;

@@ -1424,6 +1424,9 @@
     <ClCompile Include="src\utils\LuaUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\visuals\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\glm\detail\func_common.inl">
