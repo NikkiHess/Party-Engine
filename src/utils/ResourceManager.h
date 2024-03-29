@@ -58,7 +58,7 @@ public:
 
 	ImageDrawRequest() {}
 
-	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::ivec2 pos, int rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
+	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::vec2 pos, int rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
 					 SDL_Color& color, int sortingOrder, int callOrder, ImageType type)
 					: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {}
 };
