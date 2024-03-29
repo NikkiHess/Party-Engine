@@ -14,7 +14,7 @@ void Artist::draw(const ImageDrawRequest& request) {
 	glm::vec2 finalRenderPos = glm::vec2(request.pos.x, request.pos.y) - Camera::pos;
 
 	SDL_Texture* texture = request.texture;
-	SDL_Rect textureRect;
+	SDL_Rect textureRect = {};
 	SDL_QueryTexture(texture, nullptr, nullptr, &textureRect.w, &textureRect.h);
 
 	// apply scale and flip
@@ -29,8 +29,8 @@ void Artist::draw(const ImageDrawRequest& request) {
 	float xScale = std::abs(request.scale.x);
 	float yScale = std::abs(request.scale.y);
 
-	textureRect.w *= xScale;
-	textureRect.h *= yScale;
+	textureRect.w = static_cast<int>(textureRect.w * xScale);
+	textureRect.h = static_cast<int>(textureRect.h * yScale);
 
 	SDL_Point pivotPoint = { 
 		static_cast<int>(request.pivot.x * textureRect.w), 
