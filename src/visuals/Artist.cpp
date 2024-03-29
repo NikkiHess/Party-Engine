@@ -85,10 +85,10 @@ void Artist::requestDrawText(const std::string& text, const float x, const float
 
 	TTF_Font* font = resourceManager->fonts[fontName][fontSizeInt];
 	SDL_Color fontColor = { 
-		static_cast<int>(r), 
-		static_cast<int>(g),
-		static_cast<int>(b),
-		static_cast<int>(a)
+		static_cast<Uint8>(r), 
+		static_cast<Uint8>(g),
+		static_cast<Uint8>(b),
+		static_cast<Uint8>(a)
 	};
 
 	glm::ivec2 pos = { 
@@ -141,10 +141,10 @@ void Artist::requestDrawUIEx(const std::string& imageName, const float x, const 
 	};
 
 	SDL_Color color = {
-		static_cast<int>(r),
-		static_cast<int>(g),
-		static_cast<int>(b),
-		static_cast<int>(a)
+		static_cast<Uint8>(r),
+		static_cast<Uint8>(g),
+		static_cast<Uint8>(b),
+		static_cast<Uint8>(a)
 	};
 
 	resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, color, static_cast<int>(sortingOrder));
@@ -172,10 +172,10 @@ void Artist::requestDrawImageEx(const std::string& imageName, const float x, con
 	glm::vec2 pivot = { pivotX, pivotY };
 
 	SDL_Color color = {
-		static_cast<int>(r),
-		static_cast<int>(g),
-		static_cast<int>(b),
-		static_cast<int>(a)
+		static_cast<Uint8>(r),
+		static_cast<Uint8>(g),
+		static_cast<Uint8>(b),
+		static_cast<Uint8>(a)
 	};
 
 	resourceManager->createImageDrawRequestEx(imageTexture, imageName, pos, static_cast<int>(rotationDegrees), scale,
