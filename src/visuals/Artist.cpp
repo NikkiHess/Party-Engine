@@ -7,34 +7,6 @@
 #include "../world/Actor.h"
 #include "../GameInfo.h"
 
-//glm::vec2 getWorldPos(RenderingConfig& renderConfig, float xScale, float yScale, glm::vec2& pos, glm::ivec2& pivot) {
-//	glm::vec2 pivot{
-//		pivot.x * imageSize.x,
-//		pivot.y * imageSize.y
-//	};
-//
-//	// actor world position in pixel coordinates
-//	return {
-//		(pos.x * renderConfig.pixelsPerUnit) - pivot.x,
-//		(pos.y * renderConfig.pixelsPerUnit) - pivot.y
-//	};
-//}
-//
-//glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos) {
-//	glm::vec2 worldPos = getWorldPos(renderConfig, transform.pos);
-//	// camera center in pixel coordinates
-//	glm::vec2 cameraCenter(
-//		(renderConfig.renderSize.x / 2) / renderConfig.zoomFactor,
-//		(renderConfig.renderSize.y / 2) / renderConfig.zoomFactor
-//	);
-//
-//	// actor position relative to the camera
-//	glm::vec2 actorCameraRelativePos = worldPos - glm::vec2(cameraPos.x, cameraPos.y);
-//
-//	// actor screen position, accounting for rendering at screen center
-//	return cameraCenter + actorCameraRelativePos;
-//}
-
 void Artist::draw(const ImageDrawRequest& request) {
 	RenderingConfig& renderConfig = configManager->renderingConfig;
 
@@ -175,7 +147,7 @@ void Artist::requestDrawUIEx(const std::string& imageName, const float x, const 
 		static_cast<int>(a)
 	};
 
-	resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, color, sortingOrder);
+	resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, color, static_cast<int>(sortingOrder));
 }
 
 

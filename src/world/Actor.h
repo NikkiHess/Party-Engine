@@ -20,22 +20,7 @@ class Transform {
 public:
 	glm::vec2 pos = { 0.0f, 0.0f };
 	glm::vec2 scale = { 1.0f, 1.0f };
-	float rotationDegrees = 0.0;
-};
-
-class TextureImage {
-public:
-	SDL_Texture* image = nullptr;
-	std::string name = "";
-	glm::ivec2 size = glm::ivec2(0);
-};
-
-struct View {
-	// the various images used
-	TextureImage image;
-
-	// the pivot offset, in pixels
-	OptionalVec2 pivot;
+	float rotationDegrees = 0.0f;
 };
 
 class Actor {
@@ -45,8 +30,6 @@ public:
 
 	// the actor's transform (pos, scale, rotation)
 	Transform transform;
-	// the actor's view (imageFront, imageBack, and pivot)
-	View view;
 	// the actor's x and y velocity
 	glm::vec2 velocity;
 
@@ -111,9 +94,6 @@ public:
 
 	// actually remove the component
 	void removeComponent(const std::shared_ptr<Component>& compPtr);
-
-	// load relevant view texture
-	void loadTextures(ResourceManager* resourceManager);
 
 	glm::vec2 getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos);
 

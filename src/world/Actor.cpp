@@ -6,22 +6,6 @@
 #include "Actor.h"
 #include "../utils/LuaUtils.h"
 
-void Actor::loadTextures(ResourceManager* resourceManager) {
-	// check if the actor's images need to be loaded
-	if (!view.image.image && view.image.name != "") {
-		view.image.image = resourceManager->loadImageTexture(view.image.name);
-	}
-
-	// get the actor's image front/back size
-	glm::ivec2 size(0);
-
-	// load in the images' sizes if they haven't been already
-	if (view.image.size == glm::ivec2(0)) {
-		SDL_QueryTexture(view.image.image, nullptr, nullptr, &size.x, &size.y);
-		view.image.size = size;
-	}
-}
-
 const std::string& Actor::getName() const {
 	return name;
 }
