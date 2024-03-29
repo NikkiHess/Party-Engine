@@ -65,9 +65,9 @@ void Renderer::render(GameInfo& gameInfo) {
 	resourceManager.textDrawRequests.clear();
 	
 	// 4. pixels (Image.DrawPixel)
-
-
-
-
+	for (const PixelDrawRequest& pixel : resourceManager.pixelDrawRequests) {
+		Artist::drawPixel(pixel);
+	}
+	resourceManager.pixelDrawRequests.clear();
 
 }

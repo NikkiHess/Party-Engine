@@ -73,6 +73,16 @@ public:
 	}
 };
 
+class PixelDrawRequest {
+public:
+	glm::ivec2 pos = { 0, 0 };
+	SDL_Color color = { 255, 255, 255, 255 };
+
+	PixelDrawRequest() {};
+
+	PixelDrawRequest(glm::ivec2& pos, SDL_Color& color) : pos(pos), color(color) {};
+};
+
 class ResourceManager {
 public:
 	SDL_Renderer* sdlRenderer = nullptr;
@@ -83,6 +93,7 @@ public:
 	std::vector<TextDrawRequest> textDrawRequests;
 	std::vector<ImageDrawRequest> uiImageDrawRequests;
 	std::vector<ImageDrawRequest> imageDrawRequests;
+	std::vector<PixelDrawRequest> pixelDrawRequests;
 
 	// stored as {font, {text, texture}}
 	//std::unordered_map<TTF_Font*, std::unordered_map<SDL_Color, std::unordered_map<std::string, SDL_Texture*>>> textTextures;
@@ -113,6 +124,9 @@ public:
 	// create an image draw request (with more data), to be drawn at the end of the frame
 	void createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees,
 								  glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder);
+
+	// create a pixel draw request, to be a drawn at the end of the frame
+	void createPixelDrawRequest(glm::ivec2& pos, SDL_Color color);
 
 	// returns whether a file exists (from cache or otherwise)
 	bool fileExists(const std::string& path);

@@ -235,6 +235,7 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("DrawUIEx", &Artist::requestDrawUIEx)
             .addFunction("Draw", &Artist::requestDrawImage)
             .addFunction("DrawEx", &Artist::requestDrawImageEx)
+            .addFunction("DrawPixel", &Artist::requestDrawPixel)
         .endNamespace();
 
     return luaState;

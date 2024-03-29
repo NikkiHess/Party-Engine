@@ -65,6 +65,36 @@ void Artist::draw(const ImageDrawRequest& request) {
 	SDL_SetTextureAlphaMod(texture, 255);
 }
 
+void Artist::drawText(const TextDrawRequest& request) {
+	int width = 0, height = 0;
+
+	SDL_QueryTexture(request.texture, nullptr, nullptr, &width, &height);
+
+	// create a rect to render the text in
+	SDL_Rect textRect = { request.pos.x, request.pos.y, width, height };
+
+	// UI text should always be unscaled
+	// need to set this to reset scale
+	SDL_RenderSetScale(sdlRenderer, 1, 1);
+
+	// copy the texture to the renderer
+	SDL_RenderCopy(sdlRenderer, request.texture, nullptr, &textRect);
+}
+
+void Artist::drawPixel(const PixelDrawRequest& request) {
+	// set the draw color to the request's color
+	SDL_SetRenderDrawColor(sdlRenderer, request.color.r, request.color.g, request.color.b, request.color.a);
+
+	// set the draw mode to blend to ensure alpha works
+	SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BLENDMODE_BLEND);
+
+	// draw the actual point
+	SDL_RenderDrawPoint(sdlRenderer, request.pos.x, request.pos.y);
+
+	// reset the draw mode to none
+	SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BLENDMODE_NONE);
+}
+
 void Artist::requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
 						   const float fontSize, const float r, const float g, const float b, const float a) {
 	const int fontSizeInt = static_cast<int>(fontSize);
@@ -98,26 +128,6 @@ void Artist::requestDrawText(const std::string& text, const float x, const float
 
 	// creates the TextDrawRequest that will be iterated over in the main loop
 	resourceManager->createTextDrawRequest(text, font, pos, fontColor);
-}
-
-void Artist::drawText(const TextDrawRequest& textDrawRequest) {
-	//TTF_Font* font = resourceManager.fonts[textObject.fontName][textObject.fontSize];
-	// this is guaranteed to exist at this point
-	//SDL_Texture* textTexture = resourceManager.textTextures[font][text];
-
-	int width = 0, height = 0;
-
-	SDL_QueryTexture(textDrawRequest.texture, nullptr, nullptr, &width, &height);
-
-	// create a rect to render the text in
-	SDL_Rect textRect = { textDrawRequest.pos.x, textDrawRequest.pos.y, width, height };
-
-	// UI text should always be unscaled
-	// need to set this to reset scale
-	SDL_RenderSetScale(sdlRenderer, 1, 1);
-
-	// copy the texture to the renderer
-	SDL_RenderCopy(sdlRenderer, textDrawRequest.texture, nullptr, &textRect);
 }
 
 void Artist::requestDrawUI(const std::string& imageName, const float x, const float y) {
@@ -180,4 +190,17 @@ void Artist::requestDrawImageEx(const std::string& imageName, const float x, con
 
 	resourceManager->createImageDrawRequestEx(imageTexture, imageName, pos, static_cast<int>(rotationDegrees), scale,
 											  pivot, color, static_cast<int>(sortingOrder));
+}
+
+void Artist::requestDrawPixel(const float x, const float y, const float r, const float g, const float b, const float a) {
+	glm::ivec2 pos = { x, y };
+
+	SDL_Color color = {
+		static_cast<Uint8>(r),
+		static_cast<Uint8>(g),
+		static_cast<Uint8>(b),
+		static_cast<Uint8>(a)
+	};
+
+	resourceManager->createPixelDrawRequest(pos, color);
 }

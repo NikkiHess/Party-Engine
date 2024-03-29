@@ -68,3 +68,8 @@ void ResourceManager::createImageDrawRequestEx(SDL_Texture* imageTexture, const 
 												sortingOrder, imageDrawRequests.size(), SCENE_SPACE);
 	imageDrawRequests.emplace_back(request);
 }
+
+void ResourceManager::createPixelDrawRequest(glm::ivec2& pos, SDL_Color color) {
+	PixelDrawRequest request = PixelDrawRequest(pos, color);
+	pixelDrawRequests.emplace_back(request);
+}

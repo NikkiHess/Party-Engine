@@ -25,6 +25,8 @@ public:
 	static inline ResourceManager* resourceManager;
 
 	static void draw(const ImageDrawRequest& request);
+	static void drawText(const TextDrawRequest& request);
+	static void drawPixel(const PixelDrawRequest& request);
 
 	// request text to be drawn on the screen
 	// text - the text to be drawn
@@ -52,7 +54,7 @@ public:
 								   const float scaleX, const float scaleY, const float pivotX, const float pivotY,
 								   const float r, const float g, const float b, const float a, const float sortingOrder);
 
-	// actually draw the text
-	static void drawText(const TextDrawRequest& textDrawRequest);
+	// rqeuest to draw a single pixel on the screen
+	static void requestDrawPixel(const float x, const float y, const float r, const float g, const float b, const float a);
 };
 
