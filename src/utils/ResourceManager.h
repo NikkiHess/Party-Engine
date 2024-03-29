@@ -43,9 +43,9 @@ enum ImageType {
 
 class ImageDrawRequest {
 public:
+	SDL_Texture* texture = nullptr;
 	std::string name = "";
 	glm::vec2 pos = { 0, 0 };
-	SDL_Texture* texture = nullptr;
 	int rotationDegrees = 0;
 	glm::vec2 scale = { 1, 1 };
 	glm::vec2 pivot = { 0.5f, 0.5f };
@@ -58,7 +58,7 @@ public:
 
 	ImageDrawRequest() {}
 
-	ImageDrawRequest(const std::string& name, glm::ivec2 pos, SDL_Texture* texture, int rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
+	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::ivec2 pos, int rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
 					 SDL_Color& color, int sortingOrder, int callOrder, ImageType type)
 					: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {}
 };
@@ -82,6 +82,7 @@ public:
 
 	std::vector<TextDrawRequest> textDrawRequests;
 	std::vector<ImageDrawRequest> uiImageDrawRequests;
+	std::vector<ImageDrawRequest> imageDrawRequests;
 
 	// stored as {font, {text, texture}}
 	//std::unordered_map<TTF_Font*, std::unordered_map<SDL_Color, std::unordered_map<std::string, SDL_Texture*>>> textTextures;
@@ -97,13 +98,21 @@ public:
 	// load an image texture from its name
 	SDL_Texture* loadImageTexture(const std::string& imageName);
 
-	// create a UI image draw request, to be drawn at the end of the frame
-	void createUIImageDrawRequest(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture);
-
-	void createUIImageDrawRequestEx(const std::string& imageName, glm::ivec2& pos, SDL_Texture* imageTexture, SDL_Color color, int sortingOrder);
-
 	// create a text draw request, to be drawn at the end of the frame
 	void createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor);
+
+	// create a UI image draw request, to be drawn at the end of the frame
+	void createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos);
+
+	// create a UI image draw request (with more data), to be drawn at the end of the frame
+	void createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, SDL_Color color, int sortingOrder);
+
+	// create an image draw request, to be drawn at the end of the frame
+	void createImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos);
+
+	// create an image draw request (with more data), to be drawn at the end of the frame
+	void createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees,
+								  glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder);
 
 	// returns whether a file exists (from cache or otherwise)
 	bool fileExists(const std::string& path);

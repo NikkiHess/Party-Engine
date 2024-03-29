@@ -12,8 +12,6 @@ void RenderingConfig::parse(rapidjson::Document& renderingDocument) {
 		zoomFactor = renderingDocument["zoom_factor"].GetFloat();
 	if (renderingDocument.HasMember("cam_ease_factor"))
 		easeFactor = renderingDocument["cam_ease_factor"].GetFloat();
-	if (renderingDocument.HasMember("cam_offset_x"))
-		cameraOffset.x = renderingDocument["cam_offset_x"].GetFloat() * zoomFactor;
 
 	// handle bg color
 	if (renderingDocument.HasMember("clear_color_r"))

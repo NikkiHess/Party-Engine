@@ -43,8 +43,11 @@ void Renderer::render(GameInfo& gameInfo) {
 	// 1. screen-space images (Image.Draw/Image.DrawEx)
 	// set the render scale according to the configured zoom factor
 	SDL_RenderSetScale(sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
-
-
+	std::stable_sort(resourceManager.imageDrawRequests.begin(), resourceManager.imageDrawRequests.end(), imgComp);
+	for (const ImageDrawRequest& image : resourceManager.imageDrawRequests) {
+		Artist::draw(image);
+	}
+	resourceManager.imageDrawRequests.clear();
 
 	// 2. UI images (Image.DrawUI/Image.DrawUIEx)
 	// set the render scale to 1

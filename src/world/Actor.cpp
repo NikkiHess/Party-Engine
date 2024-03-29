@@ -22,34 +22,6 @@ void Actor::loadTextures(ResourceManager* resourceManager) {
 	}
 }
 
-glm::vec2 Actor::getWorldPos(RenderingConfig& renderConfig, glm::vec2 pos) {
-	glm::vec2 pivot{
-		static_cast<int>(view.pivot.x.value_or(view.image.size.x * 0.5f)),
-		static_cast<int>(view.pivot.y.value_or(view.image.size.y * 0.5f))
-	};
-
-	// actor world position in pixel coordinates
-	return {
-		(pos.x * renderConfig.pixelsPerUnit) - pivot.x,
-		(pos.y * renderConfig.pixelsPerUnit) - pivot.y
-	};
-}
-
-glm::vec2 Actor::getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos) {
-	glm::vec2 worldPos = getWorldPos(renderConfig, transform.pos);
-	// camera center in pixel coordinates
-	glm::vec2 cameraCenter(
-		(renderConfig.renderSize.x / 2 - renderConfig.cameraOffset.x * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor,
-		(renderConfig.renderSize.y / 2 - renderConfig.cameraOffset.y * renderConfig.pixelsPerUnit) / renderConfig.zoomFactor
-	);
-
-	// actor position relative to the camera
-	glm::vec2 actorCameraRelativePos = worldPos - glm::vec2(cameraPos.x, cameraPos.y);
-
-	// actor screen position, accounting for rendering at screen center
-	return cameraCenter + actorCameraRelativePos;
-}
-
 const std::string& Actor::getName() const {
 	return name;
 }

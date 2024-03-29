@@ -7,35 +7,33 @@
 #include "../world/Actor.h"
 #include "../GameInfo.h"
 
-void Artist::requestDrawUI(const std::string& imageName, const float x, const float y) {
-	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
-
-	glm::ivec2 pos = {
-		static_cast<int>(x),
-		static_cast<int>(y)
-	};
-
-	resourceManager->createUIImageDrawRequest(imageName, pos, imageTexture);
-}
-
-void Artist::requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
-	const float g, const float b, const float a, float sortingOrder) {
-	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
-
-	glm::ivec2 pos = {
-		static_cast<int>(x),
-		static_cast<int>(y)
-	};
-
-	SDL_Color color = {
-		static_cast<int>(r),
-		static_cast<int>(g),
-		static_cast<int>(b),
-		static_cast<int>(a)
-	};
-
-	resourceManager->createUIImageDrawRequestEx(imageName, pos, imageTexture, color, sortingOrder);
-}
+//glm::vec2 getWorldPos(RenderingConfig& renderConfig, float xScale, float yScale, glm::vec2& pos, glm::ivec2& pivot) {
+//	glm::vec2 pivot{
+//		pivot.x * imageSize.x,
+//		pivot.y * imageSize.y
+//	};
+//
+//	// actor world position in pixel coordinates
+//	return {
+//		(pos.x * renderConfig.pixelsPerUnit) - pivot.x,
+//		(pos.y * renderConfig.pixelsPerUnit) - pivot.y
+//	};
+//}
+//
+//glm::vec2 getScreenPos(RenderingConfig& renderConfig, glm::vec2 cameraPos) {
+//	glm::vec2 worldPos = getWorldPos(renderConfig, transform.pos);
+//	// camera center in pixel coordinates
+//	glm::vec2 cameraCenter(
+//		(renderConfig.renderSize.x / 2) / renderConfig.zoomFactor,
+//		(renderConfig.renderSize.y / 2) / renderConfig.zoomFactor
+//	);
+//
+//	// actor position relative to the camera
+//	glm::vec2 actorCameraRelativePos = worldPos - glm::vec2(cameraPos.x, cameraPos.y);
+//
+//	// actor screen position, accounting for rendering at screen center
+//	return cameraCenter + actorCameraRelativePos;
+//}
 
 void Artist::draw(const ImageDrawRequest& request) {
 	RenderingConfig& renderConfig = configManager->renderingConfig;
@@ -57,7 +55,7 @@ void Artist::draw(const ImageDrawRequest& request) {
 	}
 
 	float xScale = std::abs(request.scale.x);
-	float yScale = std::abs(request.scale.x);
+	float yScale = std::abs(request.scale.y);
 
 	textureRect.w *= xScale;
 	textureRect.h *= yScale;
@@ -72,8 +70,9 @@ void Artist::draw(const ImageDrawRequest& request) {
 		renderConfig.renderSize.y 
 	};
 
-	float zoomFactor = request.type == renderConfig.zoomFactor;
+	float zoomFactor = renderConfig.zoomFactor;
 	if (request.type == SCENE_SPACE) {
+		//Actor::getScreenPos();
 		textureRect.x = static_cast<int>(finalRenderPos.x * pixelsPerMeter + cameraDimensions.x * 0.5f * (1.0f / zoomFactor) - pivotPoint.x);
 		textureRect.y = static_cast<int>(finalRenderPos.y * pixelsPerMeter + cameraDimensions.y * 0.5f * (1.0f / zoomFactor) - pivotPoint.y);
 	}
@@ -147,4 +146,66 @@ void Artist::drawText(const TextDrawRequest& textDrawRequest) {
 
 	// copy the texture to the renderer
 	SDL_RenderCopy(sdlRenderer, textDrawRequest.texture, nullptr, &textRect);
+}
+
+void Artist::requestDrawUI(const std::string& imageName, const float x, const float y) {
+	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
+
+	glm::ivec2 pos = {
+		static_cast<int>(x),
+		static_cast<int>(y)
+	};
+
+	resourceManager->createUIImageDrawRequest(imageTexture, imageName, pos);
+}
+
+void Artist::requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
+	const float g, const float b, const float a, float sortingOrder) {
+	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
+
+	glm::ivec2 pos = {
+		static_cast<int>(x),
+		static_cast<int>(y)
+	};
+
+	SDL_Color color = {
+		static_cast<int>(r),
+		static_cast<int>(g),
+		static_cast<int>(b),
+		static_cast<int>(a)
+	};
+
+	resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, color, sortingOrder);
+}
+
+
+
+void Artist::requestDrawImage(const std::string& imageName, const float x, const float y) {
+	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
+
+	glm::vec2 pos = { x, y };
+
+	resourceManager->createImageDrawRequest(imageTexture, imageName, pos);
+}
+
+void Artist::requestDrawImageEx(const std::string& imageName, const float x, const float y, const float rotationDegrees,
+								const float scaleX, const float scaleY, const float pivotX, const float pivotY,
+								const float r, const float g, const float b, const float a, const float sortingOrder) {
+	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
+
+	glm::vec2 pos = { x, y };
+
+	glm::vec2 scale = { scaleX, scaleY };
+
+	glm::vec2 pivot = { pivotX, pivotY };
+
+	SDL_Color color = {
+		static_cast<int>(r),
+		static_cast<int>(g),
+		static_cast<int>(b),
+		static_cast<int>(a)
+	};
+
+	resourceManager->createImageDrawRequestEx(imageTexture, imageName, pos, static_cast<int>(rotationDegrees), scale,
+											  pivot, color, static_cast<int>(sortingOrder));
 }
