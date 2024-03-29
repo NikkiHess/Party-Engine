@@ -11,7 +11,7 @@ void Artist::draw(const ImageDrawRequest& request) {
 	RenderingConfig& renderConfig = configManager->renderingConfig;
 
 	const int pixelsPerMeter = 100;
-	glm::vec2 finalRenderPos = glm::vec2(request.pos.x, request.pos.y) - Camera::pos;
+	glm::vec2 finalRenderPos = glm::vec2(request.pos.x, request.pos.y);
 
 	SDL_Texture* texture = request.texture;
 	SDL_Rect textureRect = {};
@@ -32,19 +32,23 @@ void Artist::draw(const ImageDrawRequest& request) {
 	textureRect.w = static_cast<int>(textureRect.w * xScale);
 	textureRect.h = static_cast<int>(textureRect.h * yScale);
 
-	SDL_Point pivotPoint = { 
-		static_cast<int>(request.pivot.x * textureRect.w), 
-		static_cast<int>(request.pivot.y * textureRect.h) 
+	SDL_Point pivotPoint = {
+		static_cast<int>(request.pivot.x * textureRect.w),
+		static_cast<int>(request.pivot.y * textureRect.h)
 	};
 
-	glm::ivec2 cameraDimensions = { 
-		renderConfig.renderSize.x, 
-		renderConfig.renderSize.y 
-	};
-
-	float zoomFactor = renderConfig.zoomFactor;
 	if (request.type == SCENE_SPACE) {
-		//Actor::getScreenPos();
+
+		glm::ivec2 cameraDimensions = {
+			renderConfig.renderSize.x,
+			renderConfig.renderSize.y
+		};
+
+		float zoomFactor = renderConfig.zoomFactor;
+
+		// only do this with scene space because UI shouldn't move with the camera
+		finalRenderPos -= Camera::pos;
+
 		textureRect.x = static_cast<int>(finalRenderPos.x * pixelsPerMeter + cameraDimensions.x * 0.5f * (1.0f / zoomFactor) - pivotPoint.x);
 		textureRect.y = static_cast<int>(finalRenderPos.y * pixelsPerMeter + cameraDimensions.y * 0.5f * (1.0f / zoomFactor) - pivotPoint.y);
 	}

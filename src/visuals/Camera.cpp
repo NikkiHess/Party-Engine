@@ -13,3 +13,11 @@ float Camera::getPositionX() {
 float Camera::getPositionY() {
 	return pos.y;
 }
+
+void Camera::setZoom(const float zoom) {
+	renderConfig->zoomFactor = zoom;
+}
+
+float Camera::getZoom() {
+	return renderConfig->zoomFactor;
+}

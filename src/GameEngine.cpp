@@ -194,6 +194,8 @@ int main(int argc, char* argv[]) {
 
     AudioPlayer::resourceManager = &resourceManager;
 
+    Camera::renderConfig = &configManager.renderingConfig;
+
 	engine.start();
 
 	return 0;

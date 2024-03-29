@@ -245,6 +245,8 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("SetPosition", &Camera::setPosition)
             .addFunction("GetPositionX", &Camera::getPositionX)
             .addFunction("GetPositionY", &Camera::getPositionY)
+            .addFunction("SetZoom", &Camera::setZoom)
+            .addFunction("GetZoom", &Camera::getZoom)
         .endNamespace();
 
     return luaState;

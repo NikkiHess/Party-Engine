@@ -11,10 +11,13 @@
 class Camera {
 public:
 	static inline glm::vec2 pos = { 0, 0 };
-	static inline const RenderingConfig* renderConfig;
+	static inline RenderingConfig* renderConfig;
 
 	static void setPosition(const float x, const float y);
 
+	static void setZoom(const float zoomFactor);
+
 	static float getPositionX();
 	static float getPositionY();
+	static float getZoom();
 };
