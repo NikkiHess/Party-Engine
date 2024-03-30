@@ -68,6 +68,10 @@ void Engine::runLifecycleFunctions() {
 void Engine::runtimeAlterations() {
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsToAdd) {
         LuaUtils::instantiateActor(actor);
+
+        for (auto& [key, component] : actor->componentsByKey) {
+            component.instanceTable["actor"] = actor.get();
+        }
     }
     GameInfo::scene.actorsToAdd.clear();
 
