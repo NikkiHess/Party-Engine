@@ -10,7 +10,7 @@ CXXFLAGS := -std=c++17 -I./dependencies -O3
 DEBUG_CXXFLAGS := -std=c++17 -I./dependencies -O0 -g -Wall -Wextra
 
 # Linker flags
-LDFLAGS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+LDFLAGS := -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -llua5.4
 
 # Target executables
 TARGET := game_engine_linux
