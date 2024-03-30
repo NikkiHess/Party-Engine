@@ -23,7 +23,7 @@
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_ttf.h"
 
-void Renderer::render(GameInfo& gameInfo) {
+void Renderer::render() {
 	RenderingConfig& renderConfig = configManager.renderingConfig;
 
 	// Clear the frame buffer at the beginning of a frame

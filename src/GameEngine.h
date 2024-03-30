@@ -32,14 +32,15 @@ public:
 	bool gameOver = false;
 	bool gameOverMusicPlaying = false;
 
-	// load the game info after everything else has been loaded
-	GameInfo gameInfo{
-		state,
-		configManager.sceneConfig.initialScene
-	};
-
 	Engine(Renderer& renderer, ConfigManager& configManager, ResourceManager& resourceManager, lua_State* luaState)
-		: renderer(renderer), configManager(configManager), resourceManager(resourceManager) {}
+		: renderer(renderer), configManager(configManager), resourceManager(resourceManager) {
+		GameInfo::state = state;
+		GameInfo::scene = configManager.sceneConfig.initialScene;
+		GameInfo::newScene = GameInfo::scene;
+
+		GameInfo::configManager = &configManager;
+		GameInfo::resourceManager = &resourceManager;
+	}
 
 
 	// run OnStart, OnUpdate, OnLateUpdate

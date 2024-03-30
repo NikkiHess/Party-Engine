@@ -31,7 +31,7 @@ public:
 	// initializes the scene from its scene file
 	// utilizes Scene class
 	// called at the start of the engine and when we proceed to a new scene
-	void parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene);
+	void parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene, const std::string& sceneName);
 
 	// set Actor props from a document
 	// actor - the actor to set properties for

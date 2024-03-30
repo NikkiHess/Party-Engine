@@ -36,7 +36,7 @@
 
 void Engine::runLifecycleFunctions() {
     // do OnStart for all actors with NEW OnStart components
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnStart) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
             component->callLuaFunction("OnStart", actor->name);
             if (component->onStartCalled) {
@@ -51,14 +51,14 @@ void Engine::runLifecycleFunctions() {
     }
 
     // do OnUpdate for all actors
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnUpdate) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnUpdate) {
         for (auto& [key, component] : actor->componentsWithOnUpdate) {
             component->callLuaFunction("OnUpdate", actor->name);
         }
     }
 
     // do OnLateUpdate for all actors
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnLateUpdate) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnLateUpdate) {
         for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
             component->callLuaFunction("OnLateUpdate", actor->name);
         }
@@ -66,32 +66,32 @@ void Engine::runLifecycleFunctions() {
 }
 
 void Engine::runtimeAlterations() {
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsToAdd) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsToAdd) {
         LuaUtils::instantiateActor(actor);
     }
-    gameInfo.scene.actorsToAdd.clear();
+    GameInfo::scene.actorsToAdd.clear();
 
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsToRemove) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsToRemove) {
         LuaUtils::destroyActor(actor);
     }
-    gameInfo.scene.actorsToRemove.clear();
+    GameInfo::scene.actorsToRemove.clear();
 
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithNewComponents) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithNewComponents) {
         for (std::shared_ptr<Component> component : actor->componentsToAdd) {
             std::optional<rapidjson::Value*> opt = std::nullopt;
             actor->addComponent(component->type, component->key, opt);
         }
         actor->componentsToAdd.clear();
     }
-    gameInfo.scene.actorsWithNewComponents.clear();
+    GameInfo::scene.actorsWithNewComponents.clear();
 
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithComponentsToRemove) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithComponentsToRemove) {
         for (std::shared_ptr<Component> component : actor->componentsToRemove) {
             actor->removeComponent(component);
         }
         actor->componentsToRemove.clear();
     }
-    gameInfo.scene.actorsWithComponentsToRemove.clear();
+    GameInfo::scene.actorsWithComponentsToRemove.clear();
 }
 
 void Engine::start() {
@@ -101,7 +101,7 @@ void Engine::start() {
     GameConfig& gameConfig = configManager.gameConfig;
     RenderingConfig& renderConfig = configManager.renderingConfig;
 
-    for (std::shared_ptr<Actor>& actor : gameInfo.scene.actors) {
+    for (std::shared_ptr<Actor>& actor : GameInfo::scene.actors) {
         // store the actor as a convenience reference in the component
         for (auto& [key, component] : actor->componentsByKey) {
             component.instanceTable["actor"] = actor.get();
@@ -110,16 +110,29 @@ void Engine::start() {
 
     // do OnStart for all actors, then CLEAR actorsWithOnStart to allow for new
     // OnStarts to be added in the middle of the game
-    for (std::shared_ptr<Actor> actor : gameInfo.scene.actorsWithOnStart) {
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
             component->callLuaFunction("OnStart", actor->name);
         }
     }
-    gameInfo.scene.actorsWithOnStart.clear();
+    GameInfo::scene.actorsWithOnStart.clear();
 
     // main game loop
     // see function declaration/docs for order of events
     while (isGameRunning) {
+        // if there is a scene switch, we need to do that right at the start of the frame
+        if (GameInfo::scene.id != GameInfo::newScene.id) {
+            GameInfo::scene = GameInfo::newScene;
+            LuaUtils::currentScene = &GameInfo::scene;
+
+            for (std::shared_ptr<Actor>& actor : GameInfo::scene.actors) {
+                // store the actor as a convenience reference in the component
+                for (auto& [key, component] : actor->componentsByKey) {
+                    component.instanceTable["actor"] = actor.get();
+                }
+            }
+        }
+
         // Process events
         SDL_Event sdlEvent;
         while (Helper::SDL_PollEvent498(&sdlEvent)) {
@@ -140,12 +153,12 @@ void Engine::start() {
         // handle and render gameplay
         if (!gameOver) {
             int frame = Helper::GetFrameNumber();
-            //gameInfo.state = gameInfo.scene.moveAllActors(renderConfig.actorFlipping, gameInfo.state, gameConfig, audioPlayer);
+            //GameInfo::state = GameInfo::scene.moveAllActors(renderConfig.actorFlipping, GameInfo::state, gameConfig, audioPlayer);
 
-            //camera.update(gameInfo.player, renderConfig.easeFactor);
+            //camera.update(GameInfo::player, renderConfig.easeFactor);
 
             // render the game first
-            renderer.render(gameInfo);
+            renderer.render();
 
             // set the scale back to normal
             SDL_RenderSetScale(renderer.sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
@@ -188,7 +201,7 @@ int main(int argc, char* argv[]) {
 
 	Engine engine(renderer, configManager, resourceManager, luaState);
     LuaUtils::setupLua(luaState);
-    LuaUtils::currentScene = &engine.gameInfo.scene;
+    LuaUtils::currentScene = &GameInfo::scene;
     LuaUtils::sceneConfig = &configManager.sceneConfig;
     LuaUtils::resourceManager = &resourceManager;
 

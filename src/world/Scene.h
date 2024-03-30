@@ -34,7 +34,10 @@ private:
 		}
 	};
 public:
+	static inline int numScenes = 0;
+
 	std::vector<std::shared_ptr<Actor>> actors;
+	std::vector<std::shared_ptr<Actor>> dontDestroy;
 
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnStart;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnUpdate;
@@ -52,6 +55,12 @@ public:
 	std::set<std::shared_ptr<Actor>, RenderOrderComparator> actorsByRenderOrder;
 
 	std::string name;
+	int id;
+
+	Scene() {
+		id = numScenes;
+		++numScenes;
+	}
 
 	// instantiate an actor in the scene
 	// actor - the actor to be instantiated

@@ -10,14 +10,13 @@
 // dependencies
 #include "rapidjson/rapidjson.h"
 
-void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene) {
+void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene, const std::string& sceneName) {
 	if (document.HasMember("actors")) {
 		rapidjson::GenericArray docActors = document["actors"].GetArray();
 
+		scene.name = sceneName;
+
 		scene.actors.reserve(docActors.Size());
-		//scene.actorsWithOnStart.reserve(docActors.Size());
-		//scene.actorsWithOnUpdate.reserve(docActors.Size());
-		//scene.actorsWithOnLateUpdate.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
 			Actor actor(LuaUtils::luaState);
 

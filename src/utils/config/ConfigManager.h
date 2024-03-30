@@ -56,7 +56,7 @@ public:
 		const std::string& sceneName = gameConfig.parse(document, resourceManager);
 
 		JsonUtils::readJsonFile("resources/scenes/" + sceneName + ".scene", document);
-		sceneConfig.parse(document, resourceManager, sceneConfig.initialScene);
+		sceneConfig.parse(document, resourceManager, sceneConfig.initialScene, sceneName);
 
 		// handle rendering.config, which may or may not exist
 		if (resourceManager.fileExists("resources/rendering.config")) {
@@ -64,14 +64,4 @@ public:
 			renderingConfig.parse(document);
 		}
 	}
-
-	//ConfigManager& operator=(const ConfigManager& other) {
-	//	if (this != &other) {
-	//		this->gameConfig = other.gameConfig;
-	//		this->sceneConfig = other.sceneConfig;
-	//		this->renderingConfig = other.renderingConfig;
-	//		this->resourceManager = other.resourceManager;
-	//	}
-	//	return *this;
-	//}
 };

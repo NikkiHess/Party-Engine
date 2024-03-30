@@ -27,6 +27,7 @@ class Actor {
 public:
 	std::string name = "";
 	int id = 0;
+	bool dontDestroy = false;
 
 	// the actor's transform (pos, scale, rotation)
 	Transform transform;

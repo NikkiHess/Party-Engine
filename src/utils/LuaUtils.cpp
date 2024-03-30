@@ -238,7 +238,6 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("DrawPixel", &Artist::requestDrawPixel)
         .endNamespace();
 
-
     // establish lua Camera namespace
     luabridge::getGlobalNamespace(luaState)
         .beginNamespace("Camera")
@@ -247,6 +246,14 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("GetPositionY", &Camera::getPositionY)
             .addFunction("SetZoom", &Camera::setZoom)
             .addFunction("GetZoom", &Camera::getZoom)
+        .endNamespace();
+
+    // establish lua Scene namespace
+    luabridge::getGlobalNamespace(luaState)
+        .beginNamespace("Scene")
+            .addFunction("Load", &GameInfo::loadScene)
+            .addFunction("GetCurrent", &GameInfo::getCurrentScene)
+            .addFunction("DontDestroy", &GameInfo::dontDestroy)
         .endNamespace();
 
     return luaState;

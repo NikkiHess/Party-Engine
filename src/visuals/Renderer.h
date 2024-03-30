@@ -47,5 +47,5 @@ public:
 	}
 
 	// render the current view, returns the current GameState
-	void render(GameInfo& gameInfo);
+	void render();
 };
