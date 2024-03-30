@@ -56,11 +56,12 @@ void Artist::draw(const ImageDrawRequest& request) {
 		textureRect.y = static_cast<int>(finalRenderPos.y);
 	}
 
+	// cull
 	if ((textureRect.x + textureRect.w < 0 || textureRect.x > cameraDimensions.x) ||
 		(textureRect.y + textureRect.h < 0 || textureRect.y > cameraDimensions.y)) {
-		std::cout << "cull " << request.name << "\n";
+		return;
 	}
-
+	
 	// apply tint/alpha to texture
 	SDL_SetTextureColorMod(texture, request.color.r, request.color.g, request.color.b);
 	SDL_SetTextureAlphaMod(texture, request.color.a);
