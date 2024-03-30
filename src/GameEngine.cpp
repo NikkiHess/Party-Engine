@@ -157,9 +157,6 @@ void Engine::start() {
         // handle and render gameplay
         if (!gameOver) {
             int frame = Helper::GetFrameNumber();
-            //GameInfo::state = GameInfo::scene.moveAllActors(renderConfig.actorFlipping, GameInfo::state, gameConfig, audioPlayer);
-
-            //camera.update(GameInfo::player, renderConfig.easeFactor);
 
             // render the game first
             renderer.render();

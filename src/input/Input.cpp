@@ -19,6 +19,7 @@ void Input::init() {
 void Input::processEvent(const SDL_Event& sdlEvent) {
 	// handle newly up keys
 	if (sdlEvent.type == SDL_KEYUP) {
+		int frame = Helper::GetFrameNumber();
 		SDL_Scancode code = sdlEvent.key.keysym.scancode;
 		keyboardStates[code] = InputState::NEWLY_UP;
 		newlyUpKeycodes.emplace(code);
