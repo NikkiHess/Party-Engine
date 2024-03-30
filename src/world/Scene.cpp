@@ -21,7 +21,7 @@
 
 void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 	glm::vec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);
-	actor.id = static_cast<int>(actors.size());
+	actor.id = static_cast<int>(Actor::currentId);
 
 	auto actorShared = std::make_shared<Actor>(actor);
 
@@ -38,6 +38,8 @@ void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 
 	// insert the actor's ptr into the "sorted-by-render-order" list
 	actorsByRenderOrder.emplace(actorShared);
+
+	++Actor::currentId;
 }
 
 void Scene::instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared) {

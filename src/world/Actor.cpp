@@ -74,6 +74,7 @@ luabridge::LuaRef Actor::requestAddComponent(const std::string& type) {
 	std::shared_ptr<Component> ptr = createComponentWithoutProperties(type, key);
 
 	ptr->key = key;
+	ptr->instanceTable["actor"] = this;
 
 	LuaUtils::currentScene->actorsWithNewComponents.emplace(LuaUtils::currentScene->actorsById[this->id]);
 	componentsToAdd.emplace(ptr);

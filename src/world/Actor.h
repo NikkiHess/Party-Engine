@@ -25,6 +25,8 @@ public:
 
 class Actor {
 public:
+	static inline int currentId = 0;
+
 	std::string name = "";
 	int id = 0;
 	bool dontDestroy = false;
