@@ -37,13 +37,12 @@ void Artist::draw(const ImageDrawRequest& request) {
 		static_cast<int>(request.pivot.y * textureRect.h)
 	};
 
+	glm::ivec2 cameraDimensions = {
+		renderConfig.renderSize.x,
+		renderConfig.renderSize.y
+	};
+
 	if (request.type == SCENE_SPACE) {
-
-		glm::ivec2 cameraDimensions = {
-			renderConfig.renderSize.x,
-			renderConfig.renderSize.y
-		};
-
 		float zoomFactor = renderConfig.zoomFactor;
 
 		// only do this with scene space because UI shouldn't move with the camera
@@ -55,6 +54,11 @@ void Artist::draw(const ImageDrawRequest& request) {
 	else {
 		textureRect.x = static_cast<int>(finalRenderPos.x);
 		textureRect.y = static_cast<int>(finalRenderPos.y);
+	}
+
+	if ((textureRect.x + textureRect.w < 0 || textureRect.x > cameraDimensions.x) ||
+		(textureRect.y + textureRect.h < 0 || textureRect.y > cameraDimensions.y)) {
+		std::cout << "cull " << request.name << "\n";
 	}
 
 	// apply tint/alpha to texture
