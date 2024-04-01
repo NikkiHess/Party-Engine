@@ -106,9 +106,9 @@ struct B2_API b2Vec2
 		return b2Vec2(x - other.x, y - other.y);
 	}
 
-	// multiply two b2Vec2's together (for Lua)
-	b2Vec2 operatorMul(const b2Vec2& other) {
-		return b2Vec2(x * other.x, y * other.y);
+	// multiply a b2Vec2 by a scalar together (for Lua)
+	b2Vec2 operatorMul(const float scalar) {
+		return b2Vec2(x * scalar, y * scalar);
 	}
 
 	/// Get the length squared. For performance, use this instead of
