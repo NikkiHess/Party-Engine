@@ -19,9 +19,9 @@ luabridge::LuaRef Actor::getComponentByKey(const std::string& key) {
 	luabridge::LuaRef outRef = luabridge::LuaRef(LuaStateSaver::luaState);
 
 	if (componentsByKey.find(key) != componentsByKey.end()) {
-		std::shared_ptr comp = std::make_shared<Component>(componentsByKey[key]);
+		std::shared_ptr comp = componentPtrsByKey[key];
 		// if the component isn't requested for removal, we can use it
-		if (componentsToRemove.find(comp) == componentsToRemove.end()) {
+		if (!comp->willBeRemoved) {
 			outRef = comp->instanceTable;
 		}
 	}
@@ -96,7 +96,13 @@ std::shared_ptr<Component> Actor::createComponentWithoutProperties(const std::st
 	// regardless, load it to the actor
 	Component component = Component::components[type];
 
-	std::shared_ptr<Component> ptr = std::make_shared<Component>(component);
+	std::shared_ptr<Component> ptr;
+	if(componentPtrsByKey.find(key) != componentPtrsByKey.end()) {
+		ptr = componentPtrsByKey[key];
+	}
+	else {
+		ptr = std::make_shared<Component>(component);
+	}
 
 	return ptr;
 }
@@ -170,10 +176,11 @@ void Actor::requestRemoveComponent(const luabridge::LuaRef& componentRef) {
 	if (componentsByKey.find(key) != componentsByKey.end()) {
 		Component& component = componentsByKey[key];
 		component.instanceTable["enabled"] = false;
+		component.willBeRemoved = true;
+		component.instanceTable = luabridge::LuaRef(LuaStateSaver::luaState);
 
 		componentsToRemove.emplace(componentPtrsByKey[key]);
-		component.instanceTable = luabridge::LuaRef(LuaStateSaver::luaState);
-		component.willBeRemoved = true;
+		componentPtrsByKey[key]->willBeRemoved = true;
 		LuaUtils::currentScene->actorsWithComponentsToRemove.emplace(LuaUtils::currentScene->actorsById[this->id]);
 	}
 }
