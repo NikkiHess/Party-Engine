@@ -2,6 +2,7 @@
 #include <string>
 #include <thread>
 #include <algorithm>
+#include <unordered_map>
 
 // my code
 #include "LuaUtils.h"
@@ -107,6 +108,8 @@ luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
 }
 
 luabridge::LuaRef LuaUtils::requestInstantiateActor(const std::string& templateName) {
+    static std::unordered_map<std::string, rapidjson::Document> templateCache;
+
     Actor actor;
     SceneConfig* sceneConfig = LuaUtils::sceneConfig;
 
@@ -115,9 +118,17 @@ luabridge::LuaRef LuaUtils::requestInstantiateActor(const std::string& templateN
     if (!resourceManager->fileExists(templatePath)) {
         Error::error("template " + templateName + " is missing");
     }
-    rapidjson::Document document = nullptr;
-    JsonUtils::readJsonFile(templatePath, document);
-    sceneConfig->setActorProps(actor, document, *resourceManager);
+
+    // search for the template in the cache
+    auto it = templateCache.find(templateName);
+    if (it == templateCache.end()) {
+        // cache miss, read the file and add it to the cache
+        rapidjson::Document document;
+        JsonUtils::readJsonFile(templatePath, document);
+        it = templateCache.emplace(templateName, std::move(document)).first;
+    }
+
+    sceneConfig->setActorProps(actor, it->second, *resourceManager);
 
     currentScene->instantiateActor(actor, false);
     currentScene->actorsToAdd.emplace(currentScene->actorsById[actor.id]);

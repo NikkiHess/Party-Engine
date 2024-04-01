@@ -19,11 +19,25 @@
 // dependencies
 #include "Helper.h"
 
+class LuaScriptCache {
+private:
+	// path: script contents
+	std::unordered_map<std::string, std::string> cache;
+public:
+	// loads a script file and saves its contents to the cache
+	bool loadAndCache(const std::string& path);
+
+	// gets a script, either from the cache or by loading it (via loadAndCache)
+	const std::string* getScript(const std::string& path);
+};
+
 class Component {
 public:
+	static inline LuaScriptCache scriptCache;
+
 	// store by component TYPE, not key
 	// if you store by key, bad things happen since keys are only unique to actors, not globally
-	static std::map<std::string, Component> components;
+	static inline std::map<std::string, Component> components;
 
 	std::string key;
 	std::string type;
@@ -60,7 +74,7 @@ public:
 		instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
 
 		// transfer the enabled property from the template
-		bool enabled = other.instanceTable["enabled"].cast<bool>();
+		bool enabled = other.instanceTable["enabled"];
 		instanceTable["enabled"] = enabled;
 		
 		return *this;
