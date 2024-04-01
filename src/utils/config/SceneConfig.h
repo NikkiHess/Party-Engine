@@ -21,8 +21,6 @@ class SceneConfig {
 public:
 	// The initial scene from game.config
 	Scene initialScene;
-	// Actor templates from the scene
-	std::vector<Actor*> templates;
 
 	SceneConfig() {}
 

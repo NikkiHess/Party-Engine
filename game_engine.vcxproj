@@ -156,6 +156,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\LuaUtils.h" />
+    <ClInclude Include="src\utils\Requests.h" />
     <ClInclude Include="src\world\Component.h" />
     <ClInclude Include="dependencies\lua\lua.hpp" />
     <ClInclude Include="src\GameState.h" />

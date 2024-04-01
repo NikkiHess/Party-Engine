@@ -17,6 +17,7 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 		scene.name = sceneName;
 
 		scene.actors.reserve(docActors.Size());
+		scene.dontDestroy.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
 			Actor actor;
 
