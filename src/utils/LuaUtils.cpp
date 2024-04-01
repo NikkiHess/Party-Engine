@@ -55,6 +55,7 @@ void LuaUtils::logError(const std::string& message) {
     std::cerr << message << "\n";
 }
 
+// TODO: Remove this after semester?
 luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor, lua_State* luaState) {
     // push the actor
     luabridge::push(luaState, actor.get());
@@ -96,7 +97,7 @@ luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
         // push the actors one by one to our foundActors table
         for (const std::shared_ptr<Actor>& actor : setOfActors) {
             // TODO: This causes a Lua error... why?
-            foundActors[index] = actorToLuaRef(actor, luaState);
+            foundActors[index] = actor.get();
             ++index;
         }
     }

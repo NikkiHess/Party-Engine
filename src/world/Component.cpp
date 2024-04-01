@@ -54,8 +54,8 @@ void Component::callLuaFunction(const std::string& name, const std::string& acto
 				luaFunction(instanceTable);
 			}
 		}
-		catch (const luabridge::LuaException& e) {
-			LuaUtils::printLuaException(e, actorName);
+		catch (const luabridge::LuaException& error) {
+			LuaUtils::printLuaException(error, actorName);
 		}
 		// if this is OnStart and we've made it this far, mark so we don't do it again
 		if (name == "OnStart") onStartCalled = true;
