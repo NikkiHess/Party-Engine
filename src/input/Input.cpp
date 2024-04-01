@@ -22,13 +22,14 @@ void Input::processEvent(const SDL_Event& sdlEvent) {
 		SDL_Scancode code = sdlEvent.key.keysym.scancode;
 		keyboardStates[code] = InputState::NEWLY_UP;
 		newlyUpKeycodes.emplace(code);
-		newlyUpKeycodes.erase(code);
+		newlyDownKeycodes.erase(code);
 	}
 	// handle newly down keys
 	else if (sdlEvent.type == SDL_KEYDOWN) {
 		SDL_Scancode code = sdlEvent.key.keysym.scancode;
 		keyboardStates[code] = InputState::NEWLY_DOWN;
 		newlyDownKeycodes.emplace(code);
+		newlyUpKeycodes.erase(code);
 	}
 	else if (sdlEvent.type == SDL_MOUSEMOTION) {
 		mousePos = { sdlEvent.motion.x, sdlEvent.motion.y };
