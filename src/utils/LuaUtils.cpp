@@ -57,6 +57,19 @@ void LuaUtils::logError(const std::string& message) {
     std::cerr << message << "\n";
 }
 
+// TODO: Remove this after semester?
+luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor) {
+    // push the actor
+    luabridge::push(LuaStateSaver::luaState, actor.get());
+
+    // create a LuaRef to return
+    luabridge::LuaRef actorRef = luabridge::LuaRef::fromStack(LuaStateSaver::luaState, -1);
+
+    lua_pop(LuaStateSaver::luaState, 1);
+
+    return actorRef;
+}
+
 luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
     luabridge::LuaRef foundActor = luabridge::LuaRef(LuaStateSaver::luaState);
 
@@ -68,7 +81,7 @@ luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
 
             // if we're gonna remove the actor, don't return it
             if (currentScene->actorsToRemove.find(actor) == currentScene->actorsToRemove.end()) {
-                foundActor = actor.get();
+                foundActor = actorToLuaRef(actor);
             }
         }
     }
