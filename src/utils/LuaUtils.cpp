@@ -90,15 +90,11 @@ luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
 }
 
 luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
-    luabridge::LuaRef foundActors = luabridge::LuaRef(LuaStateSaver::luaState);
+    luabridge::LuaRef foundActors = luabridge::newTable(LuaStateSaver::luaState);
+    int index = 1;
 
-    if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
-        const std::set<std::shared_ptr<Actor>>& setOfActors = currentScene->actorsByName[name];
-
-        int index = 1; // lua tables are 1 indexed :(
-        // push the actors one by one to our foundActors table
-        for (const std::shared_ptr<Actor>& actor : setOfActors) {
-            // TODO: This causes a Lua error... why?
+    if(currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
+        for (std::shared_ptr<Actor> actor : currentScene->actorsByName[name]) {
             foundActors[index] = actor.get();
             ++index;
         }
