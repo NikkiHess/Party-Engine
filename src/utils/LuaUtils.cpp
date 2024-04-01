@@ -57,7 +57,6 @@ void LuaUtils::logError(const std::string& message) {
     std::cerr << message << "\n";
 }
 
-// TODO: Remove this after semester?
 luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor) {
     // push the actor
     luabridge::push(LuaStateSaver::luaState, actor.get());

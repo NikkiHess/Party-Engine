@@ -48,7 +48,7 @@ public:
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsToAdd;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsToRemove;
 
-	std::map<std::string, std::set<std::shared_ptr<Actor>>> actorsByName;
+	std::map<std::string, std::set<std::shared_ptr<Actor>, ActorComparator>> actorsByName;
 	std::map<int, std::shared_ptr<Actor>> actorsById;
 
 	// actors sorted by render order -> y pos -> id
