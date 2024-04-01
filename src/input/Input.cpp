@@ -19,7 +19,6 @@ void Input::init() {
 void Input::processEvent(const SDL_Event& sdlEvent) {
 	// handle newly up keys
 	if (sdlEvent.type == SDL_KEYUP) {
-		int frame = Helper::GetFrameNumber();
 		SDL_Scancode code = sdlEvent.key.keysym.scancode;
 		keyboardStates[code] = InputState::NEWLY_UP;
 		newlyUpKeycodes.emplace(code);
@@ -35,13 +34,13 @@ void Input::processEvent(const SDL_Event& sdlEvent) {
 	}
 	else if (sdlEvent.type == SDL_MOUSEBUTTONUP) {
 		int button = sdlEvent.button.button;
-		buttonStates[button] = InputState::NEWLY_UP;
-		newlyUpButtons.emplace(button);
+		mouseButtonStates[button] = InputState::NEWLY_UP;
+		newlyUpMouseButtons.emplace(button);
 	}
 	else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN) {
 		int button = sdlEvent.button.button;
-		buttonStates[button] = InputState::NEWLY_DOWN;
-		newlyDownButtons.emplace(button);
+		mouseButtonStates[button] = InputState::NEWLY_DOWN;
+		newlyDownMouseButtons.emplace(button);
 	}
 	else if (sdlEvent.type == SDL_MOUSEWHEEL) {
 		mouseScrollDelta = sdlEvent.wheel.preciseY;
@@ -49,11 +48,7 @@ void Input::processEvent(const SDL_Event& sdlEvent) {
 }
 
 void Input::lateUpdate() {
-	// progress NEWLY_UP keycodes to UP
-	for (const SDL_Scancode& code : newlyUpKeycodes) {
-		keyboardStates[code] = InputState::UP;
-	}
-	newlyUpKeycodes.clear();
+	// newly down comes before newly up, otherwise weird behavior
 
 	// progress NEWLY_DOWN keycodes to DOWN
 	for (const SDL_Scancode& code : newlyDownKeycodes) {
@@ -61,17 +56,23 @@ void Input::lateUpdate() {
 	}
 	newlyDownKeycodes.clear();
 
-	// progress NEWLY_UP buttons to UP
-	for (int button : newlyUpButtons) {
-		buttonStates[button] = InputState::UP;
+	// progress NEWLY_UP keycodes to UP
+	for (const SDL_Scancode& code : newlyUpKeycodes) {
+		keyboardStates[code] = InputState::UP;
 	}
-	newlyUpButtons.clear();
+	newlyUpKeycodes.clear();
+
+	// progress NEWLY_UP buttons to UP
+	for (int button : newlyUpMouseButtons) {
+		mouseButtonStates[button] = InputState::UP;
+	}
+	newlyUpMouseButtons.clear();
 
 	// progress NEWLY_DOWN buttons to DOWN
-	for (int button : newlyDownButtons) {
-		buttonStates[button] = InputState::DOWN;
+	for (int button : newlyDownMouseButtons) {
+		mouseButtonStates[button] = InputState::DOWN;
 	}
-	newlyDownButtons.clear();
+	newlyDownMouseButtons.clear();
 
 	mouseScrollDelta = 0;
 }
@@ -110,20 +111,20 @@ glm::vec2 Input::getMousePosition() {
 // check whether a mouse button is down
 // 1 = left, 2 = middle, 3 = right
 bool Input::getMouseButton(int button) {
-	return buttonStates.find(button) != buttonStates.end() && 
-		(buttonStates[button] == InputState::DOWN || buttonStates[button] == InputState::NEWLY_DOWN);
+	return mouseButtonStates.find(button) != mouseButtonStates.end() &&
+		(mouseButtonStates[button] == InputState::DOWN || mouseButtonStates[button] == InputState::NEWLY_DOWN);
 }
 
 // check whether a mouse button is newly down
 // 1 = left, 2 = middle, 3 = right
 bool Input::getMouseButtonDown(int button) {
-	return buttonStates.find(button) != buttonStates.end() && buttonStates[button] == InputState::NEWLY_DOWN;
+	return mouseButtonStates.find(button) != mouseButtonStates.end() && mouseButtonStates[button] == InputState::NEWLY_DOWN;
 }
 
 // check whether a mouse button is newly up
 // 1 = left, 2 = middle, 3 = right
 bool Input::getMouseButtonUp(int button) {
-	return buttonStates.find(button) != buttonStates.end() && buttonStates[button] == InputState::NEWLY_UP;
+	return mouseButtonStates.find(button) != mouseButtonStates.end() && mouseButtonStates[button] == InputState::NEWLY_UP;
 }
 
 // check how far the mouse has scrolled this frame

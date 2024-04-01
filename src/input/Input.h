@@ -59,9 +59,9 @@ private:
 
 	static inline glm::vec2 mousePos;
 	static inline float mouseScrollDelta;
-	static inline std::unordered_map<int, InputState> buttonStates;
-	static inline std::unordered_set<int> newlyUpButtons;
-	static inline std::unordered_set<int> newlyDownButtons;
+	static inline std::unordered_map<int, InputState> mouseButtonStates;
+	static inline std::unordered_set<int> newlyUpMouseButtons;
+	static inline std::unordered_set<int> newlyDownMouseButtons;
 
 	static const inline std::unordered_map<std::string, SDL_Scancode> keycodeToScancode = {
 		// Directional (arrow) Keys
