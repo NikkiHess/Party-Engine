@@ -10,6 +10,7 @@
 #include "../input/Input.h"
 #include "../utils/config/SceneConfig.h"
 #include "../visuals/Artist.h"
+#include "../utils/LuaStateSaver.h"
 
 // dependencies
 #include "Helper.h"
@@ -56,20 +57,20 @@ void LuaUtils::logError(const std::string& message) {
 }
 
 // TODO: Remove this after semester?
-luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor, lua_State* luaState) {
+luabridge::LuaRef actorToLuaRef(std::shared_ptr<Actor> actor) {
     // push the actor
-    luabridge::push(luaState, actor.get());
+    luabridge::push(LuaStateSaver::luaState, actor.get());
 
     // create a LuaRef to return
-    luabridge::LuaRef actorRef = luabridge::LuaRef::fromStack(luaState, -1);
+    luabridge::LuaRef actorRef = luabridge::LuaRef::fromStack(LuaStateSaver::luaState, -1);
 
-    lua_pop(luaState, 1);
+    lua_pop(LuaStateSaver::luaState, 1);
 
     return actorRef;
 }
 
 luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
-    luabridge::LuaRef foundActor = luabridge::LuaRef(luaState);
+    luabridge::LuaRef foundActor = luabridge::LuaRef(LuaStateSaver::luaState);
 
     // make sure the actor exists
     if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
@@ -79,7 +80,7 @@ luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
 
             // if we're gonna remove the actor, don't return it
             if (currentScene->actorsToRemove.find(actor) == currentScene->actorsToRemove.end()) {
-                foundActor = actorToLuaRef(actor, luaState);
+                foundActor = actorToLuaRef(actor);
             }
         }
     }
@@ -88,7 +89,7 @@ luabridge::LuaRef LuaUtils::findActor(const std::string& name) {
 }
 
 luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
-    luabridge::LuaRef foundActors = luabridge::LuaRef(luaState);
+    luabridge::LuaRef foundActors = luabridge::LuaRef(LuaStateSaver::luaState);
 
     if (currentScene->actorsByName.find(name) != currentScene->actorsByName.end()) {
         const std::set<std::shared_ptr<Actor>>& setOfActors = currentScene->actorsByName[name];
@@ -106,7 +107,7 @@ luabridge::LuaRef LuaUtils::findAllActors(const std::string& name) {
 }
 
 luabridge::LuaRef LuaUtils::requestInstantiateActor(const std::string& templateName) {
-    Actor actor(luaState);
+    Actor actor;
     SceneConfig* sceneConfig = LuaUtils::sceneConfig;
 
     std::string templatePath = "resources/actor_templates/" + templateName + ".template";
@@ -121,7 +122,7 @@ luabridge::LuaRef LuaUtils::requestInstantiateActor(const std::string& templateN
     currentScene->instantiateActor(actor, false);
     currentScene->actorsToAdd.emplace(currentScene->actorsById[actor.id]);
 
-    return actorToLuaRef(currentScene->actorsById[actor.id], luaState);
+    return actorToLuaRef(currentScene->actorsById[actor.id]);
 }
 
 void LuaUtils::instantiateActor(std::shared_ptr<Actor> actorPtr) {
@@ -160,8 +161,8 @@ void LuaUtils::destroyActor(std::shared_ptr<Actor> actorPtr) {
 }
 
 // establish our lua_State* and all namespaces
-lua_State* LuaUtils::setupLua(lua_State* luaState) {
-    luabridge::getGlobalNamespace(luaState)
+lua_State* LuaUtils::setupLua() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         // establish lua namespace: Debug
         // Debug.Log and Debug.LogError
         .beginNamespace("Debug")
@@ -268,5 +269,5 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
             .addFunction("Dot", static_cast<float (*)(const b2Vec2&, const b2Vec2&)>(&b2Dot))
         .endNamespace();
 
-    return luaState;
+    return LuaStateSaver::luaState;
 }

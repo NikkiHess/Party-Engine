@@ -6,6 +6,9 @@
 #include <map>
 #include <memory>
 
+// my code
+#include "../utils/LuaStateSaver.h"
+
 // rapidjson
 #include "rapidjson/document.h"
 
@@ -24,23 +27,22 @@ public:
 
 	std::string key;
 	std::string type;
-	lua_State* luaState;
 
 	bool onStartCalled = false;
+	bool willBeRemoved = false;
 
 	luabridge::LuaRef baseTable = nullptr;
 	luabridge::LuaRef instanceTable = nullptr;
 
-	Component() : luaState(nullptr) {}
+	Component() {}
 
 	// constructs with:
 	// key - from config
 	// type - the .lua file to use
-	// luaState - the shared lua state throughout the engine
-	Component(const std::string& key, const std::string& type, lua_State* luaState) : key(key), type(type), luaState(luaState) {
+	Component(const std::string& key, const std::string& type) : key(key), type(type) {
 		establishBaseTable();
 
-		instanceTable = luabridge::getGlobal(luaState, type.c_str());
+		instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
 
 		establishInheritance(instanceTable, baseTable);
 
@@ -52,11 +54,10 @@ public:
 	// for copied components, we basically have to reconstruct again
 	Component& operator=(const Component& other) {
 		type = other.type;
-		luaState = other.luaState;
 
 		establishBaseTable();
 
-		instanceTable = luabridge::getGlobal(luaState, type.c_str());
+		instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
 
 		// transfer the enabled property from the template
 		bool enabled = other.instanceTable["enabled"].cast<bool>();

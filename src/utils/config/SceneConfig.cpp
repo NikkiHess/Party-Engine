@@ -5,7 +5,7 @@
 // my code
 #include "SceneConfig.h"
 #include "../../world/Component.h"
-#include "../LuaUtils.h"
+#include "../LuaStateSaver.h"
 
 // dependencies
 #include "rapidjson/rapidjson.h"
@@ -18,7 +18,7 @@ void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resource
 
 		scene.actors.reserve(docActors.Size());
 		for (unsigned int i = 0; i < docActors.Size(); ++i) {
-			Actor actor(LuaUtils::luaState);
+			Actor actor;
 
 			// initialize the ActorProps based on a template, if there is one
 			if (docActors[i].HasMember("template")) {

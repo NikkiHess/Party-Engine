@@ -15,14 +15,13 @@ class LuaUtils {
 public:
 	// singleton for findActor and findAllActors
 	static inline Scene* currentScene;
-	static inline lua_State* luaState;
 	static inline SceneConfig* sceneConfig;
 	static inline ResourceManager* resourceManager;
 
 	static inline int componentsAdded = 0;
 
 	// sets up lua to begin with
-	static lua_State* setupLua(lua_State* luaState);
+	static lua_State* setupLua();
 
 	// prints a formatted lua error message
 	static void printLuaException(const luabridge::LuaException& e, const std::string& actorName) {

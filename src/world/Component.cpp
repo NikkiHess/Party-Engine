@@ -6,6 +6,7 @@
 #include "Component.h"
 #include "../errors/Error.h"
 #include "../utils/LuaUtils.h"
+#include "../utils/LuaStateSaver.h"
 
 // rapidjson
 #include "rapidjson/document.h"
@@ -17,8 +18,8 @@ void Component::establishBaseTable() {
 	const std::string& path = "resources/component_types/" + type + ".lua";
 
 	// load the Lua script, verify no errors
-	if (luaL_dofile(luaState, path.c_str()) != LUA_OK) {
-		const std::string& errorMessage = lua_tostring(luaState, -1);
+	if (luaL_dofile(LuaStateSaver::luaState, path.c_str()) != LUA_OK) {
+		const std::string& errorMessage = lua_tostring(LuaStateSaver::luaState, -1);
 
 		// TODO: return to Error::error once the semester is over
 		// this is necessary for now
@@ -27,19 +28,19 @@ void Component::establishBaseTable() {
 	}
 
 	// retrieve global base table
-	baseTable = luabridge::getGlobal(luaState, "base_table");
+	baseTable = luabridge::getGlobal(LuaStateSaver::luaState, "base_table");
 }
 
 void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge::LuaRef& parentTable) {
 	// create a new component instance
-	luabridge::LuaRef newMetaTable = luabridge::newTable(luaState);
+	luabridge::LuaRef newMetaTable = luabridge::newTable(LuaStateSaver::luaState);
 	newMetaTable["__index"] = instanceTable;
 
 	// use the raw lua api to set the metatable
-	instanceTable.push(luaState);
-	newMetaTable.push(luaState);
-	lua_setmetatable(luaState, -2);
-	lua_pop(luaState, 1);
+	instanceTable.push(LuaStateSaver::luaState);
+	newMetaTable.push(LuaStateSaver::luaState);
+	lua_setmetatable(LuaStateSaver::luaState, -2);
+	lua_pop(LuaStateSaver::luaState, 1);
 }
 
 void Component::callLuaFunction(const std::string& name, const std::string& actorName) {

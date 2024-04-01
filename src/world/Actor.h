@@ -39,8 +39,6 @@ public:
 	// the actor's location in the render order
 	int renderOrder = 0;
 
-	lua_State* luaState;
-
 	// maps component key to component
 	std::map<std::string, Component> componentsByKey;
 	std::map<std::string, std::shared_ptr<Component>> componentPtrsByKey;
@@ -61,7 +59,7 @@ public:
 	// whether we have onStart, onUpdate, or onLateUpdate functions to worry about
 	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false;
     
-    Actor(lua_State* luaState) : luaState(luaState), velocity(0, 0) {}
+    Actor() : velocity(0, 0) {}
 
 	// for lua
 	const std::string& getName() const;

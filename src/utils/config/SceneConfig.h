@@ -24,9 +24,7 @@ public:
 	// Actor templates from the scene
 	std::vector<Actor*> templates;
 
-	lua_State* luaState;
-
-	SceneConfig(lua_State* luaState) : luaState(luaState) {}
+	SceneConfig() {}
 
 	// initializes the scene from its scene file
 	// utilizes Scene class

@@ -5,6 +5,7 @@
 // my code
 #include "Actor.h"
 #include "../utils/LuaUtils.h"
+#include "../utils/LuaStateSaver.h"
 
 const std::string& Actor::getName() const {
 	return name;
@@ -15,7 +16,7 @@ int Actor::getID() const {
 }
 
 luabridge::LuaRef Actor::getComponentByKey(const std::string& key) {
-	luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
+	luabridge::LuaRef outRef = luabridge::LuaRef(LuaStateSaver::luaState);
 
 	if (componentsByKey.find(key) != componentsByKey.end()) {
 		std::shared_ptr comp = std::make_shared<Component>(componentsByKey[key]);
@@ -29,14 +30,14 @@ luabridge::LuaRef Actor::getComponentByKey(const std::string& key) {
 }
 
 luabridge::LuaRef Actor::getComponent(const std::string& type) {
-	luabridge::LuaRef outRef = luabridge::LuaRef(luaState);
+	luabridge::LuaRef outRef = luabridge::LuaRef(LuaStateSaver::luaState);
 
 	auto it = componentsByType.find(type);
 	if (it != componentsByType.end()) {
-		std::shared_ptr comp = *(it->second.begin());
+		std::shared_ptr component = *(it->second.begin());
 		// if the component isn't requested for removal, we can use it
-		if (componentsToRemove.find(comp) == componentsToRemove.end()) {
-			outRef = comp->instanceTable;
+		if (!component->willBeRemoved) {
+			outRef = component->instanceTable;
 		}
 	}
 
@@ -44,7 +45,7 @@ luabridge::LuaRef Actor::getComponent(const std::string& type) {
 }
 
 luabridge::LuaRef Actor::getComponents(const std::string& type) {
-	luabridge::LuaRef outRef = luabridge::newTable(luaState);
+	luabridge::LuaRef outRef = luabridge::newTable(LuaStateSaver::luaState);
 
 	auto it = componentsByType.find(type);
 	if (it != componentsByType.end()) {
@@ -53,7 +54,7 @@ luabridge::LuaRef Actor::getComponents(const std::string& type) {
 		// add each component to the table and increment the index
 		for (const auto& component : it->second) {
 		// if the component isn't requested for removal, we can use it
-			if (componentsToRemove.find(component) == componentsToRemove.end()) {
+			if (!component->willBeRemoved) {
 				outRef[index] = component->instanceTable;
 				++index;
 			}
@@ -86,7 +87,7 @@ std::shared_ptr<Component> Actor::createComponentWithoutProperties(const std::st
 	// if the component is not cached already, we need to cache it
 	if (Component::components.find(type) == Component::components.end()) {
 		// get the component and match the key to it
-		Component component = Component(key, type, LuaUtils::luaState);
+		Component component = Component(key, type);
 
 		// cache our component
 		Component::components[type] = component;
@@ -104,7 +105,7 @@ void Actor::addComponent(const std::string& type, const std::string& key, std::o
 	// if the component is not cached already, we need to cache it
 	if (Component::components.find(type) == Component::components.end()) {
 		// get the component and match the key to it
-		Component component = Component(key, type, LuaUtils::luaState);
+		Component component = Component(key, type);
 
 		// cache our component
 		Component::components[type] = component;
@@ -167,11 +168,12 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
 void Actor::requestRemoveComponent(const luabridge::LuaRef& componentRef) {
 	std::string key = componentRef["key"];
 	if (componentsByKey.find(key) != componentsByKey.end()) {
-		Component& comp = componentsByKey[key];
-		comp.instanceTable["enabled"] = false;
+		Component& component = componentsByKey[key];
+		component.instanceTable["enabled"] = false;
 
 		componentsToRemove.emplace(componentPtrsByKey[key]);
-		comp.instanceTable = luabridge::LuaRef(luaState);
+		component.instanceTable = luabridge::LuaRef(LuaStateSaver::luaState);
+		component.willBeRemoved = true;
 		LuaUtils::currentScene->actorsWithComponentsToRemove.emplace(LuaUtils::currentScene->actorsById[this->id]);
 	}
 }

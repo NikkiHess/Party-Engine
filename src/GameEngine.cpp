@@ -16,6 +16,7 @@
 #include "input/Direction.h"
 #include "utils/StringUtils.h"
 #include "utils/LuaUtils.h"
+#include "utils/LuaStateSaver.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -190,18 +191,17 @@ int main(int argc, char* argv[]) {
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 
     // open a new state for the lua and open some default libraries
-    lua_State* luaState = luaL_newstate();
-    luaL_openlibs(luaState);
+    LuaStateSaver::luaState = luaL_newstate();
+    luaL_openlibs(LuaStateSaver::luaState);
 
-    LuaUtils::luaState = luaState;
     Input::init();
 
     ResourceManager resourceManager;
-	ConfigManager configManager(resourceManager, luaState);
+	ConfigManager configManager(resourceManager);
 	Renderer renderer(configManager, resourceManager);
 
-	Engine engine(renderer, configManager, resourceManager, luaState);
-    LuaUtils::setupLua(luaState);
+	Engine engine(renderer, configManager, resourceManager);
+    LuaUtils::setupLua();
     LuaUtils::currentScene = &GameInfo::scene;
     LuaUtils::sceneConfig = &configManager.sceneConfig;
     LuaUtils::resourceManager = &resourceManager;

@@ -32,7 +32,7 @@ public:
 	bool gameOver = false;
 	bool gameOverMusicPlaying = false;
 
-	Engine(Renderer& renderer, ConfigManager& configManager, ResourceManager& resourceManager, lua_State* luaState)
+	Engine(Renderer& renderer, ConfigManager& configManager, ResourceManager& resourceManager)
 		: renderer(renderer), configManager(configManager), resourceManager(resourceManager) {
 		GameInfo::state = state;
 		GameInfo::scene = configManager.sceneConfig.initialScene;
