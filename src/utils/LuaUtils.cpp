@@ -251,12 +251,22 @@ lua_State* LuaUtils::setupLua(lua_State* luaState) {
         .endNamespace()
 
         // establish lua class: Vector2 (b2Vec2) for physics
+        // allows a constructor taking two floats
         .beginClass<b2Vec2>("Vector2")
+            .addConstructor<void(*) (float, float)>()
             .addProperty("x", &b2Vec2::x)
             .addProperty("y", &b2Vec2::y)
             .addFunction("Normalize", &b2Vec2::Normalize)
             .addFunction("Length", &b2Vec2::Length)
-        .endClass();
+            .addFunction("__add", &b2Vec2::operatorAdd)
+            .addFunction("__sub", &b2Vec2::operatorSub)
+            .addFunction("__mul", &b2Vec2::operatorMul)
+        .endClass()
+
+        .beginNamespace("Vector2")
+            .addFunction("Distance", &b2Distance)
+            .addFunction("Dot", static_cast<float (*)(const b2Vec2&, const b2Vec2&)>(&b2Dot))
+        .endNamespace();
 
     return luaState;
 }
