@@ -21,19 +21,23 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
+// Box2D
+#include "box2d/box2d.h"
+
 class Engine {
 public:
 	Renderer& renderer;
 	ConfigManager& configManager;
 	ResourceManager& resourceManager;
+	b2World& physicsWorld;
 
 	bool isGameRunning = false; // is the game running? drives the start loop
 	GameState state = NORMAL;
 	bool gameOver = false;
 	bool gameOverMusicPlaying = false;
 
-	Engine(Renderer& renderer, ConfigManager& configManager, ResourceManager& resourceManager)
-		: renderer(renderer), configManager(configManager), resourceManager(resourceManager) {
+	Engine(Renderer& renderer, ConfigManager& configManager, ResourceManager& resourceManager, b2World& physicsWorld)
+		: renderer(renderer), configManager(configManager), resourceManager(resourceManager), physicsWorld(physicsWorld) {
 		GameInfo::state = state;
 		GameInfo::scene = configManager.sceneConfig.initialScene;
 		GameInfo::newScene = GameInfo::scene;

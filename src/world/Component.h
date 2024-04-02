@@ -73,6 +73,8 @@ public:
 
 		instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
 
+		establishInheritance(instanceTable, baseTable);
+
 		// transfer the enabled property from the template
 		bool enabled = other.instanceTable["enabled"];
 		instanceTable["enabled"] = enabled;
