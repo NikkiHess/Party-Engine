@@ -73,7 +73,7 @@ void Component::establishBaseTable() {
 void Component::establishInheritance(luabridge::LuaRef& instanceTable, luabridge::LuaRef& parentTable) {
 	// create a new component instance
 	luabridge::LuaRef newMetaTable = luabridge::newTable(LuaStateSaver::luaState);
-	newMetaTable["__index"] = parentTable;
+	newMetaTable["__index"] = instanceTable;
 
 	// use the raw lua api to set the metatable
 	instanceTable.push(LuaStateSaver::luaState);

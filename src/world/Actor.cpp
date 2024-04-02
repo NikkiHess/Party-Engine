@@ -118,13 +118,13 @@ void Actor::addComponent(const std::string& type, const std::string& key, std::o
 	}
 
 	// regardless, load it to the actor
-	componentsByKey[key].instanceTable = luabridge::newTable(LuaStateSaver::luaState);
+	Component component = Component::components[type];
 
 	// make a copy from the component list
-	componentsByKey[key] = Component::components[type];
+	componentsByKey[key] = component;
 	// copy to its instance table if we don't have properties to load
 	if (!properties.has_value()) {
-		componentsByKey[key].establishInheritance(componentsByKey[key].instanceTable, Component::components[type].instanceTable);
+		componentsByKey[key].instanceTable = Component::components[type].instanceTable;
 	}
 	// update the key to match from config
 	componentsByKey[key].key = key;
