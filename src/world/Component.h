@@ -88,10 +88,10 @@ public:
 
 	// load the Component's properties, if there are any
 	void loadProperties(rapidjson::Value& data);
-private:
-	void establishBaseTable();
 
 	void establishInheritance(luabridge::LuaRef& instanceTable, luabridge::LuaRef& parentTable);
+private:
+	void establishBaseTable();
 };
 
 class KeyComparator {
