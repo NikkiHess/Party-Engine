@@ -121,7 +121,7 @@ void Actor::addComponent(const std::string& type, const std::string& key, std::o
 	Component component = Component::components[type];
 
 	// make a copy from the component list
-	componentsByKey[key] = component;
+	componentsByKey[key] = Component::components[type];
 	// copy to its instance table if we don't have properties to load
 	if (!properties.has_value()) {
 		componentsByKey[key].instanceTable = Component::components[type].instanceTable;
