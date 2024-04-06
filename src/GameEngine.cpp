@@ -35,9 +35,6 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
-// Box2D
-#include "box2d/box2d.h"
-
 void Engine::runLifecycleFunctions() {
     // do OnStart for all actors with NEW OnStart components
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
@@ -203,10 +200,7 @@ int main(int argc, char* argv[]) {
 	ConfigManager configManager(resourceManager);
 	Renderer renderer(configManager, resourceManager);
 
-    b2Vec2 gravity(0.0f, 9.8f);
-    b2World physicsWorld(gravity);
-
-	Engine engine(renderer, configManager, resourceManager, physicsWorld);
+	Engine engine(renderer, configManager, resourceManager);
     LuaUtils::setupLua();
     LuaUtils::currentScene = &GameInfo::scene;
     LuaUtils::sceneConfig = &configManager.sceneConfig;
