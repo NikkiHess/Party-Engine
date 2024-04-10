@@ -12,6 +12,7 @@
 #include "../utils/config/SceneConfig.h"
 #include "../visuals/Artist.h"
 #include "../utils/LuaStateSaver.h"
+#include "../components/UIRenderer.h"
 
 // dependencies
 #include "Helper.h"
@@ -19,6 +20,9 @@
 // lua
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
+
+// SDL
+#include "SDL2/SDL.h"
 
 // Box2D
 #include "box2d/box2d.h"
@@ -166,17 +170,22 @@ void LuaUtils::destroyActor(std::shared_ptr<Actor> actorPtr) {
     currentScene->actorsWithOnUpdate.erase(actorPtr);
 }
 
-// establish our lua_State* and all namespaces
-lua_State* LuaUtils::setupLua() {
+void setupDebug() {
     luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         // establish lua namespace: Debug
         // Debug.Log and Debug.LogError
         .beginNamespace("Debug")
             .addFunction("Log", LuaUtils::log)
             .addFunction("LogError", LuaUtils::logError)
-        .endNamespace()
+        .endNamespace();
+}
 
-        // establish lua class: Actor 
+// establish lua class: Actor (GetName, GetID, GetComponent, GetComponentByKey,
+// GetComponents, AddComponent, RemoveComponent)
+// establish lua namespace: Actor (Find and FindAll)
+// establish lua namespace: Scene
+void setupWorld() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         .beginClass<Actor>("Actor")
             .addFunction("GetName", &Actor::getName)
             .addFunction("GetID", &Actor::getID)
@@ -187,7 +196,6 @@ lua_State* LuaUtils::setupLua() {
             .addFunction("RemoveComponent", &Actor::requestRemoveComponent)
         .endClass()
 
-        // establish lua namespace: Actor (Find and FindAll)
         .beginNamespace("Actor")
             .addFunction("Find", &LuaUtils::findActor)
             .addFunction("FindAll", &LuaUtils::findAllActors)
@@ -195,14 +203,26 @@ lua_State* LuaUtils::setupLua() {
             .addFunction("Destroy", &LuaUtils::requestDestroyActor)
         .endNamespace()
 
-        // establish lua namespace: Application (Quit, Sleep, GetFrame)
+        .beginNamespace("Scene")
+            .addFunction("Load", &GameInfo::loadScene)
+            .addFunction("GetCurrent", &GameInfo::getCurrentScene)
+            .addFunction("DontDestroy", &GameInfo::dontDestroy)
+        .endNamespace();
+}
+
+// establish lua namespace: Application (Quit, Sleep, GetFrame)
+void setupApplication() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         .beginNamespace("Application")
             .addFunction("Quit", &LuaUtils::quit)
             .addFunction("Sleep", &LuaUtils::sleep)
             .addFunction("GetFrame", &LuaUtils::getFrame)
-        .endNamespace()
+        .endNamespace();
+}
 
-        // establish lua namespace: Input (GetKey, GetKeyDown, GetKeyUp)
+// establish lua namespace: Input (GetKey, GetKeyDown, GetKeyUp)
+void setupInput() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         .beginNamespace("Input")
             .addFunction("GetKey", &Input::getKey)
             .addFunction("GetKeyDown", &Input::getKeyDown)
@@ -212,53 +232,19 @@ lua_State* LuaUtils::setupLua() {
             .addFunction("GetMouseButtonDown", &Input::getMouseButtonDown)
             .addFunction("GetMouseButtonUp", &Input::getMouseButtonUp)
             .addFunction("GetMouseScrollDelta", &Input::getMouseScrollDelta)
-        .endNamespace()
+        .endNamespace();
+}
 
-        // establish lua class: vec2 (glm)
+// establish lua class: vec2 (glm)
+// establish lua class: Vector2 (b2Vec2) for physics
+// allows a constructor taking two floats
+void setupPositioning() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         .beginClass<glm::vec2>("vec2")
             .addProperty("x", &glm::vec2::x)
             .addProperty("y", &glm::vec2::y)
         .endClass()
 
-        // establish lua namespace: Text
-        .beginNamespace("Text")
-            .addFunction("Draw", &Artist::requestDrawText)
-        .endNamespace()
-
-        // establish lua namespace: Audio
-        .beginNamespace("Audio")
-            .addFunction("Play", &AudioPlayer::play)
-            .addFunction("Halt", &AudioPlayer::halt)
-            .addFunction("SetVolume", &AudioPlayer::setVolume)
-        .endNamespace()
-
-        // establish lua namespace: Image
-        .beginNamespace("Image")
-            .addFunction("DrawUI", &Artist::requestDrawUI)
-            .addFunction("DrawUIEx", &Artist::requestDrawUIEx)
-            .addFunction("Draw", &Artist::requestDrawImage)
-            .addFunction("DrawEx", &Artist::requestDrawImageEx)
-            .addFunction("DrawPixel", &Artist::requestDrawPixel)
-        .endNamespace()
-
-        // establish lua namespace: Camera
-        .beginNamespace("Camera")
-            .addFunction("SetPosition", &Camera::setPosition)
-            .addFunction("GetPositionX", &Camera::getPositionX)
-            .addFunction("GetPositionY", &Camera::getPositionY)
-            .addFunction("SetZoom", &Camera::setZoom)
-            .addFunction("GetZoom", &Camera::getZoom)
-        .endNamespace()
-
-        // establish lua namespace: Scene
-        .beginNamespace("Scene")
-            .addFunction("Load", &GameInfo::loadScene)
-            .addFunction("GetCurrent", &GameInfo::getCurrentScene)
-            .addFunction("DontDestroy", &GameInfo::dontDestroy)
-        .endNamespace()
-
-        // establish lua class: Vector2 (b2Vec2) for physics
-        // allows a constructor taking two floats
         .beginClass<b2Vec2>("Vector2")
             .addConstructor<void(*) (float, float)>()
             .addProperty("x", &b2Vec2::x)
@@ -274,6 +260,73 @@ lua_State* LuaUtils::setupLua() {
             .addFunction("Distance", &b2Distance)
             .addFunction("Dot", static_cast<float (*)(const b2Vec2&, const b2Vec2&)>(&b2Dot))
         .endNamespace();
+}
 
-    return LuaStateSaver::luaState;
+// establish lua namespace: Text
+// establish lua namespace: Image
+// establish lua namespace: Camera
+// establish lua class: Color
+// establish lua class: UIRenderer
+void setupVisuals() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
+        .beginNamespace("Text")
+            .addFunction("Draw", &Artist::requestDrawText)
+        .endNamespace()
+
+        .beginNamespace("Image")
+            .addFunction("DrawUI", &Artist::requestDrawUI)
+            .addFunction("DrawUIEx", &Artist::requestDrawUIEx)
+            .addFunction("Draw", &Artist::requestDrawImage)
+            .addFunction("DrawEx", &Artist::requestDrawImageEx)
+            .addFunction("DrawPixel", &Artist::requestDrawPixel)
+        .endNamespace()
+
+        .beginNamespace("Camera")
+            .addFunction("SetPosition", &Camera::setPosition)
+            .addFunction("GetPositionX", &Camera::getPositionX)
+            .addFunction("GetPositionY", &Camera::getPositionY)
+            .addFunction("SetZoom", &Camera::setZoom)
+            .addFunction("GetZoom", &Camera::getZoom)
+        .endNamespace()
+
+        .beginClass<SDL_Color>("Color")
+            .addProperty("r", &SDL_Color::r)
+            .addProperty("g", &SDL_Color::g)
+            .addProperty("b", &SDL_Color::b)
+            .addProperty("a", &SDL_Color::a)
+        .endClass()
+
+        .beginClass<UIRenderer>("UIRenderer")
+            .addConstructor<void(*)(std::string, SDL_Color, int)>()
+            .addProperty("sprite", &UIRenderer::sprite)
+            .addProperty("tint", &UIRenderer::tint)
+            .addProperty("sortingOrder", &UIRenderer::sortingOrder)
+        .endClass();
+}
+
+// establish lua namespace: Audio
+void setupAudio() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
+        .beginNamespace("Audio")
+            .addFunction("Play", &AudioPlayer::play)
+            .addFunction("Halt", &AudioPlayer::halt)
+            .addFunction("SetVolume", &AudioPlayer::setVolume)
+        .endNamespace();
+}
+
+// establish our lua_State* and all namespaces
+void LuaUtils::setupLua() {
+    setupDebug();
+
+    setupWorld();
+
+    setupApplication();
+
+    setupInput();
+
+    setupAudio();
+
+    setupPositioning();
+
+    setupVisuals();
 }

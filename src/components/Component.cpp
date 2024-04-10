@@ -102,7 +102,7 @@ void Component::callLuaFunction(const std::string& name, const std::string& acto
 	}
 }
 
-void Component::loadProperties(rapidjson::Value& properties) {
+void Component::loadProperties(rapidjson::Value& properties) const {
 	if (properties.IsObject()) {
 		// loop over properties
 		for (auto& data : properties.GetObject()) {

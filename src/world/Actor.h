@@ -86,7 +86,7 @@ public:
 	std::shared_ptr<Component> createComponentWithoutProperties(const std::string& type, const std::string& key);
 
 	// add a component to this actor with its type and key (used at engine start)
-	void addComponent(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties);
+	void addComponent(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties, bool isCpp);
 
 	void updateLifecycleFunctions(const std::shared_ptr<Component> ptr);
 

@@ -8,6 +8,7 @@
 
 // my code
 #include "../utils/LuaStateSaver.h"
+#include "UIRenderer.h"
 
 // rapidjson
 #include "rapidjson/document.h"
@@ -87,7 +88,7 @@ public:
 	void callLuaFunction(const std::string& name, const std::string& actorName);
 
 	// load the Component's properties, if there are any
-	void loadProperties(rapidjson::Value& data);
+	void loadProperties(rapidjson::Value& data) const;
 private:
 	void establishBaseTable();
 

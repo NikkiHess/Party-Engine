@@ -6,6 +6,7 @@
 #include "Actor.h"
 #include "../utils/LuaUtils.h"
 #include "../utils/LuaStateSaver.h"
+#include "../errors/Error.h"
 
 const std::string& Actor::getName() const {
 	return name;
@@ -75,7 +76,6 @@ luabridge::LuaRef Actor::requestAddComponent(const std::string& type) {
 	std::shared_ptr<Component> ptr = createComponentWithoutProperties(type, key);
 
 	ptr->key = key;
-	ptr->instanceTable["actor"] = this;
 
 	LuaUtils::currentScene->actorsWithNewComponents.emplace(LuaUtils::currentScene->actorsById[this->id]);
 	componentsToAdd.emplace(ptr);
@@ -84,17 +84,17 @@ luabridge::LuaRef Actor::requestAddComponent(const std::string& type) {
 }
 
 std::shared_ptr<Component> Actor::createComponentWithoutProperties(const std::string& type, const std::string& key) {
-	// if the component is not cached already, we need to cache it
-	if (Component::components.find(type) == Component::components.end()) {
-		// get the component and match the key to it
-		Component component = Component(key, type);
+	//// if the component is not cached already, we need to cache it
+	//if (Component::components.find(type) == Component::components.end()) {
+	//	// get the component and match the key to it
+	//	Component component = Component(key, type);
 
-		// cache our component
-		Component::components[type] = component;
-	}
+	//	// cache our component
+	//	Component::components[type] = component;
+	//}
 
 	// regardless, load it to the actor
-	Component component = Component::components[type];
+	Component component = Component(key, type);
 
 	std::shared_ptr<Component> ptr;
 	if(componentPtrsByKey.find(key) != componentPtrsByKey.end()) {
@@ -107,32 +107,32 @@ std::shared_ptr<Component> Actor::createComponentWithoutProperties(const std::st
 	return ptr;
 }
 
-void Actor::addComponent(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties) {
-	// if the component is not cached already, we need to cache it
-	if (Component::components.find(type) == Component::components.end()) {
-		// get the component and match the key to it
-		Component component = Component(key, type);
+void Actor::addComponent(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties, bool isCpp) {
+	//// if the component is not cached already, we need to cache it
+	//if (Component::components.find(type) == Component::components.end()) {
+	//	// construct and cache the component
+	//	Component::components[type] = Component(key, type);
+	//}
 
-		// cache our component
-		Component::components[type] = component;
-	}
-
-	// regardless, load it to the actor
-	Component component = Component::components[type];
+	//// regardless, load it to the actor
+	//Component component = Component::components[type];
 
 	// make a copy from the component list
-	componentsByKey[key] = Component::components[type];
-	// copy to its instance table if we don't have properties to load
-	if (!properties.has_value()) {
-		componentsByKey[key].instanceTable = Component::components[type].instanceTable;
-	}
-	// update the key to match from config
-	componentsByKey[key].key = key;
-	componentsByKey[key].instanceTable["key"] = key;
+	componentsByKey[key] = Component(key, type);
+
 	// load properties from the config
 	if (properties.has_value()) {
 		componentsByKey[key].loadProperties(*properties.value());
 	}
+	//// copy to its instance table if we don't have properties to load
+	//else {
+	//	componentsByKey[key].instanceTable = Component::components[type].instanceTable;
+	//}
+
+	// update the key to match from config
+	componentsByKey[key].key = key;
+	componentsByKey[key].instanceTable["key"] = key;
+	componentsByKey[key].instanceTable["actor"] = this;
 
 	// get the address of the copy we made
 	std::shared_ptr<Component> ptr = std::make_shared<Component>(componentsByKey[key]);

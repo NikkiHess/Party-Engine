@@ -84,7 +84,7 @@ void Engine::runtimeAlterations() {
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithNewComponents) {
         for (std::shared_ptr<Component> component : actor->componentsToAdd) {
             std::optional<rapidjson::Value*> opt = std::nullopt;
-            actor->addComponent(component->type, component->key, opt);
+            actor->addComponent(component->type, component->key, opt, false);
         }
         actor->componentsToAdd.clear();
     }
@@ -196,12 +196,13 @@ int main(int argc, char* argv[]) {
 
     Input::init();
 
+    LuaUtils::setupLua();
+
     ResourceManager resourceManager;
 	ConfigManager configManager(resourceManager);
 	Renderer renderer(configManager, resourceManager);
 
 	Engine engine(renderer, configManager, resourceManager);
-    LuaUtils::setupLua();
     LuaUtils::currentScene = &GameInfo::scene;
     LuaUtils::sceneConfig = &configManager.sceneConfig;
     LuaUtils::resourceManager = &resourceManager;

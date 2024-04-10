@@ -1,10 +1,12 @@
 // std library
 #include <string>
+#include <unordered_set>
 
 // my code
 #include "../world/Actor.h"
 #include "../world/Scene.h"
 #include "../utils/config/SceneConfig.h"
+#include "../components/Component.h"
 
 // lua
 #include "lua/lua.hpp"
@@ -21,7 +23,7 @@ public:
 	static inline int componentsAdded = 0;
 
 	// sets up lua to begin with
-	static lua_State* setupLua();
+	static void setupLua();
 
 	// prints a formatted lua error message
 	static void printLuaException(const luabridge::LuaException& e, const std::string& actorName, const std::string& componentName) {
@@ -32,7 +34,7 @@ public:
 
 		// in the case that the script was loaded as a string, fix the error message
 		std::string wrongMessage = "[string \"" + componentName + " = {...\"]";
-		int index = errorMessage.find(wrongMessage) ;
+		size_t index = errorMessage.find(wrongMessage) ;
 		if(index != std::string::npos) {
 			errorMessage.replace(index, wrongMessage.size(), "resources/component_types/" + componentName + ".lua");
 		}

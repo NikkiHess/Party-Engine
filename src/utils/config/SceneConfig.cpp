@@ -6,6 +6,7 @@
 #include "SceneConfig.h"
 #include "../../components/Component.h"
 #include "../LuaStateSaver.h"
+#include "../LuaUtils.h"
 
 // dependencies
 #include "rapidjson/rapidjson.h"
@@ -67,12 +68,14 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				// get the type of the component
 				const std::string& type = componentObject.value["type"].GetString();
 
+				bool isCpp = false;
 				if (!resourceManager.fileExists("resources/component_types/" + type + ".lua")) {
-					Error::error("failed to locate component " + type);
+					// speculate that it is cpp for now...
+					isCpp = true;
 				}
 
 				std::optional<rapidjson::Value*> obj = std::make_optional<rapidjson::Value*>(&componentObject.value);
-				actor.addComponent(type, key, obj);
+				actor.addComponent(type, key, obj, isCpp);
 			}
 			// else, we need to update with new values
 			else if (actor.componentsByKey.find(key) != actor.componentsByKey.end()) {
