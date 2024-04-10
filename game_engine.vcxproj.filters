@@ -1278,7 +1278,7 @@
     <ClInclude Include="dependencies\lua\lua.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\world\Component.h">
+    <ClInclude Include="src\components\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\LuaUtils.h">
@@ -1421,7 +1421,7 @@
     <ClCompile Include="dependencies\lua\lzio.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\world\Component.cpp">
+    <ClCompile Include="src\components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\LuaUtils.cpp">

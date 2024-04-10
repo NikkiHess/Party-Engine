@@ -4,7 +4,7 @@
 
 // my code
 #include "SceneConfig.h"
-#include "../../world/Component.h"
+#include "../../components/Component.h"
 #include "../LuaStateSaver.h"
 
 // dependencies

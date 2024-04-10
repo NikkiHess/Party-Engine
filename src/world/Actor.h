@@ -10,7 +10,7 @@
 #include "../utils/ResourceManager.h"
 #include "../utils/OptionalVec2.h"
 #include "../utils/config/RenderingConfig.h"
-#include "Component.h"
+#include "../components/Component.h"
 
 // dependencies
 #include "glm/glm.hpp"
