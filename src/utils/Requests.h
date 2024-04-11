@@ -8,6 +8,9 @@
 #include <unordered_set>
 #include <vector>
 
+// my code
+#include "../components/CppComponent.h"
+
 // dependencies
 #include "glm/glm.hpp"
 #include "SDL2/SDL_mixer.h"

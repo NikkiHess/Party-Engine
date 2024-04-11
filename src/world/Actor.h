@@ -11,6 +11,7 @@
 #include "../utils/OptionalVec2.h"
 #include "../utils/config/RenderingConfig.h"
 #include "../components/Component.h"
+//#include "../components/CppComponent.h"
 
 // dependencies
 #include "glm/glm.hpp"
@@ -40,8 +41,7 @@ public:
 	int renderOrder = 0;
 
 	// maps component key to component
-	std::map<std::string, Component> componentsByKey;
-	std::map<std::string, std::shared_ptr<Component>> componentPtrsByKey;
+	std::map<std::string, std::shared_ptr<Component>> componentsByKey;
 
 	// maps component type to a list of components of that type
 	std::map<std::string, std::set<std::shared_ptr<Component>, KeyComparator>> componentsByType;
@@ -83,10 +83,7 @@ public:
 	// key is calculated by r + # calls to addComponent
 	luabridge::LuaRef requestAddComponent(const std::string& type);
 
-	std::shared_ptr<Component> createComponentWithoutProperties(const std::string& type, const std::string& key);
-
-	// add a component to this actor with its type and key (used at engine start)
-	void addComponent(const std::string& type, const std::string& key, std::optional<rapidjson::Value*>& properties, bool isCpp);
+	void addComponent(std::shared_ptr<Component> compPtr, std::optional<rapidjson::Value*>& properties);
 
 	void updateLifecycleFunctions(const std::shared_ptr<Component> ptr);
 

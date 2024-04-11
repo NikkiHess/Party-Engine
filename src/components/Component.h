@@ -5,10 +5,12 @@
 #include <set>
 #include <map>
 #include <memory>
+#include <algorithm>
 
 // my code
 #include "../utils/LuaStateSaver.h"
 #include "UIRenderer.h"
+#include "../components/CppComponent.h"
 
 // rapidjson
 #include "rapidjson/document.h"
@@ -51,34 +53,27 @@ public:
 
 	Component() {}
 
-	// constructs with:
 	// key - from config
 	// type - the .lua file to use
-	Component(const std::string& key, const std::string& type) : key(key), type(type) {
-		establishBaseTable();
+	Component(const std::string& key, const std::string& type, std::unique_ptr<CppComponent>& cppComponent) : key(key), type(type) {
+		if (!cppComponent.get()) {
+			establishBaseTable();
 
-		instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
+			instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
 
-		establishInheritance(instanceTable, baseTable);
+			establishInheritance(instanceTable, baseTable);
+		}
+		else {
+			luabridge::push(LuaStateSaver::luaState, cppComponent.get());
+
+			instanceTable = luabridge::LuaRef::fromStack(LuaStateSaver::luaState);
+
+			lua_pop(LuaStateSaver::luaState, 1);
+		}
 
 		// set the instance's key to be referenced in scripts
 		instanceTable["key"] = key;
 		instanceTable["enabled"] = true;
-	}
-
-	// for copied components, we basically have to reconstruct again
-	Component& operator=(const Component& other) {
-		type = other.type;
-
-		establishBaseTable();
-
-		instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
-
-		// transfer the enabled property from the template
-		bool enabled = other.instanceTable["enabled"];
-		instanceTable["enabled"] = enabled;
-		
-		return *this;
 	}
 
 	// call a Lua function (OnStart, OnUpdate, OnLateUpate)
@@ -89,6 +84,15 @@ public:
 
 	// load the Component's properties, if there are any
 	void loadProperties(rapidjson::Value& data) const;
+
+	// returns a unique_ptr to an instance of the cpp component, if valid
+	static std::unique_ptr<CppComponent> getCppComponent(const std::string& type) {
+		std::unique_ptr<CppComponent> cppComponent = nullptr;
+		if (type == "UIRenderer") {
+			cppComponent = std::make_unique<UIRenderer>(UIRenderer("", {}, 0));
+		}
+		return cppComponent;
+	}
 private:
 	void establishBaseTable();
 

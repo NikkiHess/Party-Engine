@@ -155,6 +155,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\CppComponent.h" />
     <ClInclude Include="src\components\UIRenderer.h" />
     <ClInclude Include="src\utils\LuaUtils.h" />
     <ClInclude Include="src\utils\Requests.h" />

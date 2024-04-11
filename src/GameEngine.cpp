@@ -71,7 +71,7 @@ void Engine::runtimeAlterations() {
         LuaUtils::instantiateActor(actor);
 
         for (auto& [key, component] : actor->componentsByKey) {
-            component.instanceTable["actor"] = actor.get();
+            component->instanceTable["actor"] = actor.get();
         }
     }
     GameInfo::scene.actorsToAdd.clear();
@@ -84,7 +84,7 @@ void Engine::runtimeAlterations() {
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithNewComponents) {
         for (std::shared_ptr<Component> component : actor->componentsToAdd) {
             std::optional<rapidjson::Value*> opt = std::nullopt;
-            actor->addComponent(component->type, component->key, opt, false);
+            actor->addComponent(component, opt);
         }
         actor->componentsToAdd.clear();
     }
@@ -109,7 +109,7 @@ void Engine::start() {
     for (std::shared_ptr<Actor>& actor : GameInfo::scene.actors) {
         // store the actor as a convenience reference in the component
         for (auto& [key, component] : actor->componentsByKey) {
-            component.instanceTable["actor"] = actor.get();
+            component->instanceTable["actor"] = actor.get();
         }
     }
 
@@ -133,7 +133,7 @@ void Engine::start() {
             for (std::shared_ptr<Actor>& actor : GameInfo::scene.actors) {
                 // store the actor as a convenience reference in the component
                 for (auto& [key, component] : actor->componentsByKey) {
-                    component.instanceTable["actor"] = actor.get();
+                    component->instanceTable["actor"] = actor.get();
                 }
             }
         }

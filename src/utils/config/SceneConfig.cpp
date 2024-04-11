@@ -68,19 +68,21 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				// get the type of the component
 				const std::string& type = componentObject.value["type"].GetString();
 
-				bool isCpp = false;
-				if (!resourceManager.fileExists("resources/component_types/" + type + ".lua")) {
-					// speculate that it is cpp for now...
-					isCpp = true;
+				std::unique_ptr cppComponent = Component::getCppComponent(type);
+				if (!cppComponent && !resourceManager.fileExists("resources/component_types/" + type + ".lua")) {
+					Error::error("component " + type + " not found");
 				}
 
 				std::optional<rapidjson::Value*> obj = std::make_optional<rapidjson::Value*>(&componentObject.value);
-				actor.addComponent(type, key, obj, isCpp);
+
+				std::shared_ptr compPtr = std::make_shared<Component>(key, type, cppComponent);
+
+				actor.addComponent(compPtr, obj);
 			}
 			// else, we need to update with new values
 			else if (actor.componentsByKey.find(key) != actor.componentsByKey.end()) {
 				// just load the properties, nothing else :)
-				actor.componentsByKey[key].loadProperties(componentObject.value);
+				actor.componentsByKey[key]->loadProperties(componentObject.value);
 			}
 		}
 	}

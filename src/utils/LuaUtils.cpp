@@ -143,7 +143,7 @@ void LuaUtils::instantiateActor(std::shared_ptr<Actor> actorPtr) {
 void LuaUtils::requestDestroyActor(const luabridge::LuaRef& actorRef) {
     std::shared_ptr actorShared = currentScene->actorsById[actorRef.cast<Actor*>()->id];
 
-    for (auto& [key, componentPtr] : actorShared->componentPtrsByKey) {
+    for (auto& [key, componentPtr] : actorShared->componentsByKey) {
         componentPtr->instanceTable["enabled"] = false;
     }
 

@@ -1,6 +1,9 @@
 // std library
 #include <string>
 
+// my code
+#include "CppComponent.h"
+
 // SDL
 #include "SDL2/SDL.h"
 
@@ -9,7 +12,7 @@
 #include "LuaBridge/LuaBridge.h"
 
 #pragma once
-class UIRenderer {
+class UIRenderer : public CppComponent {
 public:
 	std::string sprite;
 	SDL_Color tint = {255, 255, 255, 255};
