@@ -20,16 +20,22 @@
 
 class TextDrawRequest {
 public:
+	static inline int numRequests = 0;
+
 	std::string text;
 	glm::ivec2 pos;
 	TTF_Font* font;
 	SDL_Color color;
 	SDL_Texture* texture;
 
+	int id = 0;
+
 	TextDrawRequest() : text(""), pos(0, 0), font(nullptr), color(), texture(nullptr) {}
 
 	TextDrawRequest(const std::string& text, glm::ivec2& pos, TTF_Font* font, SDL_Color& color, SDL_Texture* texture)
-		: text(text), pos(pos), font(font), color(color), texture(texture) {}
+		: text(text), pos(pos), font(font), color(color), texture(texture) {
+		id = numRequests++;
+	}
 
 	TextDrawRequest& operator=(const TextDrawRequest& other) {
 		text = other.text;
@@ -37,6 +43,7 @@ public:
 		font = other.font;
 		color = other.color;
 		texture = other.texture;
+		id = other.id;
 
 		return *this;
 	}
@@ -48,6 +55,8 @@ enum ImageType {
 
 class ImageDrawRequest {
 public:
+	static inline int numRequests = 0;
+
 	SDL_Texture* texture = nullptr;
 	std::string name = "";
 	glm::vec2 pos = { 0, 0 };
@@ -58,6 +67,7 @@ public:
 
 	int sortingOrder = 0;
 	int callOrder = 0;
+	int id = 0;
 
 	ImageType type = SCENE_SPACE;
 
@@ -65,7 +75,10 @@ public:
 
 	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::vec2 pos, int rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
 		SDL_Color& color, int sortingOrder, int callOrder, ImageType type)
-		: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {}
+		: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), 
+		pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {
+		id = numRequests++;
+	}
 };
 
 class ImageDrawRequestComparator {

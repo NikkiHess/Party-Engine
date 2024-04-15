@@ -21,3 +21,11 @@ void Camera::setZoom(const float zoom) {
 float Camera::getZoom() {
 	return renderConfig->zoomFactor;
 }
+
+int Camera::getWidth() {
+	return renderConfig->renderSize.x;
+}
+
+int Camera::getHeight() {
+	return renderConfig->renderSize.y;
+}

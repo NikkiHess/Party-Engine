@@ -11,18 +11,10 @@
 #include "../utils/OptionalVec2.h"
 #include "../utils/config/RenderingConfig.h"
 #include "../components/Component.h"
-//#include "../components/CppComponent.h"
 
 // dependencies
 #include "glm/glm.hpp"
 #include "SDL2/SDL_render.h"
-
-class Transform {
-public:
-	glm::vec2 pos = { 0.0f, 0.0f };
-	glm::vec2 scale = { 1.0f, 1.0f };
-	float rotationDegrees = 0.0f;
-};
 
 class Actor {
 public:
@@ -31,9 +23,6 @@ public:
 	std::string name = "";
 	int id = 0;
 	bool dontDestroy = false;
-
-	// the actor's transform (pos, scale, rotation)
-	Transform transform;
 	// the actor's x and y velocity
 	glm::vec2 velocity;
 
@@ -52,12 +41,13 @@ public:
 
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
+	//std::map<std::string, std::shared_ptr<Component>> componentsWithOnExit;
 
 	std::set<std::shared_ptr<Component>> componentsToAdd;
 	std::set<std::shared_ptr<Component>> componentsToRemove;
 
 	// whether we have onStart, onUpdate, or onLateUpdate functions to worry about
-	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false;
+	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false, hasOnExit = false;
     
     Actor() : velocity(0, 0) {}
 
@@ -85,7 +75,7 @@ public:
 
 	void addComponent(std::shared_ptr<Component> compPtr, std::optional<rapidjson::Value*>& properties);
 
-	void updateLifecycleFunctions(const std::shared_ptr<Component> ptr);
+	void updateLifecycleFunctions(const std::shared_ptr<Component>& ptr);
 
 	// requests removal of a component by LuaRef (for Lua only)
 	void requestRemoveComponent(const luabridge::LuaRef& componentRef);

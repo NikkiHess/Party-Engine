@@ -20,7 +20,6 @@
 #include "SDL2/SDL_rect.h"
 
 void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
-	glm::vec2 actorPos(actor.transform.pos.x, actor.transform.pos.y);
 	actor.id = static_cast<int>(Actor::currentId);
 
 	auto actorShared = std::make_shared<Actor>(actor);
@@ -36,9 +35,6 @@ void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 		instantiateActorLifecycle(actorShared);
 	}
 
-	// insert the actor's ptr into the "sorted-by-render-order" list
-	actorsByRenderOrder.emplace(actorShared);
-
 	++Actor::currentId;
 }
 
@@ -49,4 +45,6 @@ void Scene::instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared) {
 		actorsWithOnUpdate.emplace(actorShared);
 	if (actorShared->hasOnLateUpdate)
 		actorsWithOnLateUpdate.emplace(actorShared);
+	//if (actorShared->hasOnExit)
+	//	actorsWithOnExit.emplace(actorShared);
 }

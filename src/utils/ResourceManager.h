@@ -40,25 +40,31 @@ public:
 
 	std::unordered_map<std::string, bool> fileExistsCache;
 
+	// stores image request size by id
+	std::unordered_map<int, glm::ivec2> imageRequestSizes;
+
+	// stores text request size by id
+	std::unordered_map<int, glm::ivec2> textRequestSizes;
+
 	ResourceManager() {}
 
 	// load an image texture from its name
 	SDL_Texture* loadImageTexture(const std::string& imageName);
 
 	// create a text draw request, to be drawn at the end of the frame
-	void createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor);
+	int createTextDrawRequest(const std::string& text, TTF_Font* font, bool fontCentered, glm::ivec2& pos, SDL_Color& fontColor);
 
 	// create a UI image draw request, to be drawn at the end of the frame
-	void createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos);
+	int createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos);
 
 	// create a UI image draw request (with more data), to be drawn at the end of the frame
-	void createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, SDL_Color color, int sortingOrder);
+	int createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, SDL_Color color, int sortingOrder);
 
 	// create an image draw request, to be drawn at the end of the frame
-	void createImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos);
+	int createImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos);
 
 	// create an image draw request (with more data), to be drawn at the end of the frame
-	void createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees,
+	int createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees,
 								  glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder);
 
 	// create a pixel draw request, to be a drawn at the end of the frame

@@ -42,6 +42,7 @@ public:
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnStart;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnUpdate;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnLateUpdate;
+	//std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnExit;
 
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithNewComponents;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithComponentsToRemove;
@@ -50,9 +51,6 @@ public:
 
 	std::map<std::string, std::set<std::shared_ptr<Actor>, ActorComparator>> actorsByName;
 	std::map<int, std::shared_ptr<Actor>> actorsById;
-
-	// actors sorted by render order -> y pos -> id
-	std::set<std::shared_ptr<Actor>, RenderOrderComparator> actorsByRenderOrder;
 
 	std::string name;
 	int id;

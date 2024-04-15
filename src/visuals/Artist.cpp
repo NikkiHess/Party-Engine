@@ -104,8 +104,8 @@ void Artist::drawPixel(const PixelDrawRequest& request) {
 	SDL_SetRenderDrawBlendMode(sdlRenderer, SDL_BLENDMODE_NONE);
 }
 
-void Artist::requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
-						   const float fontSize, const float r, const float g, const float b, const float a) {
+int Artist::requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
+						   const float fontSize, const bool fontCentered, const float r, const float g, const float b, const float a) {
 	const int fontSizeInt = static_cast<int>(fontSize);
 
 	// if the font doesn't exist, create it
@@ -136,10 +136,10 @@ void Artist::requestDrawText(const std::string& text, const float x, const float
 	};
 
 	// creates the TextDrawRequest that will be iterated over in the main loop
-	resourceManager->createTextDrawRequest(text, font, pos, fontColor);
+	return resourceManager->createTextDrawRequest(text, font, fontCentered, pos, fontColor);
 }
 
-void Artist::requestDrawUI(const std::string& imageName, const float x, const float y) {
+int Artist::requestDrawUI(const std::string& imageName, const float x, const float y) {
 	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
 
 	glm::ivec2 pos = {
@@ -147,10 +147,10 @@ void Artist::requestDrawUI(const std::string& imageName, const float x, const fl
 		static_cast<int>(y)
 	};
 
-	resourceManager->createUIImageDrawRequest(imageTexture, imageName, pos);
+	return resourceManager->createUIImageDrawRequest(imageTexture, imageName, pos);
 }
 
-void Artist::requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
+int Artist::requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
 	const float g, const float b, const float a, float sortingOrder) {
 	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
 
@@ -166,20 +166,18 @@ void Artist::requestDrawUIEx(const std::string& imageName, const float x, const 
 		static_cast<Uint8>(a)
 	};
 
-	resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, color, static_cast<int>(sortingOrder));
+	return resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, color, static_cast<int>(sortingOrder));
 }
 
-
-
-void Artist::requestDrawImage(const std::string& imageName, const float x, const float y) {
+int Artist::requestDrawImage(const std::string& imageName, const float x, const float y) {
 	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
 
 	glm::vec2 pos = { x, y };
 
-	resourceManager->createImageDrawRequest(imageTexture, imageName, pos);
+	return resourceManager->createImageDrawRequest(imageTexture, imageName, pos);
 }
 
-void Artist::requestDrawImageEx(const std::string& imageName, const float x, const float y, const float rotationDegrees,
+int Artist::requestDrawImageEx(const std::string& imageName, const float x, const float y, const float rotationDegrees,
 								const float scaleX, const float scaleY, const float pivotX, const float pivotY,
 								const float r, const float g, const float b, const float a, const float sortingOrder) {
 	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
@@ -197,7 +195,7 @@ void Artist::requestDrawImageEx(const std::string& imageName, const float x, con
 		static_cast<Uint8>(a)
 	};
 
-	resourceManager->createImageDrawRequestEx(imageTexture, imageName, pos, static_cast<int>(rotationDegrees), scale,
+	return resourceManager->createImageDrawRequestEx(imageTexture, imageName, pos, static_cast<int>(rotationDegrees), scale,
 											  pivot, color, static_cast<int>(sortingOrder));
 }
 
@@ -210,6 +208,14 @@ void Artist::requestDrawPixel(const float x, const float y, const float r, const
 		static_cast<Uint8>(b),
 		static_cast<Uint8>(a)
 	};
-
+	
 	resourceManager->createPixelDrawRequest(pos, color);
+}
+
+int Artist::getImageWidth(const int id) {
+	return resourceManager->imageRequestSizes[id].x;
+}
+
+int Artist::getImageHeight(const int id) {
+	return resourceManager->imageRequestSizes[id].y;
 }

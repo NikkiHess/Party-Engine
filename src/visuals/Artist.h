@@ -38,23 +38,26 @@ public:
 	// g - the blue value of the text color
 	// b - the green value of the text color
 	// a - the alpha value of the text color (transparency)
-	static void requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
-		const float fontSize, const float r, const float g, const float b, const float a);
+	static int requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
+		const float fontSize, const bool fontCentered, const float r, const float g, const float b, const float a);
 
 	// request to draw an image on the screen
-	static void requestDrawUI(const std::string& imageName, const float x, const float y);
+	static int requestDrawUI(const std::string& imageName, const float x, const float y);
 
 	// request to draw an image on the screen (extended, more params)
-	static void requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
+	static int requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
 		const float g, const float b, const float a, float sortingOrder);
 
-	static void requestDrawImage(const std::string& imageName, const float x, const float y);
+	static int requestDrawImage(const std::string& imageName, const float x, const float y);
 
-	static void requestDrawImageEx(const std::string& imageName, const float x, const float y, const float rotationDegrees,
+	static int requestDrawImageEx(const std::string& imageName, const float x, const float y, const float rotationDegrees,
 								   const float scaleX, const float scaleY, const float pivotX, const float pivotY,
 								   const float r, const float g, const float b, const float a, const float sortingOrder);
 
 	// rqeuest to draw a single pixel on the screen
 	static void requestDrawPixel(const float x, const float y, const float r, const float g, const float b, const float a);
+
+	static int getImageWidth(const int id);
+	static int getImageHeight(const int id);
 };
 

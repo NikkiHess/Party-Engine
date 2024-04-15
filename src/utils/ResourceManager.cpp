@@ -31,42 +31,65 @@ SDL_Texture* ResourceManager::loadImageTexture(const std::string& imageName) {
 	return imageTexture;
 }
 
-void ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor) {
+int ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* font, bool fontCentered, glm::ivec2& pos, SDL_Color& fontColor) {
 	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), fontColor);
 
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
 
 	SDL_FreeSurface(textSurface);
 
+	int width, height;
+	SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+
+	if (fontCentered) {
+		pos -= glm::ivec2(width / 2, height / 2);
+	}
+
 	TextDrawRequest request = TextDrawRequest(text, pos, font, fontColor, texture);
 	textDrawRequests.emplace_back(request);
+
+	return request.id;
 }
 
-void ResourceManager::createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos) {
-	createUIImageDrawRequestEx(imageTexture, imageName, pos, {255, 255, 255, 255}, 0);
+int ResourceManager::createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos) {
+	return createUIImageDrawRequestEx(imageTexture, imageName, pos, {255, 255, 255, 255}, 0);
 }
 
-void ResourceManager::createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, SDL_Color color, int sortingOrder) {
+int ResourceManager::createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, SDL_Color color, int sortingOrder) {
 	ImageDrawRequest request = ImageDrawRequest(imageTexture, imageName, pos, 0, glm::vec2(1, 1), glm::vec2(0.5f, 0.5f), 
 											    color, sortingOrder, uiImageDrawRequests.size(), SCREEN_SPACE);
 	uiImageDrawRequests.emplace_back(request);
+
+	int width, height;
+	SDL_QueryTexture(imageTexture, nullptr, nullptr, &width, &height);
+
+	imageRequestSizes[request.id] = { width, height };
+
+	return request.id;
 }
 
 // create an image draw request, to be drawn at the end of the frame
-void ResourceManager::createImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos) {
+int ResourceManager::createImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos) {
 	glm::vec2 scale = { 1, 1 };
 	glm::vec2 pivot = { 0.5f, 0.5f };
 	SDL_Color color = { 255, 255, 255, 255 };
 
-	createImageDrawRequestEx(imageTexture, imageName, pos, 0, scale, pivot, color, 0);
+	return createImageDrawRequestEx(imageTexture, imageName, pos, 0, scale, pivot, color, 0);
 }
 
 // create an image draw request (with more data), to be drawn at the end of the frame
-void ResourceManager::createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees, 
+int ResourceManager::createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees, 
 											   glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder) {
 	ImageDrawRequest request = ImageDrawRequest(imageTexture, imageName, pos, rotationDegrees, scale, pivot, color, 
 												sortingOrder, imageDrawRequests.size(), SCENE_SPACE);
 	imageDrawRequests.emplace_back(request);
+
+	int width, height;
+	SDL_QueryTexture(imageTexture, nullptr, nullptr, &width, &height);
+
+	imageRequestSizes[request.id] = { width * scale.x, height * scale.y };
+
+	return request.id;
 }
 
 void ResourceManager::createPixelDrawRequest(glm::ivec2& pos, SDL_Color color) {

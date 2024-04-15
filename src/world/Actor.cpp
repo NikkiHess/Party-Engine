@@ -74,7 +74,7 @@ luabridge::LuaRef Actor::requestAddComponent(const std::string& type) {
 
 	LuaUtils::currentScene->actorsWithNewComponents.emplace(LuaUtils::currentScene->actorsById[this->id]);
 
-	std::unique_ptr<CppComponent> cppComponent = Component::getCppComponent(type);
+	std::shared_ptr<CppComponent> cppComponent = Component::getCppComponent(type);
 	
 	Component component(key, type, cppComponent);
 	std::shared_ptr compPtr = std::make_shared<Component>(component);
@@ -85,70 +85,65 @@ luabridge::LuaRef Actor::requestAddComponent(const std::string& type) {
 }
 
 void Actor::addComponent(std::shared_ptr<Component> compPtr, std::optional<rapidjson::Value*>& properties) {
-	//// if the component is not cached already, we need to cache it
-	//if (Component::components.find(type) == Component::components.end()) {
-	//	// construct and cache the component
-	//	Component::components[type] = Component(key, type);
-	//}
-
-	//// regardless, load it to the actor
-	//Component component = Component::components[type];
-
 	std::string& key = compPtr->key;
 	std::string& type = compPtr->type;
 
+	// store the ptr to our component by key
 	componentsByKey[key] = compPtr;
+
+	std::shared_ptr<Component>& stored = componentsByKey[key];
+
+	// update the key to match from config
+	stored->key = key;
 
 	// load properties from the config
 	if (properties.has_value()) {
-		componentsByKey[key]->loadProperties(*properties.value());
+		stored->loadProperties(*properties.value());
 	}
-	//// copy to its instance table if we don't have properties to load
-	//else {
-	//	componentsByKey[key].instanceTable = Component::components[type].instanceTable;
-	//}
 
-	// update the key to match from config
-	componentsByKey[key]->key = key;
-	componentsByKey[key]->instanceTable["key"] = key;
-	componentsByKey[key]->instanceTable["actor"] = this;
+	stored->instanceTable["key"] = key;
+	stored->instanceTable["actor"] = this;
 
 	// put it in componentsByType
-	componentsByType[type].emplace(componentsByKey[key]);
+	componentsByType[type].emplace(stored);
 
-	updateLifecycleFunctions(componentsByKey[key]);
+	updateLifecycleFunctions(stored);
 }
 
-void Actor::updateLifecycleFunctions(const std::shared_ptr<Component> ptr) {
+void Actor::updateLifecycleFunctions(const std::shared_ptr<Component>& ptr) {
 	std::string& key = ptr->key;
 
-	try {
-		// if we have OnStart, make sure the actor knows that
-		if (!componentsByKey[key]->instanceTable["OnStart"].isNil()) {
-			if(LuaUtils::currentScene != nullptr)
-				LuaUtils::currentScene->actorsWithOnStart.emplace(LuaUtils::currentScene->actorsById[this->id]);
-			componentsWithOnStart[key] = ptr;
-			hasOnStart = true;
-		}
+	// if we have OnStart, make sure the actor knows that
+	if (!componentsByKey[key]->instanceTable["OnStart"].isNil()) {
+		if(LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnStart.emplace(LuaUtils::currentScene->actorsById[this->id]);
+		componentsWithOnStart[key] = ptr;
+		hasOnStart = true;
+	}
 
-		// if we have OnUpdate, make sure the actor knows that
-		if (!componentsByKey[key]->instanceTable["OnUpdate"].isNil()) {
-			if (LuaUtils::currentScene != nullptr)
-				LuaUtils::currentScene->actorsWithOnUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
-			componentsWithOnUpdate[key] = ptr;
-			hasOnUpdate = true;
-		}
-		// if we have OnLateUpdate, make sure the actor knows that
-		if (!componentsByKey[key]->instanceTable["OnLateUpdate"].isNil()) {
-			if (LuaUtils::currentScene != nullptr)
-				LuaUtils::currentScene->actorsWithOnLateUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
-			componentsWithOnLateUpdate[key] = ptr;
-			hasOnLateUpdate = true;
-		}
+	// if we have OnUpdate, make sure the actor knows that
+	if (!componentsByKey[key]->instanceTable["OnUpdate"].isNil()) {
+		if (LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
+		componentsWithOnUpdate[key] = ptr;
+		hasOnUpdate = true;
 	}
-	catch(const luabridge::LuaException& e) {
-		std::cerr << "LuaException caught: " << e.what() << std::endl;
+
+	// if we have OnLateUpdate, make sure the actor knows that
+	if (!componentsByKey[key]->instanceTable["OnLateUpdate"].isNil()) {
+		if (LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnLateUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
+		componentsWithOnLateUpdate[key] = ptr;
+		hasOnLateUpdate = true;
 	}
+
+	// if we have OnLateUpdate, make sure the actor knows that
+	//if (!componentsByKey[key]->instanceTable["OnExit"].isNil()) {
+	//	if (LuaUtils::currentScene != nullptr)
+	//		LuaUtils::currentScene->actorsWithOnExit.emplace(LuaUtils::currentScene->actorsById[this->id]);
+	//	componentsWithOnExit[key] = ptr;
+	//	hasOnExit = true;
+	//}
 }
 
 void Actor::requestRemoveComponent(const luabridge::LuaRef& componentRef) {
@@ -178,19 +173,4 @@ void Actor::removeComponent(const std::shared_ptr<Component>& compPtr) {
 
 bool ActorComparator::operator()(const std::shared_ptr<Actor> actor1, const std::shared_ptr<Actor> actor2) const {
 	return actor1->id < actor2->id;
-}
-
-bool RenderOrderComparator::operator()(const std::shared_ptr<Actor> actor1, const std::shared_ptr<Actor>actor2) const {
-	// render orders equal? render by y pos
-	if (actor1->renderOrder == actor2->renderOrder) {
-		// y pos equal? render by id
-		if (actor1->transform.pos.y == actor2->transform.pos.y) {
-			return actor1->id < actor2->id;
-		}
-
-		// y pos not equal? compare
-		return actor1->transform.pos.y < actor2->transform.pos.y;
-	}
-	// render order not equal? compare
-	return actor1->renderOrder < actor2->renderOrder;
 }

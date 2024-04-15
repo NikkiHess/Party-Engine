@@ -68,8 +68,8 @@ void SceneConfig::setActorProps(Actor& actor, rapidjson::Value& actorDocument, R
 				// get the type of the component
 				const std::string& type = componentObject.value["type"].GetString();
 
-				std::unique_ptr cppComponent = Component::getCppComponent(type);
-				if (!cppComponent && !resourceManager.fileExists("resources/component_types/" + type + ".lua")) {
+				std::shared_ptr cppComponent = Component::getCppComponent(type);
+				if (!cppComponent.get() && !resourceManager.fileExists("resources/component_types/" + type + ".lua")) {
 					Error::error("component " + type + " not found");
 				}
 

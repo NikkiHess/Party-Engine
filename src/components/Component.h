@@ -55,25 +55,33 @@ public:
 
 	// key - from config
 	// type - the .lua file to use
-	Component(const std::string& key, const std::string& type, std::unique_ptr<CppComponent>& cppComponent) : key(key), type(type) {
-		if (!cppComponent.get()) {
-			establishBaseTable();
+	Component(const std::string& key, const std::string& type, std::shared_ptr<CppComponent>& cppComponent) : key(key), type(type) {
+		try {
+			if (!cppComponent.get()) {
+				establishBaseTable();
 
-			instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
+				instanceTable = luabridge::getGlobal(LuaStateSaver::luaState, type.c_str());
 
-			establishInheritance(instanceTable, baseTable);
+				establishInheritance(instanceTable, baseTable);
+			}
+			else {
+				if (type == "UIRenderer") {
+					UIRenderer* rawPtr = dynamic_cast<UIRenderer*>(cppComponent.get());
+					luabridge::push(LuaStateSaver::luaState, rawPtr);
+				}
+
+				instanceTable = luabridge::LuaRef::fromStack(LuaStateSaver::luaState, -1);
+				
+				lua_pop(LuaStateSaver::luaState, 1);
+			}
+
+			// set the instance's key to be referenced in scripts
+			instanceTable["key"] = key;
+			instanceTable["enabled"] = true;
 		}
-		else {
-			luabridge::push(LuaStateSaver::luaState, cppComponent.get());
-
-			instanceTable = luabridge::LuaRef::fromStack(LuaStateSaver::luaState);
-
-			lua_pop(LuaStateSaver::luaState, 1);
+		catch (luabridge::LuaException e) {
+			std::cout << e.what() << "\n";
 		}
-
-		// set the instance's key to be referenced in scripts
-		instanceTable["key"] = key;
-		instanceTable["enabled"] = true;
 	}
 
 	// call a Lua function (OnStart, OnUpdate, OnLateUpate)
@@ -83,13 +91,12 @@ public:
 	void callLuaFunction(const std::string& name, const std::string& actorName);
 
 	// load the Component's properties, if there are any
-	void loadProperties(rapidjson::Value& data) const;
+	void loadProperties(rapidjson::Value& data);
 
-	// returns a unique_ptr to an instance of the cpp component, if valid
-	static std::unique_ptr<CppComponent> getCppComponent(const std::string& type) {
-		std::unique_ptr<CppComponent> cppComponent = nullptr;
+	static std::shared_ptr<CppComponent> getCppComponent(const std::string& type) {
+		std::shared_ptr<CppComponent> cppComponent = nullptr;
 		if (type == "UIRenderer") {
-			cppComponent = std::make_unique<UIRenderer>(UIRenderer("", {}, 0));
+			cppComponent = std::make_shared<UIRenderer>(UIRenderer("", {}, 0));
 		}
 		return cppComponent;
 	}

@@ -118,6 +118,8 @@ void Engine::start() {
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
             component->callLuaFunction("OnStart", actor->name);
+
+            //std::cout << component->instanceTable["enabled"] << "\n";
         }
     }
     GameInfo::scene.actorsWithOnStart.clear();
@@ -166,9 +168,23 @@ void Engine::start() {
             SDL_RenderSetScale(renderer.sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
         }
 
-        // Present the render AND DELAY, apparently it does that for us
+        // present the render AND DELAY, apparently it does that for us
         Helper::SDL_RenderPresent498(renderer.sdlRenderer);
+
+        // at the very end of every frame, clear request caches
+        resourceManager.imageRequestSizes.clear();
+        ImageDrawRequest::numRequests = 0;
+
+        resourceManager.textRequestSizes.clear();
+        TextDrawRequest::numRequests = 0;
     }
+
+    // execute OnExit for all actors
+    //for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnExit) {
+    //    for (auto& [key, component] : actor->componentsWithOnExit) {
+    //        component->callLuaFunction("OnExit", actor->name);
+    //    }
+    //}
 }
 
 void Engine::requestStop() {
@@ -187,7 +203,7 @@ int main(int argc, char* argv[]) {
 
     AudioHelper::Mix_AllocateChannels498(50);
 
-	// Open the default audio device for playback
+	// open the default audio device for playback
 	AudioHelper::Mix_OpenAudio498(44100, MIX_DEFAULT_FORMAT, 1, 2048);
 
     // open a new state for the lua and open some default libraries

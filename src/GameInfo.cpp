@@ -23,7 +23,6 @@ void GameInfo::loadScene(const std::string& sceneName) {
 		loadedScene.actors.emplace_back(actor);
 		loadedScene.actorsById[actor->id] = actor;
 		loadedScene.actorsByName[actor->name].emplace(actor);
-		loadedScene.actorsByRenderOrder.emplace(actor);
 
 		if (actor->hasOnUpdate)
 			loadedScene.actorsWithOnUpdate.emplace(actor);

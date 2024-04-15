@@ -3,6 +3,7 @@
 #include <thread>
 #include <algorithm>
 #include <unordered_map>
+#include <sstream>
 
 // my code
 #include "LuaUtils.h"
@@ -162,7 +163,6 @@ void LuaUtils::destroyActor(std::shared_ptr<Actor> actorPtr) {
         currentScene->actorsByName.erase(actorPtr->name);
     }
 
-    currentScene->actorsByRenderOrder.erase(actorPtr);
     currentScene->actorsWithComponentsToRemove.erase(actorPtr);
     currentScene->actorsWithNewComponents.erase(actorPtr);
     currentScene->actorsWithOnLateUpdate.erase(actorPtr);
@@ -279,6 +279,8 @@ void setupVisuals() {
             .addFunction("Draw", &Artist::requestDrawImage)
             .addFunction("DrawEx", &Artist::requestDrawImageEx)
             .addFunction("DrawPixel", &Artist::requestDrawPixel)
+            .addFunction("GetWidth", &Artist::getImageWidth)
+            .addFunction("GetHeight", &Artist::getImageHeight)
         .endNamespace()
 
         .beginNamespace("Camera")
@@ -287,6 +289,8 @@ void setupVisuals() {
             .addFunction("GetPositionY", &Camera::getPositionY)
             .addFunction("SetZoom", &Camera::setZoom)
             .addFunction("GetZoom", &Camera::getZoom)
+            .addFunction("GetWidth", &Camera::getWidth)
+            .addFunction("GetHeight", &Camera::getHeight)
         .endNamespace()
 
         .beginClass<SDL_Color>("Color")
@@ -297,10 +301,15 @@ void setupVisuals() {
         .endClass()
 
         .beginClass<UIRenderer>("UIRenderer")
-            .addConstructor<void(*)(std::string, SDL_Color, int)>()
+            .addProperty("key", &UIRenderer::key)
+            .addProperty("enabled", &UIRenderer::enabled)
+            .addProperty("actor", &UIRenderer::actor)
             .addProperty("sprite", &UIRenderer::sprite)
             .addProperty("tint", &UIRenderer::tint)
             .addProperty("sortingOrder", &UIRenderer::sortingOrder)
+            .addProperty("transform", &UIRenderer::transform)
+            .addFunction("OnStart", &UIRenderer::onStart)
+            .addFunction("OnUpdate", &UIRenderer::onUpdate)
         .endClass();
 }
 
