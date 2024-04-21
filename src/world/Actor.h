@@ -41,7 +41,7 @@ public:
 
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
-	//std::map<std::string, std::shared_ptr<Component>> componentsWithOnExit;
+	std::map<std::string, std::shared_ptr<Component>> componentsWithOnExit;
 
 	std::set<std::shared_ptr<Component>> componentsToAdd;
 	std::set<std::shared_ptr<Component>> componentsToRemove;

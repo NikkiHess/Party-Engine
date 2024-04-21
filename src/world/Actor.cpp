@@ -138,12 +138,12 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component>& ptr) {
 	}
 
 	// if we have OnLateUpdate, make sure the actor knows that
-	//if (!componentsByKey[key]->instanceTable["OnExit"].isNil()) {
-	//	if (LuaUtils::currentScene != nullptr)
-	//		LuaUtils::currentScene->actorsWithOnExit.emplace(LuaUtils::currentScene->actorsById[this->id]);
-	//	componentsWithOnExit[key] = ptr;
-	//	hasOnExit = true;
-	//}
+	if (!componentsByKey[key]->instanceTable["OnExit"].isNil()) {
+		if (LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnExit.emplace(LuaUtils::currentScene->actorsById[this->id]);
+		componentsWithOnExit[key] = ptr;
+		hasOnExit = true;
+	}
 }
 
 void Actor::requestRemoveComponent(const luabridge::LuaRef& componentRef) {

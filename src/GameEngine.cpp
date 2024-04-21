@@ -180,11 +180,11 @@ void Engine::start() {
     }
 
     // execute OnExit for all actors
-    //for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnExit) {
-    //    for (auto& [key, component] : actor->componentsWithOnExit) {
-    //        component->callLuaFunction("OnExit", actor->name);
-    //    }
-    //}
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnExit) {
+        for (auto& [key, component] : actor->componentsWithOnExit) {
+            component->callLuaFunction("OnExit", actor->name);
+        }
+    }
 }
 
 void Engine::requestStop() {
