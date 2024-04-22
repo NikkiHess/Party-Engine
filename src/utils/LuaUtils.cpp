@@ -14,6 +14,7 @@
 #include "../visuals/Artist.h"
 #include "../utils/LuaStateSaver.h"
 #include "../components/UIRenderer.h"
+#include "../utils/SaveData.h"
 
 // dependencies
 #include "Helper.h"
@@ -323,7 +324,27 @@ void setupAudio() {
         .endNamespace();
 }
 
-// establish our lua_State* and all namespaces
+// establish lua class: SaveData
+void setupSaveData() {
+    luabridge::getGlobalNamespace(LuaStateSaver::luaState)
+        .beginClass<SaveData>("SaveData")
+            .addConstructor<void(*) (const std::string&)>()
+            .addProperty("name", &SaveData::name)
+            .addFunction("SetString", &SaveData::setString)
+            .addFunction("SetInt", &SaveData::setInt)
+            .addFunction("SetFloat", &SaveData::setFloat)
+            .addFunction("SetBool", &SaveData::setBool)
+            .addFunction("GetString", &SaveData::getString)
+            .addFunction("GetInt", &SaveData::getInt)
+            .addFunction("GetFloat", &SaveData::getFloat)
+            .addFunction("GetBool", &SaveData::getBool)
+            .addFunction("HasMember", &SaveData::hasMember)
+            .addFunction("Save", &SaveData::saveDocument)
+            .addFunction("Clear", &SaveData::clear)
+        .endClass();
+}
+
+// establish our lua_State* and all namespaces/classes
 void LuaUtils::setupLua() {
     setupDebug();
 
@@ -338,4 +359,6 @@ void LuaUtils::setupLua() {
     setupPositioning();
 
     setupVisuals();
+
+    setupSaveData();
 }

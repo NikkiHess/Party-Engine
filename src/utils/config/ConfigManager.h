@@ -48,6 +48,12 @@ public:
 			Error::error("resources/ missing");
 		}
 
+		// handle rendering.config, which may or may not exist
+		if (resourceManager.fileExists("resources/rendering.config")) {
+			JsonUtils::readJsonFile("resources/rendering.config", document);
+			renderingConfig.parse(document);
+		}
+
 		// handle game.config
 		if (!resourceManager.fileExists("resources/game.config")) {
 			Error::error("resources/game.config missing");
@@ -58,10 +64,5 @@ public:
 		JsonUtils::readJsonFile("resources/scenes/" + sceneName + ".scene", document);
 		sceneConfig.parse(document, resourceManager, sceneConfig.initialScene, sceneName);
 
-		// handle rendering.config, which may or may not exist
-		if (resourceManager.fileExists("resources/rendering.config")) {
-			JsonUtils::readJsonFile("resources/rendering.config", document);
-			renderingConfig.parse(document);
-		}
 	}
 };
