@@ -43,6 +43,7 @@ public:
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnUpdate;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnLateUpdate;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnExit;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnClick;
 
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithNewComponents;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithComponentsToRemove;

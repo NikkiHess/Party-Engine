@@ -28,6 +28,10 @@ void GameInfo::loadScene(const std::string& sceneName) {
 			loadedScene.actorsWithOnUpdate.emplace(actor);
 		if (actor->hasOnLateUpdate)
 			loadedScene.actorsWithOnLateUpdate.emplace(actor);
+		if (actor->hasOnClick)
+			loadedScene.actorsWithOnClick.emplace(actor);
+		if (actor->hasOnExit)
+			loadedScene.actorsWithOnExit.emplace(actor);
 	}
 
 	newScene = loadedScene;

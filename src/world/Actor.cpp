@@ -144,6 +144,13 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component>& ptr) {
 		componentsWithOnExit[key] = ptr;
 		hasOnExit = true;
 	}
+
+	if (!componentsByKey[key]->instanceTable["OnClick"].isNil()) {
+		if(LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnClick.emplace(LuaUtils::currentScene->actorsById[this->id]);
+		componentsWithOnClick[key] = ptr;
+		hasOnClick = true;
+	}
 }
 
 void Actor::requestRemoveComponent(const luabridge::LuaRef& componentRef) {
@@ -169,6 +176,8 @@ void Actor::removeComponent(const std::shared_ptr<Component>& compPtr) {
 	componentsWithOnStart.erase(compPtr->key);
 	componentsWithOnUpdate.erase(compPtr->key);
 	componentsWithOnLateUpdate.erase(compPtr->key);
+	componentsWithOnExit.erase(compPtr->key);
+	componentsWithOnClick.erase(compPtr->key);
 }
 
 bool ActorComparator::operator()(const std::shared_ptr<Actor> actor1, const std::shared_ptr<Actor> actor2) const {

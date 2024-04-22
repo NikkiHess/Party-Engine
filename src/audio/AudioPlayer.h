@@ -18,5 +18,6 @@ public:
 	static void halt(const int channel);
 
 	// sets the volume (volume->int)
+	// volume range 0-100
 	static void setVolume(const int channel, const float volume);
 };

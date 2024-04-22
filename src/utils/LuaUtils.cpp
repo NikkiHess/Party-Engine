@@ -169,6 +169,8 @@ void LuaUtils::destroyActor(std::shared_ptr<Actor> actorPtr) {
     currentScene->actorsWithOnLateUpdate.erase(actorPtr);
     currentScene->actorsWithOnStart.erase(actorPtr);
     currentScene->actorsWithOnUpdate.erase(actorPtr);
+    currentScene->actorsWithOnExit.erase(actorPtr);
+    currentScene->actorsWithOnClick.erase(actorPtr);
 }
 
 void setupDebug() {

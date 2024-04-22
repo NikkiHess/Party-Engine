@@ -35,7 +35,7 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
-void Engine::runLifecycleFunctions() {
+void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
     // do OnStart for all actors with NEW OnStart components
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
@@ -62,6 +62,72 @@ void Engine::runLifecycleFunctions() {
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnLateUpdate) {
         for (auto& [key, component] : actor->componentsWithOnLateUpdate) {
             component->callLuaFunction("OnLateUpdate", actor->name);
+        }
+    }
+
+    // TODO: This is awful, fix PLEASE
+    if (clickPos.has_value()) {
+        int maxId = -1;
+        int type = 0;
+        std::shared_ptr<Actor> clickedActor;
+        std::vector<std::shared_ptr<Component>> clickedComponents;
+
+        for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnClick) {
+            for (auto& [key, component] : actor->componentsWithOnClick) {
+                // TODO: Need to make these C++ components for this to make any sense
+                luabridge::LuaRef spriteRenderer = actor->getComponent("SpriteRenderer");
+                luabridge::LuaRef uiSpriteRenderer = actor->getComponent("UISpriteRenderer");
+                luabridge::LuaRef transform = actor->getComponent("Transform");
+
+                // make sure we have a sprite renderer
+                int id = !spriteRenderer.isNil() ? spriteRenderer["id"] : uiSpriteRenderer["id"]; // need this to get size
+
+                // make sure we have a transform
+                if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
+                    auto it = resourceManager.imageRequestSizes.find(id);
+
+                    // if the image was requested this frame
+                    if (it != resourceManager.imageRequestSizes.end()) {
+                        glm::vec2 click = clickPos.value();
+
+                        float currX = transform["x"].cast<float>();
+                        float currY = transform["y"].cast<float>();
+
+                        if (!spriteRenderer.isNil()) {
+                            click.x -= Camera::getWidth() / 2;
+                            click.y -= Camera::getHeight() / 2;
+                            currX *= 100;
+                            currY *= 100;
+                        }
+
+                        // if we're within the image's bounds, check if this is our clicked actor/component
+                        if (click.x >= currX && click.x <= currX + it->second.x) {
+                            if (click.y >= currY && click.y <= currY + it->second.y) {
+
+                                // if the current type is a regular sprite and we need a ui
+                                if ((type == 0 && spriteRenderer.isNil())) {
+                                    type = 1;
+                                    maxId = -1;
+                                }
+
+                                // id needs to be highest possible
+                                if (id > maxId) {
+                                    maxId = id;
+                                    clickedActor = actor;
+                                    clickedComponents.emplace_back(component);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // if we have a clicked actor
+        if (clickedActor != nullptr) {
+            for (std::shared_ptr<Component>& comp : clickedComponents) {
+                comp->callLuaFunction("OnClick", clickedActor->name);
+            }
         }
     }
 }
@@ -118,8 +184,6 @@ void Engine::start() {
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
             component->callLuaFunction("OnStart", actor->name);
-
-            //std::cout << component->instanceTable["enabled"] << "\n";
         }
     }
     GameInfo::scene.actorsWithOnStart.clear();
@@ -140,17 +204,22 @@ void Engine::start() {
             }
         }
 
+        std::optional<glm::vec2> clickPos = std::nullopt;
         // Process events
         SDL_Event sdlEvent;
         while (Helper::SDL_PollEvent498(&sdlEvent)) {
             Input::processEvent(sdlEvent);
+
+            if (Input::getMouseButtonDown(1)) {
+                clickPos = std::make_optional<glm::vec2>(Input::getMousePosition());
+            }
             // handle a quit event
             if (sdlEvent.type == SDL_QUIT) {
                 requestStop();
             }
         }
 
-        runLifecycleFunctions();
+        runLifecycleFunctions(clickPos);
 
         runtimeAlterations();
 

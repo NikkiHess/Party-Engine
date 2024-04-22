@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <optional>
 
 // my code
 #include "audio/AudioPlayer.h"
@@ -42,9 +43,8 @@ public:
 		GameInfo::resourceManager = &resourceManager;
 	}
 
-
-	// run OnStart, OnUpdate, OnLateUpdate
-	void runLifecycleFunctions();
+	// run all lifecycle functions
+	void runLifecycleFunctions(std::optional<glm::vec2> clickPos);
 
 	// the "alter" part of collect-then-alter
     void runtimeAlterations();

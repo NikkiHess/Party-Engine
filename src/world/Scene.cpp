@@ -47,4 +47,6 @@ void Scene::instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared) {
 		actorsWithOnLateUpdate.emplace(actorShared);
 	if (actorShared->hasOnExit)
 		actorsWithOnExit.emplace(actorShared);
+	if (actorShared->hasOnClick)
+		actorsWithOnClick.emplace(actorShared);
 }

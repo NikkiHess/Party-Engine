@@ -42,12 +42,13 @@ public:
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnLateUpdate;
 	std::map<std::string, std::shared_ptr<Component>> componentsWithOnExit;
+	std::map<std::string, std::shared_ptr<Component>> componentsWithOnClick;
 
 	std::set<std::shared_ptr<Component>> componentsToAdd;
 	std::set<std::shared_ptr<Component>> componentsToRemove;
 
-	// whether we have onStart, onUpdate, or onLateUpdate functions to worry about
-	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false, hasOnExit = false;
+	// whether we have lifecycle functions to worry about
+	bool hasOnStart = false, hasOnUpdate = false, hasOnLateUpdate = false, hasOnExit = false, hasOnClick = false;
     
     Actor() : velocity(0, 0) {}
 
