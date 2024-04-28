@@ -138,7 +138,7 @@ luabridge::LuaRef LuaUtils::requestInstantiateActor(const std::string& templateN
 }
 
 void LuaUtils::instantiateActor(std::shared_ptr<Actor> actorPtr) {
-    currentScene->instantiateActorLifecycle(actorPtr);
+    currentScene->instantiateActorLifecycle(actorPtr, true);
 }
 
 

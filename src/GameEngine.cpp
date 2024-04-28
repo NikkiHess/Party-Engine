@@ -5,6 +5,7 @@
 #include <sstream>
 #include <filesystem>
 #include <memory>
+#include <vector>
 
 // include my code
 #include "GameEngine.h"
@@ -35,7 +36,7 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
-void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
+void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
     // do OnStart for all actors with NEW OnStart components
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
         for (auto& [key, component] : actor->componentsWithOnStart) {
@@ -66,66 +67,76 @@ void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
     }
 
     // TODO: This is awful, fix PLEASE
-    if (clickPos.has_value()) {
-        int maxId = -1;
-        int type = 0;
-        std::shared_ptr<Actor> clickedActor;
-        std::vector<std::shared_ptr<Component>> clickedComponents;
+    glm::vec2 origMouse = mousePos;
 
-        for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnClick) {
-            for (auto& [key, component] : actor->componentsWithOnClick) {
-                // TODO: Need to make these C++ components for this to make any sense
-                luabridge::LuaRef spriteRenderer = actor->getComponent("SpriteRenderer");
-                luabridge::LuaRef transform = actor->getComponent("Transform");
+    int maxId = -1;
+    int type = 0;
+    std::shared_ptr<Actor> clickedActor;
 
-                // make sure we have a sprite renderer
-                int id = spriteRenderer["id"]; // need this to get size
-                std::string sprite = spriteRenderer["sprite"];
-                bool ui = spriteRenderer["UI"];
+    std::vector<std::shared_ptr<Component>> leftClicked;
+    std::vector<std::shared_ptr<Component>> middleClicked;
+    std::vector<std::shared_ptr<Component>> rightClicked;
 
-                // make sure we have a transform
-                if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
-                    // if the image was requested this frame
-                    if ((ui && resourceManager.uiImageDrawRequests.size() <= id) || 
-                        (!ui && resourceManager.imageDrawRequests.size() <= id)) {
-                        glm::vec2 click = clickPos.value();
+    // handle clicks
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnClick) {
+        for (auto& [key, component] : actor->componentsWithOnClick) {
+            // TODO: Need to make these C++ components for this to make any sense
+            luabridge::LuaRef spriteRenderer = actor->getComponent("SpriteRenderer");
+            luabridge::LuaRef transform = actor->getComponent("Transform");
 
-                        float currX = transform["x"].cast<float>();
-                        float currY = transform["y"].cast<float>();
+            // make sure we have a sprite renderer
+            int id = spriteRenderer["id"]; // need this to get size
+            std::string sprite = spriteRenderer["sprite"];
+            bool ui = spriteRenderer["UI"];
 
-                        if (!ui) {
-                            click.x -= Camera::getWidth() / 2.0f;
-                            click.y -= Camera::getHeight() / 2.0f;
-                            currX *= 100;
-                            currY *= 100;
-                        }
+            // make sure we have a transform
+            if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
+                // if the image was requested this frame
+                if ((ui && resourceManager.uiImageDrawRequests.size() <= id) ||
+                    (!ui && resourceManager.imageDrawRequests.size() <= id)) {
+                    float currX = transform["x"].cast<float>();
+                    float currY = transform["y"].cast<float>();
 
-                        float pivotX = spriteRenderer["pivotX"];
-                        float pivotY = spriteRenderer["pivotY"];
+                    if (!ui) {
+                        mousePos.x -= Camera::getWidth() / 2.0f;
+                        mousePos.y -= Camera::getHeight() / 2.0f;
+                        currX *= 100;
+                        currY *= 100;
+                    }
 
-                        SDL_Point pivotPoint = {
-                            static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
-                            static_cast<int>(pivotY * Artist::getImageHeight(sprite))
-                        };
+                    float pivotX = spriteRenderer["pivotX"];
+                    float pivotY = spriteRenderer["pivotY"];
 
-                        click.x += pivotPoint.x;
-                        click.y += pivotPoint.y;
+                    SDL_Point pivotPoint = {
+                        static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
+                        static_cast<int>(pivotY * Artist::getImageHeight(sprite))
+                    };
 
-                        // if we're within the image's bounds, check if this is our clicked actor/component
-                        if (click.x >= currX && click.x <= currX + Artist::getImageWidth(sprite)) {
-                            if (click.y >= currY && click.y <= currY + Artist::getImageHeight(sprite)) {
+                    mousePos.x += pivotPoint.x;
+                    mousePos.y += pivotPoint.y;
 
-                                // if the current type is a regular sprite and we need a ui
-                                if ((type == 0 && spriteRenderer.isNil())) {
-                                    type = 1;
-                                    maxId = -1;
+                    // if we're within the image's bounds, check if this is our clicked actor/component
+                    if (mousePos.x >= currX && mousePos.x <= currX + Artist::getImageWidth(sprite)) {
+                        if (mousePos.y >= currY && mousePos.y <= currY + Artist::getImageHeight(sprite)) {
+                            // if the current type is a regular sprite and we need a ui
+                            if ((type == 0 && spriteRenderer.isNil())) {
+                                type = 1;
+                                maxId = -1;
+                            }
+
+                            // id needs to be highest possible
+                            if (id > maxId) {
+                                maxId = id;
+                                clickedActor = actor;
+
+                                if (clickType == 1) {
+                                    leftClicked.emplace_back(component);
                                 }
-
-                                // id needs to be highest possible
-                                if (id > maxId) {
-                                    maxId = id;
-                                    clickedActor = actor;
-                                    clickedComponents.emplace_back(component);
+                                else if (clickType == 2) {
+                                    middleClicked.emplace_back(component);
+                                }
+                                else if (clickType == 3) {
+                                    rightClicked.emplace_back(component);
                                 }
                             }
                         }
@@ -133,13 +144,106 @@ void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
                 }
             }
         }
+    }
 
-        // if we have a clicked actor
-        if (clickedActor != nullptr) {
-            for (std::shared_ptr<Component>& comp : clickedComponents) {
-                comp->callLuaFunction("OnClick", clickedActor->name);
+    mousePos = origMouse;
+
+    std::vector<std::shared_ptr<Component>> enter;
+    std::vector<std::shared_ptr<Component>> hover;
+    std::vector<std::shared_ptr<Component>> exit;
+
+    // handle mouses
+    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnMouse) {
+        for (auto& [key, component] : actor->componentsWithOnMouse) {
+            // TODO: Need to make these C++ components for this to make any sense
+            luabridge::LuaRef spriteRenderer = actor->getComponent("SpriteRenderer");
+            luabridge::LuaRef transform = actor->getComponent("Transform");
+
+            // make sure we have a sprite renderer
+            int id = spriteRenderer["id"]; // need this to get size
+            std::string sprite = spriteRenderer["sprite"];
+            bool ui = spriteRenderer["UI"];
+
+            // make sure we have a transform
+            if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
+                // if the image was requested this frame
+                if ((ui && resourceManager.uiImageDrawRequests.size() <= id) ||
+                    (!ui && resourceManager.imageDrawRequests.size() <= id)) {
+                    float currX = transform["x"].cast<float>();
+                    float currY = transform["y"].cast<float>();
+
+                    if (!ui) {
+                        mousePos.x -= Camera::getWidth() / 2.0f;
+                        mousePos.y -= Camera::getHeight() / 2.0f;
+                        currX *= 100;
+                        currY *= 100;
+                    }
+
+                    float pivotX = spriteRenderer["pivotX"];
+                    float pivotY = spriteRenderer["pivotY"];
+
+                    SDL_Point pivotPoint = {
+                        static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
+                        static_cast<int>(pivotY * Artist::getImageHeight(sprite))
+                    };
+
+                    mousePos.x += pivotPoint.x;
+                    mousePos.y += pivotPoint.y;
+
+                    // if we're within the image's bounds, check if this is our clicked actor/component
+                    if (mousePos.x >= currX && mousePos.x <= currX + Artist::getImageWidth(sprite)) {
+                        if (mousePos.y >= currY && mousePos.y <= currY + Artist::getImageHeight(sprite)) {
+                            // maintain hovers
+                            if (component->mouseHovered) {
+                                component->mouseEntered = false;
+                                component->mouseHovered = true;
+                                hover.emplace_back(component);
+                            }
+                            // otherwise add an enter AND a hover
+                            else {
+                                component->mouseEntered = true;
+                                component->mouseHovered = true;
+                                enter.emplace_back(component);
+                                hover.emplace_back(component); // TODO: do this or not?
+                            }
+                            continue; // make sure we don't execute exited code if this happens
+                        }
+                    }
+
+                    // handle mouse exits
+                    if (component->mouseEntered || component->mouseHovered) {
+                        component->mouseEntered = false;
+                        component->mouseHovered = false;
+
+                        component->mouseExited = true;
+                        exit.emplace_back(component);
+                    }
+                }
             }
         }
+    }
+
+    // if we have a clicked actor
+    if (clickedActor != nullptr) {
+        for (std::shared_ptr<Component>& comp : leftClicked) {
+            comp->callLuaFunction("OnLeftClick", clickedActor->name);
+        }
+        for (std::shared_ptr<Component>& comp : middleClicked) {
+            comp->callLuaFunction("OnMiddleClick", clickedActor->name);
+        }
+        for (std::shared_ptr<Component>& comp : rightClicked) {
+            comp->callLuaFunction("OnRightClick", clickedActor->name);
+        }
+    }
+
+    for (std::shared_ptr<Component>& comp : enter) {
+        comp->callLuaFunction("OnMouseEnter", clickedActor->name);
+    }
+    for (std::shared_ptr<Component>& comp : hover) {
+        comp->callLuaFunction("OnMouseHover", clickedActor->name);
+    }
+    for (std::shared_ptr<Component>& comp : exit) {
+        comp->callLuaFunction("OnMouseExit", clickedActor->name);
     }
 }
 
@@ -214,15 +318,22 @@ void Engine::start() {
                 }
             }
         }
-
-        std::optional<glm::vec2> clickPos = std::nullopt;
+        
+        glm::vec2 mousePos = Input::getMousePosition();
+        int clickType = -1;
         // Process events
         SDL_Event sdlEvent;
         while (Helper::SDL_PollEvent498(&sdlEvent)) {
             Input::processEvent(sdlEvent);
 
             if (Input::getMouseButtonDown(1)) {
-                clickPos = std::make_optional<glm::vec2>(Input::getMousePosition());
+                clickType = 1;
+            }
+            if (Input::getMouseButtonDown(2)) {
+                clickType = 2;
+            }
+            if (Input::getMouseButtonDown(3)) {
+                clickType = 3;
             }
             // handle a quit event
             if (sdlEvent.type == SDL_QUIT) {
@@ -230,7 +341,7 @@ void Engine::start() {
             }
         }
 
-        runLifecycleFunctions(clickPos);
+        runLifecycleFunctions(mousePos, clickType);
 
         runtimeAlterations();
 

@@ -118,7 +118,6 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component>& ptr) {
 		if(LuaUtils::currentScene != nullptr)
 			LuaUtils::currentScene->actorsWithOnStart.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnStart[key] = ptr;
-		hasOnStart = true;
 	}
 
 	// if we have OnUpdate, make sure the actor knows that
@@ -126,7 +125,6 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component>& ptr) {
 		if (LuaUtils::currentScene != nullptr)
 			LuaUtils::currentScene->actorsWithOnUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnUpdate[key] = ptr;
-		hasOnUpdate = true;
 	}
 
 	// if we have OnLateUpdate, make sure the actor knows that
@@ -134,7 +132,6 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component>& ptr) {
 		if (LuaUtils::currentScene != nullptr)
 			LuaUtils::currentScene->actorsWithOnLateUpdate.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnLateUpdate[key] = ptr;
-		hasOnLateUpdate = true;
 	}
 
 	// if we have OnLateUpdate, make sure the actor knows that
@@ -142,14 +139,22 @@ void Actor::updateLifecycleFunctions(const std::shared_ptr<Component>& ptr) {
 		if (LuaUtils::currentScene != nullptr)
 			LuaUtils::currentScene->actorsWithOnExit.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnExit[key] = ptr;
-		hasOnExit = true;
 	}
 
-	if (!componentsByKey[key]->instanceTable["OnClick"].isNil()) {
+	if (!componentsByKey[key]->instanceTable["OnLeftClick"].isNil() || 
+		!componentsByKey[key]->instanceTable["OnMiddleClick"].isNil() || 
+		!componentsByKey[key]->instanceTable["OnRightClick"].isNil()) {
 		if(LuaUtils::currentScene != nullptr)
 			LuaUtils::currentScene->actorsWithOnClick.emplace(LuaUtils::currentScene->actorsById[this->id]);
 		componentsWithOnClick[key] = ptr;
-		hasOnClick = true;
+	}
+
+	if (!componentsByKey[key]->instanceTable["OnMouseEnter"].isNil() || 
+		!componentsByKey[key]->instanceTable["OnMouseHover"].isNil() || 
+		!componentsByKey[key]->instanceTable["OnMouseExit"].isNil()) {
+		if(LuaUtils::currentScene != nullptr)
+			LuaUtils::currentScene->actorsWithOnMouse.emplace(LuaUtils::currentScene->actorsById[this->id]);
+		componentsWithOnMouse[key] = ptr;
 	}
 }
 

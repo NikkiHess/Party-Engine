@@ -44,6 +44,7 @@ public:
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnLateUpdate;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnExit;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnClick;
+	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithOnMouse;
 
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithNewComponents;
 	std::set<std::shared_ptr<Actor>, ActorComparator> actorsWithComponentsToRemove;
@@ -66,6 +67,6 @@ public:
 	// doLifecycle - whether to populate lists for lua lifecycle functions
 	void instantiateActor(Actor& actor, bool doPtr);
 
-	void instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared);
+	void instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared, bool doOnStart);
 };
 

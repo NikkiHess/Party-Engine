@@ -32,21 +32,28 @@ void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 	actorsById[actorShared->id] = actorShared;
 
 	if (doLifecycle) {
-		instantiateActorLifecycle(actorShared);
+		instantiateActorLifecycle(actorShared, true);
 	}
 
 	++Actor::currentId;
 }
 
-void Scene::instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared) {
-	if (actorShared->hasOnStart)
+void Scene::instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared, bool doOnStart) {
+	if (actorShared->componentsWithOnStart.size() > 0)
 		actorsWithOnStart.emplace(actorShared);
-	if (actorShared->hasOnUpdate)
+
+	if (actorShared->componentsWithOnUpdate.size() > 0)
 		actorsWithOnUpdate.emplace(actorShared);
-	if (actorShared->hasOnLateUpdate)
+
+	if (actorShared->componentsWithOnLateUpdate.size() > 0)
 		actorsWithOnLateUpdate.emplace(actorShared);
-	if (actorShared->hasOnExit)
-		actorsWithOnExit.emplace(actorShared);
-	if (actorShared->hasOnClick)
+
+	if (actorShared->componentsWithOnClick.size() > 0)
 		actorsWithOnClick.emplace(actorShared);
+
+	if (actorShared->componentsWithOnMouse.size() > 0)
+		actorsWithOnMouse.emplace(actorShared);
+
+	if (actorShared->componentsWithOnExit.size() > 0)
+		actorsWithOnExit.emplace(actorShared);
 }

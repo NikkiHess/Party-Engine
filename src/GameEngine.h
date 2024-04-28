@@ -44,7 +44,7 @@ public:
 	}
 
 	// run all lifecycle functions
-	void runLifecycleFunctions(std::optional<glm::vec2> clickPos);
+	void runLifecycleFunctions(glm::vec2 mousePos, int clickType);
 
 	// the "alter" part of collect-then-alter
     void runtimeAlterations();

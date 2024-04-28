@@ -24,14 +24,8 @@ void GameInfo::loadScene(const std::string& sceneName) {
 		loadedScene.actorsById[actor->id] = actor;
 		loadedScene.actorsByName[actor->name].emplace(actor);
 
-		if (actor->hasOnUpdate)
-			loadedScene.actorsWithOnUpdate.emplace(actor);
-		if (actor->hasOnLateUpdate)
-			loadedScene.actorsWithOnLateUpdate.emplace(actor);
-		if (actor->hasOnClick)
-			loadedScene.actorsWithOnClick.emplace(actor);
-		if (actor->hasOnExit)
-			loadedScene.actorsWithOnExit.emplace(actor);
+		// don't do OnStart for new scenes
+		loadedScene.instantiateActorLifecycle(actor, false);
 	}
 
 	newScene = loadedScene;

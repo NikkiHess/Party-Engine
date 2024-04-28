@@ -48,6 +48,10 @@ public:
 	bool onStartCalled = false;
 	bool willBeRemoved = false;
 
+	bool mouseEntered = false;
+	bool mouseHovered = false;
+	bool mouseExited = false;
+
 	luabridge::LuaRef baseTable = nullptr;
 	luabridge::LuaRef instanceTable = nullptr;
 
