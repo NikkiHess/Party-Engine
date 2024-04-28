@@ -45,10 +45,9 @@ void Artist::draw(const ImageDrawRequest& request) {
 		renderConfig.renderSize.x,
 		renderConfig.renderSize.y
 	};
-
+    
+    float zoomFactor = renderConfig.zoomFactor;
 	if (request.type == SCENE_SPACE) {
-		float zoomFactor = renderConfig.zoomFactor;
-
 		// only do this with scene space because UI shouldn't move with the camera
 		finalRenderPos -= Camera::pos;
 
@@ -61,8 +60,8 @@ void Artist::draw(const ImageDrawRequest& request) {
 	}
 
 	// cull
-	if ((textureRect.x + textureRect.w < 0 || textureRect.x > cameraDimensions.x) ||
-		(textureRect.y + textureRect.h < 0 || textureRect.y > cameraDimensions.y)) {
+	if ((textureRect.x + textureRect.w < 0 || textureRect.x > cameraDimensions.x * (1.0f / zoomFactor)) ||
+		(textureRect.y + textureRect.h < 0 || textureRect.y > cameraDimensions.y * (1.0f / zoomFactor))) {
 		return;
 	}
 	
