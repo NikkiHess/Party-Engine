@@ -104,8 +104,8 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
                         currY *= 100;
                     }
 
-                    float pivotX = spriteRenderer["pivotX"];
-                    float pivotY = spriteRenderer["pivotY"];
+                    float pivotX = transform["pivotX"];
+                    float pivotY = transform["pivotY"];
 
                     SDL_Point pivotPoint = {
                         static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
@@ -179,8 +179,8 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
                         currY *= 100;
                     }
 
-                    float pivotX = spriteRenderer["pivotX"];
-                    float pivotY = spriteRenderer["pivotY"];
+                    float pivotX = transform["pivotX"];
+                    float pivotY = transform["pivotY"];
 
                     SDL_Point pivotPoint = {
                         static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
