@@ -11,10 +11,12 @@
 		1A726B682B7B5DD700A4E05F /* AudioPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B662B7B5DD600A4E05F /* AudioPlayer.cpp */; };
 		1A726B6C2B7B5E0800A4E05F /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B6A2B7B5E0800A4E05F /* Renderer.cpp */; };
 		1A726B6D2B7B5E0800A4E05F /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A726B6B2B7B5E0800A4E05F /* Artist.cpp */; };
+		1AAC83BE2BDE3C5E00788896 /* SaveData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC83BD2BDE3C5E00788896 /* SaveData.cpp */; };
+		1AAC83C12BDE3C8100788896 /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC83BF2BDE3C8100788896 /* Component.cpp */; };
+		1AAC83C22BDE3C8100788896 /* UIRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC83C02BDE3C8100788896 /* UIRenderer.cpp */; };
 		1ABACFDF2BC1F40D003E9E0D /* LuaUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ABACFDE2BC1F40D003E9E0D /* LuaUtils.cpp */; };
 		1ABACFE12BC1F5CC003E9E0D /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ABACFE02BC1F5CC003E9E0D /* Camera.cpp */; };
 		1ABACFE32BC1F96C003E9E0D /* GameInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ABACFE22BC1F96C003E9E0D /* GameInfo.cpp */; };
-		1ABACFE52BC1F978003E9E0D /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ABACFE42BC1F978003E9E0D /* Component.cpp */; };
 		1AC9F5952B8215DD00ACD679 /* ResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5942B8215DD00ACD679 /* ResourceManager.cpp */; };
 		1AC9F5992B8215F000ACD679 /* RenderingConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5962B8215F000ACD679 /* RenderingConfig.cpp */; };
 		1AC9F59A2B8215F000ACD679 /* SceneConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9F5972B8215F000ACD679 /* SceneConfig.cpp */; };
@@ -78,10 +80,12 @@
 		1A726B6A2B7B5E0800A4E05F /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Renderer.cpp; path = src/visuals/Renderer.cpp; sourceTree = "<group>"; };
 		1A726B6B2B7B5E0800A4E05F /* Artist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Artist.cpp; path = src/visuals/Artist.cpp; sourceTree = "<group>"; };
 		1A97D24F2B71B040007E39F4 /* game_engine */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = game_engine; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AAC83BD2BDE3C5E00788896 /* SaveData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SaveData.cpp; path = src/utils/SaveData.cpp; sourceTree = "<group>"; };
+		1AAC83BF2BDE3C8100788896 /* Component.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Component.cpp; path = src/components/Component.cpp; sourceTree = "<group>"; };
+		1AAC83C02BDE3C8100788896 /* UIRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIRenderer.cpp; path = src/components/UIRenderer.cpp; sourceTree = "<group>"; };
 		1ABACFDE2BC1F40D003E9E0D /* LuaUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LuaUtils.cpp; path = src/utils/LuaUtils.cpp; sourceTree = "<group>"; };
 		1ABACFE02BC1F5CC003E9E0D /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Camera.cpp; path = src/visuals/Camera.cpp; sourceTree = "<group>"; };
 		1ABACFE22BC1F96C003E9E0D /* GameInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GameInfo.cpp; path = src/GameInfo.cpp; sourceTree = "<group>"; };
-		1ABACFE42BC1F978003E9E0D /* Component.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Component.cpp; path = src/world/Component.cpp; sourceTree = "<group>"; };
 		1AC9F5942B8215DD00ACD679 /* ResourceManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ResourceManager.cpp; path = src/utils/ResourceManager.cpp; sourceTree = "<group>"; };
 		1AC9F5962B8215F000ACD679 /* RenderingConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderingConfig.cpp; path = src/utils/config/RenderingConfig.cpp; sourceTree = "<group>"; };
 		1AC9F5972B8215F000ACD679 /* SceneConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneConfig.cpp; path = src/utils/config/SceneConfig.cpp; sourceTree = "<group>"; };
@@ -145,7 +149,9 @@
 		1A97D2462B71B040007E39F4 = {
 			isa = PBXGroup;
 			children = (
-				1ABACFE42BC1F978003E9E0D /* Component.cpp */,
+				1AAC83BF2BDE3C8100788896 /* Component.cpp */,
+				1AAC83C02BDE3C8100788896 /* UIRenderer.cpp */,
+				1AAC83BD2BDE3C5E00788896 /* SaveData.cpp */,
 				1ABACFE22BC1F96C003E9E0D /* GameInfo.cpp */,
 				1ABACFE02BC1F5CC003E9E0D /* Camera.cpp */,
 				1ABACFDE2BC1F40D003E9E0D /* LuaUtils.cpp */,
@@ -274,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AC9F66D2B8C27AD00ACD679 /* linit.c in Sources */,
+				1AAC83C12BDE3C8100788896 /* Component.cpp in Sources */,
 				1AC9F6652B8C27AD00ACD679 /* lctype.c in Sources */,
 				1AC9F59A2B8215F000ACD679 /* SceneConfig.cpp in Sources */,
 				1AC9F64F2B8C27AD00ACD679 /* lmathlib.c in Sources */,
@@ -282,6 +289,8 @@
 				1AC9F6632B8C27AD00ACD679 /* lapi.c in Sources */,
 				1AC9F6672B8C27AD00ACD679 /* lfunc.c in Sources */,
 				1AC9F5992B8215F000ACD679 /* RenderingConfig.cpp in Sources */,
+				1AAC83C22BDE3C8100788896 /* UIRenderer.cpp in Sources */,
+				1AAC83BE2BDE3C5E00788896 /* SaveData.cpp in Sources */,
 				1AC9F6622B8C27AD00ACD679 /* lutf8lib.c in Sources */,
 				1AC9F5952B8215DD00ACD679 /* ResourceManager.cpp in Sources */,
 				1AC9F66C2B8C27AD00ACD679 /* ldebug.c in Sources */,
@@ -299,7 +308,6 @@
 				1AC9F6512B8C27AD00ACD679 /* lopcodes.c in Sources */,
 				1AC9F6582B8C27AD00ACD679 /* loslib.c in Sources */,
 				1AC9F59B2B8215F000ACD679 /* GameConfig.cpp in Sources */,
-				1ABACFE52BC1F978003E9E0D /* Component.cpp in Sources */,
 				1AC9F5A32B8C1C6D00ACD679 /* Scene.cpp in Sources */,
 				1AC9F6692B8C27AD00ACD679 /* lvm.c in Sources */,
 				1AC9F65E2B8C27AD00ACD679 /* lstate.c in Sources */,

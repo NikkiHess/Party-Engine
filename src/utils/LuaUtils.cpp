@@ -302,19 +302,19 @@ void setupVisuals() {
             .addProperty("g", &SDL_Color::g)
             .addProperty("b", &SDL_Color::b)
             .addProperty("a", &SDL_Color::a)
-        .endClass()
+            .endClass();
 
-        .beginClass<UIRenderer>("UIRenderer")
-            .addProperty("key", &UIRenderer::key)
-            .addProperty("enabled", &UIRenderer::enabled)
-            .addProperty("actor", &UIRenderer::actor)
-            .addProperty("sprite", &UIRenderer::sprite)
-            .addProperty("tint", &UIRenderer::tint)
-            .addProperty("sortingOrder", &UIRenderer::sortingOrder)
-            .addProperty("transform", &UIRenderer::transform)
-            .addFunction("OnStart", &UIRenderer::onStart)
-            .addFunction("OnUpdate", &UIRenderer::onUpdate)
-        .endClass();
+//        .beginClass<UIRenderer>("UIRenderer")
+//            .addProperty("key", &UIRenderer::key)
+//            .addProperty("enabled", &UIRenderer::enabled)
+//            .addProperty("actor", &UIRenderer::actor)
+//            .addProperty("sprite", &UIRenderer::sprite)
+//            .addProperty("tint", &UIRenderer::tint)
+//            .addProperty("sortingOrder", &UIRenderer::sortingOrder)
+//            .addProperty("transform", &UIRenderer::transform)
+//            .addFunction("OnStart", &UIRenderer::onStart)
+//            .addFunction("OnUpdate", &UIRenderer::onUpdate)
+//        .endClass();
 }
 
 // establish lua namespace: Audio
