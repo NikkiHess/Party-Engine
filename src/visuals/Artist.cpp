@@ -222,10 +222,18 @@ void Artist::requestDrawPixel(const float x, const float y, const float r, const
 	resourceManager->createPixelDrawRequest(pos, color);
 }
 
-int Artist::getImageWidth(const int id) {
-	return resourceManager->imageRequestSizes[id].x;
+int Artist::getImageWidth(const std::string imageName) {
+	SDL_Texture* texture = resourceManager->loadImageTexture(imageName);
+
+	int width = 0;
+	SDL_QueryTexture(texture, nullptr, nullptr, &width, nullptr);
+	return width;
 }
 
-int Artist::getImageHeight(const int id) {
-	return resourceManager->imageRequestSizes[id].y;
+int Artist::getImageHeight(const std::string imageName) {
+	SDL_Texture* texture = resourceManager->loadImageTexture(imageName);
+
+	int height = 0;
+	SDL_QueryTexture(texture, nullptr, nullptr, nullptr, &height);
+	return height;
 }

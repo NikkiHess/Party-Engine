@@ -61,7 +61,7 @@ public:
 	// rqeuest to draw a single pixel on the screen
 	static void requestDrawPixel(const float x, const float y, const float r, const float g, const float b, const float a);
 
-	static int getImageWidth(const int id);
-	static int getImageHeight(const int id);
+	static int getImageWidth(const std::string imageName);
+	static int getImageHeight(const std::string imageName);
 };
 

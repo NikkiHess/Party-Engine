@@ -80,21 +80,22 @@ void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
 
                 // make sure we have a sprite renderer
                 int id = spriteRenderer["id"]; // need this to get size
+                std::string sprite = spriteRenderer["sprite"];
+                bool ui = spriteRenderer["UI"];
 
                 // make sure we have a transform
                 if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
-                    auto it = resourceManager.imageRequestSizes.find(id);
-
                     // if the image was requested this frame
-                    if (it != resourceManager.imageRequestSizes.end()) {
+                    if ((ui && resourceManager.uiImageDrawRequests.size() <= id) || 
+                        (!ui && resourceManager.imageDrawRequests.size() <= id)) {
                         glm::vec2 click = clickPos.value();
 
                         float currX = transform["x"].cast<float>();
                         float currY = transform["y"].cast<float>();
 
-                        if (!spriteRenderer["UI"]) {
-                            click.x -= Camera::getWidth() / 2;
-                            click.y -= Camera::getHeight() / 2;
+                        if (!ui) {
+                            click.x -= Camera::getWidth() / 2.0f;
+                            click.y -= Camera::getHeight() / 2.0f;
                             currX *= 100;
                             currY *= 100;
                         }
@@ -103,16 +104,16 @@ void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
                         float pivotY = spriteRenderer["pivotY"];
 
                         SDL_Point pivotPoint = {
-                            static_cast<int>(pivotX * it->second.x),
-                            static_cast<int>(pivotY * it->second.y)
+                            static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
+                            static_cast<int>(pivotY * Artist::getImageHeight(sprite))
                         };
 
                         click.x += pivotPoint.x;
                         click.y += pivotPoint.y;
 
                         // if we're within the image's bounds, check if this is our clicked actor/component
-                        if (click.x >= currX && click.x <= currX + it->second.x) {
-                            if (click.y >= currY && click.y <= currY + it->second.y) {
+                        if (click.x >= currX && click.x <= currX + Artist::getImageWidth(sprite)) {
+                            if (click.y >= currY && click.y <= currY + Artist::getImageHeight(sprite)) {
 
                                 // if the current type is a regular sprite and we need a ui
                                 if ((type == 0 && spriteRenderer.isNil())) {
@@ -249,13 +250,6 @@ void Engine::start() {
 
         // present the render AND DELAY, apparently it does that for us
         Helper::SDL_RenderPresent498(renderer.sdlRenderer);
-
-        // at the very end of every frame, clear request caches
-        resourceManager.imageRequestSizes.clear();
-        ImageDrawRequest::numRequests = 0;
-
-        resourceManager.textRequestSizes.clear();
-        TextDrawRequest::numRequests = 0;
     }
 
     // execute OnExit for all actors

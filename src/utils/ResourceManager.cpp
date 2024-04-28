@@ -46,7 +46,7 @@ int ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* fo
 	}
 
 	TextDrawRequest request = TextDrawRequest(text, pos, font, fontColor, texture);
-	textDrawRequests.emplace_back(request);
+	textDrawRequests.emplace(request);
 
 	return request.id;
 }
@@ -61,12 +61,10 @@ int ResourceManager::createUIImageDrawRequestEx(SDL_Texture* imageTexture, const
 												glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder) {
 	ImageDrawRequest request = ImageDrawRequest(imageTexture, imageName, pos, rotationDegrees, scale, pivot, 
 											    color, sortingOrder, uiImageDrawRequests.size(), SCREEN_SPACE);
-	uiImageDrawRequests.emplace_back(request);
+	uiImageDrawRequests.emplace(request);
 
 	int width, height;
 	SDL_QueryTexture(imageTexture, nullptr, nullptr, &width, &height);
-
-	imageRequestSizes[request.id] = { width, height };
 
 	return request.id;
 }
@@ -85,17 +83,15 @@ int ResourceManager::createImageDrawRequestEx(SDL_Texture* imageTexture, const s
 											   glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder) {
 	ImageDrawRequest request = ImageDrawRequest(imageTexture, imageName, pos, rotationDegrees, scale, pivot, color, 
 												sortingOrder, imageDrawRequests.size(), SCENE_SPACE);
-	imageDrawRequests.emplace_back(request);
+	imageDrawRequests.emplace(request);
 
 	int width, height;
 	SDL_QueryTexture(imageTexture, nullptr, nullptr, &width, &height);
-
-	imageRequestSizes[request.id] = { width * scale.x, height * scale.y };
 
 	return request.id;
 }
 
 void ResourceManager::createPixelDrawRequest(glm::ivec2& pos, SDL_Color color) {
 	PixelDrawRequest request = PixelDrawRequest(pos, color);
-	pixelDrawRequests.emplace_back(request);
+	pixelDrawRequests.emplace(request);
 }

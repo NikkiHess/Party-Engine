@@ -49,6 +49,13 @@ public:
 	}
 };
 
+class TextDrawRequestComparator {
+public:
+	bool operator()(const TextDrawRequest& request1, const TextDrawRequest& request2) const {
+		return request1.id < request2.id;
+	}
+};
+
 enum ImageType {
 	SCENE_SPACE, SCREEN_SPACE
 };
@@ -93,10 +100,24 @@ public:
 
 class PixelDrawRequest {
 public:
+	static inline int numRequests = 0;
+
 	glm::ivec2 pos = { 0, 0 };
 	SDL_Color color = { 255, 255, 255, 255 };
 
+	int id = 0;
+
 	PixelDrawRequest() {};
 
-	PixelDrawRequest(glm::ivec2& pos, SDL_Color& color) : pos(pos), color(color) {};
+	PixelDrawRequest(glm::ivec2& pos, SDL_Color& color) : pos(pos), color(color) {
+		id = numRequests++;
+	};
+};
+
+
+class PixelDrawRequestComparator {
+public:
+	bool operator()(const PixelDrawRequest& request1, const PixelDrawRequest& request2) const {
+		return request1.id < request2.id;
+	}
 };

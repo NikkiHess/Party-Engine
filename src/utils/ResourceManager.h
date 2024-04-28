@@ -25,11 +25,10 @@ public:
 	// data cache
 	std::unordered_map<std::string, SDL_Texture*> imageTextures;
 
-	// TODO: Make these unordered_sets
-	std::vector<TextDrawRequest> textDrawRequests;
-	std::vector<ImageDrawRequest> uiImageDrawRequests;
-	std::vector<ImageDrawRequest> imageDrawRequests;
-	std::vector<PixelDrawRequest> pixelDrawRequests;
+	std::set<TextDrawRequest, TextDrawRequestComparator> textDrawRequests;
+	std::set<ImageDrawRequest, ImageDrawRequestComparator> uiImageDrawRequests;
+	std::set<ImageDrawRequest, ImageDrawRequestComparator> imageDrawRequests;
+	std::set<PixelDrawRequest, PixelDrawRequestComparator> pixelDrawRequests;
 
 	// stored as {font, {text, texture}}
 	//std::unordered_map<TTF_Font*, std::unordered_map<SDL_Color, std::unordered_map<std::string, SDL_Texture*>>> textTextures;
@@ -39,12 +38,6 @@ public:
 	std::unordered_map<std::string, std::unordered_map<int, TTF_Font*>> fonts;
 
 	std::unordered_map<std::string, bool> fileExistsCache;
-
-	// stores image request size by id
-	std::unordered_map<int, glm::ivec2> imageRequestSizes;
-
-	// stores text request size by id
-	std::unordered_map<int, glm::ivec2> textRequestSizes;
 
 	ResourceManager() {}
 
