@@ -60,7 +60,7 @@ public:
 	SDL_Texture* texture = nullptr;
 	std::string name = "";
 	glm::vec2 pos = { 0, 0 };
-	int rotationDegrees = 0;
+	float rotationDegrees = 0;
 	glm::vec2 scale = { 1, 1 };
 	glm::vec2 pivot = { 0.5f, 0.5f };
 	SDL_Color color = { 255, 255, 255, 255 };
@@ -73,7 +73,7 @@ public:
 
 	ImageDrawRequest() {}
 
-	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::vec2 pos, int rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
+	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::vec2 pos, float rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
 		SDL_Color& color, int sortingOrder, int callOrder, ImageType type)
 		: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), 
 		pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {

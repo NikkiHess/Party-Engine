@@ -16,5 +16,5 @@ void UIRenderer::onStart() {
 }
 
 void UIRenderer::onUpdate() {
-	Artist::requestDrawUIEx("PlayButton", 5, 5, 255, 255, 255, 255, sortingOrder);
+	Artist::requestDrawUIEx("PlayButton", 5, 5, 0, 1, 1, 0.5, 0.5, 255, 255, 255, 255, sortingOrder);
 }

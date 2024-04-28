@@ -217,6 +217,7 @@ void setupWorld() {
 void setupApplication() {
     luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         .beginNamespace("Application")
+            .addFunction("SetBG", &Artist::setBG)
             .addFunction("Quit", &LuaUtils::quit)
             .addFunction("Sleep", &LuaUtils::sleep)
             .addFunction("GetFrame", &LuaUtils::getFrame)

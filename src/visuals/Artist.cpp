@@ -7,6 +7,10 @@
 #include "../world/Actor.h"
 #include "../GameInfo.h"
 
+void Artist::setBG(const int r, const int g, const int b) {
+	RenderingConfig::clearColor = {r, g, b};
+}
+
 void Artist::draw(const ImageDrawRequest& request) {
 	RenderingConfig& renderConfig = configManager->renderingConfig;
 
@@ -52,8 +56,8 @@ void Artist::draw(const ImageDrawRequest& request) {
 		textureRect.y = static_cast<int>(finalRenderPos.y * pixelsPerMeter + cameraDimensions.y * 0.5f * (1.0f / zoomFactor) - pivotPoint.y);
 	}
 	else {
-		textureRect.x = static_cast<int>(finalRenderPos.x);
-		textureRect.y = static_cast<int>(finalRenderPos.y);
+		textureRect.x = static_cast<int>(finalRenderPos.x) - pivotPoint.x;
+		textureRect.y = static_cast<int>(finalRenderPos.y) - pivotPoint.y;
 	}
 
 	// cull
@@ -63,6 +67,7 @@ void Artist::draw(const ImageDrawRequest& request) {
 	}
 	
 	// apply tint/alpha to texture
+	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 	SDL_SetTextureColorMod(texture, request.color.r, request.color.g, request.color.b);
 	SDL_SetTextureAlphaMod(texture, request.color.a);
 
@@ -70,6 +75,7 @@ void Artist::draw(const ImageDrawRequest& request) {
 	Helper::SDL_RenderCopyEx498(0, "", sdlRenderer, texture, nullptr, &textureRect, request.rotationDegrees, &pivotPoint, static_cast<SDL_RendererFlip>(flipMode));
 
 	// remove tint/alpha from texture
+	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
 	SDL_SetTextureColorMod(texture, 255, 255, 255);
 	SDL_SetTextureAlphaMod(texture, 255);
 }
@@ -150,14 +156,18 @@ int Artist::requestDrawUI(const std::string& imageName, const float x, const flo
 	return resourceManager->createUIImageDrawRequest(imageTexture, imageName, pos);
 }
 
-int Artist::requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
-	const float g, const float b, const float a, float sortingOrder) {
+int Artist::requestDrawUIEx(const std::string& imageName, const float x, const float y, const float rotationDegrees,
+							const float scaleX, const float scaleY, const float pivotX, const float pivotY, const float r,
+							const float g, const float b, const float a, float sortingOrder) {
 	SDL_Texture* imageTexture = resourceManager->loadImageTexture(imageName);
 
 	glm::ivec2 pos = {
 		static_cast<int>(x),
 		static_cast<int>(y)
 	};
+
+	glm::vec2 scale = { scaleX, scaleY };
+	glm::vec2 pivot = { pivotX, pivotY };
 
 	SDL_Color color = {
 		static_cast<Uint8>(r),
@@ -166,7 +176,7 @@ int Artist::requestDrawUIEx(const std::string& imageName, const float x, const f
 		static_cast<Uint8>(a)
 	};
 
-	return resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, color, static_cast<int>(sortingOrder));
+	return resourceManager->createUIImageDrawRequestEx(imageTexture, imageName, pos, rotationDegrees, scale, pivot, color, static_cast<int>(sortingOrder));
 }
 
 int Artist::requestDrawImage(const std::string& imageName, const float x, const float y) {

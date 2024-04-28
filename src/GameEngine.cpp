@@ -76,11 +76,10 @@ void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
             for (auto& [key, component] : actor->componentsWithOnClick) {
                 // TODO: Need to make these C++ components for this to make any sense
                 luabridge::LuaRef spriteRenderer = actor->getComponent("SpriteRenderer");
-                luabridge::LuaRef uiSpriteRenderer = actor->getComponent("UISpriteRenderer");
                 luabridge::LuaRef transform = actor->getComponent("Transform");
 
                 // make sure we have a sprite renderer
-                int id = !spriteRenderer.isNil() ? spriteRenderer["id"] : uiSpriteRenderer["id"]; // need this to get size
+                int id = spriteRenderer["id"]; // need this to get size
 
                 // make sure we have a transform
                 if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
@@ -93,12 +92,23 @@ void Engine::runLifecycleFunctions(std::optional<glm::vec2> clickPos) {
                         float currX = transform["x"].cast<float>();
                         float currY = transform["y"].cast<float>();
 
-                        if (!spriteRenderer.isNil()) {
+                        if (!spriteRenderer["UI"]) {
                             click.x -= Camera::getWidth() / 2;
                             click.y -= Camera::getHeight() / 2;
                             currX *= 100;
                             currY *= 100;
                         }
+
+                        float pivotX = spriteRenderer["pivotX"];
+                        float pivotY = spriteRenderer["pivotY"];
+
+                        SDL_Point pivotPoint = {
+                            static_cast<int>(pivotX * it->second.x),
+                            static_cast<int>(pivotY * it->second.y)
+                        };
+
+                        click.x += pivotPoint.x;
+                        click.y += pivotPoint.y;
 
                         // if we're within the image's bounds, check if this is our clicked actor/component
                         if (click.x >= currX && click.x <= currX + it->second.x) {

@@ -28,6 +28,9 @@ public:
 	static void drawText(const TextDrawRequest& request);
 	static void drawPixel(const PixelDrawRequest& request);
 
+	// set the bg (clear) color
+	static void setBG(const int r, const int g, const int b);
+
 	// request text to be drawn on the screen
 	// text - the text to be drawn
 	// x - the (screen) x coordinate to draw at
@@ -45,8 +48,9 @@ public:
 	static int requestDrawUI(const std::string& imageName, const float x, const float y);
 
 	// request to draw an image on the screen (extended, more params)
-	static int requestDrawUIEx(const std::string& imageName, const float x, const float y, const float r,
-		const float g, const float b, const float a, float sortingOrder);
+	static int requestDrawUIEx(const std::string& imageName, const float x, const float y, const float rotationDegrees,
+							   const float scaleX, const float scaleY, const float pivotX, const float pivotY, const float r,
+							   const float g, const float b, const float a, float sortingOrder);
 
 	static int requestDrawImage(const std::string& imageName, const float x, const float y);
 

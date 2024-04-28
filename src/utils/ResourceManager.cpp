@@ -52,11 +52,14 @@ int ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* fo
 }
 
 int ResourceManager::createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos) {
-	return createUIImageDrawRequestEx(imageTexture, imageName, pos, {255, 255, 255, 255}, 0);
+	glm::vec2 scale = { 1, 1 };
+	glm::vec2 pivot = { 0.5, 0.5 };
+	return createUIImageDrawRequestEx(imageTexture, imageName, pos, 0, scale, pivot, {255, 255, 255, 255}, 0);
 }
 
-int ResourceManager::createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, SDL_Color color, int sortingOrder) {
-	ImageDrawRequest request = ImageDrawRequest(imageTexture, imageName, pos, 0, glm::vec2(1, 1), glm::vec2(0.5f, 0.5f), 
+int ResourceManager::createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, float rotationDegrees, 
+												glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder) {
+	ImageDrawRequest request = ImageDrawRequest(imageTexture, imageName, pos, rotationDegrees, scale, pivot, 
 											    color, sortingOrder, uiImageDrawRequests.size(), SCREEN_SPACE);
 	uiImageDrawRequests.emplace_back(request);
 
@@ -78,7 +81,7 @@ int ResourceManager::createImageDrawRequest(SDL_Texture* imageTexture, const std
 }
 
 // create an image draw request (with more data), to be drawn at the end of the frame
-int ResourceManager::createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees, 
+int ResourceManager::createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, float rotationDegrees, 
 											   glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder) {
 	ImageDrawRequest request = ImageDrawRequest(imageTexture, imageName, pos, rotationDegrees, scale, pivot, color, 
 												sortingOrder, imageDrawRequests.size(), SCENE_SPACE);

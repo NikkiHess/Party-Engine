@@ -9,7 +9,7 @@ public:
 	// The render size, as defined by rendering.config
 	glm::ivec2 renderSize = glm::ivec2(640, 360);
 	// the camera offset, as defined by rendering.config
-	glm::ivec3 clearColor = glm::ivec3(255, 255, 255);
+	static inline glm::ivec3 clearColor = glm::ivec3(255, 255, 255);
 	// the zoom factor of the camera
 	float zoomFactor = 1;
 	// the ease factor of the camera, for smoooooth movement

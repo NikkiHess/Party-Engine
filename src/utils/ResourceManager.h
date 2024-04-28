@@ -58,13 +58,14 @@ public:
 	int createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos);
 
 	// create a UI image draw request (with more data), to be drawn at the end of the frame
-	int createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, SDL_Color color, int sortingOrder);
+	int createUIImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos, float rotationDegrees, 
+								   glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder);
 
 	// create an image draw request, to be drawn at the end of the frame
 	int createImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos);
 
 	// create an image draw request (with more data), to be drawn at the end of the frame
-	int createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, int rotationDegrees,
+	int createImageDrawRequestEx(SDL_Texture* imageTexture, const std::string& imageName, glm::vec2& pos, float rotationDegrees,
 								  glm::vec2& scale, glm::vec2& pivot, SDL_Color color, int sortingOrder);
 
 	// create a pixel draw request, to be a drawn at the end of the frame
