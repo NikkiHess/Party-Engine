@@ -78,65 +78,66 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
     std::vector<std::shared_ptr<Component>> rightClicked;
 
     // handle clicks
-    for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnClick) {
-        for (auto& [key, component] : actor->componentsWithOnClick) {
-            // TODO: Need to make these C++ components for this to make any sense
-            luabridge::LuaRef spriteRenderer = actor->getComponent("SpriteRenderer");
-            luabridge::LuaRef transform = actor->getComponent("Transform");
+    if (clickType != -1) {
+        for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnClick) {
+            for (auto& [key, component] : actor->componentsWithOnClick) {
+                glm::vec2 mouse = mousePos;
+                // TODO: Need to make these C++ components for this to make any sense
+                luabridge::LuaRef spriteRenderer = actor->getComponent("SpriteRenderer");
+                luabridge::LuaRef transform = actor->getComponent("Transform");
 
-            // make sure we have a sprite renderer
-            int id = spriteRenderer["id"]; // need this to get size
-            std::string sprite = spriteRenderer["sprite"];
-            bool ui = spriteRenderer["UI"];
+                // make sure we have a sprite renderer
+                int id = spriteRenderer["id"]; // need this to get size
+                std::string sprite = spriteRenderer["sprite"];
+                bool ui = spriteRenderer["ui"];
 
-            // make sure we have a transform
-            if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
-                // if the image was requested this frame
-                if ((ui && resourceManager.uiImageDrawRequests.size() <= id) ||
-                    (!ui && resourceManager.imageDrawRequests.size() <= id)) {
-                    float currX = transform["x"].cast<float>();
-                    float currY = transform["y"].cast<float>();
+                // make sure we have a transform
+                if (!transform.isNil() && transform["x"].isNumber() && transform["y"].isNumber()) {
+                    // if the image was requested this frame
+                    if ((ui && resourceManager.uiImageDrawRequests.size() >= id) ||
+                        (!ui && resourceManager.imageDrawRequests.size() >= id)) {
+                        float currX = transform["x"].cast<float>();
+                        float currY = transform["y"].cast<float>();
+                        float pivotX = transform["pivotX"];
+                        float pivotY = transform["pivotY"];
+                        SDL_Point pivotPoint = {
+                            static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
+                            static_cast<int>(pivotY * Artist::getImageHeight(sprite))
+                        };
 
-                    if (!ui) {
-                        mousePos.x -= Camera::getWidth() / 2.0f;
-                        mousePos.y -= Camera::getHeight() / 2.0f;
-                        currX *= 100;
-                        currY *= 100;
-                    }
+                        if (!ui) {
+                            mouse.x -= Camera::getWidth() / 2.0f;
+                            mouse.y -= Camera::getHeight() / 2.0f;
+                            currX *= 100;
+                            currY *= 100;
+                        }
 
-                    float pivotX = transform["pivotX"];
-                    float pivotY = transform["pivotY"];
+                        mouse.x += pivotPoint.x;
+                        mouse.y += pivotPoint.y;
 
-                    SDL_Point pivotPoint = {
-                        static_cast<int>(pivotX * Artist::getImageWidth(sprite)),
-                        static_cast<int>(pivotY * Artist::getImageHeight(sprite))
-                    };
-
-                    mousePos.x += pivotPoint.x;
-                    mousePos.y += pivotPoint.y;
-
-                    // if we're within the image's bounds, check if this is our clicked actor/component
-                    if (mousePos.x >= currX && mousePos.x <= currX + Artist::getImageWidth(sprite)) {
-                        if (mousePos.y >= currY && mousePos.y <= currY + Artist::getImageHeight(sprite)) {
-                            // if the current type is a regular sprite and we need a ui
-                            if ((type == 0 && spriteRenderer.isNil())) {
-                                type = 1;
-                                maxId = -1;
-                            }
-
-                            // id needs to be highest possible
-                            if (id > maxId) {
-                                maxId = id;
-                                clickedActor = actor;
-
-                                if (clickType == 1) {
-                                    leftClicked.emplace_back(component);
+                        // if we're within the image's bounds, check if this is our clicked actor/component
+                        if (mouse.x >= currX && mouse.x <= currX + Artist::getImageWidth(sprite)) {
+                            if (mouse.y >= currY && mouse.y <= currY + Artist::getImageHeight(sprite)) {
+                                // if the current type is a regular sprite and we need a ui
+                                if ((type == 0 && spriteRenderer.isNil())) {
+                                    type = 1;
+                                    maxId = -1;
                                 }
-                                else if (clickType == 2) {
-                                    middleClicked.emplace_back(component);
-                                }
-                                else if (clickType == 3) {
-                                    rightClicked.emplace_back(component);
+
+                                // id needs to be highest possible
+                                if (id > maxId) {
+                                    maxId = id;
+                                    clickedActor = actor;
+
+                                    if (clickType == 1) {
+                                        leftClicked.emplace_back(component);
+                                    }
+                                    else if (clickType == 2) {
+                                        middleClicked.emplace_back(component);
+                                    }
+                                    else if (clickType == 3) {
+                                        rightClicked.emplace_back(component);
+                                    }
                                 }
                             }
                         }

@@ -57,6 +57,7 @@ void Renderer::render() {
 		Artist::draw(image);
 	}
 	resourceManager.uiImageDrawRequests.clear();
+	ImageDrawRequest::numRequests = 0;
 
 	// 3. text (Text.Draw)
 	for (const TextDrawRequest& text : resourceManager.textDrawRequests) {
