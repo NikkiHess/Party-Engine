@@ -360,6 +360,7 @@ void setupSaveData() {
             .addFunction("GetInt", &SaveData::getInt)
             .addFunction("GetFloat", &SaveData::getFloat)
             .addFunction("GetBool", &SaveData::getBool)
+            .addFunction("GetTable", &SaveData::getTable)
             .addFunction("HasMember", &SaveData::hasMember)
             .addFunction("Save", &SaveData::saveDocument)
             .addFunction("Clear", &SaveData::clear)

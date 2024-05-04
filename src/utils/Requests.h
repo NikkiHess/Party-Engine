@@ -81,8 +81,8 @@ public:
 	ImageDrawRequest() {}
 
 	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::vec2 pos, float rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
-		SDL_Color& color, int sortingOrder, int callOrder, ImageType type)
-		: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale), 
+		SDL_Color& color, int sortingOrder, size_t callOrder, ImageType type)
+		: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale),
 		pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {
 		id = numRequests++;
 	}

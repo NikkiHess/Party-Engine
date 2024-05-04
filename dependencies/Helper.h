@@ -60,8 +60,9 @@ public:
 			x = 0;
 			y = 0;
 		}
-
-		return SDL_CreateWindow(title, x, y, w, h, flags);
+        SDL_Window* window = SDL_CreateWindow(title, x, y, w, h, flags);
+        
+		return window;
 	}
 
 	static SDL_Renderer* SDL_CreateRenderer498(SDL_Window* window, int index, Uint32 flags) {

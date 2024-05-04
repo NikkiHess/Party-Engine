@@ -347,16 +347,11 @@ void Engine::start() {
         // make the input not "newly down" or "newly up" anymore
         Input::lateUpdate();
 
-        // handle and render gameplay
-        if (!gameOver) {
-            int frame = Helper::GetFrameNumber();
+        // render the game first
+        renderer.render();
 
-            // render the game first
-            renderer.render();
-
-            // set the scale back to normal
-            SDL_RenderSetScale(renderer.sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
-        }
+        // set the scale back to normal
+        SDL_RenderSetScale(renderer.sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
 
         // present the render AND DELAY, apparently it does that for us
         Helper::SDL_RenderPresent498(renderer.sdlRenderer);
