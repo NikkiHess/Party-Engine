@@ -39,8 +39,6 @@ public:
 	// the rapidjson Document to be used for reading in values
 	rapidjson::Document document = nullptr;
 
-	ConfigManager() : resourceManager(resourceManager) {}
-
 	// initializes the config helper by verifying the resources directory as well as the game.config
 	// reads the json from the given file and then loads the information into member variables
 	ConfigManager(ResourceManager& resourceManager) : resourceManager(resourceManager) {

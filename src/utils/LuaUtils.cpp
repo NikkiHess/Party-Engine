@@ -29,6 +29,23 @@
 // Box2D
 #include "box2d/box2d.h"
 
+void LuaUtils::printLuaException(const luabridge::LuaException& e, const std::string& actorName, const std::string& componentName) {
+    std::string errorMessage = e.what();
+
+    // normalize file paths across platforms
+    std::replace(errorMessage.begin(), errorMessage.end(), '\\', '/');
+
+    // in the case that the script was loaded as a string, fix the error message
+    std::string wrongMessage = "[string \"" + componentName + " = {...\"]";
+    size_t index = errorMessage.find(wrongMessage) ;
+    if(index != std::string::npos) {
+        errorMessage.replace(index, wrongMessage.size(), "resources/component_types/" + componentName + ".lua");
+    }
+
+    // display (with color codes)
+    std::cerr << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
+}
+
 void LuaUtils::quit() {
     exit(0);
 }
@@ -337,6 +354,8 @@ void setupSaveData() {
             .addFunction("SetInt", &SaveData::setInt)
             .addFunction("SetFloat", &SaveData::setFloat)
             .addFunction("SetBool", &SaveData::setBool)
+            .addFunction("SetTable", &SaveData::setTable)
+            .addFunction("SaveAll", &SaveData::saveAll)
             .addFunction("GetString", &SaveData::getString)
             .addFunction("GetInt", &SaveData::getInt)
             .addFunction("GetFloat", &SaveData::getFloat)

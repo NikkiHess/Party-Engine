@@ -282,10 +282,8 @@ void Engine::runtimeAlterations() {
 }
 
 void Engine::start() {
-    size_t currentIntroIndex = 0;
     isGameRunning = true;
 
-    GameConfig& gameConfig = configManager.gameConfig;
     RenderingConfig& renderConfig = configManager.renderingConfig;
 
     for (std::shared_ptr<Actor>& actor : GameInfo::scene.actors) {

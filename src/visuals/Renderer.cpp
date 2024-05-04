@@ -36,9 +36,6 @@ void Renderer::render() {
 	);
 	SDL_RenderClear(sdlRenderer);
 
-	ImageDrawRequestComparator imgComp;
-
-
 	// RENDER ORDER:
 	// 1. screen-space images (Image.Draw/Image.DrawEx)
 	// set the render scale according to the configured zoom factor

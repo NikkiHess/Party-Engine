@@ -26,22 +26,7 @@ public:
 	static void setupLua();
 
 	// prints a formatted lua error message
-	static void printLuaException(const luabridge::LuaException& e, const std::string& actorName, const std::string& componentName) {
-		std::string errorMessage = e.what();
-
-		// normalize file paths across platforms
-		std::replace(errorMessage.begin(), errorMessage.end(), '\\', '/');
-
-		// in the case that the script was loaded as a string, fix the error message
-		std::string wrongMessage = "[string \"" + componentName + " = {...\"]";
-		size_t index = errorMessage.find(wrongMessage) ;
-		if(index != std::string::npos) {
-			errorMessage.replace(index, wrongMessage.size(), "resources/component_types/" + componentName + ".lua");
-		}
-
-		// display (with color codes)
-		std::cout << "\033[31m" << actorName << " : " << errorMessage << "\033[0m\n";
-	}
+    static void printLuaException(const luabridge::LuaException& e, const std::string& actorName, const std::string& componentName);
 
 	/* APPLICATION NAMESPACE */
 

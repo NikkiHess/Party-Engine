@@ -52,7 +52,7 @@ void Component::establishBaseTable() {
 		if (lua_pcall(LuaStateSaver::luaState, 0, LUA_MULTRET, 0) != LUA_OK) {
 			// TODO: return to Error::error once the semester is over
 			// this is necessary for now
-			std::cout << "problem with lua file " << type;
+			std::cerr << "problem with lua file " << type << "\n";
 			exit(0);
 		}
 	} 
@@ -61,7 +61,7 @@ void Component::establishBaseTable() {
 		if (luaL_dofile(LuaStateSaver::luaState, path.c_str()) != LUA_OK) {
 			// TODO: return to Error::error once the semester is over
 			// this is necessary for now
-			std::cout << "problem with lua file " << type;
+			std::cerr << "problem with lua file " << type << "\n";
 			exit(0);
 		}
 	}
