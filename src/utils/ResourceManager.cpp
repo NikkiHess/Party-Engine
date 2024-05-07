@@ -53,7 +53,7 @@ int ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* fo
 
 int ResourceManager::createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos) {
 	glm::vec2 scale = { 1, 1 };
-	glm::vec2 pivot = { 0.5, 0.5 };
+	glm::vec2 pivot = { 0, 0 };
 	return createUIImageDrawRequestEx(imageTexture, imageName, pos, 0, scale, pivot, {255, 255, 255, 255}, 0);
 }
 
