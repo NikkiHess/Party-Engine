@@ -49,6 +49,6 @@ void AudioPlayer::halt(const int channel) {
 	AudioHelper::Mix_HaltChannel498(channel);
 }
 
-void AudioPlayer::setVolume(const int channel, const float volume) {
+void AudioPlayer::setVolume(const int channel, const int volume) {
 	AudioHelper::Mix_Volume498(channel, volume);
 }

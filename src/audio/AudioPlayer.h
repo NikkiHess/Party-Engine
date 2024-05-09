@@ -17,7 +17,7 @@ public:
 	// halts all audio on the specified channel
 	static void halt(const int channel);
 
-	// sets the volume (volume->int)
-	// volume range 0-100
-	static void setVolume(const int channel, const float volume);
+	// sets the volume
+	// volume range 0-255
+	static void setVolume(const int channel, const int volume);
 };

@@ -1,4 +1,4 @@
-// std libraries
+// std library
 #include <algorithm>
 #include <cmath>
 #include <iostream>

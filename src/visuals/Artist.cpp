@@ -204,7 +204,7 @@ int Artist::requestDrawImageEx(const std::string& imageName, const float x, cons
 		static_cast<Uint8>(a)
 	};
 
-	return resourceManager->createImageDrawRequestEx(imageTexture, imageName, pos, static_cast<int>(rotationDegrees), scale,
+	return resourceManager->createImageDrawRequestEx(imageTexture, imageName, pos, rotationDegrees, scale,
 											  pivot, color, static_cast<int>(sortingOrder));
 }
 

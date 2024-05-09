@@ -73,7 +73,7 @@ public:
 	SDL_Color color = { 255, 255, 255, 255 };
 
 	int sortingOrder = 0;
-	int callOrder = 0;
+	size_t callOrder = 0;
 	int id = 0;
 
 	ImageType type = SCENE_SPACE;
