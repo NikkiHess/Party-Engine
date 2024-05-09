@@ -212,8 +212,8 @@ rapidjson::Value SaveData::saveTable(const std::string& section, const luabridge
         rapidjson::Value jsonKey(key.c_str(), allocator);
 
         if (value.isTable()) {
-            // nested table :(
-            tableObject.AddMember(jsonKey, saveTable(section, value), allocator);
+            // nested table, recurse
+            tableObject.AddMember(jsonKey, saveTable(section + "." + key, value), allocator);
         }
         else if (value.isString()) {
             rapidjson::Value stringValue(value.cast<std::string>().c_str(), allocator);
@@ -224,11 +224,11 @@ rapidjson::Value SaveData::saveTable(const std::string& section, const luabridge
             
             // this is an int
             if(number.find(".") == std::string::npos) {
-                setInt(section, key, stoi(number), false);
+                tableObject.AddMember(jsonKey, rapidjson::Value(value.cast<int>()), allocator);
             }
             // this is a float
             else {
-                setFloat(section, key, stof(number), false);
+                tableObject.AddMember(jsonKey, rapidjson::Value(value.cast<float>()), allocator);
             }
         }
         else if (value.isBool()) {
