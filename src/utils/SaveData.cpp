@@ -242,7 +242,6 @@ void SaveData::saveAll(const std::string& baseSection, const luabridge::LuaRef c
                 continue;
             }
             
-            // TODO: Fix for deeper sections
             auto& section = getSection(baseSection);
             
             const std::string fullSectionPath = value.isTable() ? baseSection + "." + key : baseSection;
