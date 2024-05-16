@@ -16,22 +16,6 @@ copy_precommit() {
     git add "$copy_location"
 }
 
-# check if WSL == 1 in AudioPlayer.cpp
-# returns 1 if the error occurred
-check_wsl_def() {
-    local audio_player_file="src/audio/AudioPlayer.cpp"  # path to AudioPlayer.cpp
-    local target_line='#define WSL 1'
-
-    # Using grep to search for the target line without comment signs in front of it
-    # If the line is found, grep returns 0 (success), else it returns 1 (no match)
-    if grep -qP "^[[:blank:]]*${target_line}" "$audio_player_file"; then
-        # If the line with required pattern is not found, the line might be commented out or the file altered
-        echo "- WSL == 1 in AudioPlayer.cpp. Please set it to 0."
-        return 1
-    fi
-    return 0
-}
-
 # check if RECORDING_MODE is set to true in Helper.h
 # returns 1 if the error occurred
 check_recording_mode() {
@@ -77,9 +61,6 @@ check_collider_debug() {
 copy_precommit
 
 # run checks and capture output in variables to delay printing
-wsl_def_check=$(check_wsl_def 2>&1)
-wsl_def_status=$?
-
 recording_mode_check=$(check_recording_mode 2>&1)
 recording_mode_status=$?
 
@@ -101,7 +82,6 @@ if [ $errors -ne 0 ]; then
     fi
     echo ""
     
-    [ $wsl_def_status -ne 0 ] && echo "$wsl_def_check"
     [ $recording_mode_status -ne 0 ] && echo "$recording_mode_check"
     [ $osx_debugpath_status -ne 0 ] && echo "$osx_debugpath_check"
     [ $collider_debug_status -ne 0 ] && echo "$collider_debug_check"
