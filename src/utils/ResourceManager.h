@@ -41,6 +41,13 @@ public:
 
 	ResourceManager() {}
 
+	~ResourceManager() {
+		for (auto& [name, texture] : imageTextures) {
+			SDL_DestroyTexture(texture);
+		}
+		imageTextures.clear();
+	}
+
 	// load an image texture from its name
 	SDL_Texture* loadImageTexture(const std::string& imageName);
 

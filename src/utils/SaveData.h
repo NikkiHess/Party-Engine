@@ -23,6 +23,8 @@ public:
 
     SaveData(const std::string& name);
 
+    ~SaveData();
+
     void setString(const std::string& section, const std::string& key, const std::string& value, const bool doSave);
     void setInt(const std::string& section, const std::string& key, const int value, const bool doSave);
     void setFloat(const std::string& section, const std::string& key, const float value, const bool doSave);

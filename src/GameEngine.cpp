@@ -125,7 +125,7 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
                                 }
 
                                 // id needs to be highest possible
-                                if (id > maxId) {
+                                if (id >= maxId) {
                                     maxId = id;
                                     clickedActor = actor;
 
@@ -410,6 +410,15 @@ int main(int argc, char* argv[]) {
     Camera::renderConfig = &configManager.renderingConfig;
 
 	engine.start();
+
+    // destroy SDL resources to make sure there aren't memory leaks
+    SDL_Quit();
+    IMG_Quit();
+    TTF_Quit();
+    Mix_Quit();
+
+    // clear the lua state
+    LuaStateSaver::luaState = nullptr;
 
 	return 0;
 }

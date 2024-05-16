@@ -43,15 +43,6 @@ public:
 		GameInfo::resourceManager = &resourceManager;
 	}
 
-	~Engine() {
-		//std::unordered_map<std::string, std::unordered_map<int, TTF_Font*>> fonts;
-		for (auto& [name, fontSizesMap] : resourceManager.fonts) {
-			for (auto& [fontSize, font] : fontSizesMap) {
-				TTF_CloseFont(font);
-			}
-		}
-	}
-
 	// run all lifecycle functions
 	void runLifecycleFunctions(glm::vec2 mousePos, int clickType);
 

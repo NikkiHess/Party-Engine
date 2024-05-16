@@ -39,6 +39,13 @@ SaveData::SaveData(const std::string& name) : name(name) {
     }
 }
 
+SaveData::~SaveData() {
+    // clear document, minimizing and recreating allocator
+    // https://github.com/Tencent/rapidjson/issues/368#issuecomment-117805277
+    rapidjson::Document().Swap(document).SetObject();
+    rapidjson::Document(rapidjson::kObjectType).Swap(document);
+}
+
 rapidjson::Value& SaveData::getSection(std::string section) {
     // ensure the document root is an object
     if (!document.IsObject()) document.SetObject();

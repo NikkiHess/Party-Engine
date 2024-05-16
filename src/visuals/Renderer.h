@@ -22,13 +22,15 @@ public:
 	ConfigManager& configManager;
 	ResourceManager& resourceManager;
 
+	SDL_Window* window;
+
 	Renderer(ConfigManager& configManager, ResourceManager& resourceManager) 
 		: configManager(configManager), resourceManager(resourceManager) {
 		GameConfig& gameConfig = configManager.gameConfig;
 		RenderingConfig& renderConfig = configManager.renderingConfig;
 
 		// a window with proprties as defined by configManager
-		SDL_Window* window = Helper::SDL_CreateWindow498(
+		window = Helper::SDL_CreateWindow498(
 			gameConfig.gameTitle.c_str(),	// window title
 			SDL_WINDOWPOS_CENTERED,			// initial x
 			SDL_WINDOWPOS_CENTERED,			// iniital y
@@ -48,4 +50,15 @@ public:
 
 	// render the current view, returns the current GameState
 	void render();
+
+	~Renderer() {
+		if (sdlRenderer) {
+			SDL_DestroyRenderer(sdlRenderer);
+			sdlRenderer = nullptr;
+		}
+		if (window) {
+			SDL_DestroyWindow(window);
+			window = nullptr;
+		}
+	}
 };

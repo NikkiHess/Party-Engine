@@ -11,6 +11,7 @@ DEBUG_CXXFLAGS := -std=c++17 -I./dependencies -O0 -g -Wall -Wextra
 
 # If we're in WSL, make sure the program knows that
 ifdef WSL_DISTRO_NAME
+	CXXFLAGS += -DWSL=1
 	DEBUG_CXXFLAGS += -DWSL=1
 endif
 
