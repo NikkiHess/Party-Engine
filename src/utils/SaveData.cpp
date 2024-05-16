@@ -40,11 +40,11 @@ SaveData::SaveData(const std::string& name) : name(name) {
 }
 
 rapidjson::Value& SaveData::getSection(std::string section) {
-    // Ensure the document root is an object
+    // ensure the document root is an object
     if (!document.IsObject()) document.SetObject();
 
     auto& allocator = document.GetAllocator();
-    rapidjson::Value* sectionPtr = &document; // Start at the root of the document
+    rapidjson::Value* sectionPtr = &document; // start at the root of the document
     
     std::string delimiter = ".";
     size_t pos = 0;
@@ -54,17 +54,17 @@ rapidjson::Value& SaveData::getSection(std::string section) {
         subsection = section.substr(0, pos);
         rapidjson::Value subsectionVal(subsection.c_str(), allocator);
 
-        // Create a new section if it doesn't exist
+        // create a new section if it doesn't exist
         if (!sectionPtr->HasMember(subsectionVal)) {
             sectionPtr->AddMember(subsectionVal, rapidjson::Value(rapidjson::kObjectType), allocator);
         }
 
-        // Get the next level in the hierarchy
+        // get the next level in the hierarchy
         sectionPtr = &((*sectionPtr)[subsection.c_str()]);
         section.erase(0, pos + delimiter.length());
     }
     
-    // Handle the final subsection
+    // handle the final subsection
     if (!section.empty()) {
         rapidjson::Value sectionVal(section.c_str(), allocator);
         if (!sectionPtr->HasMember(sectionVal)) {
@@ -73,13 +73,13 @@ rapidjson::Value& SaveData::getSection(std::string section) {
         sectionPtr = &((*sectionPtr)[section.c_str()]);
     }
     
-    return *sectionPtr; // Return the targeted section
+    return *sectionPtr; // return the targeted section
 }
 
 void SaveData::setString(const std::string& section, const std::string& key, const std::string& value, const bool doSave) {
     if (!document.IsObject()) document.SetObject();
     
-    // Get the target section
+    // get the target section
     rapidjson::Value& targetSection = getSection(section);
 
     rapidjson::Value jsonKey(key.c_str(), document.GetAllocator());
@@ -87,91 +87,77 @@ void SaveData::setString(const std::string& section, const std::string& key, con
     
     rapidjson::Value::MemberIterator itr = targetSection.FindMember(jsonKey);
     if (itr != targetSection.MemberEnd()) {
-        // If key exists, update
         itr->value.SetString(value.c_str(), document.GetAllocator());
     } else {
-        // If key doesn't exist, add
         targetSection.AddMember(jsonKey, jsonValue, document.GetAllocator());
     }
 
-    // Optionally save changes to the file
     if (doSave) saveDocument();
 }
 
 void SaveData::setInt(const std::string& section, const std::string& key, const int value, const bool doSave) {
     if (!document.IsObject()) document.SetObject();
     
-    // Get the appropriate section or root
     rapidjson::Value& targetSection = getSection(section);
 
     rapidjson::Value jsonValue(value);
     rapidjson::Value jsonKey(key.c_str(), document.GetAllocator());
 
-    // Add or update the value within the targeted section
     if (targetSection.HasMember(jsonKey)) {
-        targetSection[jsonKey] = jsonValue; // Update existing value
+        targetSection[jsonKey] = jsonValue;
     } else {
-        targetSection.AddMember(jsonKey, jsonValue, document.GetAllocator()); // Add a new key-value pair
+        targetSection.AddMember(jsonKey, jsonValue, document.GetAllocator());
     }
 
-    // Save the document if required
     if (doSave) saveDocument();
 }
 
 void SaveData::setFloat(const std::string& section, const std::string& key, const float value, const bool doSave) {
     if (!document.IsObject()) document.SetObject();
     
-    // Get the appropriate section or root
     rapidjson::Value& targetSection = getSection(section);
 
     rapidjson::Value jsonValue(value);
     rapidjson::Value jsonKey(key.c_str(), document.GetAllocator());
 
-    // Add or update the value within the targeted section
     if (targetSection.HasMember(jsonKey)) {
-        targetSection[jsonKey] = jsonValue; // Update existing value
+        targetSection[jsonKey] = jsonValue;
     } else {
-        targetSection.AddMember(jsonKey, jsonValue, document.GetAllocator()); // Add a new key-value pair
+        targetSection.AddMember(jsonKey, jsonValue, document.GetAllocator());
     }
 
-    // Save the document if required
     if (doSave) saveDocument();
 }
 
 void SaveData::setBool(const std::string& section, const std::string& key, const bool value, const bool doSave) {
     if (!document.IsObject()) document.SetObject();
     
-    // Get the appropriate section or root
     rapidjson::Value& targetSection = getSection(section);
 
     rapidjson::Value jsonValue(value);
     rapidjson::Value jsonKey(key.c_str(), document.GetAllocator());
 
-    // Add or update the value within the targeted section
     if (targetSection.HasMember(jsonKey)) {
-        targetSection[jsonKey] = jsonValue; // Update existing value
+        targetSection[jsonKey] = jsonValue;
     } else {
-        targetSection.AddMember(jsonKey, jsonValue, document.GetAllocator()); // Add a new key-value pair
+        targetSection.AddMember(jsonKey, jsonValue, document.GetAllocator());
     }
 
-    // Save the document if required
     if (doSave) saveDocument();
 }
 
 void SaveData::setTable(const std::string& section, const std::string& key, const luabridge::LuaRef table, const bool doSave) {
     if (!document.IsObject()) document.SetObject();
     
-    // Get the appropriate section or root
     rapidjson::Value& targetSection = getSection(section);
     
     rapidjson::Value jsonTable = saveTable(section, table);
     rapidjson::Value jsonKey(key.c_str(), document.GetAllocator());
 
-    // Add or update the value within the targeted section
     if (targetSection.HasMember(jsonKey)) {
-        targetSection[jsonKey] = jsonTable; // Update existing value
+        targetSection[jsonKey] = jsonTable;
     } else {
-        targetSection.AddMember(jsonKey, jsonTable, document.GetAllocator()); // Add a new key-value pair
+        targetSection.AddMember(jsonKey, jsonTable, document.GetAllocator());
     }
 
     // Save the document if required
@@ -259,14 +245,8 @@ void SaveData::saveAll(const std::string& baseSection, const luabridge::LuaRef c
             // TODO: Fix for deeper sections
             auto& section = getSection(baseSection);
             
-            // no member?
-            bool hasNoMember = !section.HasMember(key.c_str());
-            // if no member, not object?
-            bool isObject = hasNoMember || section[key.c_str()].IsObject();
+            const std::string fullSectionPath = value.isTable() ? baseSection + "." + key : baseSection;
             
-            const std::string fullSectionPath = isObject ? baseSection + "." + key : baseSection;
-            
-            // Note the use of fullSectionPath here to ensure subsection properties are set correctly
             if (value.isString()) {
                 setString(fullSectionPath, key, value.cast<std::string>(), doSave);
             }
@@ -282,14 +262,11 @@ void SaveData::saveAll(const std::string& baseSection, const luabridge::LuaRef c
                 setBool(fullSectionPath, key, value.cast<bool>(), doSave);
             }
             else if (value.isTable()) {
-                // Recursively call saveAll for nested tables
                 saveAll(fullSectionPath, value, doSave);
             }
-            // Add other data types if necessary
         }
     }
 
-    // Save the document if needed
     if (doSave) {
         saveDocument();
     }
