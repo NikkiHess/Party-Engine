@@ -66,10 +66,13 @@ public:
 
 	/* DEBUG NAMESPACE */
 
-	// Debug.Log(message), prints to cout
+	// Debug.Log(message), prints to stdout
 	static void log(const std::string& message);
 
-	// Debug.LogError(message), prints to cerr
+	// Debug.LogWithTime(message), prints to stdout with a timestamp at the beginning
+	static void logWithTime(const std::string& message);
+
+	// Debug.LogError(message), prints to stderr
 	static void logError(const std::string& message);
 };
 

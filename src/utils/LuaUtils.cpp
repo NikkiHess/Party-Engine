@@ -76,6 +76,28 @@ void LuaUtils::log(const std::string& message) {
     std::cout << message << "\n";
 }
 
+void LuaUtils::logWithTime(const std::string& message) {
+    std::time_t time = std::time(0); // get current time
+    std::tm local;
+
+    // convert to local time, platform dependent
+    // https://stackoverflow.com/a/38034148/4426055
+#ifdef __unix__
+    localtime_r(&time, &local);
+#elif defined(_MSC_VER)
+    localtime_s(&local, &time);
+#else
+    static std::mutex mtx;
+    std::lock_guard<std::mutex> lock(mtx);
+    local = *std::localtime(&time);
+#endif
+
+    char formattedTime[9];
+    strftime(formattedTime, sizeof(formattedTime), "%T", &local);
+
+    printf("[%s] %s\n", formattedTime, message.c_str());
+}
+
 void LuaUtils::logError(const std::string& message) {
     std::cerr << message << "\n";
 }
@@ -190,12 +212,13 @@ void LuaUtils::destroyActor(std::shared_ptr<Actor> actorPtr) {
     currentScene->actorsWithOnClick.erase(actorPtr);
 }
 
+// establish lua namespace: Debug
+// Debug.Log and Debug.LogError
 void setupDebug() {
     luabridge::getGlobalNamespace(LuaStateSaver::luaState)
-        // establish lua namespace: Debug
-        // Debug.Log and Debug.LogError
         .beginNamespace("Debug")
             .addFunction("Log", LuaUtils::log)
+            .addFunction("LogWithTime", LuaUtils::logWithTime)
             .addFunction("LogError", LuaUtils::logError)
         .endNamespace();
 }
