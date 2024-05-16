@@ -9,11 +9,17 @@
 // dependencies
 #include "AudioHelper.h"
 
-#define WSL 0
+//#define WSL 0
 
 void AudioPlayer::play(const int channel, const std::string& soundName, const bool doesLoop) {
+	// suppress unused variable warnings in the case that WSL is defined
+	(void)channel;
+	(void)soundName;
+	(void)doesLoop;
+
 // this code will not compile if WSL is defined above
-#if not(defined(WSL) && WSL == 1)
+// make WSL=1
+#if !defined(WSL) || (WSL == 0)
 	std::string soundPath = "resources/audio/" + soundName; // the audio's path
 	// Verify that the intro music exists
 	if (resourceManager->fileExists(soundPath + ".wav")) {

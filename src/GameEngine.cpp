@@ -69,7 +69,7 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
     // TODO: This is awful, fix PLEASE
     glm::vec2 origMouse = mousePos;
 
-    int maxId = -1;
+    size_t maxId = 0;
     int type = 0;
     std::shared_ptr<Actor> clickedActor;
 
@@ -87,7 +87,7 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
                 luabridge::LuaRef transform = actor->getComponent("Transform");
 
                 // make sure we have a sprite renderer
-                int id = spriteRenderer["id"]; // need this to get size
+                size_t id = spriteRenderer["id"]; // need this to get size
                 std::string sprite = spriteRenderer["sprite"];
                 bool ui = spriteRenderer["ui"];
 
@@ -161,7 +161,7 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
             luabridge::LuaRef transform = actor->getComponent("Transform");
 
             // make sure we have a sprite renderer
-            int id = spriteRenderer["id"]; // need this to get size
+            size_t id = spriteRenderer["id"]; // need this to get size
             std::string sprite = spriteRenderer["sprite"];
             bool ui = spriteRenderer["UI"];
 
@@ -370,6 +370,10 @@ void Engine::requestStop() {
 }
 
 int main(int argc, char* argv[]) {
+    // suppress compiler warnings
+    (void)argc;
+    (void)argv;
+
 	// Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         const std::string& sdlError = SDL_GetError();

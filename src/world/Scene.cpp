@@ -39,8 +39,10 @@ void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 }
 
 void Scene::instantiateActorLifecycle(std::shared_ptr<Actor>& actorShared, bool doOnStart) {
-	if (actorShared->componentsWithOnStart.size() > 0)
-		actorsWithOnStart.emplace(actorShared);
+	if (doOnStart) {
+		if (actorShared->componentsWithOnStart.size() > 0)
+			actorsWithOnStart.emplace(actorShared);
+	}
 
 	if (actorShared->componentsWithOnUpdate.size() > 0)
 		actorsWithOnUpdate.emplace(actorShared);

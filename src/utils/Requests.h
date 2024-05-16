@@ -37,16 +37,16 @@ public:
 		id = numRequests++;
 	}
 
-	TextDrawRequest& operator=(const TextDrawRequest& other) {
-		text = other.text;
-		pos = other.pos;
-		font = other.font;
-		color = other.color;
-		texture = other.texture;
-		id = other.id;
+	//TextDrawRequest& operator=(const TextDrawRequest& other) {
+	//	text = other.text;
+	//	pos = other.pos;
+	//	font = other.font;
+	//	color = other.color;
+	//	texture = other.texture;
+	//	id = other.id;
 
-		return *this;
-	}
+	//	return *this;
+	//}
 };
 
 class TextDrawRequestComparator {
@@ -82,7 +82,7 @@ public:
 
 	ImageDrawRequest(SDL_Texture* texture, const std::string& name, glm::vec2 pos, float rotationDegrees, glm::vec2 scale, glm::vec2 pivot,
 		SDL_Color& color, int sortingOrder, size_t callOrder, ImageType type)
-		: name(name), pos(pos), texture(texture), rotationDegrees(rotationDegrees), scale(scale),
+		: texture(texture), name(name), pos(pos), rotationDegrees(rotationDegrees), scale(scale),
 		pivot(pivot), color(color), sortingOrder(sortingOrder), callOrder(callOrder), type(type) {
 		id = numRequests++;
 	}

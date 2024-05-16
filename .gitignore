@@ -7,8 +7,8 @@ recorded_user_input.txt
 sdl_user_input.txt
 recorded_sdl_user_input.txt
 
-# course executables
-game_engine_linux
+# executables
+PartyEngineLinux*
 game_engine_osx
 
 # XCode build artifacts
