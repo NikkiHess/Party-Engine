@@ -1,5 +1,6 @@
 // std library
 #include <string>
+#include <cmath>
 
 // my code
 #include "SaveData.h"
@@ -213,15 +214,16 @@ rapidjson::Value SaveData::saveTable(const std::string& section, const luabridge
             tableObject.AddMember(jsonKey, stringValue, allocator);
         }
         else if (value.isNumber()) {
-            std::string number = value.cast<std::string>();
+            std::string numberStr = value.cast<std::string>();
             
+            float number = std::stof(numberStr);
             // this is an int
-            if(number.find(".") == std::string::npos) {
-                tableObject.AddMember(jsonKey, rapidjson::Value(value.cast<int>()), allocator);
+            if(std::fmod(number, 1.0) == 0.0) {
+                tableObject.AddMember(jsonKey, rapidjson::Value(static_cast<int>(number)), allocator);
             }
             // this is a float
             else {
-                tableObject.AddMember(jsonKey, rapidjson::Value(value.cast<float>()), allocator);
+                tableObject.AddMember(jsonKey, rapidjson::Value(static_cast<float>(number)), allocator);
             }
         }
         else if (value.isBool()) {
@@ -255,11 +257,14 @@ void SaveData::saveAll(const std::string& baseSection, const luabridge::LuaRef c
                 setString(fullSectionPath, key, value.cast<std::string>(), doSave);
             }
             else if (value.isNumber()) {
-                std::string number = value.cast<std::string>();
-                if (number.find(".") == std::string::npos) {
-                    setInt(fullSectionPath, key, stoi(number), doSave);
+                std::string numberStr = value.cast<std::string>();
+                
+                float number = std::stof(numberStr);
+                // this is an int
+                if(std::fmod(number, 1.0) == 0.0) {
+                    setInt(fullSectionPath, key, static_cast<int>(number), doSave);
                 } else {
-                    setFloat(fullSectionPath, key, stof(number), doSave);
+                    setFloat(fullSectionPath, key, number, doSave);
                 }
             }
             else if (value.isBool()) {
