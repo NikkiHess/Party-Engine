@@ -218,7 +218,7 @@ rapidjson::Value SaveData::saveTable(const std::string& section, const luabridge
             
             float number = std::stof(numberStr);
             // this is an int
-            if(std::fmod(number, 1.0) == 0.0) {
+            if(numberStr.find('.') == std::string::npos) {
                 tableObject.AddMember(jsonKey, rapidjson::Value(static_cast<int>(number)), allocator);
             }
             // this is a float
@@ -261,7 +261,7 @@ void SaveData::saveAll(const std::string& baseSection, const luabridge::LuaRef c
                 
                 float number = std::stof(numberStr);
                 // this is an int
-                if(std::fmod(number, 1.0) == 0.0) {
+                if(numberStr.find('.') == std::string::npos) {
                     setInt(fullSectionPath, key, static_cast<int>(number), doSave);
                 } else {
                     setFloat(fullSectionPath, key, number, doSave);
