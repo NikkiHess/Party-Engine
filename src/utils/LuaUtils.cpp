@@ -218,7 +218,7 @@ void setupDebug() {
     luabridge::getGlobalNamespace(LuaStateSaver::luaState)
         .beginNamespace("Debug")
             .addFunction("Log", LuaUtils::log)
-            .addFunction("LogWithTime", LuaUtils::logWithTime)
+            .addFunction("LogTime", LuaUtils::logWithTime)
             .addFunction("LogError", LuaUtils::logError)
         .endNamespace();
 }
