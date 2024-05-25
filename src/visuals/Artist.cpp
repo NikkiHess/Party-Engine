@@ -110,7 +110,7 @@ void Artist::drawPixel(const PixelDrawRequest& request) {
 }
 
 int Artist::requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
-						   const float fontSize, const bool fontCentered, const float r, const float g, const float b, const float a) {
+                            const float fontSize, const float r, const float g, const float b, const float a, const std::string horizJust, const std::string vertJust, const bool bold, const bool underline, const bool italic, const bool strikethrough) {
 	const int fontSizeInt = static_cast<int>(fontSize);
 
 	// if the font doesn't exist, create it
@@ -141,7 +141,7 @@ int Artist::requestDrawText(const std::string& text, const float x, const float 
 	};
 
 	// creates the TextDrawRequest that will be iterated over in the main loop
-	return resourceManager->createTextDrawRequest(text, font, fontCentered, pos, fontColor);
+	return resourceManager->createTextDrawRequest(text, font, pos, fontColor, horizJust, vertJust, bold, italic, underline, strikethrough);
 }
 
 int Artist::requestDrawUI(const std::string& imageName, const float x, const float y) {

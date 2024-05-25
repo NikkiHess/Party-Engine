@@ -1,5 +1,6 @@
 // my code
 #include "ResourceManager.h"
+#include "../errors/Error.h"
 
 // sdl
 #include "SDL2/SDL.h"
@@ -31,7 +32,13 @@ SDL_Texture* ResourceManager::loadImageTexture(const std::string& imageName) {
 	return imageTexture;
 }
 
-int ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* font, bool fontCentered, glm::ivec2& pos, SDL_Color& fontColor) {
+int ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor, const std::string horizJust, const std::string vertJust, const bool bold, const bool underline, const bool italic, const bool strikethrough) {
+    
+    if(bold) TTF_SetFontStyle(font, TTF_GetFontStyle(font) | TTF_STYLE_BOLD);
+    if(underline) TTF_SetFontStyle(font, TTF_GetFontStyle(font) | TTF_STYLE_UNDERLINE);
+    if(italic) TTF_SetFontStyle(font, TTF_GetFontStyle(font) | TTF_STYLE_ITALIC);
+    if(strikethrough) TTF_SetFontStyle(font, TTF_GetFontStyle(font) | TTF_STYLE_STRIKETHROUGH);
+    
 	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), fontColor);
 
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(sdlRenderer, textSurface);
@@ -41,12 +48,34 @@ int ResourceManager::createTextDrawRequest(const std::string& text, TTF_Font* fo
 	int width, height;
 	SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
 
-	if (fontCentered) {
-		pos -= glm::ivec2(width / 2, height / 2);
-	}
+    if (horizJust == "center" || horizJust == "centered") {
+        pos.x -= width / 2;
+    }
+    else if(horizJust == "right") {
+        pos.x -= width;
+    }
+    // invalid justification
+    else if(horizJust != "left") {
+        Error::error("Please use one of the following for text horizontal justification: left, center(ed), right");
+    }
+    
+    if (vertJust == "center" || vertJust == "centered") {
+        pos.y -= height / 2;
+    }
+    else if(vertJust == "top") {
+        pos.y -= height;
+    }
+    // invalid justification
+    else if(vertJust != "bottom") {
+        Error::error("Please use one of the following for text vertical justification: top, center(ed), bottom");
+    }
 
+    // create the request
 	TextDrawRequest request = TextDrawRequest(text, pos, font, fontColor, texture);
 	textDrawRequests.emplace(request);
+    
+    // clean up
+    TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 
 	return request.id;
 }

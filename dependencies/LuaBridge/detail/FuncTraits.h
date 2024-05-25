@@ -386,6 +386,86 @@ struct Caller<ReturnType, 13> {
     }
 };
 
+template<class ReturnType>
+struct Caller<ReturnType, 14> {
+    template<class Fn, class Params>
+    static ReturnType f(Fn& fn, TypeListValues<Params>& tvl) {
+        return fn(tvl.hd,
+            tvl.tl.hd,
+            tvl.tl.tl.hd,
+            tvl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd);
+    }
+
+    template<class T, class MemFn, class Params>
+    static ReturnType f(T* obj, MemFn& fn, TypeListValues<Params>& tvl) {
+        return (obj->*fn)(tvl.hd,
+            tvl.tl.hd,
+            tvl.tl.tl.hd,
+            tvl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd);
+    }
+};
+
+template<class ReturnType>
+struct Caller<ReturnType, 15> {
+    template<class Fn, class Params>
+    static ReturnType f(Fn& fn, TypeListValues<Params>& tvl) {
+        return fn(tvl.hd,
+            tvl.tl.hd,
+            tvl.tl.tl.hd,
+            tvl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd);
+    }
+
+    template<class T, class MemFn, class Params>
+    static ReturnType f(T* obj, MemFn& fn, TypeListValues<Params>& tvl) {
+        return (obj->*fn)(tvl.hd,
+            tvl.tl.hd,
+            tvl.tl.tl.hd,
+            tvl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd,
+            tvl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.tl.hd);
+    }
+};
+
 template<class ReturnType, class Fn, class Params>
 ReturnType doCall(Fn& fn, TypeListValues<Params>& tvl)
 {

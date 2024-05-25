@@ -41,8 +41,13 @@ public:
 	// g - the blue value of the text color
 	// b - the green value of the text color
 	// a - the alpha value of the text color (transparency)
+    // justification - left, center, right
+    // bold - whether or not to bold the text
+    // underline - whether or not to underline the text
+    // italic - whether or not to italicize the text
+    // strikethrough - whether or not to strikethrough the text
 	static int requestDrawText(const std::string& text, const float x, const float y, const std::string& fontName,
-		const float fontSize, const bool fontCentered, const float r, const float g, const float b, const float a);
+		const float fontSize, const float r, const float g, const float b, const float a, const std::string horizJust, const std::string vertJust, const bool bold, const bool underline, const bool italic, const bool strikethrough);
 
 	// request to draw an image on the screen
 	static int requestDrawUI(const std::string& imageName, const float x, const float y);

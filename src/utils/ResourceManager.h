@@ -52,7 +52,7 @@ public:
 	SDL_Texture* loadImageTexture(const std::string& imageName);
 
 	// create a text draw request, to be drawn at the end of the frame
-	int createTextDrawRequest(const std::string& text, TTF_Font* font, bool fontCentered, glm::ivec2& pos, SDL_Color& fontColor);
+	int createTextDrawRequest(const std::string& text, TTF_Font* font, glm::ivec2& pos, SDL_Color& fontColor, const std::string horizJust, const std::string vertJust, const bool bold, const bool underline, const bool italic, const bool strikethrough);
 
 	// create a UI image draw request, to be drawn at the end of the frame
 	int createUIImageDrawRequest(SDL_Texture* imageTexture, const std::string& imageName, glm::ivec2& pos);
