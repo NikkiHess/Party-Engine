@@ -59,6 +59,7 @@ void Renderer::render() {
 	// 3. text (Text.Draw)
 	for (const TextDrawRequest& text : resourceManager.textDrawRequests) {
 		Artist::drawText(text);
+		SDL_DestroyTexture(text.texture); // TODO: cache text textures in the future
 	}
 	resourceManager.textDrawRequests.clear();
 	
