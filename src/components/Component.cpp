@@ -50,19 +50,13 @@ void Component::establishBaseTable() {
 	if (scriptContent && luaL_loadstring(LuaStateSaver::luaState, scriptContent->c_str()) == LUA_OK) {
 		// execute the loaded Lua chunk
 		if (lua_pcall(LuaStateSaver::luaState, 0, LUA_MULTRET, 0) != LUA_OK) {
-			// TODO: return to Error::error once the semester is over
-			// this is necessary for now
-			std::cerr << "problem with lua file " << type << "\n";
-			exit(0);
+			Error::error("Problem with Lua file " + type + "\n");
 		}
 	} 
 	else {
 		// load the Lua script, verify no errors
 		if (luaL_dofile(LuaStateSaver::luaState, path.c_str()) != LUA_OK) {
-			// TODO: return to Error::error once the semester is over
-			// this is necessary for now
-			std::cerr << "problem with lua file " << type << "\n";
-			exit(0);
+			Error::error("Problem with Lua file " + type + "\n");
 		}
 	}
 

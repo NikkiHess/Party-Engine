@@ -210,7 +210,7 @@ void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
                                 component->mouseEntered = true;
                                 component->mouseHovered = true;
                                 enter.emplace_back(component);
-                                hover.emplace_back(component); // TODO: do this or not?
+                                hover.emplace_back(component);
                             }
                             continue; // make sure we don't execute exited code if this happens
                         }

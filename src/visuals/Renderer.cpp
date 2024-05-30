@@ -40,7 +40,6 @@ void Renderer::render() {
 	// 1. screen-space images (Image.Draw/Image.DrawEx)
 	// set the render scale according to the configured zoom factor
 	SDL_RenderSetScale(sdlRenderer, renderConfig.zoomFactor, renderConfig.zoomFactor);
-	//std::stable_sort(resourceManager.imageDrawRequests.begin(), resourceManager.imageDrawRequests.end(), imgComp);
 	for (const ImageDrawRequest& image : resourceManager.imageDrawRequests) {
 		Artist::draw(image);
 	}
@@ -49,7 +48,6 @@ void Renderer::render() {
 	// 2. UI images (Image.DrawUI/Image.DrawUIEx)
 	// set the render scale to 1
 	SDL_RenderSetScale(sdlRenderer, 1, 1);
-	//std::stable_sort(resourceManager.uiImageDrawRequests.begin(), resourceManager.uiImageDrawRequests.end(), imgComp);
 	for (const ImageDrawRequest& image : resourceManager.uiImageDrawRequests) {
 		Artist::draw(image);
 	}
@@ -59,7 +57,7 @@ void Renderer::render() {
 	// 3. text (Text.Draw)
 	for (const TextDrawRequest& text : resourceManager.textDrawRequests) {
 		Artist::drawText(text);
-		SDL_DestroyTexture(text.texture); // TODO: cache text textures in the future
+		SDL_DestroyTexture(text.texture); // TODO: cache text textures in the future? might be good, memory tradeoff?
 	}
 	resourceManager.textDrawRequests.clear();
 	

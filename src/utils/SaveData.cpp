@@ -370,7 +370,6 @@ luabridge::LuaRef SaveData::getTable(const std::string& section, const std::stri
                 ref[name] = data.value.GetInt();
             if (data.value.IsBool())
                 ref[name] = data.value.GetBool();
-            // TODO: Does this work?
             if(data.value.IsObject())
                 ref[name] = getTable(section + ".key", key);
         }
