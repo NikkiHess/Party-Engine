@@ -4,16 +4,15 @@
 #include <string>
 
 // my code
-#include "CppComponent.h"
-#include "../errors/Error.h"
 #include "../utils/LuaStateSaver.h"
-
-// SDL
-#include "SDL2/SDL.h"
+#include "CppComponent.h"
 
 // lua
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
+
+// sdl
+#include "SDL2/SDL.h"
 
 class Actor;
 

@@ -3,13 +3,10 @@
 #include <optional>
 
 // my code
-#include "SceneConfig.h"
 #include "../../components/Component.h"
-#include "../LuaStateSaver.h"
-#include "../LuaUtils.h"
-
-// dependencies
-#include "rapidjson/rapidjson.h"
+#include "../../errors/Error.h"
+#include "JsonUtils.h"
+#include "SceneConfig.h"
 
 void SceneConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager, Scene& scene, const std::string& sceneName) {
 	if (document.HasMember("actors")) {

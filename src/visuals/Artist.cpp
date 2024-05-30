@@ -1,11 +1,16 @@
-// std library
-#include <iostream>
-
 // my code
 #include "Artist.h"
+#include "Camera.h"
 #include "Helper.h"
-#include "../world/Actor.h"
-#include "../GameInfo.h"
+
+// glm
+#include "glm/glm.hpp"
+
+// sdl
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_render.h"
+#include "SDL2/SDL_ttf.h"
 
 void Artist::setBG(const int r, const int g, const int b) {
 	RenderingConfig::clearColor = {r, g, b};

@@ -1,12 +1,10 @@
 #pragma once
 
 // my code
-#include "../utils/config/ConfigManager.h"
-#include "../world/Actor.h"
+#include "../utils/config/RenderingConfig.h"
 
-// dependencies
+// glm
 #include "glm/glm.hpp"
-#include "SDL2/SDL.h"
 
 class Camera {
 public:

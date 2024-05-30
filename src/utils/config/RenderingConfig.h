@@ -1,8 +1,8 @@
 #pragma once
 
 // depedencies
-#include "rapidjson/document.h"
 #include "glm/glm.hpp"
+#include "rapidjson/document.h"
 
 class RenderingConfig {
 public:

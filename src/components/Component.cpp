@@ -1,16 +1,12 @@
 // std library
-#include <iostream>
-#include <algorithm>
-#include <unordered_map>
-#include <string>
 #include <fstream>
-#include <streambuf>
+#include <string>
 
 // my code
-#include "Component.h"
 #include "../errors/Error.h"
-#include "../utils/LuaUtils.h"
 #include "../utils/LuaStateSaver.h"
+#include "../utils/LuaUtils.h"
+#include "Component.h"
 
 // rapidjson
 #include "rapidjson/document.h"

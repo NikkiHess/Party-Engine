@@ -1,11 +1,18 @@
 // std library
+#include <filesystem>
+#include <fstream>
 #include <string>
-#include <cmath>
+
+// rapidjson
+#include <rapidjson/error/en.h>
+#include <rapidjson/ostreamwrapper.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/writer.h>
 
 // my code
-#include "SaveData.h"
 #include "../utils/LuaStateSaver.h"
 #include "../world/Actor.h"
+#include "SaveData.h"
 
 SaveData::SaveData(const std::string& name) : name(name) {
     const std::string folderPath = "resources/config/";

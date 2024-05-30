@@ -1,19 +1,12 @@
 #pragma once
 
-// std stuff
-#include <vector>
-#include <string>
-
 // my code
-#include "../GameInfo.h"
 #include "../utils/config/ConfigManager.h"
 #include "../utils/config/GameConfig.h"
 #include "../utils/ResourceManager.h"
 #include "Artist.h"
 
 // dependencies
-#include "glm/glm.hpp"
-#include "SDL2/SDL.h"
 #include "Helper.h"
 
 class Renderer {

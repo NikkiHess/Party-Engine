@@ -1,26 +1,17 @@
 #pragma once
 
 // std library
-#include <string>
-#include <set>
 #include <map>
 #include <memory>
-#include <algorithm>
+#include <string>
 
 // my code
+#include "../components/CppComponent.h"
 #include "../utils/LuaStateSaver.h"
 #include "UIRenderer.h"
-#include "../components/CppComponent.h"
 
 // rapidjson
 #include "rapidjson/document.h"
-
-// lua
-#include "lua/lua.hpp"
-#include "LuaBridge/LuaBridge.h"
-
-// dependencies
-#include "Helper.h"
 
 class LuaScriptCache {
 private:

@@ -3,7 +3,8 @@
 #include "../errors/Error.h"
 
 // sdl
-#include "SDL2/SDL.h"
+#include "SDL2/SDL.h" 
+#include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
 
 bool ResourceManager::fileExists(const std::string& path) {

@@ -1,33 +1,30 @@
 // std library
+#include <algorithm>
 #include <string>
 #include <thread>
-#include <algorithm>
 #include <unordered_map>
-#include <sstream>
 
 // my code
-#include "LuaUtils.h"
-#include "../world/Actor.h"
-#include "../world/Scene.h"
+#include "../audio/AudioPlayer.h"
+#include "../GameInfo.h"
 #include "../input/Input.h"
 #include "../utils/config/SceneConfig.h"
-#include "../visuals/Artist.h"
 #include "../utils/LuaStateSaver.h"
-#include "../components/UIRenderer.h"
 #include "../utils/SaveData.h"
+#include "../visuals/Artist.h"
+#include "../visuals/Camera.h"
+#include "../world/Actor.h"
+#include "LuaUtils.h"
 
 // dependencies
 #include "Helper.h"
 
 // lua
-#include "lua/lua.hpp"
-#include "LuaBridge/LuaBridge.h"
-
-// SDL
-#include "SDL2/SDL.h"
+#include "lua/lua.hpp" 
+#include "LuaBridge/LuaBridge.h" 
 
 // Box2D
-#include "box2d/box2d.h"
+#include "box2d/box2d.h" 
 
 void LuaUtils::printLuaException(const luabridge::LuaException& e, const std::string& actorName, const std::string& componentName) {
     std::string errorMessage = e.what();

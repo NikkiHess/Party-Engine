@@ -4,14 +4,9 @@
 #include <string>
 
 // my code
-#include "world/Actor.h"
-#include "world/Scene.h"
 #include "GameState.h"
 #include "utils/config/ConfigManager.h"
-
-// lua
-#include "lua/lua.h"
-#include "LuaBridge/LuaBridge.h"
+#include "world/Scene.h"
 
 // information about the game, which can be shared between classes
 class GameInfo {

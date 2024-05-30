@@ -1,26 +1,9 @@
 #pragma once
-
-// std library
-#include <algorithm>
-#include <map>
-#include <string>
-#include <optional>
-
 // my code
-#include "audio/AudioPlayer.h"
-#include "world/Actor.h"
 #include "GameInfo.h"
 #include "GameState.h"
 #include "utils/config/ConfigManager.h"
 #include "visuals/Renderer.h"
-#include "input/Input.h"
-
-// dependencies
-#include "glm/glm.hpp"
-
-// lua
-#include "lua/lua.hpp"
-#include "LuaBridge/LuaBridge.h"
 
 class Engine {
 public:

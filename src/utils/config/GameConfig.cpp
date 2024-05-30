@@ -1,4 +1,5 @@
 // my code
+#include "../../errors/Error.h"
 #include "GameConfig.h"
 
 std::string GameConfig::parse(rapidjson::Document& document, ResourceManager& resourceManager) {

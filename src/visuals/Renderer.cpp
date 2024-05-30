@@ -1,27 +1,8 @@
-// std library
-#include <algorithm>
-#include <cmath>
-#include <iostream>
-#include <sstream>
-#include <unordered_map>
-#include <string>
-
-// include my code
-#include "../world/Actor.h"
-#include "../GameInfo.h"
-#include "../GameEngine.h"
-#include "../utils/StringUtils.h"
+// my code
 #include "Renderer.h"
 
-// dependencies
-#include "AudioHelper.h"
-#include "glm/glm.hpp"
-#include "Helper.h"
-#include "rapidjson/document.h"
+// sdl
 #include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_mixer.h"
-#include "SDL2/SDL_ttf.h"
 
 void Renderer::render() {
 	RenderingConfig& renderConfig = configManager.renderingConfig;

@@ -1,24 +1,17 @@
 #pragma once
 
 // std stuff
-#include <string>
-#include <set>
-#include <unordered_set>
-#include <unordered_map>
-#include <vector>
 #include <map>
 #include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 // my code
 #include "Actor.h"
-#include "../utils/config/RenderingConfig.h"
-#include "../GameState.h"
-#include "../utils/config/GameConfig.h"
-#include "../audio/AudioPlayer.h"
 
 // dependencies
 #include "glm/glm.hpp"
-#include "SDL2/SDL.h"
 
 class Scene
 {

@@ -1,16 +1,14 @@
 // std library
 #include <string>
-#include <unordered_set>
 
 // my code
 #include "../world/Actor.h"
 #include "../world/Scene.h"
 #include "../utils/config/SceneConfig.h"
-#include "../components/Component.h"
 
 // lua
-#include "lua/lua.hpp"
-#include "LuaBridge/LuaBridge.h"
+#include "lua/lua.hpp" 
+#include "LuaBridge/LuaBridge.h" 
 
 #pragma once
 class LuaUtils {

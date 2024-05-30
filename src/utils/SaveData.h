@@ -2,16 +2,9 @@
 
 // std library
 #include <string>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
 
 // rapidjson
 #include <rapidjson/document.h>
-#include <rapidjson/ostreamwrapper.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/error/en.h>
 
 // lua
 #include <lua/lua.hpp>

@@ -4,17 +4,8 @@
 #include <string>
 
 // my code
-#include "Camera.h"
-#include "../world/Actor.h"
 #include "../utils/config/ConfigManager.h"
-#include "../GameInfo.h"
 #include "../utils/ResourceManager.h"
-
-// dependencies
-#include "glm/glm.hpp"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_render.h"
-#include "SDL2/SDL_ttf.h"
 
 // handles drawing of visuals (not displaying, that's Renderer's job)
 class Artist

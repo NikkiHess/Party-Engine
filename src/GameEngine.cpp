@@ -1,26 +1,18 @@
 // std library
-#include <algorithm>
-#include <cmath>
-#include <iostream>
-#include <sstream>
-#include <filesystem>
-#include <memory>
 #include <vector>
 
 // include my code
+#include "audio/AudioPlayer.h"
 #include "GameEngine.h"
-#include "utils/config/ConfigManager.h"
-#include "utils/config/GameConfig.h"
-#include "utils/config/RenderingConfig.h"
-#include "visuals/Renderer.h"
 #include "input/Input.h"
-#include "input/Direction.h"
-#include "utils/StringUtils.h"
-#include "utils/LuaUtils.h"
+#include "utils/config/ConfigManager.h"
+#include "utils/config/RenderingConfig.h"
 #include "utils/LuaStateSaver.h"
+#include "utils/LuaUtils.h"
+#include "visuals/Camera.h"
+#include "visuals/Renderer.h"
 
 // dependencies
-#include "glm/glm.hpp"
 #include "rapidjson/document.h"
 
 // SDL2
@@ -31,10 +23,6 @@
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
-
-// lua
-#include "lua/lua.hpp"
-#include "LuaBridge/LuaBridge.h"
 
 void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
     // do OnStart for all actors with NEW OnStart components

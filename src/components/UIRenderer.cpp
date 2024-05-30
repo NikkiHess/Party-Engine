@@ -1,7 +1,6 @@
 // my code
-#include "UIRenderer.h"
-#include "../world/Actor.h"
 #include "../visuals/Artist.h"
+#include "UIRenderer.h"
 
 void UIRenderer::onStart() {
 	//try {

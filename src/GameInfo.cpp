@@ -5,12 +5,6 @@
 #include "GameInfo.h"
 #include "world/Actor.h"
 #include "world/Scene.h"
-#include "GameState.h"
-#include "utils/config/ConfigManager.h"
-
-// lua
-#include "lua/lua.h"
-#include "LuaBridge/LuaBridge.h"
 
 void GameInfo::loadScene(const std::string& sceneName) {
 	JsonUtils::readJsonFile("resources/scenes/" + sceneName + ".scene", configManager->document);

@@ -1,20 +1,17 @@
 #pragma once
 
 // std library
-#include <optional>
-#include <string>
-#include <set>
 #include <memory>
+#include <optional>
+#include <set>
+#include <string>
 
 // my code
-#include "../utils/ResourceManager.h"
-#include "../utils/OptionalVec2.h"
-#include "../utils/config/RenderingConfig.h"
 #include "../components/Component.h"
+#include "../utils/config/RenderingConfig.h"
 
-// dependencies
+// glm
 #include "glm/glm.hpp"
-#include "SDL2/SDL_render.h"
 
 class Actor {
 public:

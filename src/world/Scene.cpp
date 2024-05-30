@@ -1,23 +1,10 @@
 // std library
-#include <iostream>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <map>
 #include <memory>
+#include <vector>
 
 // my code
-#include "../GameState.h"
 #include "Actor.h"
 #include "Scene.h"
-#include "../utils/StringUtils.h"
-#include "../errors/Error.h"
-#include "../utils/ResourceManager.h"
-
-// dependencies
-#include "Helper.h"
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_rect.h"
 
 void Scene::instantiateActor(Actor& actor, bool doLifecycle) {
 	actor.id = static_cast<int>(Actor::currentId);

@@ -2,19 +2,9 @@
 
 // std library
 #include <string>
-#include <filesystem>
-#include <unordered_map>
-#include <set>
-#include <unordered_set>
-#include <vector>
-
-// my code
-#include "../components/CppComponent.h"
 
 // dependencies
-#include "glm/glm.hpp"
-#include "SDL2/SDL_mixer.h"
-#include "SDL2/SDL_image.h"
+#include "glm/glm.hpp" 
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 

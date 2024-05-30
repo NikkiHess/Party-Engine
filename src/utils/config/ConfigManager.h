@@ -1,33 +1,18 @@
 #pragma once
 
 // std stuff
-#include <filesystem>
-#include <iostream>
-#include <optional>
 #include <string>
-#include <unordered_map>
-#include <vector>
 
 // my code
 #include "../../errors/Error.h"
-#include "../../world/Actor.h"
-#include "../../world/Scene.h"
-#include "GameConfig.h"
-#include "SceneConfig.h"
-#include "RenderingConfig.h"
 #include "../ResourceManager.h"
+#include "GameConfig.h"
 #include "JsonUtils.h"
-#include "../LuaUtils.h"
+#include "RenderingConfig.h"
+#include "SceneConfig.h"
 
 // dependencies
-#include "glm/glm.hpp"
 #include "rapidjson/document.h"
-#include "SDL2/SDL_mixer.h"
-#include "SDL2/SDL_render.h"
-#include "SDL2/SDL_ttf.h"
-
-// lua
-#include "lua/lua.h"
 
 class ConfigManager {
 public:

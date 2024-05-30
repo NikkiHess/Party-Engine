@@ -1,20 +1,17 @@
 #pragma once
 
 // std library
-#include <string>
-#include <filesystem>
-#include <unordered_map>
+#include <filesystem> 
 #include <set>
-#include <unordered_set>
-#include <vector>
+#include <string>
+#include <unordered_map>
 
 // my code
 #include "Requests.h"
 
 // dependencies
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" 
 #include "SDL2/SDL_mixer.h"
-#include "SDL2/SDL_image.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
