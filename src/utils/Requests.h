@@ -36,17 +36,6 @@ public:
 		: text(text), pos(pos), font(font), color(color), texture(texture) {
 		id = numRequests++;
 	}
-
-	//TextDrawRequest& operator=(const TextDrawRequest& other) {
-	//	text = other.text;
-	//	pos = other.pos;
-	//	font = other.font;
-	//	color = other.color;
-	//	texture = other.texture;
-	//	id = other.id;
-
-	//	return *this;
-	//}
 };
 
 class TextDrawRequestComparator {
