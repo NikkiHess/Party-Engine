@@ -36,6 +36,11 @@
 #include "lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 
+// memory leak detection (CRT)
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
     // do OnStart for all actors with NEW OnStart components
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
@@ -373,6 +378,8 @@ int main(int argc, char* argv[]) {
     // suppress compiler warnings
     (void)argc;
     (void)argv;
+
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	// Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
