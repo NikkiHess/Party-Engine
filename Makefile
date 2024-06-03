@@ -1,5 +1,5 @@
 # List all source files
-SOURCES := $(wildcard src/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/utils/config/*.cpp)
+SOURCES := $(wildcard src/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*/*/*.cpp)
 
 # Derive object file names from source file names for release and debug
 OBJECTS := $(SOURCES:.cpp=.o)

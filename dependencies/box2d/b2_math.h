@@ -85,18 +85,6 @@ struct B2_API b2Vec2
 		x *= a; y *= a;
 	}
 
-	b2Vec2 operatorAdd(const b2Vec2& other) {
-		return b2Vec2(this->x + other.x, this->y + other.y);
-	}
-
-	b2Vec2 operatorSub(const b2Vec2& other) {
-		return b2Vec2(this->x - other.x, this->y - other.y);
-	}
-
-	b2Vec2 operatorMul(const float multiplier) {
-		return b2Vec2(this->x * multiplier, this->y * multiplier);
-	}
-
 	/// Get the length of this vector (the norm).
 	float Length() const
 	{

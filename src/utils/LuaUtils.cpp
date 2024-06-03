@@ -14,6 +14,7 @@
 #include "../visuals/Artist.h"
 #include "../visuals/Camera.h"
 #include "../world/Actor.h"
+#include "../world/physics/VectorWrapper.h"
 #include "LuaUtils.h"
 
 // dependencies
@@ -276,31 +277,41 @@ void setupInput() {
         .endNamespace();
 }
 
-// establish lua class: vec2 (glm)
-// establish lua class: Vector2 (b2Vec2) for physics
+// establish lua class: Vector2 (glm/box2d)
 // allows a constructor taking two floats
-void setupPositioning() {
+void setupPhysics() {
     luabridge::getGlobalNamespace(LuaStateSaver::luaState)
-        .beginClass<glm::vec2>("vec2")
-            .addProperty("x", &glm::vec2::x)
-            .addProperty("y", &glm::vec2::y)
-        .endClass()
-
-        .beginClass<b2Vec2>("Vector2")
+        .beginClass<VectorWrapper>("Vector2")
             .addConstructor<void(*) (float, float)>()
-            .addProperty("x", &b2Vec2::x)
-            .addProperty("y", &b2Vec2::y)
-            .addFunction("Normalize", &b2Vec2::Normalize)
-            .addFunction("Length", &b2Vec2::Length)
-            .addFunction("__add", &b2Vec2::operatorAdd)
-            .addFunction("__sub", &b2Vec2::operatorSub)
-            .addFunction("__mul", &b2Vec2::operatorMul)
+            .addProperty("x", &VectorWrapper::getX, &VectorWrapper::setX)
+            .addProperty("y", &VectorWrapper::getY, &VectorWrapper::setY)
+            .addFunction("Normalize", &VectorWrapper::normalize)
+            .addFunction("Length", &VectorWrapper::length)
+            .addFunction("__add", &VectorWrapper::operator+)
+            .addFunction("__sub", &VectorWrapper::operator-)
+            .addFunction("__mul", &VectorWrapper::operator*)
         .endClass()
 
         .beginNamespace("Vector2")
             .addFunction("Distance", &b2Distance)
             .addFunction("Dot", static_cast<float (*)(const b2Vec2&, const b2Vec2&)>(&b2Dot))
-        .endNamespace();
+        .endNamespace()
+
+        .beginClass<Rigidbody>("Rigidbody")
+            .addProperty("key", &Rigidbody::key)
+            .addProperty("enabled", &Rigidbody::enabled)
+            .addProperty("actor", &Rigidbody::actor)
+            .addProperty("bodyType", &Rigidbody::bodyType)
+            .addProperty("precise", &Rigidbody::precise)
+            .addProperty("gravityScale", &Rigidbody::gravityScale)
+            .addProperty("density", &Rigidbody::density)
+            .addProperty("angularFriction", &Rigidbody::angularFriction)
+            .addProperty("hasCollider", &Rigidbody::hasCollider)
+            .addProperty("hasTrigger", &Rigidbody::hasTrigger)
+            .addFunction("GetPosition", &Rigidbody::getPosition)
+            .addFunction("GetRotation", &Rigidbody::getRotation)
+            .addFunction("OnStart", &Rigidbody::onStart)
+        .endClass();
 }
 
 // establish lua namespace: Text
@@ -399,7 +410,7 @@ void LuaUtils::setupLua() {
 
     setupAudio();
 
-    setupPositioning();
+    setupPhysics();
 
     setupVisuals();
 

@@ -49047,6 +49047,12 @@
     <ClInclude Include="dependencies\Box2D\dynamics\b2_polygon_contact.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\Rigidbody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\physics\VectorWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\glm\detail\glm.cpp">
@@ -49335,6 +49341,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dependencies\Box2D\rope\b2_rope.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\Rigidbody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\physics\VectorWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

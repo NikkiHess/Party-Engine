@@ -272,7 +272,7 @@ void Engine::runtimeAlterations() {
     GameInfo::scene.actorsWithComponentsToRemove.clear();
 }
 
-void Engine::start() {
+void Engine::run() {
     isGameRunning = true;
 
     RenderingConfig& renderConfig = configManager.renderingConfig;
@@ -338,6 +338,12 @@ void Engine::start() {
         // make the input not "newly down" or "newly up" anymore
         Input::lateUpdate();
 
+        // advance physics simulation after actor updates but before rendering
+        // needsb2World is set by Rigidbody's constructor
+        if (Engine::needsb2World) {
+            world->Step(1.0f / 60.0f, 8, 3);
+        }
+
         // render the game first
         renderer.render();
 
@@ -391,6 +397,12 @@ int main(int argc, char* argv[]) {
 	ConfigManager configManager(resourceManager);
 	Renderer renderer(configManager, resourceManager);
 
+    // initialize physics-related code
+    b2Vec2 gravity(0.0f, 9.8f);
+    b2World world(gravity);
+
+    Engine::world = &world;
+
 	Engine engine(renderer, configManager, resourceManager);
     LuaUtils::currentScene = &GameInfo::scene;
     LuaUtils::sceneConfig = &configManager.sceneConfig;
@@ -400,10 +412,7 @@ int main(int argc, char* argv[]) {
 
     Camera::renderConfig = &configManager.renderingConfig;
 
-    b2Vec2 gravity(0.0f, -9.8f);
-    b2World world(gravity);
-
-	engine.start();
+	engine.run();
 
     // destroy SDL resources to make sure there aren't memory leaks
     SDL_Quit();

@@ -8,21 +8,22 @@
 // my code
 #include "../components/CppComponent.h"
 #include "../utils/LuaStateSaver.h"
+#include "Rigidbody.h"
 #include "UIRenderer.h"
 
 // rapidjson
 #include "rapidjson/document.h"
 
 class LuaScriptCache {
-private:
-	// path: script contents
-	std::unordered_map<std::string, std::string> cache;
 public:
 	// loads a script file and saves its contents to the cache
 	bool loadAndCache(const std::string& path);
 
 	// gets a script, either from the cache or by loading it (via loadAndCache)
 	const std::string* getScript(const std::string& path);
+private:
+	// path -> script contents
+	std::unordered_map<std::string, std::string> cache;
 };
 
 class Component {
@@ -60,8 +61,13 @@ public:
 				establishInheritance(instanceTable, baseTable);
 			}
 			else {
+				// push com
 				if (type == "UIRenderer") {
 					UIRenderer* rawPtr = dynamic_cast<UIRenderer*>(cppComponent.get());
+					luabridge::push(LuaStateSaver::luaState, rawPtr);
+				}
+				else if (type == "Rigidbody") {
+					Rigidbody* rawPtr = dynamic_cast<Rigidbody*>(cppComponent.get());
 					luabridge::push(LuaStateSaver::luaState, rawPtr);
 				}
 
@@ -92,6 +98,9 @@ public:
 		std::shared_ptr<CppComponent> cppComponent = nullptr;
 		if (type == "UIRenderer") {
 			cppComponent = std::make_shared<UIRenderer>(UIRenderer("", {}, 0));
+		}
+		else if (type == "Rigidbody") {
+			cppComponent = std::make_shared<Rigidbody>(Rigidbody());
 		}
 		return cppComponent;
 	}

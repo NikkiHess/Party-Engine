@@ -16074,6 +16074,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="dependencies\SDL2\lib\osx\SDL2_image.framework\Versions\A\Headers\SDL_image.h" />
     <ClInclude Include="dependencies\SDL2\lib\osx\SDL2_mixer.framework\Versions\A\Headers\SDL_mixer.h" />
     <ClInclude Include="dependencies\SDL2\lib\osx\SDL2_ttf.framework\Versions\A\Headers\SDL_ttf.h" />
+    <ClInclude Include="src\components\Rigidbody.h" />
     <ClInclude Include="src\utils\SaveData.h" />
     <ClInclude Include="src\components\CppComponent.h" />
     <ClInclude Include="src\components\UIRenderer.h" />
@@ -16501,6 +16502,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\visuals\Renderer.h" />
     <ClInclude Include="src\GameEngine.h" />
     <ClInclude Include="src\utils\StringUtils.h" />
+    <ClInclude Include="src\world\physics\VectorWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\Box2D\collision\b2_broad_phase.cpp" />
@@ -16548,6 +16550,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClCompile Include="dependencies\Box2D\dynamics\b2_world.cpp" />
     <ClCompile Include="dependencies\Box2D\dynamics\b2_world_callbacks.cpp" />
     <ClCompile Include="dependencies\Box2D\rope\b2_rope.cpp" />
+    <ClCompile Include="src\components\Rigidbody.cpp" />
     <ClCompile Include="src\utils\SaveData.cpp" />
     <ClCompile Include="src\components\UIRenderer.cpp" />
     <ClCompile Include="src\utils\LuaStateSaver.h" />
@@ -16599,6 +16602,7 @@ copy /Y "dependencies\SDL2\lib\windows\SDL2_mixer.dll" "$(OutDir)"</Command>
     <ClCompile Include="src\world\Scene.cpp" />
     <ClCompile Include="src\visuals\Renderer.cpp" />
     <ClCompile Include="src\GameEngine.cpp" />
+    <ClCompile Include="src\world\physics\VectorWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\boost\wave\cpplexer\re2clex\cpp_re.inc" />
