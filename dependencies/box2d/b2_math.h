@@ -85,30 +85,22 @@ struct B2_API b2Vec2
 		x *= a; y *= a;
 	}
 
+	b2Vec2 operatorAdd(const b2Vec2& other) {
+		return b2Vec2(this->x + other.x, this->y + other.y);
+	}
+
+	b2Vec2 operatorSub(const b2Vec2& other) {
+		return b2Vec2(this->x - other.x, this->y - other.y);
+	}
+
+	b2Vec2 operatorMul(const float multiplier) {
+		return b2Vec2(this->x * multiplier, this->y * multiplier);
+	}
+
 	/// Get the length of this vector (the norm).
 	float Length() const
 	{
 		return b2Sqrt(x * x + y * y);
-	}
-
-	// TODO: After semester, make these operator+, operator-, and operator*?
-	// This will override those operators but might be useful and more c++-like?
-
-	// TODO: After semester, allow support for multiplying b2Vec2 by a scalar
-
-	// add two b2Vec2's together (for Lua)
-	b2Vec2 operatorAdd(const b2Vec2& other) {
-		return b2Vec2(x + other.x, y + other.y);
-	}
-
-	// subtract two b2Vec2's (for Lua)
-	b2Vec2 operatorSub(const b2Vec2& other) {
-		return b2Vec2(x - other.x, y - other.y);
-	}
-
-	// multiply a b2Vec2 by a scalar together (for Lua)
-	b2Vec2 operatorMul(const float scalar) {
-		return b2Vec2(x * scalar, y * scalar);
 	}
 
 	/// Get the length squared. For performance, use this instead of

@@ -24,6 +24,9 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_ttf.h"
 
+// Box2D
+#include <Box2D/Box2D.h>
+
 void Engine::runLifecycleFunctions(glm::vec2 mousePos, int clickType) {
     // do OnStart for all actors with NEW OnStart components
     for (std::shared_ptr<Actor> actor : GameInfo::scene.actorsWithOnStart) {
@@ -396,6 +399,9 @@ int main(int argc, char* argv[]) {
     AudioPlayer::resourceManager = &resourceManager;
 
     Camera::renderConfig = &configManager.renderingConfig;
+
+    b2Vec2 gravity(0.0f, -9.8f);
+    b2World world(gravity);
 
 	engine.start();
 
