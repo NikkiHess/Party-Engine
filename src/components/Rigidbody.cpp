@@ -25,7 +25,7 @@ void Rigidbody::onStart() {
 
 	// create our body from our body def
 	body = Engine::world->CreateBody(&bodyDef);
-	
+
 	// define a basic fixture
 	b2PolygonShape shape;
 	shape.SetAsBox(0.5f, 0.5f);

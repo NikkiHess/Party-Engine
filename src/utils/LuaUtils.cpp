@@ -308,6 +308,7 @@ void setupPhysics() {
             .addProperty("angularFriction", &Rigidbody::angularFriction)
             .addProperty("hasCollider", &Rigidbody::hasCollider)
             .addProperty("hasTrigger", &Rigidbody::hasTrigger)
+            .addProperty("body", &Rigidbody::body)
             .addFunction("GetPosition", &Rigidbody::getPosition)
             .addFunction("GetRotation", &Rigidbody::getRotation)
             .addFunction("OnStart", &Rigidbody::onStart)
@@ -350,7 +351,7 @@ void setupVisuals() {
             .addProperty("g", &SDL_Color::g)
             .addProperty("b", &SDL_Color::b)
             .addProperty("a", &SDL_Color::a)
-            .endClass();
+        .endClass();
 
 //        .beginClass<UIRenderer>("UIRenderer")
 //            .addProperty("key", &UIRenderer::key)

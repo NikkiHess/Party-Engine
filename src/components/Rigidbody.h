@@ -27,6 +27,8 @@ public:
 	bool hasCollider = true;
 	bool hasTrigger = true;
 
+	b2Body* body = nullptr;
+
 	Rigidbody() {}
 
 	// lua OnStart
@@ -36,6 +38,4 @@ public:
 	float getRotation();
 
 	~Rigidbody() {}
-private:
-	b2Body* body = nullptr;
 };
