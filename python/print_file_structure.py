@@ -9,4 +9,6 @@ def list_files(startpath):
         for f in files:
             print('{}{}'.format(subindent, f))
 
-list_files("../src")
+if __name__ == "__main__":
+    path = input("Path: ")
+    list_files(path)
